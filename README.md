@@ -1,6 +1,6 @@
-Comment format for copyright (put inside Settings.json). 
+Comment format for copyright (put inside Settings.json)\
 It requires this extension: https://marketplace.visualstudio.com/items?itemName=doi.fileheadercomment
-
+```
 "fileHeaderComment.parameter": {
     "*": {
       "commentbegin": "/*",
@@ -19,3 +19,4 @@ It requires this extension: https://marketplace.visualstudio.com/items?itemName=
       "${commentend}"
     ]
   }
+```
