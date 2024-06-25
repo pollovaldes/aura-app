@@ -26,6 +26,7 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="com.aurasustentable.auraapp"/>
         <data android:scheme="exp+aura-app"/>
+        <data android:scheme="com.aurasustentable.auraapp"/>
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:exported="false"/>

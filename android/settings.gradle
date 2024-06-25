@@ -1,4 +1,4 @@
-rootProject.name = 'aura-app'
+rootProject.name = 'Aura'
 
 dependencyResolutionManagement {
   versionCatalogs {
