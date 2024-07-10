@@ -1,3 +1,5 @@
+import { Platform } from "react-native";
+
 export const lightTheme = {
   colors: {
     text: {
@@ -34,7 +36,7 @@ export const darkTheme = {
     },
     brands: {
       inverted: "#ffffff",
-      phone: "#3478f6",
+      phone: "#7ab6ff",
     },
     backgroundMain: "#000000",
     backgroundSecondary: "#0d0d0d",

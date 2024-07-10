@@ -5,7 +5,7 @@
  */
 
 import { Stack } from "expo-router";
-import { Platform, useColorScheme } from "react-native";
+import { Platform, Text, useColorScheme, View } from "react-native";
 import {
   DarkTheme,
   DefaultTheme,
@@ -14,10 +14,10 @@ import {
 import "@/style/unistyles";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import AuraLogo from "@/components/web-logo-title/AuraLogo";
+import CustomWebHeader from "./CustomWebHeader";
 
 export default function Layout() {
   const colorScheme = useColorScheme(); // JUST FOR NATIVE UI
-  const { styles } = useStyles(stylesheet); // FOR THEMING OTHER COMPONENTS
 
   return (
     // ThemeProvider is only used to automatically adapt native UI elements,
@@ -43,26 +43,16 @@ export default function Layout() {
           }}
         />
         <Stack.Screen
+          name="traditional-auth"
+          options={{ presentation: "modal", headerShown: false }}
+        />
+        <Stack.Screen
           name="(protected)"
           options={{
-            headerTitle: () => (
-              <AuraLogo width={120} height={40} fill={styles.logo.color} />
-            ),
-            headerStyle: {
-              backgroundColor: styles.headerBackgroundColor.backgroundColor,
-            },
+            header: () => <CustomWebHeader />,
           }}
         />
       </Stack>
     </ThemeProvider>
   );
 }
-
-const stylesheet = createStyleSheet((theme) => ({
-  headerBackgroundColor: {
-    backgroundColor: theme.colors.backgroundTertiary,
-  },
-  logo: {
-    color: theme.colors.inverted,
-  },
-}));

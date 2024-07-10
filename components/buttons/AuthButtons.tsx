@@ -2,11 +2,11 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import AppleIcon from "./AppleIcon";
 import GoogleIcon from "./GoogleIcon";
-import { Phone } from "lucide-react-native";
+import { Mail, Phone } from "lucide-react-native";
 
 interface ButtonProps {
   title: string;
-  authProvider: "google" | "apple" | "phone";
+  authProvider: "google" | "apple" | "phone" | "email";
   onPress?: () => void;
 }
 
@@ -19,10 +19,12 @@ export default function AuthButton({
 
   function getButtonBackgroundColor(authProvider: ButtonProps["authProvider"]) {
     const providerStyles = {
-      google: styles.googleBackground,
-      apple: styles.appleBackground,
-      phone: styles.phoneBackground,
+      google: styles.oAuthBG,
+      apple: styles.oAuthBG,
+      phone: styles.traditionalBG,
+      email: styles.traditionalBG,
     };
+
     return providerStyles[authProvider];
   }
 
@@ -31,7 +33,9 @@ export default function AuthButton({
       google: <GoogleIcon width={24} height={24} />,
       apple: <AppleIcon width={24} height={24} fill={styles.icon.color} />,
       phone: <Phone width={24} height={24} color={styles.icon.color} />,
+      email: <Mail width={24} height={24} color={styles.icon.color} />,
     };
+
     return providerStyles[authProvider];
   }
 
@@ -77,7 +81,6 @@ const stylesheet = createStyleSheet((theme) => ({
   icon: {
     color: theme.colors.text.mainInverted,
   },
-  googleBackground: { backgroundColor: theme.colors.brands.inverted },
-  appleBackground: { backgroundColor: theme.colors.brands.inverted },
-  phoneBackground: { backgroundColor: theme.colors.brands.phone },
+  oAuthBG: { backgroundColor: theme.colors.brands.inverted },
+  traditionalBG: { backgroundColor: theme.colors.brands.phone },
 }));

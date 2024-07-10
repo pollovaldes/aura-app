@@ -4,7 +4,7 @@
  * Copyright (c) 2024 Aura Residuos Sustentables
  */
 
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import React from "react";
 import { Link, router } from "expo-router";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -28,15 +28,20 @@ export default function Index() {
           <AuthButton
             title="Número telefónico"
             authProvider="phone"
-            onPress={() => router.replace("/trucks")}
+            onPress={() => router.push("/traditional-auth?provider=phone")}
+          />
+          <AuthButton
+            title="Correo electrónico"
+            authProvider="email"
+            onPress={() => router.push("/traditional-auth?provider=email")}
           />
           <AuthButton title="Continuar con Google" authProvider="google" />
           <AuthButton title="Continuar con Apple" authProvider="apple" />
-          <AuthButton
-            title="AUTH FLOW"
-            authProvider="apple"
-            onPress={() => router.replace("/auth-flow")}
-          />
+          <Link replace href={"/auth-flow"} asChild>
+            <Pressable>
+              <Text style={styles.subtitle}>Ir a auth-flow</Text>
+            </Pressable>
+          </Link>
         </View>
       </View>
     </View>
