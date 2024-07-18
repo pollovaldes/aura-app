@@ -1,84 +1,28 @@
-/*
- * index.tsx - Created on Mon Jun 24 2024 by Luis Arturo Valdes Romero
- *
- * Copyright (c) 2024 Aura Residuos Sustentables
- */
-
-import { Pressable, Text, View } from "react-native";
-import React from "react";
-import { Link, router } from "expo-router";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { Platform, View } from "react-native";
+import Form from "./Form";
 import AuraLogo from "@/components/web-logo-title/AuraLogo";
-import AuthButton from "@/components/buttons/AuthButtons";
+import { createStyleSheet, useStyles, mq } from "react-native-unistyles";
 
-export default function Index() {
+export default function Authentication() {
   const { styles } = useStyles(stylesheet);
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.logoContainer}>
-        <AuraLogo width={250} height={90} fill={styles.logo.color} />
-      </View>
-      <View style={styles.textsContainer}>
-        <Text style={styles.header}>Bienvenido</Text>
-        <Text style={styles.subtitle}>Elige un método para autenticarte</Text>
-      </View>
-      <View style={styles.authContainer}>
-        <View style={{ flexDirection: "column" }}>
-          <AuthButton
-            title="Número telefónico"
-            authProvider="phone"
-            onPress={() => router.push("/traditional-auth?provider=phone")}
-          />
-          <AuthButton
-            title="Correo electrónico"
-            authProvider="email"
-            onPress={() => router.push("/traditional-auth?provider=email")}
-          />
-          <AuthButton title="Continuar con Google" authProvider="google" />
-          <AuthButton title="Continuar con Apple" authProvider="apple" />
-          <Link replace href={"/auth-flow"} asChild>
-            <Pressable>
-              <Text style={styles.subtitle}>Ir a auth-flow</Text>
-            </Pressable>
-          </Link>
-        </View>
-      </View>
-    </View>
-  );
+  return <Form />;
 }
 
 const stylesheet = createStyleSheet((theme) => ({
-  container: {
-    padding: 15,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    //backgroundColor: "#c81e1e",
-    margin: "auto",
-    width: 360,
-  },
   logoContainer: {
-    marginBottom: 15,
-  },
-  textsContainer: {
-    marginBottom: 50,
-    width: "100%",
-  },
-  authContainer: {
-    width: "100%",
-  },
-  header: {
-    color: theme.colors.text.main,
-    fontSize: 40,
-    fontWeight: "700",
-  },
-  subtitle: {
-    color: theme.colors.text.main,
-    fontSize: 23,
-    fontWeight: "300",
-  },
-  logo: {
-    color: theme.colors.inverted,
+    //backgroundColor: "green",
+    alignItems: "center",
+    paddingTop: Platform.OS === "web" ? 40 : 0,
+    ...Platform.select({
+      native: {
+        position: "absolute",
+        top: "15%",
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 1,
+      },
+    }),
   },
 }));

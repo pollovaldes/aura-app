@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Text, TextInput, View } from "react-native";
+import { TextInput, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function EmailLogin() {
