@@ -3,7 +3,6 @@ import { Text } from "react-native";
 import SignIn from "./SignIn";
 import SignUp from "./SignUp";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import TermsAndPrivacy from "./TermsAndPrivacy";
 import { SignInText, SignUpText } from "./FormToggleText";
 import SocialAuth from "./SocialAuth";
 
@@ -38,5 +37,6 @@ const stylesheet = createStyleSheet((theme) => ({
     fontSize: 24,
     textAlign: "center",
     color: theme.colors.text.main,
+    fontWeight: "bold",
   },
 }));

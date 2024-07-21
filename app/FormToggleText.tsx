@@ -1,4 +1,4 @@
-import { Pressable, Text } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 interface TextProps {
@@ -24,10 +24,10 @@ const SignInText = ({ toggleForm }: TextProps) => {
 
   return (
     <Text style={styles.text}>
-      ¿Ya tienes una cuenta?{" "}
-      <Pressable onPress={toggleForm}>
-        <Text style={styles.link}>Inicia Sesión</Text>
-      </Pressable>
+      <Text>¿Ya tienes una cuenta? </Text>
+      <Text style={styles.link} onPress={toggleForm}>
+        Inicia Sesión
+      </Text>
     </Text>
   );
 };
@@ -37,10 +37,10 @@ const SignUpText = ({ toggleForm }: TextProps) => {
 
   return (
     <Text style={styles.text}>
-      ¿No tienes una cuenta?{" "}
-      <Pressable onPress={toggleForm}>
-        <Text style={styles.link}>Regístrate</Text>
-      </Pressable>
+      <Text>¿No tienes una cuenta? </Text>
+      <Text style={styles.link} onPress={toggleForm}>
+        Regístrate
+      </Text>
     </Text>
   );
 };
