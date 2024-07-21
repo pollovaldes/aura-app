@@ -18,7 +18,7 @@ export const lightTheme = {
     outline: "#d8d8d8",
     inverted: "#000000",
     primary: "#3478f6",
-    imageOverlay: "rgba(0,0,0, 0.3)",
+    imageOverlay: "rgba(0,0,0, 0.15)",
   },
   margins: {
     sm: 2,
@@ -46,7 +46,7 @@ export const darkTheme = {
     outline: "#272729",
     inverted: "#ffffff",
     primary: "#3b82f7",
-    imageOverlay: "rgba(0,0,0, 0.4)",
+    imageOverlay: "rgba(0,0,0, 0.45)",
   },
   margins: {
     sm: 2,

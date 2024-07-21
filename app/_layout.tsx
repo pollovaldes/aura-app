@@ -13,6 +13,10 @@ import {
 } from "@react-navigation/native";
 import "@/style/unistyles";
 
+export const unstable_settings = {
+  initialRouteName: "index",
+};
+
 export default function Layout() {
   const colorScheme = useColorScheme(); // JUST FOR NATIVE UI
 
@@ -25,6 +29,14 @@ export default function Layout() {
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(protected)" />
+        <Stack.Screen
+          name="terms"
+          options={{ presentation: "modal", headerShown: false }}
+        />
+        <Stack.Screen
+          name="privacy-policy"
+          options={{ presentation: "modal", headerShown: false }}
+        />
       </Stack>
     </ThemeProvider>
   );
