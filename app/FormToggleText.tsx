@@ -1,9 +1,6 @@
-import { Pressable, Text, View } from "react-native";
+import { Text } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-
-interface TextProps {
-  toggleForm: () => void;
-}
+import { EmailFormProps } from "./SignInSignUpForm";
 
 const stylesheet = createStyleSheet((theme) => ({
   text: {
@@ -19,26 +16,26 @@ const stylesheet = createStyleSheet((theme) => ({
   },
 }));
 
-const SignInText = ({ toggleForm }: TextProps) => {
+const SignInText = ({ toggleEmailForm }: EmailFormProps) => {
   const { styles } = useStyles(stylesheet);
 
   return (
     <Text style={styles.text}>
       <Text>¿Ya tienes una cuenta? </Text>
-      <Text style={styles.link} onPress={toggleForm}>
+      <Text style={styles.link} onPress={toggleEmailForm}>
         Inicia Sesión
       </Text>
     </Text>
   );
 };
 
-const SignUpText = ({ toggleForm }: TextProps) => {
+const SignUpText = ({ toggleEmailForm }: EmailFormProps) => {
   const { styles } = useStyles(stylesheet);
 
   return (
     <Text style={styles.text}>
       <Text>¿No tienes una cuenta? </Text>
-      <Text style={styles.link} onPress={toggleForm}>
+      <Text style={styles.link} onPress={toggleEmailForm}>
         Regístrate
       </Text>
     </Text>

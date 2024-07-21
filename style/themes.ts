@@ -113,7 +113,7 @@ export const lightTheme = {
   },
   textPresets: {
     main: colorPalette.neutral[900],
-    inverted: colorPalette.neutral[200],
+    inverted: colorPalette.neutral[100],
     subtitle: colorPalette.neutral[600],
     link: colorPalette.sky[500],
   },
@@ -122,11 +122,11 @@ export const lightTheme = {
       imageOverlay: "rgba(0,0,0, 0.15)",
     },
     formComponent: {
-      buttonBG: colorPalette.neutral[500],
+      buttonBG: colorPalette.neutral[600],
     },
   },
   textInput: {
-    backgroundColor: colorPalette.neutral[200],
+    backgroundColor: colorPalette.neutral[100],
   },
   margins: {
     sm: 2,

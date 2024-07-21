@@ -1,42 +1,23 @@
 import { useState } from "react";
-import { Text } from "react-native";
-import SignIn from "./SignIn";
-import SignUp from "./SignUp";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { SignInText, SignUpText } from "./FormToggleText";
-import SocialAuth from "./SocialAuth";
+import PhoneForm from "./PhoneEnter";
+import SignInSignUpForm from "./SignInSignUpForm";
 
-type FormType = "sign-in" | "sign-up";
+type PrimaryFormType = "email" | "phone";
+export type PrimaryFormProps = {
+  togglePrimaryForm: () => void;
+};
 
 export default function Form() {
-  const [form, setForm] = useState<FormType>("sign-in");
-  const { styles } = useStyles(stylesheet);
+  const [activePrimaryForm, setActivePrimaryForm] =
+    useState<PrimaryFormType>("email");
 
-  const toggleForm = () => {
-    setForm((prevForm) => (prevForm === "sign-in" ? "sign-up" : "sign-in"));
+  const togglePrimaryForm = () => {
+    setActivePrimaryForm(activePrimaryForm === "email" ? "phone" : "email");
   };
 
-  const titleText = form === "sign-in" ? "Iniciar Sesión" : "Crear una Cuenta";
-
-  return (
-    <>
-      <Text style={styles.title}>{titleText}</Text>
-      {form === "sign-in" ? (
-        <SignUpText toggleForm={toggleForm} />
-      ) : (
-        <SignInText toggleForm={toggleForm} />
-      )}
-      {form === "sign-in" ? <SignIn /> : <SignUp />}
-      <SocialAuth />
-    </>
+  return activePrimaryForm === "phone" ? (
+    <PhoneForm togglePrimaryForm={togglePrimaryForm} />
+  ) : (
+    <SignInSignUpForm togglePrimaryForm={togglePrimaryForm} />
   );
 }
-
-const stylesheet = createStyleSheet((theme) => ({
-  title: {
-    fontSize: 24,
-    textAlign: "center",
-    color: theme.textPresets.main,
-    fontWeight: "bold",
-  },
-}));

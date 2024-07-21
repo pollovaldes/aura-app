@@ -1,10 +1,11 @@
 import Apple from "@/assets/icons/Apple";
 import Google from "@/assets/icons/Google";
 import Phone from "@/assets/icons/Phone";
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { PrimaryFormProps } from "./Form";
 
-export default function SocialAuth() {
+export default function SocialAuth({ togglePrimaryForm }: PrimaryFormProps) {
   const { styles } = useStyles(stylesheet);
 
   return (
@@ -15,15 +16,21 @@ export default function SocialAuth() {
         <View style={styles.separator} />
       </View>
       <View style={styles.authContainer}>
-        <View style={styles.box}>
-          <Phone fill={styles.iconColor.color} />
-        </View>
-        <View style={styles.box}>
-          <Google />
-        </View>
-        <View style={styles.box}>
-          <Apple fill={styles.iconColor.color} />
-        </View>
+        <Pressable onPress={togglePrimaryForm}>
+          <View style={styles.box}>
+            <Phone fill={styles.iconColor.color} />
+          </View>
+        </Pressable>
+        <Pressable>
+          <View style={styles.box}>
+            <Google />
+          </View>
+        </Pressable>
+        <Pressable>
+          <View style={styles.box}>
+            <Apple fill={styles.iconColor.color} />
+          </View>
+        </Pressable>
       </View>
     </View>
   );

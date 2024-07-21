@@ -1,31 +1,51 @@
 import { Pressable, Text, TextInput, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { ArrowLeft } from "lucide-react-native";
+import { PrimaryFormProps } from "./Form";
 
-export default function SignIn() {
+export default function SignInSignUpForm({
+  togglePrimaryForm,
+}: PrimaryFormProps) {
   const { styles } = useStyles(stylesheet);
 
   return (
     <>
+      <View style={styles.headerContainer}>
+        <Pressable onPress={togglePrimaryForm}>
+          <ArrowLeft size={30} color={styles.backIcon.color} />
+        </Pressable>
+        <Text style={styles.title}>Continuar con celular</Text>
+        <ArrowLeft size={28} style={{ opacity: 0 }} />
+        {/* Used for perfect spacing in the row */}
+      </View>
       <TextInput
-        placeholder="Correo electrónico"
+        placeholder="Número de celular"
         style={styles.textInput}
         placeholderTextColor={styles.textInput.placehoolderTextColor}
-        inputMode="email"
-      />
-      <TextInput
-        placeholder="Contraseña"
-        style={styles.textInput}
-        placeholderTextColor={styles.textInput.placehoolderTextColor}
-        inputMode="text"
+        inputMode="tel"
       />
       <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Continuar</Text>
+        <Text style={styles.buttonText}>Enviar código de verificación</Text>
       </Pressable>
     </>
   );
 }
 
 const stylesheet = createStyleSheet((theme) => ({
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 12,
+  },
+  title: {
+    fontSize: 24,
+    textAlign: "center",
+    color: theme.textPresets.main,
+    fontWeight: "bold",
+  },
+  backIcon: {
+    color: theme.colors.inverted,
+  },
   textInput: {
     height: 42,
     color: theme.textPresets.main,
