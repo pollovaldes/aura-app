@@ -12,6 +12,8 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import "@/style/unistyles";
+import { createStyleSheet } from "react-native-unistyles";
+import { darkTheme, lightTheme } from "@/style/themes";
 
 export const unstable_settings = {
   initialRouteName: "index",
@@ -25,7 +27,9 @@ export default function Layout() {
     // like tab bars and headers, to the current theme (dark or light mode).
     // For other components, such as labels, custom navigators or buttons,
     // use Unistyles to apply styles appropriate for dark and light modes.
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider
+      value={colorScheme === "dark" ? darkTheme.ui : lightTheme.ui}
+    >
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(protected)" />
@@ -41,3 +45,5 @@ export default function Layout() {
     </ThemeProvider>
   );
 }
+
+const stylesheet = createStyleSheet((theme) => ({}));

@@ -42,11 +42,11 @@ const stylesheet = createStyleSheet((theme) => ({
     borderTopWidth: 1,
     height: 1,
     flexGrow: 1,
-    borderColor: theme.colors.outline,
+    borderColor: theme.ui.colors.border,
   },
   text: {
     marginHorizontal: 12,
-    color: theme.colors.text.main,
+    color: theme.textPresets.main,
   },
   authContainer: {
     display: "flex",
@@ -62,7 +62,7 @@ const stylesheet = createStyleSheet((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: theme.colors.outline,
+    borderColor: theme.ui.colors.border,
   },
   iconColor: {
     color: theme.colors.inverted,

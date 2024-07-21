@@ -30,11 +30,11 @@ export default function TermsAndPrivacy() {
 
 const stylesheet = createStyleSheet((theme) => ({
   text: {
-    color: theme.colors.text.subtitle,
+    color: theme.textPresets.subtitle,
     textAlign: "center",
   },
   link: {
-    color: "#0ea5e9", // Customize link color
+    color: theme.textPresets.link, // Customize link color
     textDecorationLine: "underline",
     userSelect: "none",
   },

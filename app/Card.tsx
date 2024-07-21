@@ -96,7 +96,7 @@ const stylesheet = createStyleSheet((theme) => ({
     bottom: 0,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: theme.colors.imageOverlay,
+    backgroundColor: theme.components.cardComponent.imageOverlay,
     ...Platform.select({
       web: {
         borderTopLeftRadius: 12,
@@ -112,7 +112,7 @@ const stylesheet = createStyleSheet((theme) => ({
     }),
   },
   contentContainer: {
-    backgroundColor: theme.colors.backgroundSecondary,
+    backgroundColor: theme.ui.colors.card,
     alignItems: "center",
     justifyContent: {
       [mq.only.width("md")]: "center",
@@ -146,10 +146,6 @@ const stylesheet = createStyleSheet((theme) => ({
     width: "100%",
     paddingHorizontal: 24,
     marginBottom: 30,
-  },
-  header: {
-    fontSize: 30,
-    color: theme.colors.text.main,
   },
   logo: {
     color: "#ffffff",

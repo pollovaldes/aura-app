@@ -18,8 +18,8 @@ export default function SignIn() {
 const stylesheet = createStyleSheet((theme) => ({
   textInput: {
     height: 42,
-    color: "#6e6e6e",
-    backgroundColor: "#ebebeb",
+    color: theme.textPresets.main,
+    backgroundColor: theme.textInput.backgroundColor,
     borderRadius: 5,
     marginVertical: 5,
     padding: 12,
@@ -28,13 +28,13 @@ const stylesheet = createStyleSheet((theme) => ({
     height: 42,
     marginTop: 24,
     marginBottom: 12,
-    backgroundColor: "#6a6a6a",
+    backgroundColor: theme.components.formComponent.buttonBG,
     borderRadius: 5,
     justifyContent: "center",
     alignItems: "center",
   },
   buttonText: {
-    color: theme.colors.text.mainInverted,
+    color: theme.textPresets.inverted,
     userSelect: "none",
   },
 }));

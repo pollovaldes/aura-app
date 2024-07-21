@@ -36,7 +36,7 @@ const stylesheet = createStyleSheet((theme) => ({
   title: {
     fontSize: 24,
     textAlign: "center",
-    color: theme.colors.text.main,
+    color: theme.textPresets.main,
     fontWeight: "bold",
   },
 }));
