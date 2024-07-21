@@ -1,3 +1,4 @@
+import { FormButton } from "@/components/FormButtons/FormButton";
 import { Pressable, Text, TextInput, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
@@ -18,16 +19,229 @@ export default function SignIn() {
         placeholderTextColor={styles.textInput.placehoolderTextColor}
         inputMode="text"
       />
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Continuar</Text>
-      </Pressable>
+      <TextInput
+        placeholder="Correo electrónico"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="email"
+      />
+      <TextInput
+        placeholder="Contraseña"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="text"
+      />
+      <TextInput
+        placeholder="Correo electrónico"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="email"
+      />
+      <TextInput
+        placeholder="Contraseña"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="text"
+      />
+      <TextInput
+        placeholder="Correo electrónico"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="email"
+      />
+      <TextInput
+        placeholder="Contraseña"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="text"
+      />
+      <TextInput
+        placeholder="Correo electrónico"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="email"
+      />
+      <TextInput
+        placeholder="Contraseña"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="text"
+      />
+      <TextInput
+        placeholder="Correo electrónico"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="email"
+      />
+      <TextInput
+        placeholder="Contraseña"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="text"
+      />
+      <TextInput
+        placeholder="Correo electrónico"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="email"
+      />
+      <TextInput
+        placeholder="Contraseña"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="text"
+      />
+      <TextInput
+        placeholder="Correo electrónico"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="email"
+      />
+      <TextInput
+        placeholder="Contraseña"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="text"
+      />
+      <TextInput
+        placeholder="Correo electrónico"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="email"
+      />
+      <TextInput
+        placeholder="Contraseña"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="text"
+      />
+      <TextInput
+        placeholder="Correo electrónico"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="email"
+      />
+      <TextInput
+        placeholder="Contraseña"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="text"
+      />
+      <TextInput
+        placeholder="Correo electrónico"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="email"
+      />
+      <TextInput
+        placeholder="Contraseña"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="text"
+      />
+      <TextInput
+        placeholder="Correo electrónico"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="email"
+      />
+      <TextInput
+        placeholder="Contraseña"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="text"
+      />
+      <TextInput
+        placeholder="Correo electrónico"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="email"
+      />
+      <TextInput
+        placeholder="Contraseña"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="text"
+      />
+      <TextInput
+        placeholder="Correo electrónico"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="email"
+      />
+      <TextInput
+        placeholder="Contraseña"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="text"
+      />
+      <TextInput
+        placeholder="Correo electrónico"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="email"
+      />
+      <TextInput
+        placeholder="Contraseña"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="text"
+      />
+      <TextInput
+        placeholder="Correo electrónico"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="email"
+      />
+      <TextInput
+        placeholder="Contraseña"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="text"
+      />
+      <TextInput
+        placeholder="Correo electrónico"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="email"
+      />
+      <TextInput
+        placeholder="Contraseña"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="text"
+      />
+      <TextInput
+        placeholder="Correo electrónico"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="email"
+      />
+      <TextInput
+        placeholder="Contraseña"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="text"
+      />
+      <TextInput
+        placeholder="Correo electrónico"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="email"
+      />
+      <TextInput
+        placeholder="Contraseña"
+        style={styles.textInput}
+        placeholderTextColor={styles.textInput.placehoolderTextColor}
+        inputMode="text"
+      />
     </>
   );
 }
 
 const stylesheet = createStyleSheet((theme) => ({
   textInput: {
-    height: 42,
+    height: 45,
     color: theme.textPresets.main,
     placehoolderTextColor: theme.textPresets.subtitle,
     backgroundColor: theme.textInput.backgroundColor,
@@ -36,16 +250,6 @@ const stylesheet = createStyleSheet((theme) => ({
     padding: 12,
   },
   button: {
-    height: 42,
-    marginTop: 24,
-    marginBottom: 12,
-    backgroundColor: theme.components.formComponent.buttonBG,
-    borderRadius: 5,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  buttonText: {
-    color: theme.textPresets.inverted,
-    userSelect: "none",
+    marginVertical: 24,
   },
 }));

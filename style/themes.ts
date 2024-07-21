@@ -122,7 +122,8 @@ export const lightTheme = {
       imageOverlay: "rgba(0,0,0, 0.15)",
     },
     formComponent: {
-      buttonBG: colorPalette.neutral[600],
+      buttonNeutralBG: colorPalette.neutral[600],
+      buttonSkyBG: colorPalette.sky[600],
     },
   },
   textInput: {
@@ -162,7 +163,8 @@ export const darkTheme = {
       imageOverlay: "rgba(0,0,0, 0.45)",
     },
     formComponent: {
-      buttonBG: colorPalette.neutral[300],
+      buttonNeutralBG: colorPalette.neutral[300],
+      buttonSkyBG: colorPalette.sky[300],
     },
   },
   textInput: {

@@ -6,7 +6,6 @@ const stylesheet = createStyleSheet((theme) => ({
   text: {
     color: theme.textPresets.main,
     textAlign: "center",
-    padding: 12,
     marginBottom: 12,
   },
   link: {

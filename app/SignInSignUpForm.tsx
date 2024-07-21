@@ -1,11 +1,10 @@
-import { Text } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { SignInText, SignUpText } from "./FormToggleText";
 import SignIn from "./SignIn";
 import SignUp from "./SignUp";
 import SocialAuth from "./SocialAuth";
 import { PrimaryFormProps } from "./Form";
 import { useState } from "react";
+import FormTitle from "./FormTitle";
 
 type EmailFormType = "sign-in" | "sign-up";
 export type EmailFormProps = {
@@ -15,8 +14,6 @@ export type EmailFormProps = {
 export default function SignInSignUpForm({
   togglePrimaryForm,
 }: PrimaryFormProps) {
-  const { styles } = useStyles(stylesheet);
-
   const [activeEmailForm, setActiveEmailForm] =
     useState<EmailFormType>("sign-in");
 
@@ -28,7 +25,7 @@ export default function SignInSignUpForm({
 
   return (
     <>
-      <Text style={styles.title}>{title}</Text>
+      <FormTitle title={title} />
       {activeEmailForm === "sign-in" ? (
         <SignUpText toggleEmailForm={toggleEmailForm} />
       ) : (
@@ -39,12 +36,3 @@ export default function SignInSignUpForm({
     </>
   );
 }
-
-const stylesheet = createStyleSheet((theme) => ({
-  title: {
-    fontSize: 24,
-    textAlign: "center",
-    color: theme.textPresets.main,
-    fontWeight: "bold",
-  },
-}));

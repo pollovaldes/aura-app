@@ -59,7 +59,6 @@ const stylesheet = createStyleSheet((theme) => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 24,
   },
   box: {
     width: 100,

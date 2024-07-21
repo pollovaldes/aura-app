@@ -2,49 +2,46 @@ import { Pressable, Text, TextInput, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { ArrowLeft } from "lucide-react-native";
 import { PrimaryFormProps } from "./Form";
+import { PhoneFormProps } from "./PhoneForm";
+import { FormButton } from "@/components/FormButtons/FormButton";
+import FormTitle from "./FormTitle";
 
-export default function SignInSignUpForm({
+export default function PhoneEnter({
   togglePrimaryForm,
-}: PrimaryFormProps) {
+  togglePhoneForm,
+  setPhoneNumber,
+  phoneNumber,
+}: PrimaryFormProps & PhoneFormProps) {
   const { styles } = useStyles(stylesheet);
 
   return (
     <>
-      <View style={styles.headerContainer}>
-        <Pressable onPress={togglePrimaryForm}>
-          <ArrowLeft size={30} color={styles.backIcon.color} />
-        </Pressable>
-        <Text style={styles.title}>Continuar con celular</Text>
-        <ArrowLeft size={28} style={{ opacity: 0 }} />
-        {/* Used for perfect spacing in the row */}
-      </View>
+      <FormTitle
+        title="Continuar con celular"
+        showBackButton={true}
+        onBackPress={togglePrimaryForm}
+      />
       <TextInput
         placeholder="Número de celular"
         style={styles.textInput}
         placeholderTextColor={styles.textInput.placehoolderTextColor}
         inputMode="tel"
+        onChangeText={(text) => setPhoneNumber(text)}
+        value={phoneNumber}
       />
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Enviar código de verificación</Text>
-      </Pressable>
+      <FormButton
+        onPress={togglePhoneForm}
+        text="Enviar código de verificación"
+        isLoading={false}
+        style={styles.button}
+      />
     </>
   );
 }
 
 const stylesheet = createStyleSheet((theme) => ({
-  headerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 12,
-  },
-  title: {
-    fontSize: 24,
-    textAlign: "center",
-    color: theme.textPresets.main,
-    fontWeight: "bold",
-  },
-  backIcon: {
-    color: theme.colors.inverted,
+  button: {
+    marginVertical: 12,
   },
   textInput: {
     height: 42,
@@ -54,18 +51,5 @@ const stylesheet = createStyleSheet((theme) => ({
     borderRadius: 5,
     marginVertical: 5,
     padding: 12,
-  },
-  button: {
-    height: 42,
-    marginTop: 24,
-    marginBottom: 12,
-    backgroundColor: theme.components.formComponent.buttonBG,
-    borderRadius: 5,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  buttonText: {
-    color: theme.textPresets.inverted,
-    userSelect: "none",
   },
 }));

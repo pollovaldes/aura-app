@@ -1,11 +1,20 @@
 import AuraLogo from "@/components/web-logo-title/AuraLogo";
-import { Image, Platform, View } from "react-native";
+import {
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 import { createStyleSheet, useStyles, mq } from "react-native-unistyles";
 import Form from "./Form";
-import TermsAndPrivacy from "./TermsAndPrivacy";
+import useKeyboardHeight from "@/hooks/useKeyboardHeight";
 
 export default function Card() {
   const { styles } = useStyles(stylesheet);
+
+  const height = useKeyboardHeight();
 
   return (
     <View style={styles.canvas}>
@@ -29,12 +38,23 @@ export default function Card() {
           </View>
         </View>
         <View style={styles.contentContainer}>
-          <View style={styles.content}>
+          <ScrollView
+            style={[
+              styles.scrollView,
+              { marginBottom: Platform.OS === "android" ? height : undefined },
+            ]}
+            automaticallyAdjustKeyboardInsets={true}
+            keyboardShouldPersistTaps="never"
+            contentContainerStyle={
+              Platform.OS === "web" &&
+              !styles.scrollView.isMobileWidth && {
+                flexGrow: 1,
+                justifyContent: "center",
+              }
+            }
+          >
             <Form />
-          </View>
-          <View style={styles.footer}>
-            <TermsAndPrivacy />
-          </View>
+          </ScrollView>
         </View>
       </View>
     </View>
@@ -43,7 +63,7 @@ export default function Card() {
 
 const stylesheet = createStyleSheet((theme) => ({
   canvas: {
-    flex: 1,
+    height: "100%",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -131,21 +151,14 @@ const stylesheet = createStyleSheet((theme) => ({
     },
     borderBottomRightRadius: 12,
   },
-  content: {
+  scrollView: {
+    paddingHorizontal: 12,
     maxWidth: 470,
     width: "100%",
-    paddingHorizontal: 24,
-    paddingTop: 12,
-    flexGrow: 1,
-    justifyContent: {
-      [mq.only.width("md")]: "center",
+    isMobileWidth: {
+      [mq.only.width(0, "md")]: true,
+      [mq.only.width("md")]: false,
     },
-  },
-  footer: {
-    maxWidth: 470,
-    width: "100%",
-    paddingHorizontal: 24,
-    marginBottom: 30,
   },
   logo: {
     color: "#ffffff",

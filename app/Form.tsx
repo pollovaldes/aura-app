@@ -1,6 +1,8 @@
 import { useState } from "react";
-import PhoneForm from "./PhoneEnter";
 import SignInSignUpForm from "./SignInSignUpForm";
+import PhoneForm from "./PhoneForm";
+import PrivacyPolicy from "./privacy-policy";
+import TermsAndPrivacy from "./TermsAndPrivacy";
 
 type PrimaryFormType = "email" | "phone";
 export type PrimaryFormProps = {
@@ -15,9 +17,14 @@ export default function Form() {
     setActivePrimaryForm(activePrimaryForm === "email" ? "phone" : "email");
   };
 
-  return activePrimaryForm === "phone" ? (
-    <PhoneForm togglePrimaryForm={togglePrimaryForm} />
-  ) : (
-    <SignInSignUpForm togglePrimaryForm={togglePrimaryForm} />
+  return (
+    <>
+      {activePrimaryForm === "phone" ? (
+        <PhoneForm togglePrimaryForm={togglePrimaryForm} />
+      ) : (
+        <SignInSignUpForm togglePrimaryForm={togglePrimaryForm} />
+      )}
+      <TermsAndPrivacy />
+    </>
   );
 }
