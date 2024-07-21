@@ -1,12 +1,5 @@
 import AuraLogo from "@/components/web-logo-title/AuraLogo";
-import {
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  View,
-} from "react-native";
+import { Image, Platform, ScrollView, View } from "react-native";
 import { createStyleSheet, useStyles, mq } from "react-native-unistyles";
 import Form from "./Form";
 import useKeyboardHeight from "@/hooks/useKeyboardHeight";
@@ -26,6 +19,7 @@ export default function Card() {
             style={styles.image}
             resizeMode="repeat"
           />
+
           <View
             //@ts-ignore
             style={styles.imageOverlay}
@@ -37,14 +31,16 @@ export default function Card() {
             />
           </View>
         </View>
+
         <View style={styles.contentContainer}>
           <ScrollView
             style={[
               styles.scrollView,
-              { marginBottom: Platform.OS === "android" ? height : undefined },
+              {
+                marginBottom: Platform.OS === "android" ? height : undefined,
+              },
             ]}
             automaticallyAdjustKeyboardInsets={true}
-            keyboardShouldPersistTaps="never"
             contentContainerStyle={
               Platform.OS === "web" &&
               !styles.scrollView.isMobileWidth && {
@@ -87,7 +83,7 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   imageContainer: {
     flex: {
-      [mq.only.width(0, "md")]: 3 / 10,
+      [mq.only.width(0, "md")]: 2.5 / 10,
       [mq.only.width("md")]: 4 / 10,
     },
   },
@@ -138,7 +134,7 @@ const stylesheet = createStyleSheet((theme) => ({
       [mq.only.width("md")]: "center",
     },
     flex: {
-      [mq.only.width(0, "md")]: 7 / 10,
+      [mq.only.width(0, "md")]: 7.5 / 10,
       [mq.only.width("md")]: 6 / 10,
     },
     borderTopRightRadius: {

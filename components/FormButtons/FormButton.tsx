@@ -3,20 +3,22 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 type FormButtonProps = {
   onPress: () => void;
-  text: string;
+  title: string;
   isLoading?: boolean;
   color?: string;
   style?: ViewStyle;
   disabled?: boolean;
+  description?: string;
 };
 
 export function FormButton({
   onPress,
-  text,
+  title: text,
   isLoading = false,
   color,
   style,
   disabled,
+  description,
 }: FormButtonProps) {
   const { styles } = useStyles(stylesheet);
 
@@ -37,7 +39,7 @@ export function FormButton({
 
 const stylesheet = createStyleSheet((theme) => ({
   button: {
-    height: 42,
+    height: 52,
     backgroundColor: theme.components.formComponent.buttonNeutralBG,
     borderRadius: 5,
     justifyContent: "center",
@@ -46,5 +48,6 @@ const stylesheet = createStyleSheet((theme) => ({
   buttonText: {
     color: theme.textPresets.inverted,
     userSelect: "none",
+    fontSize: 18,
   },
 }));

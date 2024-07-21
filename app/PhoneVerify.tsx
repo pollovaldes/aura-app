@@ -27,14 +27,15 @@ export default function ({ togglePhoneForm, phoneNumber }: PhoneFormProps) {
         placeholderTextColor={styles.textInput.placehoolderTextColor}
         inputMode="numeric"
         maxLength={6}
+        enterKeyHint="done"
       />
       <FormButton
-        text="Verificar e iniciar sesión"
+        title="Verificar e iniciar sesión"
         onPress={() => {}}
         style={styles.buttonVerify}
       />
       <FormButton
-        text="Reenviar código"
+        title="Reenviar código"
         onPress={() => {}}
         style={styles.buttonResend}
         disabled={true}
@@ -58,9 +59,9 @@ const stylesheet = createStyleSheet((theme) => ({
     backgroundColor: theme.textInput.backgroundColor,
     borderRadius: 5,
     marginVertical: 5,
-    padding: 12,
+    paddingHorizontal: 12,
     textAlign: "center",
-    fontSize: 35,
+    fontSize: 40,
     textAlignVertical: "center",
   },
   buttonVerify: {

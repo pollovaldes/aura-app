@@ -39,10 +39,11 @@ const stylesheet = createStyleSheet((theme) => ({
     marginVertical: 12,
   },
   title: {
-    fontSize: 24,
+    fontSize: 30,
     textAlign: "center",
     color: theme.textPresets.main,
     fontWeight: "bold",
+    textAlignVertical: "center",
   },
   backIcon: {
     color: theme.colors.inverted,

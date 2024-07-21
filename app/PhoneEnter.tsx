@@ -1,6 +1,5 @@
-import { Pressable, Text, TextInput, View } from "react-native";
+import { TextInput } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { ArrowLeft } from "lucide-react-native";
 import { PrimaryFormProps } from "./Form";
 import { PhoneFormProps } from "./PhoneForm";
 import { FormButton } from "@/components/FormButtons/FormButton";
@@ -28,10 +27,11 @@ export default function PhoneEnter({
         inputMode="tel"
         onChangeText={(text) => setPhoneNumber(text)}
         value={phoneNumber}
+        enterKeyHint="done"
       />
       <FormButton
         onPress={togglePhoneForm}
-        text="Enviar código de verificación"
+        title="Enviar código de verificación"
         isLoading={false}
         style={styles.button}
       />
@@ -44,12 +44,13 @@ const stylesheet = createStyleSheet((theme) => ({
     marginVertical: 12,
   },
   textInput: {
-    height: 42,
+    height: 45,
+    paddingHorizontal: 12,
+    fontSize: 18,
     color: theme.textPresets.main,
     placehoolderTextColor: theme.textPresets.subtitle,
     backgroundColor: theme.textInput.backgroundColor,
     borderRadius: 5,
     marginVertical: 5,
-    padding: 12,
   },
 }));
