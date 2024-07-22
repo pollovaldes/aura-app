@@ -5,6 +5,9 @@ import SocialAuth from "./SocialAuth";
 import { PrimaryFormProps } from "./Form";
 import { useState } from "react";
 import FormTitle from "./FormTitle";
+import { View } from "react-native";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
+import TermsAndPrivacy from "./TermsAndPrivacy";
 
 type EmailFormType = "sign-in" | "sign-up";
 export type EmailFormProps = {
@@ -23,16 +26,32 @@ export default function SignInSignUpForm({
 
   const title = activeEmailForm === "sign-in" ? "Iniciar Sesión" : "Regístrate";
 
+  const { styles } = useStyles(stylesheet);
+
   return (
-    <>
-      <FormTitle title={title} />
-      {activeEmailForm === "sign-in" ? (
-        <SignUpText toggleEmailForm={toggleEmailForm} />
-      ) : (
-        <SignInText toggleEmailForm={toggleEmailForm} />
-      )}
-      {activeEmailForm === "sign-in" ? <SignIn /> : <SignUp />}
-      <SocialAuth togglePrimaryForm={togglePrimaryForm} />
-    </>
+    <View style={styles.section}>
+      <View style={styles.group}>
+        <FormTitle title={title} />
+        {activeEmailForm === "sign-in" ? (
+          <SignUpText toggleEmailForm={toggleEmailForm} />
+        ) : (
+          <SignInText toggleEmailForm={toggleEmailForm} />
+        )}
+      </View>
+      <View style={styles.group}>
+        {activeEmailForm === "sign-in" ? <SignIn /> : <SignUp />}
+        <SocialAuth togglePrimaryForm={togglePrimaryForm} />
+      </View>
+      <TermsAndPrivacy />
+    </View>
   );
 }
+
+const stylesheet = createStyleSheet((theme) => ({
+  section: {
+    gap: theme.marginsComponents.section,
+  },
+  group: {
+    gap: theme.marginsComponents.group,
+  },
+}));

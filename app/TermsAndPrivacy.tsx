@@ -32,8 +32,6 @@ const stylesheet = createStyleSheet((theme) => ({
   text: {
     color: theme.textPresets.subtitle,
     textAlign: "center",
-    marginTop: 24,
-    marginBottom: 24,
   },
   link: {
     color: theme.textPresets.link, // Customize link color

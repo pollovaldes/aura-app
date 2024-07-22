@@ -135,6 +135,10 @@ export const lightTheme = {
     lg: 8,
     xl: 12,
   },
+  marginsComponents: {
+    section: 32,
+    group: 8,
+  },
 } as const;
 
 export const darkTheme = {
@@ -175,5 +179,9 @@ export const darkTheme = {
     md: 4,
     lg: 8,
     xl: 12,
+  },
+  marginsComponents: {
+    section: 32,
+    group: 8,
   },
 } as const;

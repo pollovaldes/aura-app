@@ -1,8 +1,8 @@
-import { TextInput } from "react-native";
+import { TextInput, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { PrimaryFormProps } from "./Form";
 import { PhoneFormProps } from "./PhoneForm";
-import { FormButton } from "@/components/FormButtons/FormButton";
+import { FormButton } from "@/components/Form/FormButton";
 import FormTitle from "./FormTitle";
 
 export default function PhoneEnter({
@@ -16,33 +16,31 @@ export default function PhoneEnter({
   return (
     <>
       <FormTitle
-        title="Continuar con celular"
+        title="Continuar con número de celular"
         showBackButton={true}
         onBackPress={togglePrimaryForm}
       />
-      <TextInput
-        placeholder="Número de celular"
-        style={styles.textInput}
-        placeholderTextColor={styles.textInput.placehoolderTextColor}
-        inputMode="tel"
-        onChangeText={(text) => setPhoneNumber(text)}
-        value={phoneNumber}
-        enterKeyHint="done"
-      />
-      <FormButton
-        onPress={togglePhoneForm}
-        title="Enviar código de verificación"
-        isLoading={false}
-        style={styles.button}
-      />
+      <View style={styles.group}>
+        <TextInput
+          placeholder="Número de celular"
+          style={styles.textInput}
+          placeholderTextColor={styles.textInput.placehoolderTextColor}
+          inputMode="tel"
+          onChangeText={(text) => setPhoneNumber(text)}
+          value={phoneNumber}
+          enterKeyHint="done"
+        />
+        <FormButton
+          onPress={togglePhoneForm}
+          title="Enviar código de verificación"
+          isLoading={false}
+        />
+      </View>
     </>
   );
 }
 
 const stylesheet = createStyleSheet((theme) => ({
-  button: {
-    marginVertical: 12,
-  },
   textInput: {
     height: 45,
     paddingHorizontal: 12,
@@ -51,6 +49,8 @@ const stylesheet = createStyleSheet((theme) => ({
     placehoolderTextColor: theme.textPresets.subtitle,
     backgroundColor: theme.textInput.backgroundColor,
     borderRadius: 5,
-    marginVertical: 5,
+  },
+  group: {
+    gap: theme.marginsComponents.group,
   },
 }));

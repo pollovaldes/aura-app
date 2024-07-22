@@ -1,6 +1,7 @@
 import { setStatusBarStyle, StatusBar } from "expo-status-bar";
-import Card from "./Card";
+
 import { useEffect } from "react";
+import Card from "./Card";
 
 export default function Authentication() {
   useEffect(() => {

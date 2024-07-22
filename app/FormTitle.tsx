@@ -18,16 +18,15 @@ const FormTitle = ({
 
   return (
     <View style={styles.headerContainer}>
-      {showBackButton ? (
+      {showBackButton && (
         <Pressable onPress={onBackPress}>
           <ArrowLeft size={30} color={styles.backIcon.color} />
         </Pressable>
-      ) : (
-        <View style={{ width: 30 }} />
       )}
-      <Text style={styles.title}>{title}</Text>
-      <View style={{ width: 30, opacity: 0 }} />
-      {/* Used for perfect spacing in the row */}
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>{title}</Text>
+      </View>
+      {showBackButton && <View style={{ width: 30 }}></View>}
     </View>
   );
 };
@@ -35,15 +34,18 @@ const FormTitle = ({
 const stylesheet = createStyleSheet((theme) => ({
   headerContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginVertical: 12,
+    alignItems: "center",
+  },
+  titleContainer: {
+    marginHorizontal: 24,
+    flexShrink: 1,
+    flexGrow: 1,
   },
   title: {
     fontSize: 30,
     textAlign: "center",
     color: theme.textPresets.main,
     fontWeight: "bold",
-    textAlignVertical: "center",
   },
   backIcon: {
     color: theme.colors.inverted,

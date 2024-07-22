@@ -1,8 +1,6 @@
 import { useState } from "react";
 import SignInSignUpForm from "./SignInSignUpForm";
 import PhoneForm from "./PhoneForm";
-import PrivacyPolicy from "./privacy-policy";
-import TermsAndPrivacy from "./TermsAndPrivacy";
 
 type PrimaryFormType = "email" | "phone";
 export type PrimaryFormProps = {
@@ -24,7 +22,6 @@ export default function Form() {
       ) : (
         <SignInSignUpForm togglePrimaryForm={togglePrimaryForm} />
       )}
-      <TermsAndPrivacy />
     </>
   );
 }

@@ -9,64 +9,31 @@ export default function SocialAuth({ togglePrimaryForm }: PrimaryFormProps) {
   const { styles } = useStyles(stylesheet);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.separatorContainer}>
-        <View style={styles.separator} />
-        <Text style={styles.text}>O continua con</Text>
-        <View style={styles.separator} />
-      </View>
-      <View style={styles.authContainer}>
-        <Pressable onPress={togglePrimaryForm}>
-          <View style={styles.box}>
-            <Phone fill={styles.iconColor.color} />
-          </View>
-        </Pressable>
-        <Pressable>
-          <View style={styles.box}>
-            <Google />
-          </View>
-        </Pressable>
-        <Pressable>
-          <View style={styles.box}>
-            <Apple fill={styles.iconColor.color} />
-          </View>
-        </Pressable>
-      </View>
+    <View style={styles.Container}>
+      <Pressable style={styles.item} onPress={togglePrimaryForm}>
+        <Phone fill={styles.iconColor.color} />
+      </Pressable>
+      <Pressable style={styles.item}>
+        <Google />
+      </Pressable>
+      <Pressable style={styles.item}>
+        <Apple fill={styles.iconColor.color} />
+      </Pressable>
     </View>
   );
 }
 
 const stylesheet = createStyleSheet((theme) => ({
-  container: {
-    flexDirection: "column",
-  },
-  separatorContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  separator: {
-    borderTopWidth: 1,
-    height: 1,
-    flexGrow: 1,
-    borderColor: theme.ui.colors.border,
-  },
-  text: {
-    marginHorizontal: 12,
-    color: theme.textPresets.main,
-  },
-  authContainer: {
+  Container: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
+    gap: theme.marginsComponents.group,
   },
-  box: {
-    width: 100,
+  item: {
+    flexGrow: 1,
     height: 50,
     padding: 10,
     borderRadius: 5,
-    justifyContent: "center",
-    alignItems: "center",
     borderWidth: 1,
     borderColor: theme.ui.colors.border,
   },

@@ -34,19 +34,18 @@ export default function Card() {
 
         <View style={styles.contentContainer}>
           <ScrollView
+            scrollEnabled={true}
+            automaticallyAdjustKeyboardInsets={true}
             style={[
               styles.scrollView,
               {
                 marginBottom: Platform.OS === "android" ? height : undefined,
               },
             ]}
-            automaticallyAdjustKeyboardInsets={true}
             contentContainerStyle={
-              Platform.OS === "web" &&
-              !styles.scrollView.isMobileWidth && {
-                flexGrow: 1,
-                justifyContent: "center",
-              }
+              Platform.OS === "web" && styles.scrollView.isDesktopWidth
+                ? { flexGrow: 1, justifyContent: "center" }
+                : { paddingVertical: 24 }
             }
           >
             <Form />
@@ -148,12 +147,12 @@ const stylesheet = createStyleSheet((theme) => ({
     borderBottomRightRadius: 12,
   },
   scrollView: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 24,
     maxWidth: 470,
     width: "100%",
-    isMobileWidth: {
-      [mq.only.width(0, "md")]: true,
-      [mq.only.width("md")]: false,
+    isDesktopWidth: {
+      [mq.only.width(0, "md")]: false,
+      [mq.only.width("md")]: true,
     },
   },
   logo: {
