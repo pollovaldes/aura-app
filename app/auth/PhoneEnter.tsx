@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextInput, View } from "react-native";
+import { Text, TextInput, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { PrimaryFormProps } from "./Form";
 import { PhoneFormProps } from "./PhoneForm";
@@ -15,6 +15,7 @@ export default function PhoneEnter({
 }: PrimaryFormProps & PhoneFormProps) {
   const { styles } = useStyles(stylesheet);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handlePhoneSubmit = async () => {
     setIsLoading(true);
@@ -24,6 +25,7 @@ export default function PhoneEnter({
     setIsLoading(false);
 
     if (error) {
+      setError(error.message);
       console.error(error.message);
     } else {
       togglePhoneForm();
@@ -48,6 +50,7 @@ export default function PhoneEnter({
           onChangeText={(text) => setPhoneNumber(text)}
           value={phoneNumber}
         />
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
         <FormButton
           onPress={handlePhoneSubmit}
           title="Siguiente"
@@ -70,5 +73,9 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   group: {
     gap: theme.marginsComponents.group,
+  },
+  errorText: {
+    color: 'red',
+    marginTop: 10,
   },
 }));

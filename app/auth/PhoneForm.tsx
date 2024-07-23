@@ -5,7 +5,6 @@ import PhoneVerify from "./PhoneVerify";
 import { View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import TermsAndPrivacy from "./TermsAndPrivacy";
-import AuraLogo from "@/components/web-logo-title/AuraLogo";
 
 type PhoneFormType = "enter" | "verify";
 export type PhoneFormProps = {
