@@ -12,14 +12,11 @@ export default function TermsAndPrivacy() {
         Al registrarte o iniciar sesión con cualquier método de autenticación
         provisto, estás creando una cuenta de Aura y aceptas los{" "}
       </Text>
-      <Text style={styles.link} onPress={() => router.navigate("/terms")}>
+      <Text style={styles.link} onPress={() => router.push("/terms")}>
         Términos
       </Text>
       <Text> y la</Text>
-      <Text
-        style={styles.link}
-        onPress={() => router.navigate("/privacy-policy")}
-      >
+      <Text style={styles.link} onPress={() => router.push("/privacy-policy")}>
         {" "}
         Política de Privacidad
       </Text>

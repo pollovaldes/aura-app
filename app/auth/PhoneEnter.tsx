@@ -23,16 +23,17 @@ export default function PhoneEnter({
       <View style={styles.group}>
         <TextInput
           placeholder="Número de celular"
+          inputMode="tel"
+          autoComplete="tel"
+          enterKeyHint="done"
           style={styles.textInput}
           placeholderTextColor={styles.textInput.placehoolderTextColor}
-          inputMode="tel"
           onChangeText={(text) => setPhoneNumber(text)}
           value={phoneNumber}
-          enterKeyHint="done"
         />
         <FormButton
           onPress={togglePhoneForm}
-          title="Enviar código de verificación"
+          title="Siguiente"
           isLoading={false}
         />
       </View>

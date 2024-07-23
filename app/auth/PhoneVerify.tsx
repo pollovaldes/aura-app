@@ -14,13 +14,13 @@ export default function ({ togglePhoneForm, phoneNumber }: PhoneFormProps) {
     <>
       <View style={styles.group}>
         <FormTitle
-          title="Verificar código"
+          title="Verificar teléfono"
           onBackPress={togglePhoneForm}
           showBackButton={true}
         />
         <Text>
           <Text style={styles.subtitle}>
-            Hemos enviado un código de verificación de 6 dígitos a{" "}
+            Se envió un código de un solo uso a{" "}
           </Text>
           <Text style={styles.numberSubtitle}>{phoneNumber}</Text>
         </Text>
@@ -29,18 +29,21 @@ export default function ({ togglePhoneForm, phoneNumber }: PhoneFormProps) {
         <TextInput
           style={styles.textInput}
           placeholder="000-000"
-          placeholderTextColor={styles.textInput.placehoolderTextColor}
           inputMode="numeric"
-          maxLength={6}
           enterKeyHint="done"
+          textAlign="center"
+          autoComplete="one-time-code"
+          placeholderTextColor={styles.textInput.placehoolderTextColor}
+          maxLength={6}
           onChangeText={(text) => {
             setCode(text);
           }}
         />
         <FormButton
-          title="Verificar e iniciar sesión"
+          title="Verificar"
           onPress={() => {}}
           style={styles.buttonVerify}
+          isLoading={true}
         />
         <FormButton
           title="Reenviar código"
@@ -67,16 +70,15 @@ const stylesheet = createStyleSheet((theme) => ({
     height: 70,
     borderRadius: 5,
     paddingHorizontal: 12,
-    textAlign: "center",
     fontSize: 40,
     color: theme.textPresets.main,
     placehoolderTextColor: theme.textPresets.subtitle,
     backgroundColor: theme.textInput.backgroundColor,
   },
   buttonVerify: {
-    backgroundColor: theme.components.formComponent.buttonSkyBG,
+    backgroundColor: theme.components.formComponent.buttonMainBG,
   },
   buttonResend: {
-    backgroundColor: theme.components.formComponent.buttonNeutralBG,
+    backgroundColor: theme.components.formComponent.buttonSecondaryBG,
   },
 }));

@@ -14,7 +14,7 @@ export default function Card() {
       <View style={styles.dialog}>
         <View style={styles.imageContainer}>
           <Image
-            source={require("./../assets/large-triangles.png")}
+            source={require("./../../assets/large-triangles.png")}
             //@ts-ignore
             style={styles.image}
             resizeMode="repeat"

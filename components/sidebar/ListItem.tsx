@@ -56,18 +56,18 @@ const stylesheet = createStyleSheet((theme) => ({
     padding: 10,
   },
   containerNormal: {
-    backgroundColor: theme.colors.backgroundSecondary,
+    backgroundColor: theme.colors.inverted, //TODO: CHANGE THEME,
   },
   containerHovered: {
-    backgroundColor: theme.colors.backgroundTertiary,
+    backgroundColor: theme.colors.inverted, //TODO: CHANGE THEME,
   },
   containerSelected: {
-    backgroundColor: theme.colors.backgroundSelected,
+    backgroundColor: theme.colors.inverted, //TODO: CHANGE THEME,
   },
   iconContainer: {
     marginRight: 10,
   },
   text: {
-    color: theme.colors.text.main,
+    color: theme.textPresets.main,
   },
 }));

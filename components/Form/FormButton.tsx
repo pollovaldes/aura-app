@@ -65,7 +65,7 @@ export function FormButton({
 const stylesheet = createStyleSheet((theme) => ({
   button: {
     height: 52,
-    backgroundColor: theme.components.formComponent.buttonNeutralBG,
+    backgroundColor: theme.components.formComponent.buttonMainBG,
     borderRadius: 5,
     justifyContent: "center",
     alignItems: "center",

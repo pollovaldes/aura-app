@@ -4,13 +4,20 @@
  * Copyright (c) 2024 Aura Residuos Sustentables
  */
 
+import { FormButton } from "@/components/Form/FormButton";
+import { supabase } from "@/lib/supabase";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function Page() {
+  async function signOut() {
+    let { error } = await supabase.auth.signOut();
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.main}>
         <Text style={styles.title}>Stack de Perfil</Text>
+        <FormButton title="Cerrar sesión" onPress={() => signOut()} />
       </View>
     </View>
   );

@@ -22,9 +22,9 @@ export default function Sidebar({ children }: SidebarProps) {
 const stylesheet = createStyleSheet((theme) => ({
   container: {
     width: 230,
-    backgroundColor: theme.colors.backgroundSecondary,
+    backgroundColor: theme.ui.colors.card,
     borderRightWidth: 1,
-    borderColor: theme.colors.outline,
+    borderColor: theme.ui.colors.border,
     paddingHorizontal: 10,
     paddingTop: 15,
   },
@@ -32,7 +32,7 @@ const stylesheet = createStyleSheet((theme) => ({
     marginBottom: 10,
   },
   header: {
-    color: theme.colors.text.main,
+    color: theme.textPresets.main,
     fontSize: 20,
     fontWeight: "600",
   },

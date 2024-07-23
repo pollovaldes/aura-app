@@ -4,24 +4,34 @@
  * Copyright (c) 2024 Aura Residuos Sustentables
  */
 
-import { Slot, Tabs } from "expo-router";
-import { View, useWindowDimensions } from "react-native";
+import { Redirect, Slot, Tabs } from "expo-router";
+import { Text, View, useWindowDimensions } from "react-native";
 import Sidebar from "../../components/sidebar/Sidebar";
 import ListItem from "../../components/sidebar/ListItem";
-import {
-  Bell,
-  CircleUserRound,
-  Cog,
-  Truck,
-  UsersRound,
-} from "lucide-react-native";
+import { Bell, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { useSession, useSessionContext } from "@/context/SessionContext";
+import LoadingScreen from "@/components/Auth/LoadingScreen";
 
 export default function HomeLayout() {
   const { styles } = useStyles(stylesheet);
-
   const { width } = useWindowDimensions();
   const widthThreshold = 600; // TODO: Move dimensions to a theme file.
+
+  const { isLoading, error } = useSessionContext();
+  const session = useSession();
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  if (!session) {
+    return <Redirect href="/auth" />;
+  }
+
+  if (error) {
+    return <Text>Error</Text>;
+  }
 
   //Show a web-like sidebar for occupying max space
   if (width >= widthThreshold) {
@@ -97,6 +107,6 @@ const stylesheet = createStyleSheet((theme) => ({
     height: "100%",
   },
   icon: {
-    color: theme.colors.primary,
+    color: theme.colors.inverted,
   },
 }));
