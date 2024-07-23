@@ -4,11 +4,44 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { FormButton } from "@/components/Form/FormButton";
 import FormTitle from "./FormTitle";
 import { useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 export default function ({ togglePhoneForm, phoneNumber }: PhoneFormProps) {
   const { styles } = useStyles(stylesheet);
 
   const [code, setCode] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleOtpSubmit = async () => {
+    setIsLoading(true);
+    const { data: verifyData, error: verifyError } = await supabase.auth.verifyOtp({
+      phone: phoneNumber,
+      token: code,
+      type: 'sms',
+    });
+    setIsLoading(false);
+
+    if (verifyError) {
+      setError(verifyError.message);
+      console.error(verifyError.message);
+    } else {
+      console.log("OTP verified successfully", verifyData);
+      
+      // Update the user's phone number in Supabase
+      const { data: updateData, error: updateError } = await supabase.auth.updateUser({
+        phone: phoneNumber,
+      });
+
+      if (updateError) {
+        setError(updateError.message);
+        console.error(updateError.message);
+      } else {
+        console.log("User phone number updated successfully", updateData);
+        togglePhoneForm();
+      }
+    }
+  };
 
   return (
     <>
@@ -33,17 +66,18 @@ export default function ({ togglePhoneForm, phoneNumber }: PhoneFormProps) {
           enterKeyHint="done"
           textAlign="center"
           autoComplete="one-time-code"
-          placeholderTextColor={styles.textInput.placehoolderTextColor}
+          placeholderTextColor={styles.textInput.placeholderTextColor}
           maxLength={6}
           onChangeText={(text) => {
             setCode(text);
           }}
         />
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
         <FormButton
           title="Verificar"
-          onPress={() => {}}
+          onPress={handleOtpSubmit}
           style={styles.buttonVerify}
-          isLoading={true}
+          isLoading={isLoading}
         />
         <FormButton
           title="Reenviar código"
@@ -72,7 +106,7 @@ const stylesheet = createStyleSheet((theme) => ({
     paddingHorizontal: 12,
     fontSize: 40,
     color: theme.textPresets.main,
-    placehoolderTextColor: theme.textPresets.subtitle,
+    placeholderTextColor: theme.textPresets.subtitle,
     backgroundColor: theme.textInput.backgroundColor,
   },
   buttonVerify: {
@@ -80,5 +114,9 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   buttonResend: {
     backgroundColor: theme.components.formComponent.buttonSecondaryBG,
+  },
+  errorText: {
+    color: 'red',
+    marginTop: 10,
   },
 }));

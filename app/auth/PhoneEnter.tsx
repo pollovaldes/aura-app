@@ -1,9 +1,11 @@
+import React, { useState } from "react";
 import { TextInput, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { PrimaryFormProps } from "./Form";
 import { PhoneFormProps } from "./PhoneForm";
 import { FormButton } from "@/components/Form/FormButton";
 import FormTitle from "./FormTitle";
+import { supabase } from "@/lib/supabase";
 
 export default function PhoneEnter({
   togglePrimaryForm,
@@ -12,6 +14,21 @@ export default function PhoneEnter({
   phoneNumber,
 }: PrimaryFormProps & PhoneFormProps) {
   const { styles } = useStyles(stylesheet);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handlePhoneSubmit = async () => {
+    setIsLoading(true);
+    const { data, error } = await supabase.auth.signInWithOtp({
+      phone: phoneNumber,
+    });
+    setIsLoading(false);
+
+    if (error) {
+      console.error(error.message);
+    } else {
+      togglePhoneForm();
+    }
+  };
 
   return (
     <>
@@ -27,14 +44,14 @@ export default function PhoneEnter({
           autoComplete="tel"
           enterKeyHint="done"
           style={styles.textInput}
-          placeholderTextColor={styles.textInput.placehoolderTextColor}
+          placeholderTextColor={styles.textInput.placeholderTextColor}
           onChangeText={(text) => setPhoneNumber(text)}
           value={phoneNumber}
         />
         <FormButton
-          onPress={togglePhoneForm}
+          onPress={handlePhoneSubmit}
           title="Siguiente"
-          isLoading={false}
+          isLoading={isLoading}
         />
       </View>
     </>
@@ -47,7 +64,7 @@ const stylesheet = createStyleSheet((theme) => ({
     paddingHorizontal: 12,
     fontSize: 18,
     color: theme.textPresets.main,
-    placehoolderTextColor: theme.textPresets.subtitle,
+    placeholderTextColor: theme.textPresets.subtitle,
     backgroundColor: theme.textInput.backgroundColor,
     borderRadius: 5,
   },
