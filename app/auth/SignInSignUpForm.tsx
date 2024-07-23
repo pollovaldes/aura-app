@@ -7,7 +7,6 @@ import { useState } from "react";
 import FormTitle from "./FormTitle";
 import { View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import TermsAndPrivacy from "./TermsAndPrivacy";
 
 type EmailFormType = "sign-in" | "sign-up";
 export type EmailFormProps = {
@@ -42,7 +41,6 @@ export default function SignInSignUpForm({
         {activeEmailForm === "sign-in" ? <SignIn /> : <SignUp />}
         <SocialAuth togglePrimaryForm={togglePrimaryForm} />
       </View>
-      <TermsAndPrivacy />
     </View>
   );
 }
@@ -50,6 +48,7 @@ export default function SignInSignUpForm({
 const stylesheet = createStyleSheet((theme) => ({
   section: {
     gap: theme.marginsComponents.section,
+    width: "100%",
   },
   group: {
     gap: theme.marginsComponents.group,

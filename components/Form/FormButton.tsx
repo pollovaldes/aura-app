@@ -36,7 +36,7 @@ export function FormButton({
             position: "absolute",
             zIndex: 1,
             alignSelf: "center",
-            top: 11, //(Button height / 2) - (ActivityIndicatorHeight / 2)
+            top: styles.button.height / 2 - styles.activityIndicator.height / 2,
           }}
         />
       )}
@@ -63,10 +63,13 @@ export function FormButton({
 }
 
 const stylesheet = createStyleSheet((theme) => ({
+  activityIndicator: {
+    height: 30,
+  },
   button: {
-    height: 52,
+    height: 45,
     backgroundColor: theme.components.formComponent.buttonMainBG,
-    borderRadius: 5,
+    borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
   },

@@ -5,6 +5,7 @@
  */
 
 import { FormButton } from "@/components/Form/FormButton";
+import { useSession, useUser } from "@/context/SessionContext";
 import { supabase } from "@/lib/supabase";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -18,6 +19,7 @@ export default function Page() {
       <View style={styles.main}>
         <Text style={styles.title}>Stack de Perfil</Text>
         <FormButton title="Cerrar sesión" onPress={() => signOut()} />
+        <Text>{}</Text>
       </View>
     </View>
   );

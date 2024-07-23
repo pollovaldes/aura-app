@@ -31,7 +31,7 @@ const stylesheet = createStyleSheet((theme) => ({
     textAlign: "center",
   },
   link: {
-    color: theme.textPresets.link, // Customize link color
+    color: theme.textPresets.link,
     textDecorationLine: "underline",
     userSelect: "none",
   },

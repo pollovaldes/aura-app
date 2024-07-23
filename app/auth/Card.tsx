@@ -19,19 +19,11 @@ export default function Card() {
             style={styles.image}
             resizeMode="repeat"
           />
-
           <View
             //@ts-ignore
             style={styles.imageOverlay}
-          >
-            <AuraLogo
-              width={styles.logo.width}
-              height={styles.logo.height}
-              fill={styles.logo.color}
-            />
-          </View>
+          ></View>
         </View>
-
         <View style={styles.contentContainer}>
           <ScrollView
             scrollEnabled={true}
@@ -44,8 +36,12 @@ export default function Card() {
             ]}
             contentContainerStyle={
               Platform.OS === "web" && styles.scrollView.isDesktopWidth
-                ? { flexGrow: 1, justifyContent: "center" }
-                : { paddingVertical: 24 }
+                ? {
+                    flexGrow: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }
+                : { paddingVertical: 24, alignItems: "center" }
             }
           >
             <Form />
@@ -154,10 +150,5 @@ const stylesheet = createStyleSheet((theme) => ({
       [mq.only.width(0, "md")]: false,
       [mq.only.width("md")]: true,
     },
-  },
-  logo: {
-    color: "#ffffff",
-    width: "50%",
-    height: "100%",
   },
 }));
