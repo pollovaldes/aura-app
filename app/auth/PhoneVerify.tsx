@@ -20,18 +20,20 @@ export default function ({ togglePhoneForm, phoneNumber }: PhoneFormProps) {
       token: code,
       type: 'sms',
     });
-    setIsLoading(false);
 
     if (verifyError) {
       setError(verifyError.message);
       console.error(verifyError.message);
+      setIsLoading(false);
     } else {
       console.log("OTP verified successfully", verifyData);
-      
+
       // Update the user's phone number in Supabase
       const { data: updateData, error: updateError } = await supabase.auth.updateUser({
         phone: phoneNumber,
       });
+
+      setIsLoading(false);
 
       if (updateError) {
         setError(updateError.message);
