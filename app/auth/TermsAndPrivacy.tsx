@@ -1,6 +1,7 @@
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
+import { openBrowserAsync } from "expo-web-browser";
 import React from "react";
-import { Pressable, Text } from "react-native";
+import { Text } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function TermsAndPrivacy() {
@@ -12,7 +13,10 @@ export default function TermsAndPrivacy() {
         Al registrarte o iniciar sesión con cualquier método de autenticación
         provisto, estás creando una cuenta de Aura y aceptas los{" "}
       </Text>
-      <Text style={styles.link} onPress={() => router.push("/terms")}>
+      <Text
+        style={styles.link}
+        onPress={() => openBrowserAsync("http://localhost:8081/terms")}
+      >
         Términos
       </Text>
       <Text> y la</Text>

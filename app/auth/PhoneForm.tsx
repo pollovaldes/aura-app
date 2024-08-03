@@ -4,8 +4,6 @@ import PhoneEnter from "./PhoneEnter";
 import PhoneVerify from "./PhoneVerify";
 import { View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import TermsAndPrivacy from "./TermsAndPrivacy";
-import AuraLogo from "@/components/web-logo-title/AuraLogo";
 
 type PhoneFormType = "enter" | "verify";
 export type PhoneFormProps = {
@@ -42,7 +40,6 @@ export default function PhoneForm({ togglePrimaryForm }: PrimaryFormProps) {
           setPhoneNumber={setPhoneNumber}
         />
       )}
-      <TermsAndPrivacy />
     </View>
   );
 }
@@ -50,5 +47,6 @@ export default function PhoneForm({ togglePrimaryForm }: PrimaryFormProps) {
 const stylesheet = createStyleSheet((theme) => ({
   section: {
     gap: theme.marginsComponents.section,
+    width: "100%",
   },
 }));

@@ -250,6 +250,8 @@ PODS:
     - Yoga
   - ExpoSystemUI (3.0.7):
     - ExpoModulesCore
+  - ExpoWebBrowser (13.0.3):
+    - ExpoModulesCore
   - EXSplashScreen (0.27.5):
     - DoubleConversion
     - ExpoModulesCore
@@ -1212,7 +1214,7 @@ PODS:
     - React-Core
   - react-native-segmented-control (2.5.2):
     - React-Core
-  - react-native-unistyles (2.9.0):
+  - react-native-unistyles (2.8.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1509,6 +1511,7 @@ DEPENDENCIES:
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - ExpoSystemUI (from `../node_modules/expo-system-ui/ios`)
+  - ExpoWebBrowser (from `../node_modules/expo-web-browser/ios`)
   - EXSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - EXUpdatesInterface (from `../node_modules/expo-updates-interface/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
@@ -1611,6 +1614,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-modules-core"
   ExpoSystemUI:
     :path: "../node_modules/expo-system-ui/ios"
+  ExpoWebBrowser:
+    :path: "../node_modules/expo-web-browser/ios"
   EXSplashScreen:
     :path: "../node_modules/expo-splash-screen/ios"
   EXUpdatesInterface:
@@ -1751,6 +1756,7 @@ SPEC CHECKSUMS:
   ExpoKeepAwake: 3b8815d9dd1d419ee474df004021c69fdd316d08
   ExpoModulesCore: 734c1802786b23c9598f4d15273753a779969368
   ExpoSystemUI: d4f065a016cae6721b324eb659cdee4d4cf0cb26
+  ExpoWebBrowser: 7595ccac6938eb65b076385fd23d035db9ecdc8e
   EXSplashScreen: fbf0ec78e9cee911df188bf17b4fe51d15a84b87
   EXUpdatesInterface: 996527fd7d1a5d271eb523258d603f8f92038f24
   FBLazyVector: 7e977dd099937dc5458851233141583abba49ff2
@@ -1783,7 +1789,7 @@ SPEC CHECKSUMS:
   React-Mapbuffer: 9f68550e7c6839d01411ac8896aea5c868eff63a
   react-native-safe-area-context: a240ad4b683349e48b1d51fed1611138d1bdad97
   react-native-segmented-control: b92809e9111013dfa266e1168ba366d62898d9a4
-  react-native-unistyles: a36bb974db121ec16e129b7991a51f04fa1bd7f8
+  react-native-unistyles: b49c9158b68eaca76fef668793fcec3f61949c05
   React-nativeconfig: fa5de9d8f4dbd5917358f8ad3ad1e08762f01dcb
   React-NativeModulesApple: 585d1b78e0597de364d259cb56007052d0bda5e5
   React-perflogger: 7bb9ba49435ff66b666e7966ee10082508a203e8

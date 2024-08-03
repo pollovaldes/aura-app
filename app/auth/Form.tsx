@@ -41,6 +41,7 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   logo: {
     color: theme.colors.inverted,
-    width: "40%",
+    width: 180,
+    height: 60,
   },
 }));
