@@ -1,62 +1,65 @@
-import { View, StyleSheet, Text, FlatList, ActivityIndicator, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+} from "react-native";
 import TruckHandler from "@/components/trucks/ReadTrucks";
-import { Dimensions } from "react-native";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link } from "expo-router";
 
 export default function TruckList() {
   const { trucks, loading } = TruckHandler();
+  const { styles } = useStyles(stylesheet);
 
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator />
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Trucks</Text>
+    <>
       <FlatList
         data={trucks}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <Link href={{ pathname: `/trucks/${item.id}`}} asChild>
+          <Link href={{ pathname: `/trucks/${item.id}` }} asChild>
             <Pressable style={styles.itemContainer}>
-              <Text style={styles.itemText}>{`${item.marca} ${item.submarca} (${item.modelo})`}</Text>
+              <Text
+                style={styles.itemText}
+              >{`${item.marca} ${item.submarca} (${item.modelo})`}</Text>
             </Pressable>
           </Link>
         )}
       />
-    </View>
+      <Link href={{ pathname: `/trucks/323` }} asChild>
+        <Pressable style={styles.itemContainer}>
+          <Text style={styles.itemText}>Huevos</Text>
+        </Pressable>
+      </Link>
+    </>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    paddingTop: "10%",
-    justifyContent: "flex-start",
-    backgroundColor: "white",
-    height: Dimensions.get("window").height,
-  },
+const stylesheet = createStyleSheet((theme) => ({
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
-    paddingLeft: 20,
-  },
   itemContainer: {
-    padding: 10,
+    padding: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    borderBottomColor: theme.ui.colors.border,
     width: "100%",
   },
   itemText: {
     fontSize: 18,
     paddingLeft: 10,
+    color: theme.textPresets.main,
   },
-});
+}));

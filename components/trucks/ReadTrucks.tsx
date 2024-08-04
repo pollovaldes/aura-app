@@ -16,8 +16,8 @@ export default function TruckHandler() {
   useEffect(() => {
     const fetchTrucks = async () => {
       const { data, error } = await supabase
-        .from('Trucks') // Reemplaza 'testSupa' con el nombre de tu tabla si es necesario
-        .select('*');
+        .from("Trucks") // Reemplaza 'testSupa' con el nombre de tu tabla si es necesario
+        .select("*");
 
       if (error) {
         console.error(error);
@@ -31,12 +31,12 @@ export default function TruckHandler() {
 
     // Configurar la suscripción para escuchar los cambios en la tabla
     const subscription = supabase
-      .channel('public:Trucks')  // Nombre del canal arbitrario
+      .channel("public:Trucks") // Nombre del canal arbitrario
       .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'Trucks' }, // Especifica el esquema y la tabla
-        payload => {
-          console.log('Cambio en la tabla:', payload);
+        "postgres_changes",
+        { event: "*", schema: "public", table: "Trucks" }, // Especifica el esquema y la tabla
+        (payload) => {
+          console.log("Cambio en la tabla:", payload);
           // Manejar el evento según el tipo de cambio
           fetchTrucks(); // Refresca los datos
         }
@@ -48,5 +48,5 @@ export default function TruckHandler() {
       supabase.removeChannel(subscription);
     };
   }, []);
-  return {trucks, loading};
+  return { trucks, loading };
 }

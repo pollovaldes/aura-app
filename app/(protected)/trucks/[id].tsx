@@ -1,7 +1,9 @@
-import { View, Text, StyleSheet } from "react-native";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import { useRouter, useLocalSearchParams, Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase"; // Asegúrate de tener configurado supabase correctamente
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 // Define the type for the truck data
 type Truck = {
@@ -13,10 +15,11 @@ type Truck = {
 };
 
 export default function TruckDetail() {
-  const router = useRouter();
-  const { id } = useLocalSearchParams<{id:string}>(); // Specify that id is a string
+  const { id } = useLocalSearchParams<{ id: string }>(); // Specify that id is a string
   const [truck, setTruck] = useState<Truck | null>(null); // Define the type of state
   const [loading, setLoading] = useState(true);
+
+  const { styles } = useStyles(stylesheet);
 
   useEffect(() => {
     if (id) {
@@ -26,18 +29,13 @@ export default function TruckDetail() {
   }, []);
 
   const fetchTruckData = async () => {
-    
     if (id) {
-
       try {
         const { data, error } = await supabase
           .from("Trucks")
           .select("*")
           .eq("id", parseInt(id)) // Ensure id is converted to number
           .single();
-
-        
-
 
         if (error) throw error;
 
@@ -47,13 +45,14 @@ export default function TruckDetail() {
       } finally {
         setLoading(false);
       }
-    };
+    }
   };
 
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <Text>Loading...</Text>
+        <ActivityIndicator />
+        <Stack.Screen options={{ title: "" }} />
       </View>
     );
   }
@@ -61,13 +60,15 @@ export default function TruckDetail() {
   if (!truck) {
     return (
       <View style={styles.errorContainer}>
-        <Text>Truck not found</Text>
+        <Text style={styles.details}>Este camión no existe…</Text>
+        <Stack.Screen options={{ title: "Error" }} />
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
+      <Stack.Screen options={{ title: `${truck.marca} ${truck.submarca}` }} />
       <Text style={styles.title}>{`${truck.marca} ${truck.submarca}`}</Text>
       <Text style={styles.details}>{`Modelo: ${truck.modelo}`}</Text>
       {/* Agrega más detalles si es necesario */}
@@ -75,10 +76,9 @@ export default function TruckDetail() {
   );
 }
 
-const styles = StyleSheet.create({
+const stylesheet = createStyleSheet((theme) => ({
   container: {
     flex: 1,
-    padding: 20,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -96,8 +96,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 10,
+    color: theme.textPresets.main,
   },
   details: {
     fontSize: 18,
+    color: theme.textPresets.main,
   },
-});
+}));
