@@ -11,7 +11,6 @@ import { View, StyleSheet, Text, Pressable } from "react-native";
 export default function Page() {
   return (
     <View style={styles.container}>
-      <Text>Hey</Text>
       <Link href="/trucks/documents" asChild>
         <Pressable>
           <House />
