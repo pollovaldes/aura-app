@@ -21,7 +21,7 @@ export default function TruckList() {
         data={trucks}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <Link href={{ pathname: "/trucks/{}"}} asChild>
+          <Link href={{ pathname: `/trucks/${item.id}`}} asChild>
             <Pressable style={styles.itemContainer}>
               <Text style={styles.itemText}>{`${item.marca} ${item.submarca} (${item.modelo})`}</Text>
             </Pressable>
