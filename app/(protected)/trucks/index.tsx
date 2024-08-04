@@ -5,27 +5,26 @@
  */
 
 import { Link } from "expo-router";
-import { House } from "lucide-react-native";
-import { View, StyleSheet, Text, Pressable } from "react-native";
+import { House, Truck } from "lucide-react-native";
+import { View, StyleSheet, Text, Pressable, ActivityIndicator } from "react-native";
+import { supabase } from "@/lib/supabase";
+import { useEffect } from "react";
+import TruckList from "@/components/trucks/TrucksList";
+
 
 export default function Page() {
+
   return (
     <View style={styles.container}>
-      <Link href="/trucks/documents" asChild>
-        <Pressable>
-          <House />
-        </Pressable>
-      </Link>
+      <TruckList />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    paddingTop: 22,
-    justifyContent: "center",
-    alignItems: "center",
+    paddingTop: "50%",
+    justifyContent: "flex-start",
   },
   item: {
     padding: 10,
