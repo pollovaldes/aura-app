@@ -1,27 +1,25 @@
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  View,
-} from "react-native";
-import { createStyleSheet, mq, useStyles } from "react-native-unistyles";
+import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
 import Form from "./Form";
 import useKeyboardHeight from "@/hooks/useKeyboardHeight";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Card() {
   const { styles } = useStyles(stylesheet);
   const height = useKeyboardHeight();
+  const insets = useSafeAreaInsets();
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={{
+        marginTop: insets.top,
+        marginBottom: insets.bottom,
+        alignItems: "center",
+        flex: 1,
+      }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
-        keyboardDismissMode="on-drag"
-      >
+      <ScrollView contentContainerStyle={styles.contentContainer}>
         <Form />
       </ScrollView>
     </KeyboardAvoidingView>
@@ -29,8 +27,10 @@ export default function Card() {
 }
 
 const stylesheet = createStyleSheet((theme) => ({
-  container: {
-    paddingHorizontal: 12,
-    flex: 1,
+  contentContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+    maxWidth: 500,
+    marginHorizontal: 12,
   },
 }));

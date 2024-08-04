@@ -75,7 +75,7 @@ const stylesheet = createStyleSheet((theme) => ({
     gap: theme.marginsComponents.group,
   },
   errorText: {
-    color: 'red',
+    color: "red",
     marginTop: 10,
   },
 }));

@@ -7,9 +7,13 @@
 import { FormButton } from "@/components/Form/FormButton";
 import { useSession, useUser } from "@/context/SessionContext";
 import { supabase } from "@/lib/supabase";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function Page() {
+  const { styles } = useStyles(stylesheet);
+
+  const session = useSession();
   async function signOut() {
     let { error } = await supabase.auth.signOut();
   }
@@ -19,13 +23,13 @@ export default function Page() {
       <View style={styles.main}>
         <Text style={styles.title}>Stack de Perfil</Text>
         <FormButton title="Cerrar sesión" onPress={() => signOut()} />
-        <Text>{}</Text>
+        <Text style={styles.text}>{JSON.stringify(session?.user)}</Text>
       </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const stylesheet = createStyleSheet((theme) => ({
   container: {
     flex: 1,
     alignItems: "center",
@@ -39,9 +43,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30,
+    color: theme.ui.colors.text,
   },
-  subtitle: {
-    fontSize: 36,
-    color: "#38434D",
+  text: {
+    color: theme.ui.colors.text,
   },
-});
+}));

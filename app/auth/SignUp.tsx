@@ -1,7 +1,7 @@
 import { FormButton } from "@/components/Form/FormButton";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
-import { TextInput, View } from "react-native";
+import { TextInput } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function SignUp() {

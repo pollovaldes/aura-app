@@ -53,10 +53,6 @@ export default function SignIn() {
         onPress={() => signInWithEmail()}
         isLoading={loading}
       />
-      <FormButton
-        title="Ir a camiones"
-        onPress={() => router.replace("/trucks")}
-      />
     </>
   );
 }

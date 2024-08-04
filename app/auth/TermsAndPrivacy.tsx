@@ -1,4 +1,3 @@
-import { router } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
 import React from "react";
 import { Text } from "react-native";
@@ -15,12 +14,23 @@ export default function TermsAndPrivacy() {
       </Text>
       <Text
         style={styles.link}
-        onPress={() => openBrowserAsync("http://localhost:8081/terms")}
+        onPress={() =>
+          openBrowserAsync(
+            "https://raw.githubusercontent.com/pollovaldes/aura-app/main/terms.txt"
+          )
+        }
       >
         Términos
       </Text>
       <Text> y la</Text>
-      <Text style={styles.link} onPress={() => router.push("/privacy-policy")}>
+      <Text
+        style={styles.link}
+        onPress={() =>
+          openBrowserAsync(
+            "https://raw.githubusercontent.com/pollovaldes/aura-app/main/privacy-policy.txt"
+          )
+        }
+      >
         {" "}
         Política de Privacidad
       </Text>

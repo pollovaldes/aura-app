@@ -15,11 +15,12 @@ export default function ({ togglePhoneForm, phoneNumber }: PhoneFormProps) {
 
   const handleOtpSubmit = async () => {
     setIsLoading(true);
-    const { data: verifyData, error: verifyError } = await supabase.auth.verifyOtp({
-      phone: phoneNumber,
-      token: code,
-      type: 'sms',
-    });
+    const { data: verifyData, error: verifyError } =
+      await supabase.auth.verifyOtp({
+        phone: phoneNumber,
+        token: code,
+        type: "sms",
+      });
 
     if (verifyError) {
       setError(verifyError.message);
@@ -29,9 +30,10 @@ export default function ({ togglePhoneForm, phoneNumber }: PhoneFormProps) {
       console.log("OTP verified successfully", verifyData);
 
       // Update the user's phone number in Supabase
-      const { data: updateData, error: updateError } = await supabase.auth.updateUser({
-        phone: phoneNumber,
-      });
+      const { data: updateData, error: updateError } =
+        await supabase.auth.updateUser({
+          phone: phoneNumber,
+        });
 
       setIsLoading(false);
 
@@ -118,7 +120,7 @@ const stylesheet = createStyleSheet((theme) => ({
     backgroundColor: theme.components.formComponent.buttonSecondaryBG,
   },
   errorText: {
-    color: 'red',
+    color: "red",
     marginTop: 10,
   },
 }));

@@ -192,7 +192,7 @@ export const lightTheme = {
     },
   },
   textInput: {
-    backgroundColor: colorPalette.neutral[100],
+    backgroundColor: colorPalette.neutral[200],
   },
   margins: {
     sm: 2,

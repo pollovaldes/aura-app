@@ -1,7 +1,7 @@
 import Apple from "@/assets/icons/Apple";
 import Google from "@/assets/icons/Google";
 import Phone from "@/assets/icons/Phone";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { PrimaryFormProps } from "./Form";
 

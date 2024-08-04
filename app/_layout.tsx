@@ -15,7 +15,7 @@ export default function RootLayout() {
       <ThemeProvider
         value={colorScheme === "dark" ? darkTheme.ui : lightTheme.ui}
       >
-        {path === "/" && <Redirect href="auth" />}
+        {path === "/" && <Redirect href="/auth" />}
         <Slot />
       </ThemeProvider>
     </SessionContextProvider>
