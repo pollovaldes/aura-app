@@ -36,7 +36,7 @@ export default function TruckList() {
           </Link>
         )}
       />
-      <Link href={{ pathname: `/trucks/323` }} asChild>
+      <Link href={{ pathname: `/trucks/1` }} asChild>
         <Pressable style={styles.itemContainer}>
           <Text style={styles.itemText}>Huevos</Text>
         </Pressable>

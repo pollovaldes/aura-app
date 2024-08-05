@@ -7,46 +7,20 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 // Define the type for the truck data
 type Truck = {
-  id: number;
+  truckId: number;
   marca: string;
   modelo: number;
   submarca: string;
   // Agrega otros campos si es necesario
 };
 
-export default function TruckDetail() {
-  const { id } = useLocalSearchParams<{ id: string }>(); // Specify that id is a string
-  const [truck, setTruck] = useState<Truck | null>(null); // Define the type of state
-  const [loading, setLoading] = useState(true);
+type Props = {
+  truck: Truck | null;
+  loading: boolean;
+};
 
+export default function TruckDetailComponent({ truck, loading }: Props) {
   const { styles } = useStyles(stylesheet);
-
-  useEffect(() => {
-    if (id) {
-      fetchTruckData();
-      console.log("Fetching truck data...", id, parseInt(id));
-    }
-  }, []);
-
-  const fetchTruckData = async () => {
-    if (id) {
-      try {
-        const { data, error } = await supabase
-          .from("Trucks")
-          .select("*")
-          .eq("id", parseInt(id)) // Ensure id is converted to number
-          .single();
-
-        if (error) throw error;
-
-        setTruck(data);
-      } catch (error) {
-        console.error("Error fetching truck data:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
 
   if (loading) {
     return (
