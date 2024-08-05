@@ -1,3 +1,5 @@
+
+
 import { useEffect, useState } from "react";
 import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { supabase } from "@/lib/supabase";
