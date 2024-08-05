@@ -1,7 +1,7 @@
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import TruckDetailComponent from "./truckDetailComponent";
+import TruckDetailComponent from "./TruckDetailComponent";
 
 type Truck = {
   truckId: number;

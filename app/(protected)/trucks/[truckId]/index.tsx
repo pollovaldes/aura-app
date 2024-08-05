@@ -1,4 +1,4 @@
-import TruckDetailContainer from "@/components/trucks/TruckDetailContainer";
+import TruckDetailContainer from "@/components/trucks/details/TruckDetailContainer";
 import { Link, useLocalSearchParams } from "expo-router";
 import { Text, View } from "react-native";
 

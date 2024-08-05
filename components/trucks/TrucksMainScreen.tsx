@@ -5,7 +5,7 @@ import {
   FlatList,
   Pressable,
 } from "react-native";
-import TruckHandler from "@/components/trucks/ReadTrucks";
+import TruckHandler from "@/components/trucks/TrucksMainLogic";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link } from "expo-router";
 
