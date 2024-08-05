@@ -5,12 +5,12 @@ import {
   FlatList,
   Pressable,
 } from "react-native";
-import TruckHandler from "@/components/trucks/TrucksMainLogic";
+import PeopleMainLogic from "./PeopleMainLogic";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link } from "expo-router";
 
-export default function TrucksMainScreen() {
-  const { trucks, loading } = TruckHandler();
+export default function PeopleMainScreen() {
+  const { people, loading } = PeopleMainLogic();
   const { styles } = useStyles(stylesheet);
 
   if (loading) {
@@ -24,14 +24,14 @@ export default function TrucksMainScreen() {
   return (
     <>
       <FlatList
-        data={trucks}
-        keyExtractor={(item) => item.id.toString()}
+        data={people}
+        keyExtractor={(item) => item.personId.toString()}
         renderItem={({ item }) => (
-          <Link href={{ pathname: `/trucks/${item.id}` }} asChild>
+          <Link href={{ pathname: `/people/${item.personId}` }} asChild>
             <Pressable style={styles.itemContainer}>
               <Text
                 style={styles.itemText}
-              >{`${item.marca} ${item.submarca} (${item.modelo})`}</Text>
+              >{`${item.name}`}</Text>
             </Pressable>
           </Link>
         )}

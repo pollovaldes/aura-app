@@ -3,13 +3,13 @@
 import { View, Text } from "react-native";
 
 type User = {
-  userName: string | null;
+  name: string | null;
 }
 
-export default function TruckPeopleAdminComponent({userName}: User) {
+export default function TruckPeopleAdminComponent({name}: User) {
   return (
     <View>
-      <Text>People Admin: {userName}</Text>
+      <Text>People Admin: {name}</Text>
     </View>
   );
 }

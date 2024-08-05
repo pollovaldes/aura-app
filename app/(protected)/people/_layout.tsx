@@ -11,7 +11,7 @@ export default function Layout() {
     <Stack
       screenOptions={{
         headerShown: true,
-        headerLargeTitle: true,
+        headerLargeTitle: false,
       }}
     >
       <Stack.Screen name="index" options={{ title: "Personas" }} />

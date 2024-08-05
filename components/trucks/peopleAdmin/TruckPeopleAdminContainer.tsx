@@ -5,10 +5,6 @@ import TruckPeopleAdminComponent from "./TruckPeopleAdminComponent";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
-type User = {
-  userName: string;
-}
-
 export default function TruckPeopleAdminContainer() {
   const { truckId } = useLocalSearchParams<{ truckId: string }>();
   const [user, setUser] = useState<string | null>(null); // Define the type of state
@@ -26,21 +22,20 @@ export default function TruckPeopleAdminContainer() {
       try {
         const { data, error } = await supabase
           .from("Trucks")
-          .select("UserN")
+          .select("name")
           .eq("id", parseInt(truckId)) // Ensure id is converted to number
           .single();
 
         if (error) throw error;
 
-        setUser(data.UserN);
+        setUser(data.name);
       } catch (error) {
-        console.error("Error fetching truck data:", error);
       } finally {
         setLoading(false);
       }
     }
   };
 
-  return <TruckPeopleAdminComponent userName={user}/>;
+  return <TruckPeopleAdminComponent name={user}/>;
 }
 
