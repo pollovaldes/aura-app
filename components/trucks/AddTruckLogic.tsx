@@ -1,25 +1,46 @@
 // AddTruckLogic.ts
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+
+type Person = {
+  personId: number;
+  name: string;
+  age: number;
+}
 
 export function useAddTruck() {
   const [marca, setMarca] = useState("");
   const [submarca, setSubmarca] = useState("");
   const [modelo, setModelo] = useState("");
+  const [selectedDriver, setSelectedDriver] = useState<Person | null>(null);
+  const [drivers, setDrivers] = useState<Person[]>([]);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    async function fetchDrivers() {
+      const { data, error } = await supabase.from("UsersTest").select("*");
+      if ( error ) {
+        console.error( "Error al obtener los conductores:", error );
+      } else {
+        setDrivers( data );
+      }
+    }
+    fetchDrivers
+  }, []);
 
   const resetFields = () => {
     setMarca("");
     setSubmarca("");
     setModelo("");
+    setSelectedDriver(null);
   };
 
   const handleCreateTruck = async () => {
     setLoading(true);
     try {
       const { error } = await supabase.from("Trucks").insert([
-        { marca, submarca, modelo: parseInt(modelo) },
+        { marca, submarca, modelo: parseInt(modelo), name: selectedDriver?.name },
       ]);
       if (error) {
         console.error("Error al crear camión:", error);
@@ -35,10 +56,13 @@ export function useAddTruck() {
     marca,
     submarca,
     modelo,
+    selectedDriver,
+    drivers,
     loading,
     setMarca,
     setSubmarca,
     setModelo,
+    setSelectedDriver,
     handleCreateTruck,
     resetFields,
   };
