@@ -24,9 +24,10 @@ export function useAddTruck() {
         console.error( "Error al obtener los conductores:", error );
       } else {
         setDrivers( data );
+        console.log( data );
       }
     }
-    fetchDrivers
+    fetchDrivers();
   }, []);
 
   const resetFields = () => {

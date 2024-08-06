@@ -1,6 +1,6 @@
 // AddTruckComponent.tsx
 
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,8 +8,10 @@ import {
   TextInput,
   Button,
   StyleSheet,
+  FlatList,
+  TouchableOpacity,
 } from "react-native";
-import { Picker } from "@react-native-picker/picker";
+
 import { useAddTruck } from "@/components/trucks/AddTruckLogic";
 
 interface AddTruckComponentProps {
@@ -33,10 +35,18 @@ function AddTruckComponent({ visible, onClose }: AddTruckComponentProps) {
     resetFields,
   } = useAddTruck();
 
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+
   const handleCancel = () => {
     resetFields();
     onClose();
   };
+
+  const handleDriverSelect = (driver: any) => {
+    setSelectedDriver(driver);
+    setDropdownVisible(false);
+  };
+
 
   return (
     <Modal
@@ -67,19 +77,32 @@ function AddTruckComponent({ visible, onClose }: AddTruckComponentProps) {
             keyboardType="numeric"
             style={styles.input}
           />
-          <Text style={styles.label}>Seleccionar Conductor</Text>
-          <Picker
-            selectedValue={selectedDriver?.personId}
-            onValueChange={(itemValue) =>
-              setSelectedDriver(drivers.find((driver) => driver.personId === itemValue) || null)
-            }
-            style={styles.picker}
+
+          <TouchableOpacity
+            style={styles.dropdown}
+            onPress={() => setDropdownVisible(!dropdownVisible)}
           >
-            <Picker.Item label="Seleccionar conductor" value={null} />
-            {drivers.map((driver) => (
-              <Picker.Item key={driver.personId} label={driver.name} value={driver.personId} />
-            ))}
-          </Picker>
+            <Text style={styles.dropdownText}>
+              {selectedDriver ? selectedDriver.name : "Seleccionar conductor"}
+            </Text>
+          </TouchableOpacity>
+
+          {dropdownVisible && (
+            <FlatList
+              data={drivers}
+              keyExtractor={(item) => item.personId.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.dropdownItem}
+                  onPress={() => handleDriverSelect(item)}
+                >
+                  <Text>{item.name}</Text>
+                </TouchableOpacity>
+              )}
+              style={styles.dropdownList}
+            />
+          )}
+
           <Button title="Crear" onPress={handleCreateTruck} disabled={loading} />
           <Button title="Cancelar" onPress={handleCancel} />
         </View>
@@ -113,15 +136,34 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 8,
   },
-  picker: {
-    width: "100%",
-    height: 50,
-    marginBottom: 20,
-  },
+
   label: {
     alignSelf: "flex-start",
     marginBottom: 5,
     fontSize: 16,
+  },
+  dropdown: {
+    width: "100%",
+    padding: 12,
+    borderWidth: 1,
+    borderColor: "gray",
+    marginBottom: 10,
+  },
+  dropdownText: {
+    fontSize: 16,
+  },
+  dropdownList: {
+    width: "100%",
+    maxHeight: 150,
+    borderWidth: 1,
+    borderColor: "gray",
+    marginBottom: 10,
+    backgroundColor: "white",
+  },
+  dropdownItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "gray",
   },
 });
 
