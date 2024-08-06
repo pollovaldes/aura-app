@@ -8,10 +8,13 @@ import {
 import TruckHandler from "@/components/trucks/TrucksMainLogic";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link } from "expo-router";
+import AddTruckComponent from "./AddTruckComponent";
+import { useState } from "react";
 
 export default function TrucksMainScreen() {
   const { trucks, loading } = TruckHandler();
   const { styles } = useStyles(stylesheet);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   if (loading) {
     return (
@@ -36,11 +39,12 @@ export default function TrucksMainScreen() {
           </Link>
         )}
       />
-      <Link href={{ pathname: `/trucks/1` }} asChild>
-        <Pressable style={styles.itemContainer}>
-          <Text style={styles.itemText}>Huevos</Text>
-        </Pressable>
-      </Link>
+      <Pressable style={styles.itemContainer} onPress={() => setIsModalVisible(true)}>
+        <Text style={styles.itemText}>Huevos</Text>
+      </Pressable>
+
+      <AddTruckComponent visible={isModalVisible} onClose={() => setIsModalVisible(false)} />
+
     </>
   );
 }
