@@ -39,8 +39,10 @@ export default function TrucksMainScreen() {
           </Link>
         )}
       />
-      <Pressable style={styles.itemContainer} onPress={() => setIsModalVisible(true)}>
-        <Text style={styles.itemText}>Huevos</Text>
+      <Pressable style={styles.addButton} onPress={() => setIsModalVisible(true)}>
+        <Text 
+          style={[styles.itemText, {fontWeight: "bold"}, {color: "white"}]}
+          >Añadir Camión</Text>
       </Pressable>
 
       <AddTruckComponent visible={isModalVisible} onClose={() => setIsModalVisible(false)} />
@@ -66,4 +68,10 @@ const stylesheet = createStyleSheet((theme) => ({
     paddingLeft: 10,
     color: theme.textPresets.main,
   },
+  addButton: {
+    padding: 12,  //TODO: Crear theme.ui.colors.button
+    width: "100%",
+    backgroundColor: theme.ui.colors.primary,
+    alignItems: "center",
+  }
 }));

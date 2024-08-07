@@ -6,12 +6,15 @@ import {
   Pressable,
 } from "react-native";
 import PeopleMainLogic from "./PeopleMainLogic";
+import AddPeopleComponent from "./AddPeopleComponent";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link } from "expo-router";
+import { useState } from "react";
 
 export default function PeopleMainScreen() {
   const { people, loading } = PeopleMainLogic();
   const { styles } = useStyles(stylesheet);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   if (loading) {
     return (
@@ -36,11 +39,13 @@ export default function PeopleMainScreen() {
           </Link>
         )}
       />
-      <Link href={{ pathname: `/trucks/1` }} asChild>
-        <Pressable style={styles.itemContainer}>
-          <Text style={styles.itemText}>Huevos</Text>
-        </Pressable>
-      </Link>
+      <Pressable style={styles.addButton} onPress={() => setIsModalVisible(true)}>
+        <Text 
+          style={[styles.itemText, {fontWeight: "bold"}, {color: "white"}]}
+          >Añadir Conducor</Text>
+      </Pressable>
+
+      <AddPeopleComponent visible={isModalVisible} onClose={() => setIsModalVisible(false)} />
     </>
   );
 }
@@ -62,4 +67,10 @@ const stylesheet = createStyleSheet((theme) => ({
     paddingLeft: 10,
     color: theme.textPresets.main,
   },
+  addButton: {
+    padding: 12,  //TODO: Crear theme.ui.colors.button
+    width: "100%",
+    backgroundColor: theme.ui.colors.primary,
+    alignItems: "center",
+  }
 }));

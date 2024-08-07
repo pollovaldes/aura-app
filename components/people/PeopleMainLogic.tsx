@@ -33,7 +33,7 @@ export default function PeopleMainLogic() {
         "postgres_changes",
         { event: "*", schema: "public", table: "UsersTest" },
         (payload) => {
-          console.log("Table change:", payload);
+          console.log("Table Person View change:", payload);
           fetchPeople();
         }
       )

@@ -24,10 +24,26 @@ export function useAddTruck() {
         console.error( "Error al obtener los conductores:", error );
       } else {
         setDrivers( data );
-        console.log( data );
       }
     }
     fetchDrivers();
+
+    const subscription = supabase
+    .channel("public:People")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "UsersTest" },
+      (payload) => {
+        console.log("Table People change:", payload);
+        fetchDrivers();
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(subscription);
+  };
+
   }, []);
 
   const resetFields = () => {
