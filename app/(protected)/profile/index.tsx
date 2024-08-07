@@ -31,6 +31,7 @@ export default function Page() {
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
+    marginTop: "15%",
     flex: 1,
     alignItems: "center",
     padding: 24,
