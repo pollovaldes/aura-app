@@ -1,38 +1,64 @@
-/*
- * index.tsx - Created on Mon Jun 24 2024 by Luis Arturo Valdes Romero
- *
- * Copyright (c) 2024 Aura Residuos Sustentables
- */
+import React, { useState } from 'react';
+import { View, Button, TextInput, Alert, StyleSheet } from 'react-native';
+import { supabase } from '@/lib/supabase';
+import { useSession } from '@/context/SessionContext';
 
-import { StyleSheet, Text, View } from "react-native";
+const UpdateNameButton = () => {
+  const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const session = useSession();
 
-export default function Page() {
+  const updateName = async () => {
+    setLoading(true);
+    try {
+      const user = session?.user;
+      if (!user) {
+        throw new Error('User not logged in');
+      }
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .update({ full_name: name })
+        .eq('id', user.id);
+
+      if (error) {
+        throw error;
+      }
+
+      Alert.alert('Success', 'Name updated successfully!');
+    } catch (error) {
+      Alert.alert('Error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.main}>
-        <Text style={styles.title}>Stack de notificaciones</Text>
-      </View>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter new name"
+        value={name}
+        onChangeText={setName}
+      />
+      <Button title={loading ? 'Updating...' : 'Update Name'} onPress={updateName} disabled={loading} />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    padding: 24,
+    justifyContent: 'center',
+    padding: 16,
   },
-  main: {
-    flex: 1,
-    justifyContent: "center",
-    maxWidth: 960,
-    marginHorizontal: "auto",
-  },
-  title: {
-    fontSize: 30,
-  },
-  subtitle: {
-    fontSize: 36,
-    color: "#38434D",
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 12,
+    paddingLeft: 8,
   },
 });
+
+export default UpdateNameButton;

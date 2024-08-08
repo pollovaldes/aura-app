@@ -7,6 +7,7 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 export default function SignUp() {
   const { styles } = useStyles(stylesheet);
 
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,6 +21,7 @@ export default function SignUp() {
       email: email,
       password: password,
     });
+
 
     if (error) alert(error);
     if (!session) alert("Please check your inbox for email verification!");
