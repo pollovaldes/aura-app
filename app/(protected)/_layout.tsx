@@ -70,6 +70,11 @@ export default function HomeLayout() {
   return (
     <Tabs screenOptions={{ headerShown: false }}>
       <Tabs.Screen
+        name="index"
+        //Dont show in tabs
+        options={{ tabBarButton: () => null }}
+      />
+      <Tabs.Screen
         name="trucks"
         options={{
           title: "Camiones",
@@ -96,6 +101,11 @@ export default function HomeLayout() {
           title: "Perfil",
           tabBarIcon: ({ color }) => <CircleUserRound color={color} />,
         }}
+      />
+      <Tabs.Screen
+        name="CompleteProfile"
+        //Dont show in tabs
+        options={{ tabBarButton: () => null }}
       />
     </Tabs>
   );
