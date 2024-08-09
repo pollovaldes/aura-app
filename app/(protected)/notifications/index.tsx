@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Button, TextInput, Alert, StyleSheet } from 'react-native';
+import { View, Button, TextInput, Alert, StyleSheet, Text } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { useSession } from '@/context/SessionContext';
 
@@ -35,13 +35,7 @@ const UpdateNameButton = () => {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter new name"
-        value={name}
-        onChangeText={setName}
-      />
-      <Button title={loading ? 'Updating...' : 'Update Name'} onPress={updateName} disabled={loading} />
+      <Text>Notificaciones</Text>
     </View>
   );
 };

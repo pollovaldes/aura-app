@@ -1,15 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Button, TextInput, Alert, StyleSheet } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { useSession } from '@/context/SessionContext';
 import { Redirect } from 'expo-router';
+import usePruebas from '@/components/AskName';
 
 const CompleteProfileScreen = () => {
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const session = useSession();
+  const {isProfileLoading, isNameNull} = usePruebas();
+  const [redirect, setRedirect] = useState(false);
+
+  useEffect(() => {
+    if (!isProfileLoading && !isNameNull) {
+      setRedirect(true);
+    }
+  }, [isProfileLoading, isNameNull]);
+
 
   const updateProfile = async () => {
+
     setLoading(true);
     try {
       const user = session?.user;
@@ -27,13 +38,17 @@ const CompleteProfileScreen = () => {
       }
 
       Alert.alert('Success', 'Profile updated successfully!');
+      setRedirect(true);
     } catch (error) {
       Alert.alert('Error');
     } finally {
       setLoading(false);
-      return <Redirect href="/trucks" />;
     }
   };
+
+  if (redirect) {
+    return <Redirect href="/auth" />;
+  }
 
   return (
     <View style={styles.container}>

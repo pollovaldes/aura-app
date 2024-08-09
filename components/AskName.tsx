@@ -5,7 +5,7 @@ import LoadingScreen from '@/components/Auth/LoadingScreen';
 import { useSession, useSessionContext } from '@/context/SessionContext';
 import { Text } from 'react-native';
 
-export default function Pruebas() {
+export default function usePruebas() {
   const { isLoading, error } = useSessionContext();
   const session = useSession();
   const [isProfileLoading, setIsProfileLoading] = useState(true);
@@ -34,6 +34,8 @@ export default function Pruebas() {
 
         if (data && data.full_name === null) {
           setIsNameNull(true);
+        } else {
+          setIsNameNull(false);
         }
 
         setIsProfileLoading(false);
@@ -47,21 +49,21 @@ export default function Pruebas() {
 
   if (isLoading || isProfileLoading) {
     console.log('Loading...');
-    return <LoadingScreen />;
   }
 
   if (!session) {
     console.log('No session found, redirecting to auth...');
-    return <Redirect href="/auth" />;
   }
 
   if (error) {
     console.error('Session context error:', error);
-    return <Text>Error</Text>;
   }
 
   if (isNameNull) {
-    console.log('Name is null, redirecting to CompleteProfile...');
-    return <Redirect href="/CompleteProfile" />;
+    console.log(isNameNull);
+  }
+  return {
+    isProfileLoading,
+    isNameNull
   }
 };

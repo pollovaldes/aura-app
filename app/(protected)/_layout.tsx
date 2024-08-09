@@ -12,6 +12,8 @@ import { Bell, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { useSession, useSessionContext } from "@/context/SessionContext";
 import LoadingScreen from "@/components/Auth/LoadingScreen";
+import usePruebas from "@/components/AskName";
+
 
 export default function HomeLayout() {
   const { styles } = useStyles(stylesheet);
@@ -20,13 +22,18 @@ export default function HomeLayout() {
 
   const { isLoading, error } = useSessionContext();
   const session = useSession();
+  const { isProfileLoading, isNameNull} = usePruebas();
 
-  if (isLoading) {
+  if (isLoading || isProfileLoading) {
     return <LoadingScreen />;
   }
 
   if (!session) {
     return <Redirect href="/auth" />;
+  }
+
+  if (isNameNull) {
+    return <Redirect href="/CompleteProfile" />;
   }
 
   if (error) {
@@ -70,11 +77,6 @@ export default function HomeLayout() {
   return (
     <Tabs screenOptions={{ headerShown: false }}>
       <Tabs.Screen
-        name="index"
-        //Dont show in tabs
-        options={{ tabBarButton: () => null }}
-      />
-      <Tabs.Screen
         name="trucks"
         options={{
           title: "Camiones",
@@ -101,11 +103,6 @@ export default function HomeLayout() {
           title: "Perfil",
           tabBarIcon: ({ color }) => <CircleUserRound color={color} />,
         }}
-      />
-      <Tabs.Screen
-        name="CompleteProfile"
-        //Dont show in tabs
-        options={{ tabBarButton: () => null }}
       />
     </Tabs>
   );
