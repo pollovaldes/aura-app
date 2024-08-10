@@ -23,11 +23,11 @@ export default function useIsNameNull() {
         
         if (error) {
           console.error("Error fetching profile", error);
-          //setIsProfileLoading(false);       Posiblemente Borrar
+          setIsProfileLoading(false);
           return;
         }
         setIsNameNull(data?.full_name === null);
-        //setIsProfileLoading(false);       Posiblemente Borrar
+        setIsProfileLoading(false);
       }
     };
 
