@@ -17,15 +17,19 @@ export const unstable_settings = {
 
 export default function Layout() {
   const { isLoading } = useSessionContext();
-  const session = useSession();
   const { isAdmin, isAdminLoading } = useIsAdmin();
+  const session = useSession();
 
   
   if (isLoading) {
     return <LoadingScreen />;
   }
+
+  if (isAdminLoading) {
+    return <LoadingScreen />;
+  }
   
-  if ( session && isAdmin ) {
+  if ( session && isAdmin === "admin" ) {
     return <Redirect href="/admin/trucks" />;
   }
 

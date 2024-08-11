@@ -2,10 +2,12 @@ import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 import { useSession, useSessionContext } from "@/context/SessionContext";
 
+type UserTypes = "admin" | "user" // Add more roles as needed | "role";
+
 export default function useIsAdmin() {
   const { isLoading, error } = useSessionContext();
   const session = useSession();
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState<UserTypes>();
   const [isAdminLoading, setIsAdminLoading] = useState(true);
   const hasCheckedProfile = useRef(false);
 
@@ -27,8 +29,19 @@ export default function useIsAdmin() {
         }
 
         if (data.roles === ("admin")) {
-          setIsAdmin(true);
+          setIsAdmin("admin");
         }
+
+        if (data.roles === ("user")) {
+          setIsAdmin("user");
+        }
+
+        /* 
+        Add more roles as needed
+        if (data.roles === ("role")) {
+           setIsAdmin("role");
+        } 
+        */
         
         setIsAdminLoading(false);
       }

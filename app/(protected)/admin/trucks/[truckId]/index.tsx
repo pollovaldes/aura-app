@@ -14,22 +14,22 @@ export default function TruckDetail() {
     <View style={styles.container}>
       <Stack.Screen options={{title:"Documentacion"}}/>
       <Text style={styles.title}>{truck?.marca} {truck?.submarca} {truck?.modelo}</Text>
-      <Link href={`/trucks/${truckId}/details`} asChild>
+      <Link href={`/admin/trucks/${truckId}/details`} asChild>
         <Pressable style={styles.button}>
           <Text style={styles.buttonText}>Detalles</Text>
         </Pressable>
       </Link>
-      <Link href={`/trucks/${truckId}/documentation`} asChild>
+      <Link href={`/admin/trucks/${truckId}/documentation`} asChild>
         <Pressable style={styles.button}>
           <Text style={styles.buttonText}>Documentación</Text>
         </Pressable>
       </Link>
-      <Link href={`/trucks/${truckId}/gasoline`} asChild>
+      <Link href={`/admin/trucks/${truckId}/gasoline`} asChild>
         <Pressable style={styles.button}>
           <Text style={styles.buttonText}>Gasolina</Text>
         </Pressable>
       </Link>
-      <Link href={`/trucks/${truckId}/peopleAdmin`} asChild>
+      <Link href={`/admin/trucks/${truckId}/peopleAdmin`} asChild>
         <Pressable style={styles.button}>
           <Text style={styles.buttonText}>Administrar Personas</Text>
         </Pressable>
