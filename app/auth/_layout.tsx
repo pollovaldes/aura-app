@@ -8,6 +8,8 @@ import { Redirect, Stack } from "expo-router";
 import "@/style/unistyles";
 import { useSession, useSessionContext } from "@/context/SessionContext";
 import LoadingScreen from "@/components/Auth/LoadingScreen";
+import useIsAdmin from "@/hooks/useIsAdmin";
+import { Text, View } from "react-native";
 
 export const unstable_settings = {
   initialRouteName: "index",
@@ -16,13 +18,19 @@ export const unstable_settings = {
 export default function Layout() {
   const { isLoading } = useSessionContext();
   const session = useSession();
+  const { isAdmin, isAdminLoading } = useIsAdmin();
 
+  
   if (isLoading) {
     return <LoadingScreen />;
   }
-
-  if (session) {
+  
+  if ( session && isAdmin ) {
     return <Redirect href="/admin/trucks" />;
+  }
+
+  if ( session && !isAdmin ) {
+    return <Redirect href="/user/trucks" />;
   }
 
   return (
