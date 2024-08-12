@@ -11,7 +11,7 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link, Stack } from "expo-router";
 import AddTruckComponent from "./AddTruckComponent";
 import { useState } from "react";
-import { ChevronRight } from "lucide-react-native";
+import { ChevronRight, Plus } from "lucide-react-native";
 
 export default function TrucksList() {
   const { trucks, loading } = TruckHandler();
@@ -32,7 +32,7 @@ export default function TrucksList() {
         options={{
           headerRight: () => (
             <Pressable onPress={() => setIsModalVisible(true)}>
-              <Text style={styles.addButtonText}>Añadir camión</Text>
+              <Plus color={styles.plusIcon.color} />
             </Pressable>
           ),
         }}
@@ -49,7 +49,7 @@ export default function TrucksList() {
                   <View style={styles.imageContainer}>
                     <Image
                       style={styles.image}
-                      source={require("../../assets/trucks/truck1.webp")}
+                      source={{ uri: "https://placehold.co/512x512.png" }}
                     />
                   </View>
                   <Text
@@ -102,7 +102,7 @@ const stylesheet = createStyleSheet((theme) => ({
     paddingLeft: 10,
     color: theme.textPresets.main,
   },
-  addButtonText: {
+  plusIcon: {
     fontSize: 16,
     color: theme.ui.colors.primary,
   },

@@ -1,57 +1,77 @@
 import React from "react";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { Text, View, StyleSheet, Pressable } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Pressable,
+  Image,
+  ScrollView,
+} from "react-native";
 import { Link } from "expo-router";
 import TruckHandler from "@/components/trucks/TrucksMainLogic";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function TruckDetail() {
-  const { trucks, loading } = TruckHandler();
+  const { trucks } = TruckHandler();
   const { truckId } = useLocalSearchParams<{ truckId: string }>();
+  const { styles } = useStyles(stylesheet);
 
-  const truck = trucks.find((truck) => truck.id === parseInt(truckId));
+  const truck = trucks.find((truck) => truck.id === parseInt(truckId!));
+  const truckTitle = `${truck?.marca ?? ""} ${truck?.submarca ?? ""} ${truck?.modelo ?? ""}`;
 
   return (
-    <View style={styles.container}>
-      <Stack.Screen options={{ title: "Documentacion" }} />
-      <Text style={styles.title}>
-        {truck?.marca} {truck?.submarca} {truck?.modelo}
-      </Text>
-      <Link href={`/trucks/${truckId}/details`} asChild>
-        <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Detalles</Text>
-        </Pressable>
-      </Link>
-      <Link href={`/trucks/${truckId}/documentation`} asChild>
-        <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Documentación</Text>
-        </Pressable>
-      </Link>
-      <Link href={`/trucks/${truckId}/gasoline`} asChild>
-        <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Gasolina</Text>
-        </Pressable>
-      </Link>
-      <Link href={`/trucks/${truckId}/peopleAdmin`} asChild>
-        <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Administrar Personas</Text>
-        </Pressable>
-      </Link>
-    </View>
+    <>
+      <Stack.Screen options={{ title: truckTitle }} />
+      <ScrollView
+        style={styles.container}
+        contentInsetAdjustmentBehavior="automatic"
+      >
+        <View style={styles.imageContainer}>
+          <Image
+            style={styles.image}
+            source={{ uri: "https://placehold.co/2048x2048.png" }}
+          />
+        </View>
+        <Link href={`/trucks/${truckId}/details`} asChild>
+          <Pressable style={styles.button}>
+            <Text style={styles.buttonText}>Detalles</Text>
+          </Pressable>
+        </Link>
+        <Link href={`/trucks/${truckId}/documentation`} asChild>
+          <Pressable style={styles.button}>
+            <Text style={styles.buttonText}>Documentación</Text>
+          </Pressable>
+        </Link>
+        <Link href={`/trucks/${truckId}/gasoline`} asChild>
+          <Pressable style={styles.button}>
+            <Text style={styles.buttonText}>Gasolina</Text>
+          </Pressable>
+        </Link>
+        <Link href={`/trucks/${truckId}/peopleAdmin`} asChild>
+          <Pressable style={styles.button}>
+            <Text style={styles.buttonText}>Administrar Personas</Text>
+          </Pressable>
+        </Link>
+      </ScrollView>
+    </>
   );
 }
 
-const styles = StyleSheet.create({
+const stylesheet = createStyleSheet({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#f0f0f0",
-    justifyContent: "center",
   },
+  imageContainer: {},
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
+  },
+  image: {
+    width: "100%",
+    height: 250,
   },
   button: {
     backgroundColor: "#add8e6", // Azul claro

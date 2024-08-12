@@ -1,5 +1,6 @@
 import React from "react";
 import { Stack } from "expo-router";
+import { Platform, Text } from "react-native";
 
 export const unstable_settings = {
   initialRouteName: "index",
@@ -12,7 +13,7 @@ export default function _layout() {
         headerShown: true,
         headerLargeTitle: true,
         headerBlurEffect: "regular",
-        headerTransparent: true,
+        headerTransparent: Platform.OS === "ios" ? true : false,
       }}
     >
       <Stack.Screen
