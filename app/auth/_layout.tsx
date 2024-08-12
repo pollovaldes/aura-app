@@ -16,16 +16,36 @@ export const unstable_settings = {
 };
 
 export default function Layout() {
+  const session = useSession();
   const { isLoading } = useSessionContext();
   const { isAdmin, isAdminLoading } = useIsAdmin();
-  const session = useSession();
 
+// desomentar el siguiente bloque de código si se queda cargando, se borro tu usuario de supabase
+/*
+  return (
+    <Stack>
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+    </Stack>
+  );
+*/
   
+// console.log(isLoading, isAdminLoading, "isAdmin", isAdmin);
+
   if (isLoading) {
     return <LoadingScreen />;
   }
 
-  if (isAdminLoading) {
+  return <Redirect href="afterAuth" />;
+
+  if ( !session ) {
+    return (
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+      </Stack>
+    );
+  }
+
+  if ( isAdminLoading ) {
     return <LoadingScreen />;
   }
   
@@ -33,7 +53,7 @@ export default function Layout() {
     return <Redirect href="/admin/trucks" />;
   }
 
-  if ( session && !isAdmin ) {
+  if ( session && isAdmin === "user" ) {
     return <Redirect href="/user/trucks" />;
   }
 
