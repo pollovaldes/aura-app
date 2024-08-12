@@ -10,7 +10,9 @@ export default function _layout() {
     <Stack
       screenOptions={{
         headerShown: true,
-        headerLargeTitle: false,
+        headerLargeTitle: true,
+        headerBlurEffect: "regular",
+        headerTransparent: true,
       }}
     >
       <Stack.Screen

@@ -12,8 +12,10 @@ export default function TruckDetail() {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{title:"Documentacion"}}/>
-      <Text style={styles.title}>{truck?.marca} {truck?.submarca} {truck?.modelo}</Text>
+      <Stack.Screen options={{ title: "Documentacion" }} />
+      <Text style={styles.title}>
+        {truck?.marca} {truck?.submarca} {truck?.modelo}
+      </Text>
       <Link href={`/trucks/${truckId}/details`} asChild>
         <Pressable style={styles.button}>
           <Text style={styles.buttonText}>Detalles</Text>

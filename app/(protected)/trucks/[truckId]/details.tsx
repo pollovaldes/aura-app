@@ -5,7 +5,5 @@ import TruckDetailContainer from "@/components/trucks/details/TruckDetailContain
 export default function TruckDetail() {
   const { truckId } = useLocalSearchParams<{ truckId: string }>();
 
-  return (
-    <TruckDetailContainer/>
-  );
+  return <TruckDetailContainer />;
 }
