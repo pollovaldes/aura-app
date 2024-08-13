@@ -22,10 +22,7 @@ export default function Layout() {
 
   if (!isNameNull) {
     if (isAdmin === "admin") {
-      return <Redirect href="/admin/trucks" />;
-    }
-    if (isAdmin === "user") {
-      return <Redirect href="/user/trucks" />;
+      return <Redirect href="/trucks" />;
     }
   }
 

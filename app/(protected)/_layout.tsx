@@ -6,8 +6,8 @@
 
 import { Redirect, Slot, Tabs } from "expo-router";
 import { Text, View, useWindowDimensions } from "react-native";
-import Sidebar from "../../../components/sidebar/Sidebar";
-import ListItem from "../../../components/sidebar/ListItem";
+import Sidebar from "../../components/sidebar/Sidebar";
+import ListItem from "../../components/sidebar/ListItem";
 import { Bell, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { useSession, useSessionContext } from "@/context/SessionContext";

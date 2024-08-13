@@ -30,7 +30,7 @@ export default function TrucksMainScreen() {
         data={trucks}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <Link href={{ pathname: `/admin/trucks/${item.id}` }} asChild>
+          <Link href={{ pathname: `/trucks/${item.id}` }} asChild>
             <Pressable style={styles.itemContainer}>
               <Text
                 style={styles.itemText}

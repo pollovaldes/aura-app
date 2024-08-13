@@ -42,7 +42,7 @@ export default function TrucksList() {
         data={trucks}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <Link href={{ pathname: `/admin/trucks/${item.id}` }} asChild>
+          <Link href={{ pathname: `/trucks/${item.id}` }} asChild>
             <Pressable>
               <View style={styles.container}>
                 <View style={styles.contentContainer}>
