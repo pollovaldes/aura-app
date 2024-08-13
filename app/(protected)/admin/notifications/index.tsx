@@ -16,7 +16,9 @@ export default function Page() {
       const result = await executeOperation("select", {
         table: "profiles",
         columns: "full_name",
-        condition: { column: "id", value: "59e37682-fd8a-4c95-be2d-e23060c11c66" },
+        condition: { 
+          column: "id", 
+          value: "59e37682-fd8a-4c95-be2d-e23060c11c66" },
       });
 
       console.log(result);

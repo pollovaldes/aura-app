@@ -44,5 +44,4 @@ export default function TruckDetailContainer() {
   };
 
   return <TruckDetailComponent truck={truck} loading={loading} />;
-
 };
