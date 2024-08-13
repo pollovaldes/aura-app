@@ -1,9 +1,3 @@
-/*
- * _layout.tsx - Created on Sat Jun 29 2024 by Luis Arturo Valdes Romero
- *
- * Copyright (c) 2024 Aura Residuos Sustentables
- */
-
 import { Redirect, Stack } from "expo-router";
 import "@/style/unistyles";
 import { useSession, useSessionContext } from "@/context/SessionContext";
@@ -14,15 +8,32 @@ export const unstable_settings = {
 };
 
 export default function Layout() {
-  const { isLoading } = useSessionContext();
   const session = useSession();
+  const { isLoading } = useSessionContext();
+
+  // desomentar el siguiente bloque de código si se queda cargando, se borro tu usuario de supabase
+  /*
+  return (
+    <Stack>
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+    </Stack>
+  );
+*/
+
+  // console.log(isLoading, isAdminLoading, "isAdmin", isAdmin);
 
   if (isLoading) {
     return <LoadingScreen />;
   }
 
   if (session) {
-    return <Redirect href="/trucks" />;
+    return <Redirect href="/afterAuth" />;
+  } else if (!session) {
+    return (
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+      </Stack>
+    );
   }
 
   return (

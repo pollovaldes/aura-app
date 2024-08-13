@@ -22,7 +22,7 @@ export default function SignIn() {
     if (error) {
       alert(error.message);
     } else {
-      router.replace("/trucks");
+      router.replace("/afterAuth");
     }
     setLoading(false);
   }

@@ -1,28 +1,33 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { useSession, useSessionContext } from "@/context/SessionContext";
 
 type Person = {
-  personId: number;
-  name: string;
-  age: number;
+  personId: string;
+  full_name: string;
 }
 
 export default function PeopleMainLogic() {
+  const { isLoading, error } = useSessionContext();
+  const session = useSession();
   const [people, setPeople] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPeople = async () => {
-      const { data, error } = await supabase
-        .from("UsersTest")
-        .select("*");
 
-      if (error) {
-        console.error(error);
-      } else {
-        setPeople(data);
+      if (session) {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("full_name, personId")
+
+        if (error) {
+          console.error(error);
+        } else {
+          setPeople(data);
+        }
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchPeople();
@@ -42,6 +47,6 @@ export default function PeopleMainLogic() {
     return () => {
       supabase.removeChannel(subscription);
     };
-  }, []);
+  }, [session]);
   return { people, loading };
 }

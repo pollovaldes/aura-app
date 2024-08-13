@@ -11,7 +11,7 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link, Stack } from "expo-router";
 import AddTruckComponent from "./AddTruckComponent";
 import { useState } from "react";
-import { ChevronRight, Plus } from "lucide-react-native";
+import { ChevronRight, Plus, PlusIcon } from "lucide-react-native";
 
 export default function TrucksList() {
   const { trucks, loading } = TruckHandler();
