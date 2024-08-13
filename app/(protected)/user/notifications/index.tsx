@@ -4,9 +4,7 @@
  * Copyright (c) 2024 Aura Residuos Sustentables
  */
 
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import useDatabaseOperations from "@/hooks/useDatabaseOperations";
-import { useEffect } from "react";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function Page() {
   return (
