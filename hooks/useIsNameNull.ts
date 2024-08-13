@@ -9,32 +9,36 @@ export default function useIsNameNull() {
   const [isProfileLoading, setIsProfileLoading] = useState(true);
   const hasCheckedProfile = useRef(false);
 
-  useEffect(() => {
-    const checkUserProfile = async () => {
+  const checkUserProfile = async () => {
+    setIsNameNull(false);
+    if (session && !hasCheckedProfile.current) {
+      hasCheckedProfile.current = true;
 
-      if (session && !hasCheckedProfile.current) {
-        hasCheckedProfile.current = true;
-
-        const { data, error } = await supabase
-        .from("profiles")
-        .select("full_name")
-        .eq("id", session.user.id)
-        .single();
-        
-        if (error) {
-          console.error("Error fetching profile", error);
-          setIsProfileLoading(false);
-          return;
-        }
-        setIsNameNull(data?.full_name === null);
+      const { data, error } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("id", session.user.id)
+      .single();
+      
+      if (error) {
+        console.error("Error fetching profile", error);
         setIsProfileLoading(false);
+        return;
       }
-    };
+      
+      if (data?.full_name === null || data?.full_name.trim() === "") {
+        setIsNameNull(true);
+      }
 
-    if (session) {
-      checkUserProfile();
+      setIsProfileLoading(false);
+      hasCheckedProfile.current = false;
     }
+  };
+    
+  useEffect(() => {
+    checkUserProfile();
   }, [session]);
+  
 
   return {
     isProfileLoading: isLoading || isProfileLoading,

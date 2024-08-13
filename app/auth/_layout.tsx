@@ -18,7 +18,6 @@ export const unstable_settings = {
 export default function Layout() {
   const session = useSession();
   const { isLoading } = useSessionContext();
-  const { isAdmin, isAdminLoading } = useIsAdmin();
 
 // desomentar el siguiente bloque de código si se queda cargando, se borro tu usuario de supabase
 /*
@@ -35,8 +34,6 @@ export default function Layout() {
     return <LoadingScreen />;
   }
 
-  return <Redirect href="afterAuth" />;
-
   if ( !session ) {
     return (
       <Stack>
@@ -44,17 +41,9 @@ export default function Layout() {
       </Stack>
     );
   }
-
-  if ( isAdminLoading ) {
-    return <LoadingScreen />;
-  }
   
-  if ( session && isAdmin === "admin" ) {
-    return <Redirect href="/admin/trucks" />;
-  }
-
-  if ( session && isAdmin === "user" ) {
-    return <Redirect href="/user/trucks" />;
+  if ( session ) {
+    return <Redirect href="/afterAuth"/>;
   }
 
   return (

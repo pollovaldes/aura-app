@@ -34,7 +34,7 @@ export default function PeopleMainScreen() {
             <Pressable style={styles.itemContainer}>
               <Text
                 style={styles.itemText}
-              >{`${item.name}`}</Text>
+              >{`${item.full_name}`}</Text>
             </Pressable>
           </Link>
         )}
