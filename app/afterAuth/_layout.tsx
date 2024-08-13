@@ -4,10 +4,6 @@ import LoadingScreen from "@/components/Auth/LoadingScreen";
 import useIsNameNull from "@/hooks/useIsNameNull";
 import useIsAdmin from "@/hooks/useIsAdmin";
 
-export const unstable_settings = {
-  initialRouteName: "index",
-};
-
 export default function Layout() {
   const { isNameNull, isProfileLoading, error} = useIsNameNull();
   const { isAdmin, isAdminLoading } = useIsAdmin();
@@ -15,13 +11,7 @@ export default function Layout() {
   if (isProfileLoading || isAdminLoading) {
     return <LoadingScreen />;
   }
-
-  if (error) {
-    return <Redirect href="/auth/login" />;
-  }
-
-  console.log(isNameNull, isAdmin);
-
+  
   if (isNameNull) {
     return (
       <Stack>
@@ -30,11 +20,16 @@ export default function Layout() {
     );
   }
 
-  if (!isNameNull && isAdmin === "admin") {
-    return <Redirect href="/admin/trucks" />;
+  if (!isNameNull) {
+    if (isAdmin === "admin") {
+      return <Redirect href="/admin/trucks" />;
+    }
+    if (isAdmin === "user") {
+      return <Redirect href="/user/trucks" />;
+    }
   }
 
-  if (!isNameNull && isAdmin === "user") {
-    return <Redirect href="/user/trucks" />;
+  if (error) {
+    return <Redirect href="/auth/index" />;
   }
 }
