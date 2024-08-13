@@ -6,12 +6,11 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 export default function Layout() {
   const { styles } = useStyles(stylesheet);
 
-
   return (
-    <View style = {styles.contentContainer}>
-      <View style = {styles.section}>
-        <View style = {styles.group}>
-        <SignUp />
+    <View style={styles.contentContainer}>
+      <View style={styles.section}>
+        <View style={styles.group}>
+          <SignUp />
         </View>
       </View>
     </View>
@@ -31,5 +30,5 @@ const stylesheet = createStyleSheet((theme) => ({
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
-  }
+  },
 }));
