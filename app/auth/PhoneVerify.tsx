@@ -105,6 +105,7 @@ const stylesheet = createStyleSheet((theme) => ({
     fontWeight: "bold",
   },
   textInput: {
+    textAlign: "center",
     height: 70,
     borderRadius: 5,
     paddingHorizontal: 12,

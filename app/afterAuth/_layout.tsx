@@ -27,6 +27,6 @@ export default function Layout() {
   }
 
   if (error) {
-    return <Redirect href="/auth/index" />;
+    return <Redirect href="/auth" />;
   }
 }
