@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 import { useSession, useSessionContext } from "@/context/SessionContext";
 
-type UserTypes = "admin" | "user" // Add more roles as needed | "role";
+type UserTypes = "admin" | "user"; // Add more roles as needed | "role";
 
 export default function useIsAdmin() {
   const { isLoading, error } = useSessionContext();
@@ -17,22 +17,22 @@ export default function useIsAdmin() {
         hasCheckedProfile.current = true;
 
         const { data, error } = await supabase
-        .from("profiles")
-        .select("roles")
-        .eq("id", session.user.id)
-        .single();
-        
+          .from("profiles")
+          .select("roles")
+          .eq("id", session.user.id)
+          .single();
+
         if (error) {
           console.error("Error fetching profile", error);
           setIsAdminLoading(false);
           return;
         }
 
-        if (data.roles === ("admin")) {
+        if (data.roles === "admin") {
           setIsAdmin("admin");
         }
 
-        if (data.roles === ("user")) {
+        if (data.roles === "user") {
           setIsAdmin("user");
         }
 
@@ -42,7 +42,7 @@ export default function useIsAdmin() {
            setIsAdmin("role");
         } 
         */
-        
+
         setIsAdminLoading(false);
       }
     };

@@ -15,17 +15,17 @@ export default function useIsNameNull() {
       hasCheckedProfile.current = true;
 
       const { data, error } = await supabase
-      .from("profiles")
-      .select("full_name")
-      .eq("id", session.user.id)
-      .single();
-      
+        .from("profiles")
+        .select("full_name")
+        .eq("id", session.user.id)
+        .single();
+
       if (error) {
         console.error("Error fetching profile", error);
         setIsProfileLoading(false);
         return;
       }
-      
+
       if (data?.full_name === null || data?.full_name.trim() === "") {
         setIsNameNull(true);
       }
@@ -34,11 +34,10 @@ export default function useIsNameNull() {
       hasCheckedProfile.current = false;
     }
   };
-    
+
   useEffect(() => {
     checkUserProfile();
   }, [session]);
-  
 
   return {
     isProfileLoading: isLoading || isProfileLoading,

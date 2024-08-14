@@ -17,7 +17,6 @@ export default function HomeLayout() {
   const { styles } = useStyles(stylesheet);
   const { width } = useWindowDimensions();
   const widthThreshold = 600; // TODO: Move dimensions to a theme file.
-
   const { isLoading, error } = useSessionContext();
   const session = useSession();
 

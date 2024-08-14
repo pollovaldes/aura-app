@@ -190,6 +190,11 @@ export const lightTheme = {
       buttonMainBG: colorPalette.emerald[600],
       buttonSecondaryBG: colorPalette.neutral[600],
     },
+    navBarListItem: {
+      //Normal color is ui.colors.card
+      hoveredBG: colorPalette.neutral[100],
+      selectedBG: colorPalette.neutral[200],
+    },
   },
   textInput: {
     backgroundColor: colorPalette.neutral[200],
@@ -234,6 +239,11 @@ export const darkTheme = {
     formComponent: {
       buttonMainBG: colorPalette.emerald[300],
       buttonSecondaryBG: colorPalette.neutral[300],
+    },
+    navBarListItem: {
+      //Normal color is ui.colors.card
+      hoveredBG: colorPalette.neutral[700],
+      selectedBG: colorPalette.neutral[800],
     },
   },
   textInput: {
