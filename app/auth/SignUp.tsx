@@ -1,4 +1,4 @@
-import { FormButton } from "@/components/Form/FormButton";
+import { FormButton } from "@/components/form/FormButton";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
 import { TextInput } from "react-native";

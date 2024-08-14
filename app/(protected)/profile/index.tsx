@@ -4,7 +4,7 @@
  * Copyright (c) 2024 Aura Residuos Sustentables
  */
 
-import { FormButton } from "@/components/Form/FormButton";
+import { FormButton } from "@/components/form/FormButton";
 import { useSession, useUser } from "@/context/SessionContext";
 import { supabase } from "@/lib/supabase";
 import { Text, View } from "react-native";

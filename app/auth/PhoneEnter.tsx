@@ -3,7 +3,7 @@ import { Text, TextInput, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { PrimaryFormProps } from "./Form";
 import { PhoneFormProps } from "./PhoneForm";
-import { FormButton } from "@/components/Form/FormButton";
+import { FormButton } from "@/components/form/FormButton";
 import FormTitle from "./FormTitle";
 import { supabase } from "@/lib/supabase";
 

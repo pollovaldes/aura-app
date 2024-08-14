@@ -10,17 +10,18 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import ListItem from "../../components/sidebar/ListItem";
 import { Bell, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { useSession, useSessionContext } from "@/context/SessionContext";
-import LoadingScreen from "@/components/Auth/LoadingScreen";
+import { useSessionContext } from "@/context/SessionContext";
+import LoadingScreen from "@/components/auth/LoadingScreen";
+import useUserName from "@/hooks/useUserName";
 
 export default function HomeLayout() {
   const { styles } = useStyles(stylesheet);
   const { width } = useWindowDimensions();
   const widthThreshold = 600; // TODO: Move dimensions to a theme file.
-  const { isLoading, error } = useSessionContext();
-  const session = useSession();
+  const { isLoading: isSessionLoading, error, session } = useSessionContext();
+  const { isLoading: isUserNameLoading, name } = useUserName();
 
-  if (isLoading) {
+  if (isSessionLoading || isUserNameLoading) {
     return <LoadingScreen />;
   }
 
@@ -32,9 +33,12 @@ export default function HomeLayout() {
     return <Text>Error</Text>;
   }
 
+  if (!name) {
+    return <Text>Regístrate perro!!</Text>;
+  }
+
   //Show a web-like sidebar for occupying max space
-  if (width >= widthThreshold) {
-    // TODO: Add Sidebars
+  if (width > widthThreshold) {
     return (
       <View style={styles.container}>
         <Sidebar>

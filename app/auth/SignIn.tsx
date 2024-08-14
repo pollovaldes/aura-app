@@ -1,4 +1,4 @@
-import { FormButton } from "@/components/Form/FormButton";
+import { FormButton } from "@/components/form/FormButton";
 import { supabase } from "@/lib/supabase";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -22,7 +22,7 @@ export default function SignIn() {
     if (error) {
       alert(error.message);
     } else {
-      router.replace("/afterAuth");
+      router.replace("/trucks");
     }
     setLoading(false);
   }

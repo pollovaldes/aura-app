@@ -1,7 +1,7 @@
 import { Redirect, Stack } from "expo-router";
 import "@/style/unistyles";
 import { useSession, useSessionContext } from "@/context/SessionContext";
-import LoadingScreen from "@/components/Auth/LoadingScreen";
+import LoadingScreen from "@/components/auth/LoadingScreen";
 
 export const unstable_settings = {
   initialRouteName: "index",
@@ -25,7 +25,7 @@ export default function Layout() {
   }
 
   if (session) {
-    return <Redirect href="/afterAuth" />;
+    return <Redirect href="/trucks" />;
   }
 
   return (

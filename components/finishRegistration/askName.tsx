@@ -1,16 +1,15 @@
-import { FormButton } from "@/components/Form/FormButton";
+import { FormButton } from "@/components/form/FormButton";
 import { useSession } from "@/context/SessionContext";
 import { supabase } from "@/lib/supabase";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Alert, TextInput } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-
 
 export default function SignUp() {
   const { styles } = useStyles(stylesheet);
   const session = useSession();
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -20,11 +19,13 @@ export default function SignUp() {
     setIsLoading(true);
     if (session) {
       const { data, error } = await supabase
-      .from("profiles")
-      .update({full_name: `${name.trim()} ${lastName.trim()} ${secondLastName.trim()}`})
-      .eq("id", session.user.id)
-      .single();
-      
+        .from("profiles")
+        .update({
+          full_name: `${name.trim()} ${lastName.trim()} ${secondLastName.trim()}`,
+        })
+        .eq("id", session.user.id)
+        .single();
+
       if (error) {
         Alert.alert("Error", error.message);
         setIsLoading(false);
