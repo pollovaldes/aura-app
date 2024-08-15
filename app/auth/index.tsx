@@ -1,5 +1,10 @@
-import Card from "./Card";
+import Form from "./Form";
+import AuthCard from "@/assets/authForm/AuthCard";
 
-export default function Authentication() {
-  return <Card />;
+export default function Card() {
+  return (
+    <AuthCard>
+      <Form />
+    </AuthCard>
+  );
 }

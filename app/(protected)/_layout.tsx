@@ -13,6 +13,8 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { useSessionContext } from "@/context/SessionContext";
 import LoadingScreen from "@/components/auth/LoadingScreen";
 import useUserName from "@/hooks/useUserName";
+import RegistrationForm from "@/assets/registrationForm/RegistrationForm";
+import AuthCard from "@/assets/authForm/AuthCard";
 
 export default function HomeLayout() {
   const { styles } = useStyles(stylesheet);
@@ -34,7 +36,11 @@ export default function HomeLayout() {
   }
 
   if (!name) {
-    return <Text>Regístrate perro!!</Text>;
+    return (
+      <AuthCard>
+        <RegistrationForm />
+      </AuthCard>
+    );
   }
 
   //Show a web-like sidebar for occupying max space
