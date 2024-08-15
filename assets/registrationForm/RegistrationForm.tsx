@@ -1,7 +1,9 @@
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "@/components/form/FormButton";
+import { useSession } from "@/context/SessionContext";
+import { supabase } from "@/lib/supabase";
 import { useState } from "react";
-import { Text, TextInput, View } from "react-native";
+import { Alert, Text, TextInput, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function RegistrationForm() {
@@ -10,8 +12,38 @@ export default function RegistrationForm() {
   const [name, setName] = useState("");
   const [firstLastName, setFirstLastName] = useState("");
   const [secondLastName, setSecondLastName] = useState("");
-
   const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<any>();
+
+  const session = useSession();
+
+  const signOut = async () => {
+    let { error } = await supabase.auth.signOut();
+  };
+
+  const checkUserProfile = async () => {
+    setLoading(true);
+    if (session) {
+      const { data, error } = await supabase
+        .from("profiles")
+        .update({
+          full_name: `${name.trim()} ${firstLastName.trim()} ${secondLastName.trim()}`,
+        })
+        .eq("id", session.user.id)
+        .single();
+
+      setData(data);
+
+      if (error) {
+        Alert.alert("Error", error.message);
+        setLoading(false);
+        return;
+      }
+
+      Alert.alert("Éxito", "Perfil actualizado");
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.section}>
@@ -48,9 +80,11 @@ export default function RegistrationForm() {
         />
         <FormButton
           title="Continuar"
-          onPress={() => print()}
+          onPress={checkUserProfile}
           isLoading={loading}
         />
+        <FormButton title="Cerrar sesión" onPress={signOut} />
+        <Text>{JSON.stringify(data)}</Text>
       </View>
     </View>
   );
