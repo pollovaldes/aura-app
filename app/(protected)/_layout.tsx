@@ -4,7 +4,7 @@
  * Copyright (c) 2024 Aura Residuos Sustentables
  */
 
-import { Redirect, Slot, Tabs } from "expo-router";
+import { Redirect, Slot, Tabs, usePathname } from "expo-router";
 import { Text, View, useWindowDimensions } from "react-native";
 import Sidebar from "../../components/sidebar/Sidebar";
 import ListItem from "../../components/sidebar/ListItem";
@@ -13,8 +13,6 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { useSessionContext } from "@/context/SessionContext";
 import LoadingScreen from "@/components/auth/LoadingScreen";
 import useUserName from "@/hooks/useUserName";
-import RegistrationForm from "@/assets/registrationForm/RegistrationForm";
-import AuthCard from "@/assets/authForm/AuthCard";
 
 export default function HomeLayout() {
   const { styles } = useStyles(stylesheet);
@@ -22,6 +20,8 @@ export default function HomeLayout() {
   const widthThreshold = 600; // TODO: Move dimensions to a theme file.
   const { isLoading: isSessionLoading, error, session } = useSessionContext();
   const { isLoading: isUserNameLoading, name } = useUserName();
+
+  const path = usePathname();
 
   if (isSessionLoading || isUserNameLoading) {
     return <LoadingScreen />;
@@ -35,12 +35,9 @@ export default function HomeLayout() {
     return <Text>Error</Text>;
   }
 
-  if (!name) {
-    return (
-      <AuthCard>
-        <RegistrationForm />
-      </AuthCard>
-    );
+  // Prevent the user from entering other url if he's not registered
+  if (!name && path != "/profile") {
+    return <Redirect href="/profile" />;
   }
 
   //Show a web-like sidebar for occupying max space
@@ -49,17 +46,17 @@ export default function HomeLayout() {
       <View style={styles.container}>
         <Sidebar>
           <ListItem
-            href="trucks"
+            href={name ? "trucks" : null}
             title="Camiones"
             iconComponent={<Truck color={styles.icon.color} size={19} />}
           />
           <ListItem
-            href="people"
+            href={name ? "people" : null}
             title="Personas"
             iconComponent={<UsersRound color={styles.icon.color} size={19} />}
           />
           <ListItem
-            href="notifications"
+            href={name ? "notifications" : null}
             title="Notificaciones"
             iconComponent={<Bell color={styles.icon.color} size={19} />}
           />
@@ -81,6 +78,7 @@ export default function HomeLayout() {
       <Tabs.Screen
         name="trucks"
         options={{
+          href: !name ? null : undefined,
           title: "Camiones",
           tabBarIcon: ({ color }) => <Truck color={color} />,
         }}
@@ -88,6 +86,7 @@ export default function HomeLayout() {
       <Tabs.Screen
         name="people"
         options={{
+          href: !name ? null : undefined,
           title: "Personas",
           tabBarIcon: ({ color }) => <UsersRound color={color} />,
         }}
@@ -95,6 +94,7 @@ export default function HomeLayout() {
       <Tabs.Screen
         name="notifications"
         options={{
+          href: !name ? null : undefined,
           title: "Notificaciones",
           tabBarIcon: ({ color }) => <Bell color={color} />,
         }}
