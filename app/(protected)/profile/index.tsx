@@ -4,26 +4,69 @@
  * Copyright (c) 2024 Aura Residuos Sustentables
  */
 
+import FormTitle from "@/app/auth/FormTitle";
 import TermsAndPrivacy from "@/app/auth/TermsAndPrivacy";
 import { FormButton } from "@/components/form/FormButton";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
+import Modal from "@/components/Modal/Modal";
 import useUserName from "@/hooks/useUserName";
 import { supabase } from "@/lib/supabase";
-import { ScrollView, Text, View } from "react-native";
+import { useState } from "react";
+import { ScrollView, Text, TextInput, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function Page() {
   const { styles } = useStyles(stylesheet);
 
+  const [modal, setModal] = useState(false);
+
   const signOut = async () => {
     let { error } = await supabase.auth.signOut();
   };
 
-  const { name } = useUserName();
+  const { name, isLoading } = useUserName();
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <Modal isOpen={modal}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.closeButton} onPress={() => setModal(false)}>
+            Cerrar
+          </Text>
+          <View style={styles.section}>
+            <View style={styles.group}>
+              <FormTitle title="Finaliza tu registro" />
+              <Text style={styles.subtitle}>
+                Ya tienes una cuenta, ahora ayúdanos a conocerte y llena tus
+                datos personales.
+              </Text>
+            </View>
+            <View style={styles.group}>
+              <TextInput
+                placeholder="Nombre"
+                inputMode="text"
+                style={styles.textInput}
+                placeholderTextColor={styles.textInput.placehoolderTextColor}
+                autoCorrect={false}
+              />
+              <TextInput
+                placeholder="Apellido paterno"
+                inputMode="text"
+                style={styles.textInput}
+                placeholderTextColor={styles.textInput.placehoolderTextColor}
+              />
+              <TextInput
+                placeholder="Apellido paterno"
+                inputMode="text"
+                style={styles.textInput}
+                placeholderTextColor={styles.textInput.placehoolderTextColor}
+              />
+              <FormButton title="Guardar" onPress={() => setModal(false)} />
+            </View>
+          </View>
+        </View>
+      </Modal>
       <View style={styles.container}>
         <GroupedList
           footer="Para obtener acceso completo a la aplicación, asegúrate de completar estos puntos necesarios. Aunque ya tengas una cuenta, esta información es crucial para ofrecerte acceso completo."
@@ -32,7 +75,10 @@ export default function Page() {
           <Row
             title="Datos personales"
             trailingType="chevron"
+            disabled={isLoading}
+            isLoading={isLoading}
             caption={name ? "Completo" : "Sin completar"}
+            onPress={() => setModal(true)}
           />
           <Row title="Rol" trailingType="chevron" caption="Sin rol" />
         </GroupedList>
@@ -67,7 +113,7 @@ export default function Page() {
           footer="Cerrar tu sesión no eliminará nada, pero deberás iniciar sesión de nuevo."
         >
           <Row title="Eliminar cuenta" trailingType="chevron" />
-          <Row title="Cerrar sesión" trailingType="chevron" />
+          <Row title="Cerrar sesión" trailingType="chevron" onPress={signOut} />
         </GroupedList>
         <GroupedList header="Créditos y extras" footer="">
           <Row title="Licensias de código abierto" trailingType="chevron" />
@@ -89,5 +135,44 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   termsAndPrivacy: {
     marginHorizontal: 12,
+  },
+  modalContainer: {
+    backgroundColor: theme.ui.colors.card,
+    borderRadius: 10,
+    padding: 24,
+  },
+  text: {
+    color: theme.textPresets.main,
+  },
+  section: {
+    gap: theme.marginsComponents.section,
+    alignItems: "center",
+  },
+  group: {
+    gap: theme.marginsComponents.group,
+    width: "100%",
+  },
+  logo: {
+    color: theme.colors.inverted,
+    width: 180,
+    height: 60,
+  },
+  subtitle: {
+    color: theme.textPresets.main,
+    textAlign: "center",
+  },
+  textInput: {
+    height: 45,
+    borderRadius: 5,
+    paddingHorizontal: 12,
+    fontSize: 18,
+    color: theme.textPresets.main,
+    placehoolderTextColor: theme.textPresets.subtitle,
+    backgroundColor: theme.textInput.backgroundColor,
+  },
+  closeButton: {
+    color: theme.ui.colors.primary,
+    fontSize: 18,
+    textAlign: "right",
   },
 }));

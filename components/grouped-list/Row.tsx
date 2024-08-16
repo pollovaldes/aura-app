@@ -1,10 +1,10 @@
-/*
- * Row.tsx - Created on Sun Jun 23 2024 by Luis Arturo Valdes Romero
- *
- * Copyright (c) 2024 Aura Residuos Sustentables
- */
-
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import RowIcon from "./RowIcon";
@@ -16,6 +16,8 @@ interface BaseProps {
   icon?: keyof typeof MaterialIcons.glyphMap;
   color?: string;
   onPress?: () => void;
+  disabled?: boolean;
+  isLoading?: boolean;
 }
 
 // Properties when trailingType is "default"
@@ -24,33 +26,40 @@ interface DefaultProps extends BaseProps {
   caption?: string;
 }
 
-// Properties when trailingType is not "default"
-interface NonDefaultProps extends BaseProps {
-  trailingType:
-    | "button"
-    | "date-picker"
-    | "date-time-picker"
-    | "time-picker"
-    | "pop-up"
-    | "toggle";
-  caption?: never; // Use `never` to indicate this property shouldn't be used
-}
-
-type ListItemProps = DefaultProps | NonDefaultProps;
-
-const Row = ({ title, caption, icon, color, onPress }: ListItemProps) => {
+const Row = ({
+  title,
+  caption,
+  icon,
+  color,
+  onPress,
+  disabled = false,
+  isLoading,
+}: DefaultProps) => {
   const { styles } = useStyles(stylesheet);
 
   return (
-    <Pressable onPress={onPress}>
+    <Pressable
+      disabled={isLoading || disabled}
+      onPress={onPress}
+      style={({ pressed }) => [
+        { opacity: disabled ? 0.45 : 1 },
+        pressed && { opacity: 0.45 },
+      ]}
+    >
       <View style={styles.container}>
         <View style={styles.leadingContainer}>
           {icon && color && <RowIcon icon={icon} color={color} />}
           <Text style={styles.title}>{title}</Text>
         </View>
         <View style={styles.trailingContainer}>
-          <Text style={styles.caption}>{caption}</Text>
-          <MaterialIcons name="chevron-right" size={25} color="#c4c4c7" />
+          {isLoading ? (
+            <ActivityIndicator />
+          ) : (
+            <>
+              <Text style={styles.caption}>{caption}</Text>
+              <MaterialIcons name="chevron-right" size={25} color="#c4c4c7" />
+            </>
+          )}
         </View>
       </View>
     </Pressable>
