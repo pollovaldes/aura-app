@@ -35,7 +35,7 @@ export default function TruckDetail() {
           </View>
           <GroupedList
             header="Consulta"
-            footer="Ve distintos datos sobre este camión a lo largo del tiempo y actuales."
+            footer="Ve distintos datos a lo largo del tiempo o actuales sobre este camión."
           >
             <Row title="Galeria" trailingType="chevron" />
             <Row
@@ -63,16 +63,8 @@ export default function TruckDetail() {
               trailingType="chevron"
               onPress={() => router.navigate(`/trucks/${truckId}/people`)}
             />
-            <Row
-              title="Registrar carga de gasolina"
-              trailingType="chevron"
-              caption="Sin rol"
-            />
-            <Row
-              title="Solicitar mantenimiento"
-              trailingType="chevron"
-              caption="Sin rol"
-            />
+            <Row title="Registrar carga de gasolina" trailingType="chevron" />
+            <Row title="Solicitar mantenimiento" trailingType="chevron" />
           </GroupedList>
           <View />
         </View>
