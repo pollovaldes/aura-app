@@ -1,5 +1,5 @@
 import FormTitle from "@/app/auth/FormTitle";
-import { FormButton } from "@/components/form/FormButton";
+import { FormButton } from "@/components/Form/FormButton";
 import { useSession } from "@/context/SessionContext";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";

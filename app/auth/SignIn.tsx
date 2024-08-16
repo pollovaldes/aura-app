@@ -1,4 +1,4 @@
-import { FormButton } from "@/components/form/FormButton";
+import { FormButton } from "@/components/Form/FormButton";
 import { supabase } from "@/lib/supabase";
 import { router } from "expo-router";
 import { useState } from "react";

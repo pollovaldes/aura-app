@@ -11,7 +11,7 @@ import ListItem from "../../components/sidebar/ListItem";
 import { Bell, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { useSessionContext } from "@/context/SessionContext";
-import LoadingScreen from "@/components/auth/LoadingScreen";
+import LoadingScreen from "@/components/Auth/LoadingScreen";
 import useUserName from "@/hooks/useUserName";
 
 export default function HomeLayout() {

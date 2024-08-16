@@ -6,7 +6,7 @@
 
 import FormTitle from "@/app/auth/FormTitle";
 import TermsAndPrivacy from "@/app/auth/TermsAndPrivacy";
-import { FormButton } from "@/components/form/FormButton";
+import { FormButton } from "@/components/Form/FormButton";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import Modal from "@/components/Modal/Modal";

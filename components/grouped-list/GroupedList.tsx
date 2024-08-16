@@ -42,6 +42,10 @@ const GroupedList = ({ children, header, footer }: GroupedListProps) => {
         <Text style={styles.headerText}>{header?.toUpperCase()}</Text>
       </View>
 
+      {/*
+
+        Solucion tal vez temporal al error, o no?
+
       {rows.map((row, i) => {
         if (rowsCount === 1) {
           return <View style={getRowStyleFromIndex(i)}>{row}</View>;
@@ -53,6 +57,14 @@ const GroupedList = ({ children, header, footer }: GroupedListProps) => {
 
         return <View style={getRowStyleFromIndex(i)}>{row}</View>;
       })}
+    */}
+
+      {rows.map((row, i) => (
+        <View key={`row-${i}`} style={getRowStyleFromIndex(i)}>
+          {row}
+        </View>
+      ))}
+
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>{footer}</Text>

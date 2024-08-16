@@ -1,7 +1,7 @@
 import { Redirect, Stack } from "expo-router";
 import "@/style/unistyles";
 import { useSession, useSessionContext } from "@/context/SessionContext";
-import LoadingScreen from "@/components/auth/LoadingScreen";
+import LoadingScreen from "@/components/Auth/LoadingScreen";
 
 export const unstable_settings = {
   initialRouteName: "index",
