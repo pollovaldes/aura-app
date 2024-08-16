@@ -4,15 +4,9 @@
  * Copyright (c) 2024 Aura Residuos Sustentables
  */
 
-import {
-  View,
-  Text,
-  StyleSheet,
-  StyleProp,
-  ViewStyle,
-  Platform,
-} from "react-native";
+import { View, Text, StyleProp, ViewStyle, Platform } from "react-native";
 import React, { Children } from "react";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 interface GroupedListProps {
   header?: string;
@@ -23,6 +17,8 @@ interface GroupedListProps {
 const GroupedList = ({ children, header, footer }: GroupedListProps) => {
   const rows = Children.toArray(children);
   const rowsCount = rows.length;
+
+  const { styles } = useStyles(stylesheet);
 
   const getRowStyleFromIndex = (index: number): StyleProp<ViewStyle> => {
     //Single item style
@@ -59,17 +55,16 @@ const GroupedList = ({ children, header, footer }: GroupedListProps) => {
       })}
 
       <View style={styles.footer}>
-        <Text style={styles.headerText}>{footer}</Text>
+        <Text style={styles.footerText}>{footer}</Text>
       </View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const stylesheet = createStyleSheet((theme) => ({
   containerRounded: {
     userSelect: "none",
     paddingHorizontal: 16,
-    marginTop: 25, //TODO: esto no debe de estar hardcodeado
     ...Platform.select({
       web: {
         maxWidth: 400, // Restricts to max 400 points on web
@@ -78,24 +73,24 @@ const styles = StyleSheet.create({
     }),
   },
   first: {
-    backgroundColor: "#ffffff",
+    backgroundColor: theme.ui.colors.card,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     borderBottomWidth: 0.35,
-    borderColor: "#b9b9bb",
+    borderColor: theme.ui.colors.border,
   },
   middle: {
-    backgroundColor: "#ffffff",
+    backgroundColor: theme.ui.colors.card,
     borderBottomWidth: 0.35,
-    borderColor: "#b9b9bb",
+    borderColor: theme.ui.colors.border,
   },
   last: {
-    backgroundColor: "#ffffff",
+    backgroundColor: theme.ui.colors.card,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
   },
   single: {
-    backgroundColor: "#ffffff",
+    backgroundColor: theme.ui.colors.card,
     borderRadius: 10,
   },
   header: {
@@ -108,8 +103,12 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 13,
-    color: "#85858a",
+    color: theme.textPresets.main,
   },
-});
+  footerText: {
+    fontSize: 13,
+    color: theme.textPresets.subtitle,
+  },
+}));
 
 export default GroupedList;

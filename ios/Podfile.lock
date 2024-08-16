@@ -6,18 +6,18 @@ PODS:
   - EXJSONUtils (0.13.1)
   - EXManifests (0.14.3):
     - ExpoModulesCore
-  - Expo (51.0.24):
+  - Expo (51.0.22):
     - ExpoModulesCore
-  - expo-dev-client (4.0.21):
+  - expo-dev-client (4.0.22):
     - EXManifests
     - expo-dev-launcher
     - expo-dev-menu
     - expo-dev-menu-interface
     - EXUpdatesInterface
-  - expo-dev-launcher (4.0.23):
+  - expo-dev-launcher (4.0.24):
     - DoubleConversion
     - EXManifests
-    - expo-dev-launcher/Main (= 4.0.23)
+    - expo-dev-launcher/Main (= 4.0.24)
     - expo-dev-menu
     - expo-dev-menu-interface
     - ExpoModulesCore
@@ -43,7 +43,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - expo-dev-launcher/Main (4.0.23):
+  - expo-dev-launcher/Main (4.0.24):
     - DoubleConversion
     - EXManifests
     - expo-dev-launcher/Unsafe
@@ -72,7 +72,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - expo-dev-launcher/Unsafe (4.0.23):
+  - expo-dev-launcher/Unsafe (4.0.24):
     - DoubleConversion
     - EXManifests
     - expo-dev-menu
@@ -100,10 +100,10 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - expo-dev-menu (5.0.17):
+  - expo-dev-menu (5.0.18):
     - DoubleConversion
-    - expo-dev-menu/Main (= 5.0.17)
-    - expo-dev-menu/ReactNativeCompatibles (= 5.0.17)
+    - expo-dev-menu/Main (= 5.0.18)
+    - expo-dev-menu/ReactNativeCompatibles (= 5.0.18)
     - glog
     - hermes-engine
     - RCT-Folly (= 2024.01.01.00)
@@ -124,7 +124,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - Yoga
   - expo-dev-menu-interface (1.8.3)
-  - expo-dev-menu/Main (5.0.17):
+  - expo-dev-menu/Main (5.0.18):
     - DoubleConversion
     - EXManifests
     - expo-dev-menu-interface
@@ -150,7 +150,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - expo-dev-menu/ReactNativeCompatibles (5.0.17):
+  - expo-dev-menu/ReactNativeCompatibles (5.0.18):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -171,7 +171,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - expo-dev-menu/SafeAreaView (5.0.17):
+  - expo-dev-menu/SafeAreaView (5.0.18):
     - DoubleConversion
     - ExpoModulesCore
     - glog
@@ -193,7 +193,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - expo-dev-menu/Vendored (5.0.17):
+  - expo-dev-menu/Vendored (5.0.18):
     - DoubleConversion
     - expo-dev-menu/SafeAreaView
     - glog
@@ -221,11 +221,11 @@ PODS:
     - ExpoModulesCore
   - ExpoFont (12.0.9):
     - ExpoModulesCore
-  - ExpoHead (3.5.20):
+  - ExpoHead (3.5.18):
     - ExpoModulesCore
   - ExpoKeepAwake (13.0.2):
     - ExpoModulesCore
-  - ExpoModulesCore (1.12.20):
+  - ExpoModulesCore (1.12.19):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1214,7 +1214,7 @@ PODS:
     - React-Core
   - react-native-segmented-control (2.5.2):
     - React-Core
-  - react-native-unistyles (2.9.1):
+  - react-native-unistyles (2.8.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1749,17 +1749,17 @@ SPEC CHECKSUMS:
   EXConstants: 409690fbfd5afea964e5e9d6c4eb2c2b59222c59
   EXJSONUtils: 30c17fd9cc364d722c0946a550dfbf1be92ef6a4
   EXManifests: c1fab4c3237675e7b0299ea8df0bcb14baca4f42
-  Expo: 798848eae1daf13363d69790986146b08d0cf92f
-  expo-dev-client: 3a5d838e562927099488c094acba1818296c6bc6
-  expo-dev-launcher: 0336379dae2faeb2da861c61977a6fbd02ab52f1
-  expo-dev-menu: 11322d81c62f966399ec162383a8488b55cce366
+  Expo: 8b7948e45627e848c2d7b6be7cf5851a505aef19
+  expo-dev-client: 05a436763435d5f50bbdbcc51adf8b0b55d8dabc
+  expo-dev-launcher: 140874617542fa32908b1710775bca3ff4bd66c6
+  expo-dev-menu: 101ecf9a992bc3d51841b31e4301f4ca54600ad4
   expo-dev-menu-interface: be32c09f1e03833050f0ee290dcc86b3ad0e73e4
   ExpoAsset: 323700f291684f110fb55f0d4022a3362ea9f875
   ExpoFileSystem: 80bfe850b1f9922c16905822ecbf97acd711dc51
   ExpoFont: e7f2275c10ca8573c991e007329ad6bf98086485
-  ExpoHead: 3e8eacccdad1256f0643b657d89bf972c27afb1d
+  ExpoHead: 7880300d9c1519420530cf591d333d3f96ff9f6e
   ExpoKeepAwake: 3b8815d9dd1d419ee474df004021c69fdd316d08
-  ExpoModulesCore: 5440e96a8ee014f4fd88e77264985fd0a65f5f8c
+  ExpoModulesCore: 734c1802786b23c9598f4d15273753a779969368
   ExpoSystemUI: d4f065a016cae6721b324eb659cdee4d4cf0cb26
   ExpoWebBrowser: 7595ccac6938eb65b076385fd23d035db9ecdc8e
   EXSplashScreen: fbf0ec78e9cee911df188bf17b4fe51d15a84b87
@@ -1794,7 +1794,7 @@ SPEC CHECKSUMS:
   React-Mapbuffer: 9f68550e7c6839d01411ac8896aea5c868eff63a
   react-native-safe-area-context: a240ad4b683349e48b1d51fed1611138d1bdad97
   react-native-segmented-control: b92809e9111013dfa266e1168ba366d62898d9a4
-  react-native-unistyles: b0584a78fc6c839726e851d0c77aa659f80ef14d
+  react-native-unistyles: b49c9158b68eaca76fef668793fcec3f61949c05
   React-nativeconfig: fa5de9d8f4dbd5917358f8ad3ad1e08762f01dcb
   React-NativeModulesApple: 585d1b78e0597de364d259cb56007052d0bda5e5
   React-perflogger: 7bb9ba49435ff66b666e7966ee10082508a203e8

@@ -1,10 +1,6 @@
-/*
- * _layout.tsx - Created on Sat Jun 29 2024 by Luis Arturo Valdes Romero
- *
- * Copyright (c) 2024 Aura Residuos Sustentables
- */
-
 import { Stack } from "expo-router";
+import { Platform } from "react-native";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function Layout() {
   return (
@@ -12,6 +8,8 @@ export default function Layout() {
       screenOptions={{
         headerShown: true,
         headerLargeTitle: true,
+        headerBlurEffect: "regular",
+        headerTransparent: Platform.OS === "ios" ? true : false,
       }}
     >
       <Stack.Screen name="index" options={{ title: "Perfil" }} />

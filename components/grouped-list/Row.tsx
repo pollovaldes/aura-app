@@ -4,10 +4,11 @@
  * Copyright (c) 2024 Aura Residuos Sustentables
  */
 
-import { View, Text, StyleSheet, Platform, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import React from "react";
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import RowIcon from "./RowIcon";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 // Base properties common to all types
 interface BaseProps {
@@ -38,6 +39,8 @@ interface NonDefaultProps extends BaseProps {
 type ListItemProps = DefaultProps | NonDefaultProps;
 
 const Row = ({ title, caption, icon, color, onPress }: ListItemProps) => {
+  const { styles } = useStyles(stylesheet);
+
   return (
     <Pressable onPress={onPress}>
       <View style={styles.container}>
@@ -56,9 +59,9 @@ const Row = ({ title, caption, icon, color, onPress }: ListItemProps) => {
 
 export default Row;
 
-const styles = StyleSheet.create({
+const stylesheet = createStyleSheet((theme) => ({
   container: {
-    minHeight: 44, // TODO: Make text wrapping exapand container
+    height: 44,
     marginHorizontal: 20,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -74,9 +77,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16.5,
+    color: theme.textPresets.main,
   },
   caption: {
     fontSize: 16.5,
-    color: "#c4c4c7",
+    color: theme.textPresets.main,
   },
-});
+}));

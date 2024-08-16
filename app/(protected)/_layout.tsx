@@ -32,19 +32,24 @@ export default function HomeLayout() {
   }
 
   if (error) {
-    return <Text>Error</Text>;
+    return (
+      <>
+        <Text>Un error inesperado ocurrió.</Text>
+        <Text>{error}</Text>
+      </>
+    );
   }
 
   // Prevent the user from entering other url if he's not registered
   if (!name && path != "/profile") {
-    Platform.OS === "web"
-      ? alert(
-          "Para acceder a todas las funciones de la app, completa tu información personal."
-        )
-      : Alert.alert(
-          "Termina tu registro",
-          "Para acceder a todas las funciones de la app, completa tu información personal."
-        );
+    // Platform.OS === "web"
+    //   ? alert(
+    //       "Para acceder a todas las funciones de la app, completa tu información personal."
+    //     )
+    //   : Alert.alert(
+    //       "Termina tu registro",
+    //       "Para acceder a todas las funciones de la app, completa tu información personal."
+    //     );
     return <Redirect href="/profile" />;
   }
 
