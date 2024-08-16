@@ -1,5 +1,5 @@
 import React from "react";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import {
   Text,
   View,
@@ -11,6 +11,8 @@ import {
 import { Link } from "expo-router";
 import TruckHandler from "@/components/trucks/TrucksMainLogic";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
+import GroupedList from "@/components/grouped-list/GroupedList";
+import Row from "@/components/grouped-list/Row";
 
 export default function TruckDetail() {
   const { trucks } = TruckHandler();
@@ -23,44 +25,66 @@ export default function TruckDetail() {
   return (
     <>
       <Stack.Screen options={{ title: truckTitle }} />
-      <ScrollView
-        style={styles.container}
-        contentInsetAdjustmentBehavior="automatic"
-      >
-        <View style={styles.imageContainer}>
-          <Image
-            style={styles.image}
-            source={{ uri: "https://placehold.co/2048x2048.png" }}
-          />
+      <ScrollView contentInsetAdjustmentBehavior="automatic">
+        <View style={styles.container}>
+          <View style={styles.imageContainer}>
+            <Image
+              style={styles.image}
+              source={{ uri: "https://placehold.co/2048x2048.png" }}
+            />
+          </View>
+          <GroupedList
+            header="Consulta"
+            footer="Ve distintos datos sobre este camión a lo largo del tiempo y actuales."
+          >
+            <Row title="Galeria" trailingType="chevron" />
+            <Row
+              title="Ficha técnica"
+              trailingType="chevron"
+              onPress={() => router.navigate(`/trucks/${truckId}/details`)}
+            />
+            <Row
+              title="Guantera digital"
+              trailingType="chevron"
+              onPress={() =>
+                router.navigate(`/trucks/${truckId}/documentation`)
+              }
+            />
+            <Row title="Histórico de rutas" trailingType="chevron" />
+            <Row
+              title="Histórico de cargas de gasolina"
+              trailingType="chevron"
+              onPress={() => router.navigate(`/trucks/${truckId}/gasoline`)}
+            />
+          </GroupedList>
+          <GroupedList header="Acciones" footer="Alguna descripción.">
+            <Row
+              title="Administrar personas"
+              trailingType="chevron"
+              onPress={() => router.navigate(`/trucks/${truckId}/people`)}
+            />
+            <Row
+              title="Registrar carga de gasolina"
+              trailingType="chevron"
+              caption="Sin rol"
+            />
+            <Row
+              title="Solicitar mantenimiento"
+              trailingType="chevron"
+              caption="Sin rol"
+            />
+          </GroupedList>
+          <View />
         </View>
-        <Link href={`/trucks/${truckId}/details`} asChild>
-          <Pressable style={styles.button}>
-            <Text style={styles.buttonText}>Detalles</Text>
-          </Pressable>
-        </Link>
-        <Link href={`/trucks/${truckId}/documentation`} asChild>
-          <Pressable style={styles.button}>
-            <Text style={styles.buttonText}>Documentación</Text>
-          </Pressable>
-        </Link>
-        <Link href={`/trucks/${truckId}/gasoline`} asChild>
-          <Pressable style={styles.button}>
-            <Text style={styles.buttonText}>Gasolina</Text>
-          </Pressable>
-        </Link>
-        <Link href={`/trucks/${truckId}/peopleAdmin`} asChild>
-          <Pressable style={styles.button}>
-            <Text style={styles.buttonText}>Administrar Personas</Text>
-          </Pressable>
-        </Link>
       </ScrollView>
     </>
   );
 }
 
-const stylesheet = createStyleSheet({
+const stylesheet = createStyleSheet((theme) => ({
   container: {
     flex: 1,
+    gap: theme.marginsComponents.section,
   },
   imageContainer: {},
   title: {
@@ -89,4 +113,4 @@ const stylesheet = createStyleSheet({
     fontWeight: "bold",
     color: "#000", // Texto negro
   },
-});
+}));
