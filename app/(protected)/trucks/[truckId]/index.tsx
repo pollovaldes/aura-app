@@ -1,27 +1,21 @@
 import React from "react";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import {
-  Text,
-  View,
-  StyleSheet,
-  Pressable,
-  Image,
-  ScrollView,
+  View, Image,
+  ScrollView
 } from "react-native";
-import { Link } from "expo-router";
 import TruckHandler from "@/components/trucks/TrucksMainLogic";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import {
-  BookMarked,
   BookOpen,
   Clipboard,
   Fuel,
   Images,
   UsersRoundIcon,
   Waypoints,
-  Wrench,
+  Wrench
 } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 
