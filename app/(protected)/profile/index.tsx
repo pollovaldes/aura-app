@@ -12,6 +12,7 @@ import Row from "@/components/grouped-list/Row";
 import Modal from "@/components/Modal/Modal";
 import useUserName from "@/hooks/useUserName";
 import { supabase } from "@/lib/supabase";
+import { PersonStanding } from "lucide-react-native";
 import { useState } from "react";
 import { ScrollView, Text, TextInput, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -77,10 +78,10 @@ export default function Page() {
             trailingType="chevron"
             disabled={isLoading}
             isLoading={isLoading}
-            caption={name ? "Completo" : "Sin completar"}
+            caption={name ? "Completo ✅" : "Sin completar ⚠️"}
             onPress={() => setModal(true)}
           />
-          <Row title="Rol" trailingType="chevron" caption="Sin rol" />
+          <Row title="Rol" trailingType="chevron" caption="Sin rol ⚠️" />
         </GroupedList>
         <GroupedList
           header="Seguridad y acceso"

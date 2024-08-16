@@ -54,7 +54,7 @@
 //   },
 // } as const;
 
-const colorPalette = {
+export const colorPalette = {
   neutral: {
     "50": "#fafafa",
     "100": "#f5f5f5",

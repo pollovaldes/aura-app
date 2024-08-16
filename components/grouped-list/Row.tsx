@@ -5,7 +5,7 @@ import {
   Pressable,
   ActivityIndicator,
 } from "react-native";
-import React from "react";
+import React, { ReactNode } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import RowIcon from "./RowIcon";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -13,7 +13,7 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 // Base properties common to all types
 interface BaseProps {
   title: string;
-  icon?: keyof typeof MaterialIcons.glyphMap;
+  icon?: ReactNode;
   color?: string;
   onPress?: () => void;
   disabled?: boolean;
@@ -30,7 +30,7 @@ const Row = ({
   title,
   caption,
   icon,
-  color,
+  color = "white",
   onPress,
   disabled = false,
   isLoading,
@@ -48,7 +48,7 @@ const Row = ({
     >
       <View style={styles.container}>
         <View style={styles.leadingContainer}>
-          {icon && color && <RowIcon icon={icon} color={color} />}
+          {icon && color && <RowIcon icon={icon} backgroundColor={color} />}
           <Text style={styles.title}>{title}</Text>
         </View>
         <View style={styles.trailingContainer}>
@@ -70,7 +70,7 @@ export default Row;
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
-    height: 44,
+    height: 50,
     marginHorizontal: 20,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -85,7 +85,7 @@ const stylesheet = createStyleSheet((theme) => ({
     alignItems: "center",
   },
   title: {
-    fontSize: 16.5,
+    fontSize: 17.5,
     color: theme.textPresets.main,
   },
   caption: {

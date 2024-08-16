@@ -13,6 +13,17 @@ import TruckHandler from "@/components/trucks/TrucksMainLogic";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
+import {
+  BookMarked,
+  BookOpen,
+  Clipboard,
+  Fuel,
+  Images,
+  UsersRoundIcon,
+  Waypoints,
+  Wrench,
+} from "lucide-react-native";
+import { colorPalette } from "@/style/themes";
 
 export default function TruckDetail() {
   const { trucks } = TruckHandler();
@@ -37,23 +48,39 @@ export default function TruckDetail() {
             header="Consulta"
             footer="Ve distintos datos a lo largo del tiempo o actuales sobre este camión."
           >
-            <Row title="Galeria" trailingType="chevron" />
+            <Row
+              title="Galeria"
+              trailingType="chevron"
+              icon={<Images size={24} color="white" />}
+              color={colorPalette.cyan[500]}
+            />
             <Row
               title="Ficha técnica"
               trailingType="chevron"
               onPress={() => router.navigate(`/trucks/${truckId}/details`)}
+              icon={<Clipboard size={24} color="white" />}
+              color={colorPalette.emerald[500]}
             />
             <Row
               title="Guantera digital"
               trailingType="chevron"
+              icon={<BookOpen size={24} color="white" />}
+              color={colorPalette.orange[500]}
               onPress={() =>
                 router.navigate(`/trucks/${truckId}/documentation`)
               }
             />
-            <Row title="Histórico de rutas" trailingType="chevron" />
+            <Row
+              title="Histórico de rutas"
+              trailingType="chevron"
+              icon={<Waypoints size={24} color="white" />}
+              color={colorPalette.lime[500]}
+            />
             <Row
               title="Histórico de cargas de gasolina"
               trailingType="chevron"
+              icon={<Fuel size={24} color="white" />}
+              color={colorPalette.red[500]}
               onPress={() => router.navigate(`/trucks/${truckId}/gasoline`)}
             />
           </GroupedList>
@@ -61,10 +88,22 @@ export default function TruckDetail() {
             <Row
               title="Administrar personas"
               trailingType="chevron"
+              icon={<UsersRoundIcon size={24} color="white" />}
+              color={colorPalette.sky[500]}
               onPress={() => router.navigate(`/trucks/${truckId}/people`)}
             />
-            <Row title="Registrar carga de gasolina" trailingType="chevron" />
-            <Row title="Solicitar mantenimiento" trailingType="chevron" />
+            <Row
+              title="Registrar carga de gasolina"
+              trailingType="chevron"
+              icon={<Fuel size={24} color="white" />}
+              color={colorPalette.red[500]}
+            />
+            <Row
+              title="Solicitar mantenimiento"
+              trailingType="chevron"
+              icon={<Wrench size={24} color="white" />}
+              color={colorPalette.green[500]}
+            />
           </GroupedList>
           <View />
         </View>
