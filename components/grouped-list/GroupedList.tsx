@@ -32,18 +32,22 @@ const GroupedList = ({ children, header, footer }: GroupedListProps) => {
 
   return (
     <View style={styles.containerRounded}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>{header?.toUpperCase()}</Text>
-      </View>
+      {header && (
+        <View style={styles.header}>
+          <Text style={styles.headerText}>{header?.toUpperCase()}</Text>
+        </View>
+      )}
+
       {rows.map((row, i) => (
         <View key={`row-${i}`} style={getRowStyleFromIndex(i)}>
           {row}
         </View>
       ))}
-
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>{footer}</Text>
-      </View>
+      {footer && (
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>{footer}</Text>
+        </View>
+      )}
     </View>
   );
 };

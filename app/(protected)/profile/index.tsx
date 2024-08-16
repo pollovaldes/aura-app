@@ -109,16 +109,16 @@ export default function Page() {
           <Row title="Apple" trailingType="chevron" caption="Sin vincular" />
           <Row title="Google" trailingType="chevron" caption="Sin vincular" />
         </GroupedList>
-        <GroupedList
-          header="Zona de peligro"
-          footer="Cerrar tu sesión no eliminará nada, pero deberás iniciar sesión de nuevo."
-        >
-          <Row title="Eliminar cuenta" trailingType="chevron" />
+
+        <GroupedList>
           <Row title="Cerrar sesión" trailingType="chevron" onPress={signOut} />
         </GroupedList>
         <GroupedList header="Créditos y extras" footer="">
           <Row title="Licensias de código abierto" trailingType="chevron" />
           <Row title="Reporta un error" trailingType="chevron" />
+        </GroupedList>
+        <GroupedList header="Zona de peligro">
+          <Row title="Eliminar cuenta" trailingType="chevron" />
         </GroupedList>
         <View style={styles.termsAndPrivacy}>
           <TermsAndPrivacy />
