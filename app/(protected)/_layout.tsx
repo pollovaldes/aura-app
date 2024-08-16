@@ -5,7 +5,7 @@
  */
 
 import { Redirect, Slot, Tabs, usePathname } from "expo-router";
-import { Text, View, useWindowDimensions } from "react-native";
+import { Alert, Platform, Text, View, useWindowDimensions } from "react-native";
 import Sidebar from "../../components/sidebar/Sidebar";
 import ListItem from "../../components/sidebar/ListItem";
 import { Bell, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
@@ -37,6 +37,14 @@ export default function HomeLayout() {
 
   // Prevent the user from entering other url if he's not registered
   if (!name && path != "/profile") {
+    Platform.OS === "web"
+      ? alert(
+          "Para acceder a todas las funciones de la app, completa tu información personal."
+        )
+      : Alert.alert(
+          "Termina tu registro",
+          "Para acceder a todas las funciones de la app, completa tu información personal."
+        );
     return <Redirect href="/profile" />;
   }
 
