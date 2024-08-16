@@ -1,12 +1,5 @@
-/*
- * RowIcon.tsx - Created on Sun Jun 23 2024 by Luis Arturo Valdes Romero
- *
- * Copyright (c) 2024 Aura Residuos Sustentables
- */
-
 import { View, Text, StyleSheet } from "react-native";
 import React, { ReactNode } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
 
 interface RowIconProps {
   icon: ReactNode;

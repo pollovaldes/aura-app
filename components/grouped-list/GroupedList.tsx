@@ -1,9 +1,3 @@
-/*
- * GroupedList.tsx - Created on Sun Jun 23 2024 by Luis Arturo Valdes Romero
- *
- * Copyright (c) 2024 Aura Residuos Sustentables
- */
-
 import { View, Text, StyleProp, ViewStyle, Platform } from "react-native";
 import React, { Children } from "react";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -41,30 +35,11 @@ const GroupedList = ({ children, header, footer }: GroupedListProps) => {
       <View style={styles.header}>
         <Text style={styles.headerText}>{header?.toUpperCase()}</Text>
       </View>
-
-      {/*
-
-        Solucion tal vez temporal al error, o no?
-
-      {rows.map((row, i) => {
-        if (rowsCount === 1) {
-          return <View style={getRowStyleFromIndex(i)}>{row}</View>;
-        }
-
-        if (rowsCount === 2) {
-          return <View style={getRowStyleFromIndex(i)}>{row}</View>;
-        }
-
-        return <View style={getRowStyleFromIndex(i)}>{row}</View>;
-      })}
-    */}
-
       {rows.map((row, i) => (
         <View key={`row-${i}`} style={getRowStyleFromIndex(i)}>
           {row}
         </View>
       ))}
-
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>{footer}</Text>

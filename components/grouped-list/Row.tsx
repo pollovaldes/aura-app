@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, Pressable, ActivityIndicator } from "react-native";
 import React, { ReactNode } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import RowIcon from "./RowIcon";
