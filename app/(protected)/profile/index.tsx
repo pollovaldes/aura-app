@@ -12,7 +12,6 @@ import Row from "@/components/grouped-list/Row";
 import Modal from "@/components/Modal/Modal";
 import useUserName from "@/hooks/useUserName";
 import { supabase } from "@/lib/supabase";
-import { PersonStanding } from "lucide-react-native";
 import { useState } from "react";
 import { ScrollView, Text, TextInput, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
