@@ -20,13 +20,13 @@ export default function HomeLayout() {
   const { width } = useWindowDimensions();
   const widthThreshold = 600; // TODO: Move dimensions to a theme file.
   const { isLoading: isSessionLoading, error, session } = useSessionContext();
-  const { isLoading: isUserNameLoading, name, registered } = useRegistration();
+  const { isLoading: isUserNameLoading, registered } = useRegistration();
 
   const path = usePathname();
 
   useEffect(() => {
-    console.log(registered);
-  }, [registered]);
+    console.log("Usuario está cargando: ", isUserNameLoading);
+  }, [isUserNameLoading]);
 
   if (isSessionLoading || isUserNameLoading) {
     return <LoadingScreen />;
@@ -43,11 +43,6 @@ export default function HomeLayout() {
         <Text>{error}</Text>
       </>
     );
-  }
-
-  // Prevent the user from entering other url if he's not registered
-  if (!registered && isUserNameLoading) {
-    return <Redirect href="/profile" />;
   }
 
   //Show a web-like sidebar for occupying max space

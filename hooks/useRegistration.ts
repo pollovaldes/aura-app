@@ -74,7 +74,7 @@ export default function useRegistration() {
     email,
     phone,
     registered,
-    isLoading: isLoading,
+    isLoading: sessionLoading || isLoading,
     error: sessionError || error,
   };
 }
