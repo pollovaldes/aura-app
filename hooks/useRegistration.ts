@@ -9,6 +9,7 @@ export default function useRegistration() {
     error: sessionError,
     session,
   } = useSessionContext();
+
   const [name, setName] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [phone, setPhone] = useState<string | null>(null);
@@ -66,7 +67,11 @@ export default function useRegistration() {
   };
 
   useEffect(() => {
-    fetchUser();
+    if (session) {
+      fetchUser();
+    } else {
+      setIsLoading(false);
+    }
   }, [session]);
 
   return {
