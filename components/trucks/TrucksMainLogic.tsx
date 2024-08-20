@@ -5,9 +5,14 @@ import { supabase } from "@/lib/supabase";
 
 type Truck = {
   id: number;
+  numero_economico: string;
   marca: string;
-  submarca: string;
-  modelo: number;
+  sub_marca: string;
+  modelo: string;
+  no_serie: string;
+  placa: string;
+  poliza: string;
+  id_usuario: string;
 }
 
 export default function TruckHandler() {
@@ -17,7 +22,7 @@ export default function TruckHandler() {
   useEffect(() => {
     const fetchTrucks = async () => {
       const { data, error } = await supabase
-        .from("Trucks") // Reemplaza 'testSupa' con el nombre de tu tabla si es necesario
+        .from("camiones") // Reemplaza 'testSupa' con el nombre de tu tabla si es necesario
         .select("*");
 
       if (error) {
@@ -32,10 +37,10 @@ export default function TruckHandler() {
 
     // Configurar la suscripción para escuchar los cambios en la tabla
     const subscription = supabase
-      .channel("public:Trucks") // Nombre del canal arbitrario
+      .channel("public:camiones") // Nombre del canal arbitrario
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "Trucks" }, // Especifica el esquema y la tabla
+        { event: "*", schema: "public", table: "camiones" }, // Especifica el esquema y la tabla
         (payload) => {
           console.log("Cambio en la tabla:", payload);
           // Manejar el evento según el tipo de cambio

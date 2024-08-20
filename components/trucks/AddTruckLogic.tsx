@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 type Person = {
-  user_Id: number;
-  name: string;
-  age: number;
+  id: string;
+  nombre: string;
+  apellido_paterno: string;
+  apellido_materno: string;
 }
 
 export function useAddTruck() {
@@ -19,7 +20,7 @@ export function useAddTruck() {
 
   useEffect(() => {
     async function fetchDrivers() {
-      const { data, error } = await supabase.from("UsersTest").select("*");
+      const { data, error } = await supabase.from("profiles").select("*");
       if ( error ) {
         console.error( "Error al obtener los conductores:", error );
       } else {
@@ -32,7 +33,7 @@ export function useAddTruck() {
     .channel("public:People")
     .on(
       "postgres_changes",
-      { event: "*", schema: "public", table: "UsersTest" },
+      { event: "*", schema: "public", table: "profiles" },
       (payload) => {
         console.log("Table People change:", payload);
         fetchDrivers();
@@ -56,8 +57,8 @@ export function useAddTruck() {
   const handleCreateTruck = async () => {
     setLoading(true);
     try {
-      const { error } = await supabase.from("Trucks").insert([
-        { marca, submarca, modelo: parseInt(modelo), name: selectedDriver?.name },
+      const { error } = await supabase.from("camiones").insert([
+        { marca, submarca, modelo, name: selectedDriver?.nombre },
       ]);
       if (error) {
         console.error("Error al crear camión:", error);

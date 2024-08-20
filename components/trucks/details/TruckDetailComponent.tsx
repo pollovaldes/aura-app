@@ -7,11 +7,15 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 // Define the type for the truck data
 type Truck = {
-  truckId: number;
+  id: number;
+  numero_economico: string;
   marca: string;
-  modelo: number;
-  submarca: string;
-  // Agrega otros campos si es necesario
+  sub_marca: string;
+  modelo: string;
+  no_serie: string;
+  placa: string;
+  poliza: string;
+  id_usuario: string;
 };
 
 type Props = {
@@ -42,9 +46,12 @@ export default function TruckDetailComponent({ truck, loading }: Props) {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ title: `${truck.marca} ${truck.submarca}` }} />
-      <Text style={styles.title}>{`${truck.marca} ${truck.submarca}`}</Text>
+      <Stack.Screen options={{ title: `${truck.marca} ${truck.sub_marca}` }} />
+      <Text style={styles.title}>{`${truck.numero_economico} ${truck.marca} ${truck.sub_marca}`}</Text>
       <Text style={styles.details}>{`Modelo: ${truck.modelo}`}</Text>
+      <Text style={styles.details}>{`Numero de Serie: ${truck.no_serie}`}</Text>
+      <Text style={styles.details}>{`Placa: ${truck.placa}`}</Text>
+      <Text style={styles.details}>{`Poliza: ${truck.poliza}`}</Text>
       {/* Agrega más detalles si es necesario */}
     </View>
   );

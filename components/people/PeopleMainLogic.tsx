@@ -38,7 +38,7 @@ export default function PeopleMainLogic() {
       .channel("public:People")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "UsersTest" },
+        { event: "*", schema: "public", table: "profiles" },
         (payload) => {
           console.log("Table Person View change:", payload);
           fetchPeople();

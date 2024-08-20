@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Alert, Text, TextInput, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
-export default function RegistrationForm() {
+export default function RegistrationForm({ closeModal }: { closeModal: () => void }) {
   const { styles } = useStyles(stylesheet);
 
   const [name, setName] = useState("");
@@ -44,6 +44,7 @@ export default function RegistrationForm() {
 
       Alert.alert("Éxito", "Perfil actualizado");
       setLoading(false);
+      closeModal();
     }
   };
 
@@ -86,7 +87,6 @@ export default function RegistrationForm() {
           isLoading={loading}
         />
         <FormButton title="Cerrar sesión" onPress={signOut} />
-        <Text>{JSON.stringify(data)}</Text>
       </View>
     </View>
   );

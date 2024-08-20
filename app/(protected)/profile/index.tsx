@@ -6,6 +6,7 @@
 
 import FormTitle from "@/app/auth/FormTitle";
 import TermsAndPrivacy from "@/app/auth/TermsAndPrivacy";
+import RegistrationForm from "@/assets/registrationForm/RegistrationForm";
 import { FormButton } from "@/components/Form/FormButton";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
@@ -34,37 +35,9 @@ export default function Page() {
           <Text style={styles.closeButton} onPress={() => setModal(false)}>
             Cerrar
           </Text>
-          <View style={styles.section}>
-            <View style={styles.group}>
-              <FormTitle title="Finaliza tu registro" />
-              <Text style={styles.subtitle}>
-                Ya tienes una cuenta, ahora ayúdanos a conocerte y llena tus
-                datos personales.
-              </Text>
-            </View>
-            <View style={styles.group}>
-              <TextInput
-                placeholder="Nombre"
-                inputMode="text"
-                style={styles.textInput}
-                placeholderTextColor={styles.textInput.placehoolderTextColor}
-                autoCorrect={false}
-              />
-              <TextInput
-                placeholder="Apellido paterno"
-                inputMode="text"
-                style={styles.textInput}
-                placeholderTextColor={styles.textInput.placehoolderTextColor}
-              />
-              <TextInput
-                placeholder="Apellido paterno"
-                inputMode="text"
-                style={styles.textInput}
-                placeholderTextColor={styles.textInput.placehoolderTextColor}
-              />
-              <FormButton title="Guardar" onPress={() => setModal(false)} />
-            </View>
-          </View>
+
+          <RegistrationForm closeModal={() => setModal(false)}/>
+          
         </View>
       </Modal>
       <View style={styles.container}>

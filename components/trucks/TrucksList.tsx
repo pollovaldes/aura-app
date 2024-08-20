@@ -54,7 +54,7 @@ export default function TrucksList() {
                   </View>
                   <Text
                     style={styles.itemText}
-                  >{`${item.marca} ${item.submarca} (${item.modelo})`}</Text>
+                  >{`${item.marca} ${item.sub_marca} (${item.modelo})`}</Text>
                 </View>
                 <View style={styles.chevronView}>
                   <ChevronRight color={styles.chevron.color} />

@@ -22,7 +22,7 @@ export default function TruckDetail() {
   const { styles } = useStyles(stylesheet);
 
   const truck = trucks.find((truck) => truck.id === parseInt(truckId!));
-  const truckTitle = `${truck?.marca ?? ""} ${truck?.submarca ?? ""} ${truck?.modelo ?? ""}`;
+  const truckTitle = `${truck?.marca ?? ""} ${truck?.sub_marca ?? ""} ${truck?.modelo ?? ""}`;
 
   return (
     <>

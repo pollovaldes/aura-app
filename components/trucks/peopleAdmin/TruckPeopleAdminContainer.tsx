@@ -21,14 +21,14 @@ export default function TruckPeopleAdminContainer() {
     if (truckId) {
       try {
         const { data, error } = await supabase
-          .from("Trucks")
-          .select("name")
+          .from("profiles")
+          .select("nombre")
           .eq("id", parseInt(truckId)) // Ensure id is converted to number
           .single();
 
         if (error) throw error;
 
-        setUser(data.name);
+        setUser(data.nombre);
       } catch (error) {
       } finally {
         setLoading(false);

@@ -4,11 +4,15 @@ import { supabase } from "@/lib/supabase";
 import TruckDetailComponent from "./TruckDetailComponent";
 
 type Truck = {
-  truckId: number;
+  id: number;
+  numero_economico: string;
   marca: string;
-  modelo: number;
-  submarca: string;
-  // Agrega otros campos si es necesario
+  sub_marca: string;
+  modelo: string;
+  no_serie: string;
+  placa: string;
+  poliza: string;
+  id_usuario: string;
 };
 
 export default function TruckDetailContainer() {
@@ -27,9 +31,9 @@ export default function TruckDetailContainer() {
     if (truckId) {
       try {
         const { data, error } = await supabase
-          .from("Trucks")
+          .from("camiones")
           .select("*")
-          .eq("id", parseInt(truckId)) // Ensure id is converted to number
+          .eq("id", truckId) // Ensure id is converted to number
           .single();
 
         if (error) throw error;
