@@ -84,6 +84,6 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   caption: {
     fontSize: 16.5,
-    color: theme.textPresets.main,
+    color: theme.textPresets.subtitle,
   },
 }));

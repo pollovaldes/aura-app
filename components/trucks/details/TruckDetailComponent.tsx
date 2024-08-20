@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from "react-native";
 import { useRouter, useLocalSearchParams, Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase"; // Asegúrate de tener configurado supabase correctamente
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
+import GroupedList from "@/components/grouped-list/GroupedList";
+import Row from "@/components/grouped-list/Row";
 
 // Define the type for the truck data
 type Truck = {
@@ -45,23 +47,35 @@ export default function TruckDetailComponent({ truck, loading }: Props) {
   }
 
   return (
-    <View style={styles.container}>
-      <Stack.Screen options={{ title: `${truck.marca} ${truck.sub_marca}` }} />
-      <Text style={styles.title}>{`${truck.numero_economico} ${truck.marca} ${truck.sub_marca}`}</Text>
-      <Text style={styles.details}>{`Modelo: ${truck.modelo}`}</Text>
-      <Text style={styles.details}>{`Numero de Serie: ${truck.no_serie}`}</Text>
-      <Text style={styles.details}>{`Placa: ${truck.placa}`}</Text>
-      <Text style={styles.details}>{`Poliza: ${truck.poliza}`}</Text>
-      {/* Agrega más detalles si es necesario */}
-    </View>
+    <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <View style={styles.container}>
+        <Stack.Screen options={{ title: `${truck.marca} ${truck.sub_marca}` }} />
+        <GroupedList
+            header="Detalles"
+            footer="Si necesitas más información, contacta a tu administrador y si vez algun error contacta a tu supervisor, solo los administradores pueden editar la información del camion."
+          >
+            <Row title="Numero Economico" trailingType="chevron" caption={`${truck.numero_economico}`} />
+            <Row title="Marca" trailingType="chevron" caption={`${truck.marca}`} />
+            <Row title="Sub Marca" trailingType="chevron" caption={`${truck.sub_marca}`} />
+            <Row title="Modelo" trailingType="chevron" caption={`${truck.modelo}`} />
+            <Row
+              title="No de Serie"
+              trailingType="chevron"
+              caption={`${truck.no_serie.length > 8 ? truck.no_serie.substring(0, 8) + '...' : truck.no_serie}`}
+            />
+            <Row title="Placa" trailingType="chevron" caption={`${truck.placa}`} />
+            <Row title="Poliza" trailingType="chevron" caption={`${truck.poliza}`} />
+          </GroupedList>
+        {/* Agrega más detalles si es necesario */}
+      </View>
+    </ScrollView>
   );
 }
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    gap: theme.marginsComponents.section,
+    marginTop: theme.marginsComponents.section, //Excepción
   },
   loadingContainer: {
     flex: 1,
