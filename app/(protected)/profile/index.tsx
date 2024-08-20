@@ -11,7 +11,7 @@ import { FormButton } from "@/components/Form/FormButton";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import Modal from "@/components/Modal/Modal";
-import useUserName from "@/hooks/useUserName";
+import useRegistration from "@/hooks/useRegistration";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
 import { ScrollView, Text, TextInput, View } from "react-native";
@@ -26,7 +26,7 @@ export default function Page() {
     let { error } = await supabase.auth.signOut();
   };
 
-  const { name, isLoading } = useUserName();
+  const { name, email, phone, registered, isLoading } = useRegistration();
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
@@ -59,7 +59,7 @@ export default function Page() {
           header="Seguridad y acceso"
           footer="Explora las opciones disponibles para proteger tu cuenta. Considera que las opciones de correo electrónico y contraseña solo estarán activas si la identidad de correo electrónico está vinculada."
         >
-          <Row title="Correo electrónico" trailingType="chevron" />
+          <Row title="Correo electrónico" trailingType="chevron" caption={email ? "Completo ✅" : "Sin completar ⚠️"}/>
           <Row title="Contraseña" trailingType="chevron" />
           <Row title="Dispositivos y sesiones" trailingType="chevron" />
           <Row title="2FA" trailingType="chevron" caption="No configurado" />

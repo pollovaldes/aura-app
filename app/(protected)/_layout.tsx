@@ -12,14 +12,14 @@ import { Bell, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { useSessionContext } from "@/context/SessionContext";
 import LoadingScreen from "@/components/Auth/LoadingScreen";
-import useUserName from "@/hooks/useUserName";
+import useRegistration from "@/hooks/useRegistration";
 
 export default function HomeLayout() {
   const { styles } = useStyles(stylesheet);
   const { width } = useWindowDimensions();
   const widthThreshold = 600; // TODO: Move dimensions to a theme file.
   const { isLoading: isSessionLoading, error, session } = useSessionContext();
-  const { isLoading: isUserNameLoading, name } = useUserName();
+  const { isLoading: isUserNameLoading, name, registered } = useRegistration();
 
   const path = usePathname();
 
@@ -41,7 +41,7 @@ export default function HomeLayout() {
   }
 
   // Prevent the user from entering other url if he's not registered
-  if (!name && path != "/profile") {
+  if (!registered && path != "/profile") {
     // Platform.OS === "web"
     //   ? alert(
     //       "Para acceder a todas las funciones de la app, completa tu información personal."
@@ -59,17 +59,17 @@ export default function HomeLayout() {
       <View style={styles.container}>
         <Sidebar>
           <ListItem
-            href={name ? "trucks" : null}
+            href={registered ? "trucks" : null}
             title="Camiones"
             iconComponent={<Truck color={styles.icon.color} size={19} />}
           />
           <ListItem
-            href={name ? "people" : null}
+            href={registered ? "people" : null}
             title="Personas"
             iconComponent={<UsersRound color={styles.icon.color} size={19} />}
           />
           <ListItem
-            href={name ? "notifications" : null}
+            href={registered ? "notifications" : null}
             title="Notificaciones"
             iconComponent={<Bell color={styles.icon.color} size={19} />}
           />
@@ -91,7 +91,7 @@ export default function HomeLayout() {
       <Tabs.Screen
         name="trucks"
         options={{
-          href: !name ? null : undefined,
+          href: !registered ? null : undefined,
           title: "Camiones",
           tabBarIcon: ({ color }) => <Truck color={color} />,
         }}
@@ -99,7 +99,7 @@ export default function HomeLayout() {
       <Tabs.Screen
         name="people"
         options={{
-          href: !name ? null : undefined,
+          href: !registered ? null : undefined,
           title: "Personas",
           tabBarIcon: ({ color }) => <UsersRound color={color} />,
         }}
@@ -107,7 +107,7 @@ export default function HomeLayout() {
       <Tabs.Screen
         name="notifications"
         options={{
-          href: !name ? null : undefined,
+          href: !registered ? null : undefined,
           title: "Notificaciones",
           tabBarIcon: ({ color }) => <Bell color={color} />,
         }}

@@ -7,9 +7,10 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import useDatabaseOperations from "@/hooks/useDatabaseOperations";
 import { useEffect } from "react";
+import { useUser } from "@/context/SessionContext";
 
 export default function Page() {
-  const { executeOperation, isLoading, error } = useDatabaseOperations();
+
 
   return (
     <View style={styles.container}>
