@@ -3,8 +3,10 @@ import { supabase } from "@/lib/supabase";
 import { useSession, useSessionContext } from "@/context/SessionContext";
 
 type Person = {
-  personId: string;
-  full_name: string;
+  id: string;
+  nombre: string;
+  apellido_paterno: string;
+  apellido_materno: string;
 }
 
 export default function PeopleMainLogic() {
@@ -19,7 +21,7 @@ export default function PeopleMainLogic() {
       if (session) {
         const { data, error } = await supabase
           .from("profiles")
-          .select("full_name, personId")
+          .select("id, nombre, apellido_paterno, apellido_materno")
 
         if (error) {
           console.error(error);

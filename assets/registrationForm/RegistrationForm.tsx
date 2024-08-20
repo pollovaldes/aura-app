@@ -27,7 +27,9 @@ export default function RegistrationForm() {
       const { data, error } = await supabase
         .from("profiles")
         .update({
-          full_name: `${name.trim()} ${firstLastName.trim()} ${secondLastName.trim()}`,
+          nombre: name.trim(),
+          apellido_paterno: firstLastName.trim(),
+          apellido_materno: secondLastName.trim(),
         })
         .eq("id", session.user.id)
         .single();

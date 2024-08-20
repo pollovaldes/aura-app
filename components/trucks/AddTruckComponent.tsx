@@ -90,7 +90,7 @@ function AddTruckComponent({ visible, onClose }: AddTruckComponentProps) {
           {dropdownVisible && (
             <FlatList
               data={drivers}
-              keyExtractor={(item) => item.personId.toString()}
+              keyExtractor={(item) => item.user_Id.toString()}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={styles.dropdownItem}

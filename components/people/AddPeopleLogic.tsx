@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 type Person = {
-  personId: number;
+  user_Id: number;
   name: string;
   age: number;
 }

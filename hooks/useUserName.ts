@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { useSessionContext } from "../context/SessionContext";
 
-export default function useUserName() {
+export default function useUserName() {     //Cambiar a useRegistrado
   const {
     isLoading: sessionLoading,
     error: sessionError,
@@ -17,7 +17,7 @@ export default function useUserName() {
       try {
         const { data, error } = await supabase
           .from("profiles")
-          .select("full_name")
+          .select("nombre")
           .eq("id", session.user.id)
           .single();
 
@@ -25,7 +25,7 @@ export default function useUserName() {
           setError("Error fetching profile");
           console.error("Error fetching profile", error);
         } else {
-          setName(data?.full_name?.trim() || null);
+          setName(data?.nombre?.trim() || null);
         }
       } catch (fetchError) {
         setError("An unexpected error occurred while fetching the profile.");

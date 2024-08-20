@@ -28,13 +28,13 @@ export default function PeopleMainScreen() {
     <>
       <FlatList
         data={people}
-        keyExtractor={(item) => item.personId.toString()}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <Link href={{ pathname: `/people/${item.personId}` }} asChild>
+          <Link href={{ pathname: `/people/${item.id}` }} asChild>
             <Pressable style={styles.itemContainer}>
               <Text
                 style={styles.itemText}
-              >{`${item.full_name}`}</Text>
+              >{`${item.nombre, item.apellido_paterno, item.apellido_paterno}`}</Text>
             </Pressable>
           </Link>
         )}
