@@ -71,12 +71,12 @@ export default function Page() {
           <Row
             title="Correo electrónico"
             trailingType="chevron"
-            caption="Vinculado"
+            caption={email ? "Vinculado" : "Sin vincular"}
           />
           <Row
             title="Número de celular"
             trailingType="chevron"
-            caption="Sin vincular"
+            caption={phone ? "Vinculado" : "Sin vincular"}
           />
           <Row title="Apple" trailingType="chevron" caption="Sin vincular" />
           <Row title="Google" trailingType="chevron" caption="Sin vincular" />
