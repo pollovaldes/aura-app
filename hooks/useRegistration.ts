@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
-import { useSessionContext, useUser } from "../context/SessionContext";
+import { useSessionContext } from "../context/SessionContext";
 
-export default function useRegistration() {     //Cambiar a useRegistrado
+export default function useRegistration() {
+  //Cambiar a useRegistrado
   const {
     isLoading: sessionLoading,
     error: sessionError,
@@ -40,7 +41,7 @@ export default function useRegistration() {     //Cambiar a useRegistrado
                 email: session.user.email,
               })
               .eq("id", session.user.id);
-              setEmail(session.user.email);
+            setEmail(session.user.email);
           }
 
           if (!data?.phone && session.user.phone) {
@@ -50,9 +51,8 @@ export default function useRegistration() {     //Cambiar a useRegistrado
                 phone: session.user.phone,
               })
               .eq("id", session.user.id);
-              setPhone(session.user.phone);
+            setPhone(session.user.phone);
           }
-
         }
       } catch (fetchError) {
         setError("An unexpected error occurred while fetching the profile.");
@@ -74,7 +74,7 @@ export default function useRegistration() {     //Cambiar a useRegistrado
     email,
     phone,
     registered,
-    isLoading: sessionLoading || isLoading,
+    isLoading: isLoading,
     error: sessionError || error,
   };
 }

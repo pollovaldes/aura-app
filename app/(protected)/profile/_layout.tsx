@@ -1,6 +1,5 @@
 import { Stack } from "expo-router";
 import { Platform } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function Layout() {
   return (

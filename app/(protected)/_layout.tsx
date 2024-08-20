@@ -5,7 +5,7 @@
  */
 
 import { Redirect, Slot, Tabs, usePathname } from "expo-router";
-import { Alert, Platform, Text, View, useWindowDimensions } from "react-native";
+import { Text, View, useWindowDimensions } from "react-native";
 import Sidebar from "../../components/sidebar/Sidebar";
 import ListItem from "../../components/sidebar/ListItem";
 import { Bell, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
@@ -13,6 +13,7 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { useSessionContext } from "@/context/SessionContext";
 import LoadingScreen from "@/components/Auth/LoadingScreen";
 import useRegistration from "@/hooks/useRegistration";
+import { useEffect } from "react";
 
 export default function HomeLayout() {
   const { styles } = useStyles(stylesheet);
@@ -22,6 +23,10 @@ export default function HomeLayout() {
   const { isLoading: isUserNameLoading, name, registered } = useRegistration();
 
   const path = usePathname();
+
+  useEffect(() => {
+    console.log(registered);
+  }, [registered]);
 
   if (isSessionLoading || isUserNameLoading) {
     return <LoadingScreen />;
@@ -41,15 +46,7 @@ export default function HomeLayout() {
   }
 
   // Prevent the user from entering other url if he's not registered
-  if (!registered && path != "/profile") {
-    // Platform.OS === "web"
-    //   ? alert(
-    //       "Para acceder a todas las funciones de la app, completa tu información personal."
-    //     )
-    //   : Alert.alert(
-    //       "Termina tu registro",
-    //       "Para acceder a todas las funciones de la app, completa tu información personal."
-    //     );
+  if (!registered && isUserNameLoading) {
     return <Redirect href="/profile" />;
   }
 
