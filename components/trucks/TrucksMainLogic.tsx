@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 type Truck = {
-  id: number;
+  id: string;
   numero_economico: string;
   marca: string;
   sub_marca: string;

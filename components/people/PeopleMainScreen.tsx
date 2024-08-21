@@ -28,8 +28,9 @@ export default function PeopleMainScreen() {
     <>
       <FlatList
         data={people}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => {
+          return (
           <Link href={{ pathname: `/people/${item.id}` }} asChild>
             <Pressable style={styles.itemContainer}>
               <Text
@@ -37,7 +38,7 @@ export default function PeopleMainScreen() {
               >{`${item.nombre} ${item.apellido_paterno} ${item.apellido_materno}`}</Text>
             </Pressable>
           </Link>
-        )}
+        )}}
       />
       <Pressable style={styles.addButton} onPress={() => setIsModalVisible(true)}>
         <Text 

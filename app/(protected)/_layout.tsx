@@ -45,8 +45,6 @@ export default function HomeLayout() {
     );
   }
 
-  console.log("Path:", path);
-  console.log(path !== "/profile");
 
   if (!registered && path !== "/profile") {
     return <Redirect href="/profile" />;

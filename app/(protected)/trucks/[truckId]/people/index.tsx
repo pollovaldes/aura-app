@@ -1,5 +1,19 @@
-import TruckPeopleAdminContainer from "@/components/trucks/peopleAdmin/TruckPeopleAdminContainer";
+import { Text, View } from "react-native";
 
 export default function Index() {
-  return <TruckPeopleAdminContainer />;
+  return (
+    <View>
+      <Text> Hola </Text>
+      <Text> Hola </Text>
+      <Text> Hola </Text>
+      <Text> Hola </Text>
+      <Text> Hola </Text>
+      <Text> Hola </Text>
+      <Text> Hola </Text>
+      <Text> Hola </Text>
+      <Text> Hola </Text>
+      <Text> Hola </Text>
+      <Text> Hola </Text>
+    </View>
+);
 }

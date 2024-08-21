@@ -21,7 +21,7 @@ export default function TruckDetail() {
   const { truckId } = useLocalSearchParams<{ truckId: string }>();
   const { styles } = useStyles(stylesheet);
 
-  const truck = trucks.find((truck) => truck.id === parseInt(truckId!));
+  const truck = trucks.find((truck) => truck.id === truckId!);
   const truckTitle = `${truck?.marca ?? ""} ${truck?.sub_marca ?? ""} ${truck?.modelo ?? ""}`;
 
   return (
