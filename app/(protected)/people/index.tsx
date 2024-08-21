@@ -6,8 +6,16 @@
 
 import { StyleSheet, Text, View } from "react-native";
 import PeopleMainScreen from "@/components/people/PeopleMainScreen";
+import { useAuth } from "@/context/AuthContext";
+import { Redirect } from "expo-router";
 
 export default function Page() {
-  return <PeopleMainScreen />;
+  const { isAdmin } = useAuth();
+  
+  if(isAdmin) {
+  return <PeopleMainScreen />;}
+  else {
+   return <Redirect href={'/'}/>
+  }
 }
 
