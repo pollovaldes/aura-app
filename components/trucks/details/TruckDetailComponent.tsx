@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
+import { useAuth } from "@/context/AuthContext";
 
 // Define the type for the truck data
 type Truck = {
@@ -27,6 +28,7 @@ type Props = {
 
 export default function TruckDetailComponent({ truck, loading }: Props) {
   const { styles } = useStyles(stylesheet);
+  const { isAdmin } = useAuth();
 
   if (loading) {
     return (
@@ -46,6 +48,8 @@ export default function TruckDetailComponent({ truck, loading }: Props) {
     );
   }
 
+  console.log(isAdmin)
+
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View style={styles.container}>
@@ -54,17 +58,18 @@ export default function TruckDetailComponent({ truck, loading }: Props) {
             header="Detalles"
             footer="Si necesitas más información, contacta a tu administrador y si vez algun error contacta a tu supervisor, solo los administradores pueden editar la información del camion."
           >
-            <Row title="Numero Economico" trailingType="chevron" caption={`${truck.numero_economico}`} />
-            <Row title="Marca" trailingType="chevron" caption={`${truck.marca}`} />
-            <Row title="Sub Marca" trailingType="chevron" caption={`${truck.sub_marca}`} />
-            <Row title="Modelo" trailingType="chevron" caption={`${truck.modelo}`} />
+            <Row title="Numero Economico" trailingType="chevron" caption={`${truck.numero_economico}`} showChevron={isAdmin} />
+            <Row title="Marca" trailingType="chevron" caption={`${truck.marca}`} showChevron={isAdmin} />
+            <Row title="Sub Marca" trailingType="chevron" caption={`${truck.sub_marca}`} showChevron={isAdmin} />
+            <Row title="Modelo" trailingType="chevron" caption={`${truck.modelo}`} showChevron={isAdmin} />
             <Row
               title="No de Serie"
               trailingType="chevron"
               caption={`${truck.no_serie.length > 8 ? truck.no_serie.substring(0, 8) + '...' : truck.no_serie}`}
+              showChevron={isAdmin}
             />
-            <Row title="Placa" trailingType="chevron" caption={`${truck.placa}`} />
-            <Row title="Poliza" trailingType="chevron" caption={`${truck.poliza}`} />
+            <Row title="Placa" trailingType="chevron" caption={`${truck.placa}`} showChevron={isAdmin} />
+            <Row title="Poliza" trailingType="chevron" caption={`${truck.poliza}`} showChevron={isAdmin} />
           </GroupedList>
         {/* Agrega más detalles si es necesario */}
       </View>

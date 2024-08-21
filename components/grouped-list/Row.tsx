@@ -12,6 +12,7 @@ interface BaseProps {
   onPress?: () => void;
   disabled?: boolean;
   isLoading?: boolean;
+  showChevron?: boolean;
 }
 
 // Properties when trailingType is "default"
@@ -28,6 +29,7 @@ const Row = ({
   onPress,
   disabled = false,
   isLoading,
+  showChevron = true,
 }: DefaultProps) => {
   const { styles } = useStyles(stylesheet);
 
@@ -51,7 +53,7 @@ const Row = ({
           ) : (
             <>
               <Text style={styles.caption}>{caption}</Text>
-              <MaterialIcons name="chevron-right" size={25} color="#c4c4c7" />
+              { showChevron ? <MaterialIcons name="chevron-right" size={25} color="#c4c4c7" /> : null }
             </>
           )}
         </View>

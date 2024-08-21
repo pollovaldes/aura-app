@@ -47,6 +47,13 @@ export default function PeopleDetail() {
               icon={<Clipboard size={24} color="white" />}
               color={colorPalette.emerald[500]}
             />
+            <Row
+              title="Cambiar Role"
+              trailingType="chevron"
+              onPress={() => router.navigate(`/people/${personId}/changeRole`)}
+              icon={<Clipboard size={24} color="white" />}
+              color={colorPalette.emerald[500]}
+            />
           </GroupedList>
           <View />
         </View>
