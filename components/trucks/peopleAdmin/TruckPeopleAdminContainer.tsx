@@ -5,9 +5,19 @@ import TruckPeopleAdminComponent from "./TruckPeopleAdminComponent";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
+type Person = {
+  id: string;
+  nombre: string;
+  apellido_paterno: string;
+  apellido_materno: string;
+  email: string;
+  phone: string;
+  registrado: boolean;
+}
+
 export default function TruckPeopleAdminContainer() {
   const { personId } = useLocalSearchParams<{ personId: string }>();
-  const [user, setUser] = useState<string | null>(null); // Define the type of state
+  const [user, setUser] = useState<Person | null>(null); // Define the type of state
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,15 +32,12 @@ export default function TruckPeopleAdminContainer() {
       try {
         const { data, error } = await supabase
           .from("profiles")
-          .select("nombre")
+          .select("*")
           .eq("id", personId) // Ensure id is converted to number
           .single();
 
         if (error) throw error;
-
-        console.log("Data", data);
-
-        setUser(data.nombre);
+        setUser(data);
       } catch (error) {
       } finally {
         setLoading(false);
@@ -38,7 +45,6 @@ export default function TruckPeopleAdminContainer() {
     }
   };
 
-  console.log("User", user);
-  return <TruckPeopleAdminComponent name={user}/>;
+  return <TruckPeopleAdminComponent user={user} loading={loading}/>;
 }
 
