@@ -23,7 +23,6 @@ export default function TruckPeopleAdminContainer() {
   useEffect(() => {
     if (personId) {
       fetchTruckData();
-      console.log("Fetching truck data...", personId);
     }
   }, [personId]);
 
