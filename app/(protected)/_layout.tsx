@@ -14,6 +14,7 @@ import { useSessionContext } from "@/context/SessionContext";
 import LoadingScreen from "@/components/Auth/LoadingScreen";
 import useRegistration from "@/hooks/useRegistration";
 import { useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function HomeLayout() {
   const { styles } = useStyles(stylesheet);
@@ -21,6 +22,7 @@ export default function HomeLayout() {
   const widthThreshold = 600; // TODO: Move dimensions to a theme file.
   const { isLoading: isSessionLoading, error, session } = useSessionContext();
   const { isLoading: isUserNameLoading, registered } = useRegistration();
+  const { isAdmin } = useAuth();
 
   const path = usePathname();
 
@@ -60,11 +62,13 @@ export default function HomeLayout() {
             title="Camiones"
             iconComponent={<Truck color={styles.icon.color} size={19} />}
           />
+          {isAdmin && (
           <ListItem
-            href={registered ? "people" : null}
+            href={isAdmin ? "people" : null}
             title="Personas"
             iconComponent={<UsersRound color={styles.icon.color} size={19} />}
-          />
+          />)
+          }
           <ListItem
             href={registered ? "notifications" : null}
             title="Notificaciones"
@@ -96,7 +100,7 @@ export default function HomeLayout() {
       <Tabs.Screen
         name="people"
         options={{
-          href: !registered ? null : undefined,
+          href: !isAdmin ? null : undefined,
           title: "Personas",
           tabBarIcon: ({ color }) => <UsersRound color={color} />,
         }}
