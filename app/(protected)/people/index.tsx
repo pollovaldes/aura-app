@@ -13,9 +13,9 @@ export default function Page() {
   const { isAdmin } = useAuth();
   
   if(isAdmin) {
-  return <PeopleMainScreen />;}
+    return <PeopleMainScreen />;}
   else {
-   return <Redirect href={'/'}/>
+    return <Redirect href={'/trucks'}/>
   }
 }
 

@@ -62,13 +62,13 @@ export default function HomeLayout() {
             title="Camiones"
             iconComponent={<Truck color={styles.icon.color} size={19} />}
           />
-          {isAdmin && (
+          { isAdmin && (
           <ListItem
-            href={isAdmin ? "people" : null}
+            href={isAdmin || registered ? "people" : null}
             title="Personas"
             iconComponent={<UsersRound color={styles.icon.color} size={19} />}
-          />)
-          }
+          />
+          )}
           <ListItem
             href={registered ? "notifications" : null}
             title="Notificaciones"
@@ -100,7 +100,7 @@ export default function HomeLayout() {
       <Tabs.Screen
         name="people"
         options={{
-          href: !isAdmin ? null : undefined,
+          href: !isAdmin || !registered ? null : undefined,
           title: "Personas",
           tabBarIcon: ({ color }) => <UsersRound color={color} />,
         }}
