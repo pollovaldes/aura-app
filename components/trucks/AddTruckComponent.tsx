@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  Modal,
   TextInput,
   Button,
   StyleSheet,
@@ -12,7 +11,11 @@ import {
   TouchableOpacity,
 } from "react-native";
 
+import Modal from "@/components/Modal/Modal";
 import { useAddTruck } from "@/components/trucks/AddTruckLogic";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
+import FormTitle from "@/app/auth/FormTitle";
+import { FormButton } from "../Form/FormButton";
 
 interface AddTruckComponentProps {
   visible: boolean;
@@ -20,151 +23,150 @@ interface AddTruckComponentProps {
 }
 
 function AddTruckComponent({ visible, onClose }: AddTruckComponentProps) {
+
+  const { styles } = useStyles(stylesheet);
+
   const {
+    numEco,
     marca,
     submarca,
     modelo,
-    selectedDriver,
-    drivers,
+    serie,
+    placa,
+    poliza,
     loading,
+    setNumEco,
     setMarca,
     setSubmarca,
     setModelo,
-    setSelectedDriver,
+    setSerie,
+    setPlaca,
+    setPoliza,
     handleCreateTruck,
     resetFields,
   } = useAddTruck();
 
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-
-  const handleCancel = () => {
-    resetFields();
-    onClose();
-  };
-
-  const handleDriverSelect = (driver: any) => {
-    setSelectedDriver(driver);
-    setDropdownVisible(false);
-  };
-
-
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      transparent={true}
-      onRequestClose={handleCancel}
-    >
+    <Modal isOpen={visible}>
       <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Crear Nuevo Camión</Text>
-          <TextInput
-            placeholder="Marca"
-            value={marca}
-            onChangeText={setMarca}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="Submarca"
-            value={submarca}
-            onChangeText={setSubmarca}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="Modelo"
-            value={modelo}
-            onChangeText={setModelo}
-            keyboardType="numeric"
-            style={styles.input}
-          />
+        <Text style={styles.closeButton} onPress={onClose}>
+          Cerrar
+        </Text>
 
-          <TouchableOpacity
-            style={styles.dropdown}
-            onPress={() => setDropdownVisible(!dropdownVisible)}
-          >
-            <Text style={styles.dropdownText}>
-              {selectedDriver ? selectedDriver.name : "Seleccionar conductor"}
+        <View style={styles.section}>
+          <View style={styles.group}>
+            <FormTitle title="Finaliza tu registro" />
+            <Text style={styles.subtitle}>
+              Para poder continuar debes terminar de llenar tus datos personales.
             </Text>
-          </TouchableOpacity>
-
-          {dropdownVisible && (
-            <FlatList
-              data={drivers}
-              keyExtractor={(item) => item.user_Id.toString()}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.dropdownItem}
-                  onPress={() => handleDriverSelect(item)}
-                >
-                  <Text>{item.name}</Text>
-                </TouchableOpacity>
-              )}
-              style={styles.dropdownList}
-            />
-          )}
-
-          <Button title="Crear" onPress={handleCreateTruck} disabled={loading} />
-          <Button title="Cancelar" onPress={handleCancel} />
+            <View style={styles.group}>
+              <TextInput
+                placeholder="Número económico"
+                inputMode="text"
+                style={styles.textInput}
+                placeholderTextColor={styles.textInput.placehoolderTextColor}
+                autoCorrect={false}
+                onChangeText={setNumEco}
+                />
+              <TextInput
+                placeholder="Marca"
+                inputMode="text"
+                style={styles.textInput}
+                placeholderTextColor={styles.textInput.placehoolderTextColor}
+                autoCorrect={false}
+                onChangeText={setMarca}
+                />
+              <TextInput
+                placeholder="Submarca"
+                inputMode="text"
+                style={styles.textInput}
+                placeholderTextColor={styles.textInput.placehoolderTextColor}
+                autoCorrect={false}
+                onChangeText={setSubmarca}
+                />
+              <TextInput
+                placeholder="Modelo"
+                inputMode="text"
+                style={styles.textInput}
+                placeholderTextColor={styles.textInput.placehoolderTextColor}
+                autoCorrect={false}
+                onChangeText={setModelo}
+                />
+              <TextInput
+                placeholder="Serie"
+                inputMode="text"
+                style={styles.textInput}
+                placeholderTextColor={styles.textInput.placehoolderTextColor}
+                autoCorrect={false}
+                onChangeText={setSerie}
+                />
+              <TextInput
+                placeholder="Placa"
+                inputMode="text"
+                style={styles.textInput}
+                placeholderTextColor={styles.textInput.placehoolderTextColor}
+                autoCorrect={false}
+                onChangeText={setPlaca}
+                />
+              <TextInput
+                placeholder="Póliza"
+                inputMode="text"
+                style={styles.textInput}
+                placeholderTextColor={styles.textInput.placehoolderTextColor}
+                autoCorrect={false}
+                onChangeText={setPoliza}
+                />
+              <FormButton
+                title="Continuar"
+                onPress={handleCreateTruck}
+                isLoading={loading}
+                />
+            </View>
+          </View>
         </View>
+
       </View>
     </Modal>
   );
-};
+}
 
-const styles = StyleSheet.create({
+const stylesheet = createStyleSheet((theme) => ({
+  section: {
+    gap: theme.marginsComponents.section,
+    alignItems: "center",
+  },
+  group: {
+    gap: theme.marginsComponents.group,
+    width: "100%",
+  },
+  logo: {
+    color: theme.colors.inverted,
+    width: 180,
+    height: 60,
+  },
+  subtitle: {
+    color: theme.textPresets.main,
+    textAlign: "center",
+  },
   modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
-  },
-  modalContent: {
-    backgroundColor: "white",
-    padding: 20,
+    backgroundColor: theme.ui.colors.card,
     borderRadius: 10,
-    width: "80%",
-    alignItems: "center",
+    padding: 24,
   },
-  modalTitle: {
-    fontSize: 20,
-    marginBottom: 15,
+  closeButton: {
+    color: theme.ui.colors.primary,
+    fontSize: 18,
+    textAlign: "right",
   },
-  input: {
-    width: "100%",
-    borderBottomWidth: 1,
-    borderColor: "gray",
-    marginBottom: 10,
-    padding: 8,
+  textInput: {
+    height: 45,
+    borderRadius: 5,
+    paddingHorizontal: 12,
+    fontSize: 18,
+    color: theme.textPresets.main,
+    placehoolderTextColor: theme.textPresets.subtitle,
+    backgroundColor: theme.textInput.backgroundColor,
   },
-
-  label: {
-    alignSelf: "flex-start",
-    marginBottom: 5,
-    fontSize: 16,
-  },
-  dropdown: {
-    width: "100%",
-    padding: 12,
-    borderWidth: 1,
-    borderColor: "gray",
-    marginBottom: 10,
-  },
-  dropdownText: {
-    fontSize: 16,
-  },
-  dropdownList: {
-    width: "100%",
-    maxHeight: 150,
-    borderWidth: 1,
-    borderColor: "gray",
-    marginBottom: 10,
-    backgroundColor: "white",
-  },
-  dropdownItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "gray",
-  },
-});
+}));
 
 export default AddTruckComponent;

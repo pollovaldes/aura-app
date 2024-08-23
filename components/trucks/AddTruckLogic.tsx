@@ -3,62 +3,38 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
-type Person = {
-  id: string;
-  nombre: string;
-  apellido_paterno: string;
-  apellido_materno: string;
-}
-
 export function useAddTruck() {
+  const [numEco, setNumEco] = useState("");
   const [marca, setMarca] = useState("");
   const [submarca, setSubmarca] = useState("");
   const [modelo, setModelo] = useState("");
-  const [selectedDriver, setSelectedDriver] = useState<Person | null>(null);
-  const [drivers, setDrivers] = useState<Person[]>([]);
+  const [serie, setSerie] = useState("");
+  const [placa, setPlaca] = useState("");
+  const [poliza, setPoliza] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    async function fetchDrivers() {
-      const { data, error } = await supabase.from("profiles").select("*");
-      if ( error ) {
-        console.error( "Error al obtener los conductores:", error );
-      } else {
-        setDrivers( data );
-      }
-    }
-    fetchDrivers();
-
-    const subscription = supabase
-    .channel("public:People")
-    .on(
-      "postgres_changes",
-      { event: "*", schema: "public", table: "profiles" },
-      (payload) => {
-        console.log("Table People change:", payload);
-        fetchDrivers();
-      }
-    )
-    .subscribe();
-
-  return () => {
-    supabase.removeChannel(subscription);
-  };
-
-  }, []);
-
   const resetFields = () => {
+    setNumEco("");
     setMarca("");
     setSubmarca("");
     setModelo("");
-    setSelectedDriver(null);
+    setSerie("");
+    setPlaca("");
+    setPoliza("");
   };
 
   const handleCreateTruck = async () => {
     setLoading(true);
     try {
       const { error } = await supabase.from("camiones").insert([
-        { marca, submarca, modelo, name: selectedDriver?.nombre },
+        {  
+          numero_economico: numEco, 
+          marca, sub_marca: submarca, 
+          modelo, no_serie: 
+          serie, 
+          placa, 
+          poliza 
+        },
       ]);
       if (error) {
         console.error("Error al crear camión:", error);
@@ -71,16 +47,21 @@ export function useAddTruck() {
   };
 
   return {
+    numEco,
     marca,
     submarca,
     modelo,
-    selectedDriver,
-    drivers,
+    serie,
+    placa,
+    poliza,
     loading,
+    setNumEco,
     setMarca,
     setSubmarca,
     setModelo,
-    setSelectedDriver,
+    setSerie,
+    setPlaca,
+    setPoliza,
     handleCreateTruck,
     resetFields,
   };
