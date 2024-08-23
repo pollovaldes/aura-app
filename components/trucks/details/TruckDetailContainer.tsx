@@ -4,7 +4,7 @@ import { supabase } from "@/lib/supabase";
 import TruckDetailComponent from "./TruckDetailComponent";
 
 type Truck = {
-  id: number;
+  id: string;
   numero_economico: string;
   marca: string;
   sub_marca: string;
@@ -12,12 +12,11 @@ type Truck = {
   no_serie: string;
   placa: string;
   poliza: string;
-  id_usuario: string;
 };
 
 export default function TruckDetailContainer() {
   const { truckId } = useLocalSearchParams<{ truckId: string }>(); // Specify that id is a string
-  const [truck, setTruck] = useState<Truck | null>(null); // Define the type of state
+  const [truck, setTruck] = useState<Truck>(); // Define the type of state
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -47,5 +46,7 @@ export default function TruckDetailContainer() {
     }
   };
 
+  if (truck) {
   return <TruckDetailComponent truck={truck} loading={loading} />;
+  }
 }

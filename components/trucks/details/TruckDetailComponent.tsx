@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Alert } from "react-native";
 import { useRouter, useLocalSearchParams, Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase"; // Asegúrate de tener configurado supabase correctamente
@@ -8,6 +8,7 @@ import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import { useAuth } from "@/context/AuthContext";
 import ChangeDataModal from "@/components/Modal/ChangeDataModal";
+import { FormButton } from "@/components/Form/FormButton";
 
 // Define the type for the truck data
 type Truck = {
@@ -61,7 +62,7 @@ export default function TruckDetailComponent({ truck, loading }: Props) {
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <ChangeDataModal
-        isOpen={numEco}
+        isOpen={isAdmin ? numEco : false}
         currentDataType="Numero Economico"
         currentData={truck.numero_economico}
         closeModal={() => setNumEco(false)}
@@ -69,7 +70,7 @@ export default function TruckDetailComponent({ truck, loading }: Props) {
         id={truck.id}
       />
       <ChangeDataModal
-        isOpen={marca}
+        isOpen={isAdmin ? marca : false}
         currentDataType="Marca"
         currentData={truck.marca}
         closeModal={() => setMarca(false)}
@@ -77,7 +78,7 @@ export default function TruckDetailComponent({ truck, loading }: Props) {
         id={truck.id}
       />
       <ChangeDataModal
-        isOpen={subMarca}
+        isOpen={isAdmin ? subMarca : false}
         currentDataType="Sub Marca"
         currentData={truck.sub_marca}
         closeModal={() => setSubMarca(false)}
@@ -85,7 +86,7 @@ export default function TruckDetailComponent({ truck, loading }: Props) {
         id={truck.id}
       />
       <ChangeDataModal
-        isOpen={modelo}
+        isOpen={isAdmin ? modelo : false}
         currentDataType="Modelo"
         currentData={truck.modelo}
         closeModal={() => setModelo(false)}
@@ -93,7 +94,7 @@ export default function TruckDetailComponent({ truck, loading }: Props) {
         id={truck.id}
       />
       <ChangeDataModal
-        isOpen={noSerie}
+        isOpen={isAdmin ? noSerie : false}
         currentDataType="No de Serie"
         currentData={truck.no_serie}
         closeModal={() => setNoSerie(false)}
@@ -101,7 +102,7 @@ export default function TruckDetailComponent({ truck, loading }: Props) {
         id={truck.id}
       />
       <ChangeDataModal
-        isOpen={placa}
+        isOpen={isAdmin ? placa : false}
         currentDataType="Placa"
         currentData={truck.placa}
         closeModal={() => setPlaca(false)}
@@ -109,7 +110,7 @@ export default function TruckDetailComponent({ truck, loading }: Props) {
         id={truck.id}
       />
       <ChangeDataModal
-        isOpen={poliza}
+        isOpen={isAdmin ? poliza : false}
         currentDataType="Poliza"
         currentData={truck.poliza}
         closeModal={() => setPoliza(false)}
@@ -170,6 +171,11 @@ export default function TruckDetailComponent({ truck, loading }: Props) {
             caption={`${truck.poliza}`}
             showChevron={isAdmin} />
         </GroupedList>
+        {isAdmin && (
+        <GroupedList>
+            <FormButton title="Borrar Camión" onPress={() => Alert.alert("A")} isRed = {true}/>
+        </GroupedList>
+        )}
         {/* Agrega más detalles si es necesario */}
       </View>
     </ScrollView>

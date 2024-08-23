@@ -1,6 +1,6 @@
 import React from "react";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { View, Image, ScrollView } from "react-native";
+import { View, Image, ScrollView, Alert } from "react-native";
 import TruckHandler from "@/components/trucks/TrucksMainLogic";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
@@ -15,6 +15,7 @@ import {
   Wrench,
 } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
+import { FormButton } from "@/components/Form/FormButton";
 
 export default function TruckDetail() {
   const { trucks } = TruckHandler();

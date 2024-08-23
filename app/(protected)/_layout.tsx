@@ -26,10 +26,6 @@ export default function HomeLayout() {
 
   const path = usePathname();
 
-  useEffect(() => {
-    console.log("Usuario está cargando: ", isUserNameLoading);
-  }, [isUserNameLoading]);
-
   if (isSessionLoading || isUserNameLoading) {
     return <LoadingScreen />;
   }

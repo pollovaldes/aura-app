@@ -14,6 +14,7 @@ type FormButtonProps = {
   style?: ViewStyle;
   isDisabled?: boolean;
   disabledText?: string;
+  isRed?: boolean;
 };
 
 export function FormButton({
@@ -21,6 +22,7 @@ export function FormButton({
   title: text,
   isLoading = false,
   style,
+  isRed,
   disabledText,
   isDisabled,
 }: FormButtonProps) {
@@ -44,7 +46,9 @@ export function FormButton({
         style={[
           styles.button,
           style,
-          { opacity: isLoading || isDisabled ? 0.3 : 1 },
+          { opacity: isLoading || isDisabled ? 0.3 : 1, 
+            backgroundColor: isRed ? "red" : styles.button.backgroundColor,
+          },
         ]}
         onPress={onPress}
         disabled={isLoading || isDisabled}
