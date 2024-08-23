@@ -43,7 +43,7 @@ export default function PeopleMainScreen() {
       <Pressable style={styles.addButton} onPress={() => setIsModalVisible(true)}>
         <Text 
           style={[styles.itemText, {fontWeight: "bold"}, {color: "white"}]}
-          >Añadir Conducor</Text>
+          >Añadir Conductor</Text>
       </Pressable>
 
       <AddPeopleComponent visible={isModalVisible} onClose={() => setIsModalVisible(false)} />

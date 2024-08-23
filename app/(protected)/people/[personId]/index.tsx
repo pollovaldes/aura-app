@@ -1,3 +1,4 @@
+
 import React from "react";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { View, Image, ScrollView } from "react-native";
@@ -27,7 +28,7 @@ export default function PeopleDetail() {
 
   return (
     <>
-      <Stack.Screen options={{ title: peopleTitle }} />
+      <Stack.Screen options={{ title: peopleTitle}} />
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View style={styles.container}>
           <View style={styles.imageContainer}>
@@ -48,7 +49,7 @@ export default function PeopleDetail() {
               color={colorPalette.emerald[500]}
             />
             <Row
-              title="Cambiar Role"
+              title="Cambiar Rol"
               trailingType="chevron"
               onPress={() => router.navigate(`/people/${personId}/changeRole`)}
               icon={<Clipboard size={24} color="white" />}
@@ -95,3 +96,4 @@ const stylesheet = createStyleSheet((theme) => ({
     color: "#000", // Texto negro
   },
 }));
+

@@ -28,7 +28,7 @@ export default function TruckPeopleAdminComponent({ user, loading }: Props) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator />
-        <Stack.Screen options={{ title: "" }} />
+        <Stack.Screen options={{ title: "", headerBackTitle: "Info" }} />
       </View>
     );
   }
@@ -37,7 +37,7 @@ export default function TruckPeopleAdminComponent({ user, loading }: Props) {
     return (
       <View style={styles.errorContainer}>
         <Text style={styles.details}>Este usuario no existe</Text>
-        <Stack.Screen options={{ title: "Error" }} />
+        <Stack.Screen options={{ title: "Error", headerBackTitle: "Info"}} />
       </View>
     );
   }
@@ -45,7 +45,7 @@ export default function TruckPeopleAdminComponent({ user, loading }: Props) {
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View style={styles.container}>
-        <Stack.Screen options={{ title: `${user.nombre} ${user.apellido_paterno}` }} />
+        <Stack.Screen options={{ title: `${user.nombre} ${user.apellido_paterno}`, headerBackTitle: "Info"}} />
         <GroupedList
             header="Detalles"
             footer="Si necesitas más información, contacta a tu administrador y si vez algun error contacta a tu supervisor, solo los administradores pueden editar la información del camion."

@@ -1,122 +1,121 @@
-// The Logic of the PeopleAdmin Component
-
-import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
-import { Alert, Text, TextInput, View } from "react-native";
-import FormTitle from "@/app/auth/FormTitle";
+import { Stack, useLocalSearchParams } from "expo-router";
+import { useState } from "react";
+import { View, Modal, Text, TouchableOpacity } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { FormButton } from "@/components/Form/FormButton";
+import GroupedList from "@/components/grouped-list/GroupedList";
+import Row from "@/components/grouped-list/Row";
 
 export default function TruckPeopleAdminContainer() {
   const { styles } = useStyles(stylesheet);
-  const { personId } = useLocalSearchParams<{ personId: string }>();
-  const [role, setRole] = useState(""); // Define the type of state
-  const [loading, setLoading] = useState(true);
-  
-  const fetchTruckData = async () => {
-    if (personId) {
-      try {
-        const { data, error } = await supabase
-        .from("profiles")
-        .select("roles")
-        .eq("id", personId)
-        .single();
-        
-        if (error) throw error;
-        if (data === null) {
-          setRole(data);
-        }
-        
-        console.log(role);
-      } catch (error) {
-      } finally {
-        setLoading(false);
-      }
-    }
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleOpenModal = () => {
+    setModalVisible(true);
   };
 
-  const changeRole = async () => {
-    setLoading(true);
-    if (personId) {
-      const { data, error } = await supabase
-        .from("profiles")
-        .update({
-          roles: role,
-        })
-        .eq("id", personId)
-        .single();
-
-      if (error) {
-        Alert.alert("Error", error.message);
-        setLoading(false);
-        return;
-      }
-
-      Alert.alert("Éxito", "Rol actualizado");
-      setLoading(false);
-    }
+  const handleCloseModal = () => {
+    setModalVisible(false);
   };
-
-  useEffect(() => {
-    if (personId) {
-      fetchTruckData();
-    }
-  }, [personId]);
 
   return (
-    <View style={styles.section}>
-      <View style={styles.group}>
-        <FormTitle title="Cambia el Rol" />
-        <Text style={styles.subtitle}>
-          Solo los admin pueden cambiar el rol. Solo existe "ADMIN"
-        </Text>
-      </View>
-      <View style={styles.group}>
-        <TextInput
-          placeholder="rol"
-          inputMode="text"
-          style={styles.textInput}
-          placeholderTextColor={styles.textInput.placehoolderTextColor}
-          autoCorrect={false}
-          onChangeText={setRole}
+    <View style={styles.container}>
+      <Stack.Screen options={{ headerBackTitle: "Rol", headerTitle: "Cambiar Rol" }} />
+      
+      <GroupedList header="Rol de usuario">
+        <Row
+          title="Rol actual"
+          trailingType="chevron"
+          caption="Placeholder" // Replace with fetched user role
+          showChevron={false}
         />
-        <FormButton
-          title="Continuar"
-          onPress={changeRole}
-          isLoading={loading}
-        />
-      </View>
+      </GroupedList>
+      
+      <FormButton
+        title="Cambiar rol"
+        onPress={handleOpenModal}
+        isLoading={false}
+        style={styles.button}
+      />
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={handleCloseModal}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Seleccione un nuevo rol</Text>
+            
+            {/* Example role selection buttons */}
+            <TouchableOpacity onPress={() => { /* Handle role selection */ }}>
+              <Text style={styles.modalOption}>Admin</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => { /* Handle role selection */ }}>
+              <Text style={styles.modalOption}>User</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleCloseModal} style={styles.closeButton}>
+              <Text style={styles.textStyle}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
 
-
 const stylesheet = createStyleSheet((theme) => ({
-  section: {
+  container: {
     gap: theme.marginsComponents.section,
-    alignItems: "center",
+    marginTop: theme.marginsComponents.section,
   },
-  group: {
-    gap: theme.marginsComponents.group,
-    width: "100%",
+  button: {
+    marginLeft: 18,
+    marginRight: 18,
   },
-  logo: {
-    color: theme.colors.inverted,
-    width: 180,
-    height: 60,
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  subtitle: {
-    color: theme.textPresets.main,
-    textAlign: "center",
+  modalView: {
+    width: 300,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
-  textInput: {
-    height: 45,
-    borderRadius: 5,
-    paddingHorizontal: 12,
+  modalText: {
     fontSize: 18,
-    color: theme.textPresets.main,
-    placehoolderTextColor: theme.textPresets.subtitle,
-    backgroundColor: theme.textInput.backgroundColor,
+    textAlign: 'center',
+    marginBottom: 20,
+    color: "black",
+  },
+  modalOption: {
+    fontSize: 16,
+    marginBottom: 15,
+    color: '#007BFF',
+  },
+  closeButton: {
+    marginTop: 15,
+    backgroundColor: theme.components.formComponent.buttonMainBG,
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2,
+    color: theme.textPresets.inverted
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 }));
