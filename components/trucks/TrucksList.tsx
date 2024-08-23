@@ -12,11 +12,13 @@ import { Link, Stack } from "expo-router";
 import AddTruckComponent from "./AddTruckComponent";
 import { useState } from "react";
 import { ChevronRight, Plus, PlusIcon } from "lucide-react-native";
+import { useAuth } from "@/context/AuthContext";
 
 export default function TrucksList() {
   const { trucks, loading } = TruckHandler();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { styles } = useStyles(stylesheet);
+  const { isAdmin } = useAuth();
 
   if (loading) {
     return (
@@ -28,15 +30,17 @@ export default function TrucksList() {
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          headerRight: () => (
-            <Pressable onPress={() => setIsModalVisible(true)}>
-              <Plus color={styles.plusIcon.color} />
-            </Pressable>
-          ),
-        }}
-      />
+      {isAdmin && (
+        <Stack.Screen
+          options={{
+            headerRight: () => (
+              <Pressable onPress={() => setIsModalVisible(true)}>
+                <Plus color={styles.plusIcon.color} />
+              </Pressable>
+            ),
+          }}
+        />
+      )}
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
         data={trucks}
