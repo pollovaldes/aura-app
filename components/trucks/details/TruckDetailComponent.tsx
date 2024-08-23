@@ -7,6 +7,7 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import { useAuth } from "@/context/AuthContext";
+import ChangeDataModal from "@/components/Modal/ChangeDataModal";
 
 // Define the type for the truck data
 type Truck = {
@@ -29,6 +30,7 @@ type Props = {
 export default function TruckDetailComponent({ truck, loading }: Props) {
   const { styles } = useStyles(stylesheet);
   const { isAdmin } = useAuth();
+  const [truckModal, setTruckModal] = useState(false);
 
   if (loading) {
     return (
@@ -52,13 +54,14 @@ export default function TruckDetailComponent({ truck, loading }: Props) {
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <ChangeDataModal isOpen={truckModal} currentData={truck} />
       <View style={styles.container}>
         <Stack.Screen options={{ title: `${truck.marca} ${truck.sub_marca}` }} />
         <GroupedList
             header="Detalles"
             footer="Si necesitas más información, contacta a tu administrador y si vez algun error contacta a tu supervisor, solo los administradores pueden editar la información del camion."
           >
-            <Row title="Numero Economico" trailingType="chevron" caption={`${truck.numero_economico}`} showChevron={isAdmin} />
+            <Row title="Numero Economico" onPress={()=>setTruckModal(true)} trailingType="chevron" caption={`${truck.numero_economico}`} showChevron={isAdmin}/>
             <Row title="Marca" trailingType="chevron" caption={`${truck.marca}`} showChevron={isAdmin} />
             <Row title="Sub Marca" trailingType="chevron" caption={`${truck.sub_marca}`} showChevron={isAdmin} />
             <Row title="Modelo" trailingType="chevron" caption={`${truck.modelo}`} showChevron={isAdmin} />
