@@ -1,20 +1,10 @@
-
 import React from "react";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { View, Image, ScrollView } from "react-native";
-import TruckHandler from "@/components/trucks/TrucksMainLogic";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
-import {
-  BookOpen,
-  Clipboard,
-  Fuel,
-  Images,
-  UsersRoundIcon,
-  Waypoints,
-  Wrench,
-} from "lucide-react-native";
+import { Clipboard } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import PeopleMainLogic from "@/components/people/PeopleMainLogic";
 
@@ -28,7 +18,7 @@ export default function PeopleDetail() {
 
   return (
     <>
-      <Stack.Screen options={{ title: peopleTitle}} />
+      <Stack.Screen options={{ title: peopleTitle }} />
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View style={styles.container}>
           <View style={styles.imageContainer}>
@@ -96,4 +86,3 @@ const stylesheet = createStyleSheet((theme) => ({
     color: "#000", // Texto negro
   },
 }));
-

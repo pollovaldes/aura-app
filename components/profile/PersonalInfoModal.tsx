@@ -6,7 +6,11 @@ import { useState } from "react";
 import { Alert, Text, TextInput, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
-export default function RegistrationForm({ closeModal }: { closeModal: () => void }) {
+export default function PersonalInfoModal({
+  closeModal,
+}: {
+  closeModal: () => void;
+}) {
   const { styles } = useStyles(stylesheet);
 
   const [name, setName] = useState("");
@@ -17,9 +21,8 @@ export default function RegistrationForm({ closeModal }: { closeModal: () => voi
 
   const session = useSession();
 
-  const signOut = async () => {
-    let { error } = await supabase.auth.signOut();
-  };
+  const maySubmit: boolean =
+    name === "" || firstLastName === "" || secondLastName === "";
 
   const checkUserProfile = async () => {
     setLoading(true);
@@ -51,9 +54,9 @@ export default function RegistrationForm({ closeModal }: { closeModal: () => voi
   return (
     <View style={styles.section}>
       <View style={styles.group}>
-        <FormTitle title="Finaliza tu registro" />
+        <FormTitle title="Datos personales" />
         <Text style={styles.subtitle}>
-          Para poder continuar debes terminar de llenar tus datos personales.
+          Actualiza o guarda por primera vez tus datos personales.
         </Text>
       </View>
       <View style={styles.group}>
@@ -82,11 +85,11 @@ export default function RegistrationForm({ closeModal }: { closeModal: () => voi
           onChangeText={setSecondLastName}
         />
         <FormButton
-          title="Continuar"
+          title="Guardar"
           onPress={checkUserProfile}
           isLoading={loading}
+          isDisabled={maySubmit}
         />
-        <FormButton title="Cerrar sesión" onPress={signOut} />
       </View>
     </View>
   );

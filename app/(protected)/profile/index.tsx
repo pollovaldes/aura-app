@@ -4,40 +4,47 @@
  * Copyright (c) 2024 Aura Residuos Sustentables
  */
 
-import FormTitle from "@/app/auth/FormTitle";
 import TermsAndPrivacy from "@/app/auth/TermsAndPrivacy";
-import RegistrationForm from "@/assets/registrationForm/RegistrationForm";
-import { FormButton } from "@/components/Form/FormButton";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import Modal from "@/components/Modal/Modal";
+import PersonalInfoModal from "@/components/profile/PersonalInfoModal";
+import RoleModal from "@/components/profile/RoleModal";
 import useRegistration from "@/hooks/useRegistration";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
-import { ScrollView, Text, TextInput, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
-export default function Page() {
-  const { styles } = useStyles(stylesheet);
+type ModalType = "personal_info" | "role" | "email" | "password" | null;
 
-  const [modal, setModal] = useState(false);
+export default function Index() {
+  const { styles } = useStyles(stylesheet);
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const closeModal = () => setActiveModal(null);
 
   const signOut = async () => {
     let { error } = await supabase.auth.signOut();
   };
 
-  const { name, email, phone, registered, isLoading } = useRegistration();
+  const { name, email, phone, isLoading } = useRegistration();
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <Modal isOpen={modal}>
+      <Modal isOpen={activeModal === "personal_info"}>
         <View style={styles.modalContainer}>
-          <Text style={styles.closeButton} onPress={() => setModal(false)}>
+          <Text style={styles.closeButton} onPress={closeModal}>
             Cerrar
           </Text>
-
-          <RegistrationForm closeModal={() => setModal(false)}/>
-          
+          <PersonalInfoModal closeModal={closeModal} />
+        </View>
+      </Modal>
+      <Modal isOpen={activeModal === "role"}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.closeButton} onPress={closeModal}>
+            Cerrar
+          </Text>
+          <RoleModal closeModal={closeModal} />
         </View>
       </Modal>
       <View style={styles.container}>
@@ -51,15 +58,24 @@ export default function Page() {
             disabled={isLoading}
             isLoading={isLoading}
             caption={name ? "Completo ✅" : "Sin completar ⚠️"}
-            onPress={() => setModal(true)}
+            onPress={() => setActiveModal("personal_info")}
           />
-          <Row title="Rol" trailingType="chevron" caption="Sin rol ⚠️" />
+          <Row
+            title="Rol"
+            trailingType="chevron"
+            caption="Sin rol ⚠️"
+            onPress={() => setActiveModal("role")}
+          />
         </GroupedList>
         <GroupedList
           header="Seguridad y acceso"
           footer="Explora las opciones disponibles para proteger tu cuenta. Considera que las opciones de correo electrónico y contraseña solo estarán activas si la identidad de correo electrónico está vinculada."
         >
-          <Row title="Correo electrónico" trailingType="chevron" caption={email ? "Completo ✅" : "Sin completar ⚠️"}/>
+          <Row
+            title="Correo electrónico"
+            trailingType="chevron"
+            caption={email ? "Completo ✅" : "Sin completar ⚠️"}
+          />
           <Row title="Contraseña" trailingType="chevron" />
           <Row title="Dispositivos y sesiones" trailingType="chevron" />
           <Row title="2FA" trailingType="chevron" caption="No configurado" />
@@ -110,6 +126,9 @@ const stylesheet = createStyleSheet((theme) => ({
     marginHorizontal: 12,
   },
   modalContainer: {
+    width: "100%",
+    alignSelf: "center",
+    maxWidth: 500,
     backgroundColor: theme.ui.colors.card,
     borderRadius: 10,
     padding: 24,

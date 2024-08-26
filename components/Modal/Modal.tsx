@@ -27,7 +27,10 @@ export default function Modal({ isOpen, children, ...rest }: ModalProps) {
         style={styles.container}
       >
         <ScrollView
-          contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: "center",
+          }}
           keyboardShouldPersistTaps="always"
         >
           {children}
@@ -40,9 +43,7 @@ export default function Modal({ isOpen, children, ...rest }: ModalProps) {
 const stylesheet = createStyleSheet((theme) => ({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignContent: "center",
     paddingHorizontal: 12,
-    backgroundColor: "rgba(0.0, 0.0, 0.0, 0.6)",
+    backgroundColor: "rgba(0.0, 0.0, 0.0, 0.65)",
   },
 }));
