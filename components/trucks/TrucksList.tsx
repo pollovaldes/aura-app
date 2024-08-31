@@ -6,7 +6,7 @@ import {
   Pressable,
   Image,
 } from "react-native";
-import TruckHandler from "@/components/trucks/TrucksMainLogic";
+import useTruck from "@/hooks/useTruck";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link, Stack } from "expo-router";
 import AddTruckComponent from "./AddTruckComponent";
@@ -15,7 +15,7 @@ import { ChevronRight, Plus, PlusIcon } from "lucide-react-native";
 import { useAuth } from "@/context/AuthContext";
 
 export default function TrucksList() {
-  const { trucks, loading } = TruckHandler();
+  const { trucks, loading } = useTruck({isComplete: false});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { styles } = useStyles(stylesheet);
   const { isAdmin } = useAuth();

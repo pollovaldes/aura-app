@@ -1,40 +1,56 @@
-//TrucksMainLogic
-
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
-type Truck = {
+type Truck = 
+| {
   id: string;
-  numero_economico: string;
+  numero_economico?: string;
   marca: string;
   sub_marca: string;
   modelo: string;
-  no_serie: string;
-  placa: string;
-  poliza: string;
-  id_usuario: string;
-}
+  no_serie?: string;
+  placa?: string;
+  poliza?: string;
+  id_usuario?: string;
+  } 
+| {
+  id: string;
+  marca: string;
+  sub_marca: string;
+  modelo: string;
+  }
 
-export default function TruckHandler() {
+type TruckProps = {
+  justOne?: boolean;
+  isComplete?: boolean;
+};
+
+export default function useTruck({ justOne = true, isComplete = true }: TruckProps) {
   const [trucks, setTrucks] = useState<Truck[]>([]);
   const [loading, setLoading] = useState(true);
 
+  if (justOne)
+
   useEffect(() => {
     const fetchTrucks = async () => {
+
+      const fieldsToSelect = isComplete ? "*" : "id, marca, sub_marca, modelo";
+
       const { data, error } = await supabase
-        .from("camiones") // Reemplaza 'testSupa' con el nombre de tu tabla si es necesario
-        .select("*");
+        .from("camiones")
+        .select(fieldsToSelect);
 
       if (error) {
         console.error(error);
       } else {
-        setTrucks(data);
+        setTrucks(data as unknown as Truck[]); // Si algun día checas esto arturo, soluciona, funciona pero no se por que tengo que poner el unkown 
       }
       setLoading(false);
     };
 
     fetchTrucks();
 
+    /*
     // Configurar la suscripción para escuchar los cambios en la tabla
     const subscription = supabase
       .channel("public:camiones") // Nombre del canal arbitrario
@@ -51,8 +67,9 @@ export default function TruckHandler() {
 
     // Limpia la suscripción al desmontar el componente
     return () => {
-      supabase.removeChannel(subscription);
+      supabase.removeChannel(subscription); 
     };
+    */
   }, []);
   return { trucks, loading };
 }
