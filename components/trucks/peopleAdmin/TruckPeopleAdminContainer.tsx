@@ -22,11 +22,11 @@ export default function TruckPeopleAdminContainer() {
 
   useEffect(() => {
     if (personId) {
-      fetchTruckData();
+      fetchPeopleData();
     }
   }, [personId]);
 
-  const fetchTruckData = async () => {
+  const fetchPeopleData = async () => {
     if (personId) {
       try {
         const { data, error } = await supabase

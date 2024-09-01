@@ -9,7 +9,7 @@ type Person = {
   apellido_materno: string;
 }
 
-export default function PeopleMainLogic() {
+export default function usePeople() {
   const { isLoading, error } = useSessionContext();
   const session = useSession();
   const [people, setPeople] = useState<Person[]>([]);

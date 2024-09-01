@@ -6,10 +6,10 @@ import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import { Clipboard } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
-import PeopleMainLogic from "@/components/people/PeopleMainLogic";
+import usePeople from "@/hooks/peopleHooks/usePeople";
 
 export default function PeopleDetail() {
-  const { people } = PeopleMainLogic();
+  const { people } = usePeople();
   const { personId } = useLocalSearchParams<{ personId: string }>();
   const { styles } = useStyles(stylesheet);
 

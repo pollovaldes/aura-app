@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { useLocalSearchParams } from "expo-router";
 
-type Truck = 
-| {
+export type Truck = 
+{
   id: string;
   numero_economico?: string;
   marca: string;
@@ -13,32 +14,32 @@ type Truck =
   poliza?: string;
   id_usuario?: string;
   } 
-| {
-  id: string;
-  marca: string;
-  sub_marca: string;
-  modelo: string;
-  }
 
 type TruckProps = {
   justOne?: boolean;
   isComplete?: boolean;
 };
 
-export default function useTruck({ justOne = true, isComplete = true }: TruckProps) {
+export default function useTruck({ justOne = false, isComplete = true }: TruckProps) {
   const [trucks, setTrucks] = useState<Truck[]>([]);
   const [loading, setLoading] = useState(true);
+  const { truckId } = useLocalSearchParams<{ truckId: string }>();
 
-  if (justOne)
+  if (justOne) {
+  }
 
   useEffect(() => {
     const fetchTrucks = async () => {
 
       const fieldsToSelect = isComplete ? "*" : "id, marca, sub_marca, modelo";
 
-      const { data, error } = await supabase
-        .from("camiones")
-        .select(fieldsToSelect);
+      let query = supabase.from("camiones").select(fieldsToSelect);
+
+      if (justOne && truckId) {
+        query = query.eq("id", truckId);
+      }
+
+      const { data, error } = await query
 
       if (error) {
         console.error(error);

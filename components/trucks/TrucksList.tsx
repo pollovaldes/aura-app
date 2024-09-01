@@ -6,7 +6,7 @@ import {
   Pressable,
   Image,
 } from "react-native";
-import useTruck from "@/hooks/useTruck";
+import useTruck from "@/hooks/truckHooks/useTruck";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link, Stack } from "expo-router";
 import AddTruckComponent from "./AddTruckComponent";

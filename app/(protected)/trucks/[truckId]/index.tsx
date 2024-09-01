@@ -1,7 +1,7 @@
 import React from "react";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { View, Image, ScrollView, Alert } from "react-native";
-import useTruck from "@/hooks/useTruck";
+import useTruck from "@/hooks/truckHooks/useTruck";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
@@ -17,7 +17,7 @@ import {
 import { colorPalette } from "@/style/themes";
 
 export default function TruckDetail() {
-  const { trucks } = useTruck();
+  const { trucks } = useTruck({ isComplete: false });
   const { truckId } = useLocalSearchParams<{ truckId: string }>();
   const { styles } = useStyles(stylesheet);
 
