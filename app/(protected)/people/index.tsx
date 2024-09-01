@@ -14,7 +14,7 @@ import { useAuth } from "@/context/SessionContext";
 
 export default function Page() {
   const { isAdmin } = useAuth();
-  const { people, loading } = usePeople();
+  const { people, loading } = usePeople({isComplete: false});
   const { styles } = useStyles(stylesheet);
   const [isModalVisible, setIsModalVisible] = useState(false);
   

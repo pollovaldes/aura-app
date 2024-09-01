@@ -1,54 +1,52 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useSession, useSessionContext } from "@/context/SessionContext";
+import { useLocalSearchParams } from "expo-router";
 
 type Person = {
   id: string;
   nombre: string;
   apellido_paterno: string;
   apellido_materno: string;
+  email?: string;
+  phone?: string;
+  registrado?: boolean;
 }
 
-export default function usePeople() {
-  const { isLoading, error } = useSessionContext();
-  const session = useSession();
+type PersonProps = {
+  justOne?: boolean;
+  isComplete?: boolean;
+}
+
+export default function usePeople({ justOne = false, isComplete = true }: PersonProps) {
   const [people, setPeople] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
+  const { personId } = useLocalSearchParams<{ personId: string }>();
 
   useEffect(() => {
     const fetchPeople = async () => {
 
-      if (session) {
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("id, nombre, apellido_paterno, apellido_materno")
+      const fieldsToSelect = isComplete ? "*" : "id, nombre, apellido_paterno, apellido_materno";
 
-        if (error) {
-          console.error(error);
-        } else {
-          setPeople(data);
-        }
-        setLoading(false);
+      let query = supabase.from("profiles").select(fieldsToSelect);
+
+      if (justOne && personId) {
+        query = query.eq("id", personId);
       }
-    };
+
+      const { data, error } = await query
+
+      if (error) {
+        console.error(error);
+      } else {
+        setPeople(data as unknown as Person[]); // Si algun día checas esto arturo, soluciona, funciona pero no se por que tengo que poner el unkown
+      }
+      setLoading(false);
+      };
 
     fetchPeople();
+  
+    }, []);
 
-    const subscription = supabase
-      .channel("public:People")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "profiles" },
-        (payload) => {
-          console.log("Table Person View change:", payload);
-          fetchPeople();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(subscription);
-    };
-  }, [session]);
   return { people, loading };
 }

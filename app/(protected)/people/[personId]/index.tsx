@@ -9,11 +9,11 @@ import { colorPalette } from "@/style/themes";
 import usePeople from "@/hooks/peopleHooks/usePeople";
 
 export default function PeopleDetail() {
-  const { people } = usePeople();
+  const { people } = usePeople({ justOne: true, isComplete: false });
   const { personId } = useLocalSearchParams<{ personId: string }>();
   const { styles } = useStyles(stylesheet);
 
-  const user = people.find((truck) => truck.id === personId!);
+  const user = people[0];
   const peopleTitle = `${user?.nombre ?? ""} ${user?.apellido_paterno ?? ""} ${user?.apellido_materno ?? ""}`;
 
   return (

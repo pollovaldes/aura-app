@@ -25,9 +25,6 @@ export default function useTruck({ justOne = false, isComplete = true }: TruckPr
   const [loading, setLoading] = useState(true);
   const { truckId } = useLocalSearchParams<{ truckId: string }>();
 
-  if (justOne) {
-  }
-
   useEffect(() => {
     const fetchTrucks = async () => {
 
