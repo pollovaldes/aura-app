@@ -92,6 +92,7 @@ const stylesheet = createStyleSheet((theme) => ({
   contentContainer: {
     flexDirection: "row",
     alignItems: "center",
+    flex: 1,
   },
   imageContainer: {
     padding: 12,
@@ -105,6 +106,8 @@ const stylesheet = createStyleSheet((theme) => ({
     fontSize: 18,
     paddingLeft: 10,
     color: theme.textPresets.main,
+    flexShrink: 1,
+    marginRight: 8,
   },
   plusIcon: {
     fontSize: 16,
