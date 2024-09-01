@@ -14,7 +14,7 @@ import { useSessionContext } from "@/context/SessionContext";
 import LoadingScreen from "@/components/Auth/LoadingScreen";
 import useRegistration from "@/hooks/useRegistration";
 import { useEffect } from "react";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/SessionContext";
 
 export default function HomeLayout() {
   const { styles } = useStyles(stylesheet);
@@ -22,7 +22,7 @@ export default function HomeLayout() {
   const widthThreshold = 600; // TODO: Move dimensions to a theme file.
   const { isLoading: isSessionLoading, error, session } = useSessionContext();
   const { isLoading: isUserNameLoading, registered } = useRegistration();
-  const { isAdmin } = useAuth();
+  const { isAdmin, profile } = useAuth();
 
   const path = usePathname();
 
@@ -38,7 +38,7 @@ export default function HomeLayout() {
     return (
       <>
         <Text>Un error inesperado ocurrió.</Text>
-        <Text>{error}</Text>
+        <Text>{String(error)}</Text>
       </>
     );
   }
