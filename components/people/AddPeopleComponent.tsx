@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-import { useAddPerson } from "./AddPeopleLogic";
+import { useAddPeople } from "../../hooks/peopleHooks/useAddPeople";
 
 interface AddTruckComponentProps {
   visible: boolean;
@@ -28,7 +28,7 @@ function AddPeopleComponent({ visible, onClose }: AddTruckComponentProps) {
     setAge,
     resetFields,
     handleCreatePerson
-  } = useAddPerson();
+  } = useAddPeople();
 
   const handleCancel = () => {
     resetFields();

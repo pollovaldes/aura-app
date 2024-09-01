@@ -17,11 +17,10 @@ import {
 import { colorPalette } from "@/style/themes";
 
 export default function TruckDetail() {
-  const { trucks } = useTruck({ isComplete: false });
-  const { truckId } = useLocalSearchParams<{ truckId: string }>();
+  const { trucks } = useTruck({ justOne: true ,isComplete: false });
   const { styles } = useStyles(stylesheet);
-
-  const truck = trucks.find((truck) => truck.id === truckId!);
+  const { truckId } = useLocalSearchParams<{ truckId: string }>();
+  const truck = trucks[0]
   const truckTitle = `${truck?.marca ?? ""} ${truck?.sub_marca ?? ""} ${truck?.modelo ?? ""}`;
 
   return (

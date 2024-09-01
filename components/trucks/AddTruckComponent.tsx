@@ -12,7 +12,7 @@ import {
 } from "react-native";
 
 import Modal from "@/components/Modal/Modal";
-import { useAddTruck } from "@/components/trucks/AddTruckLogic";
+import { useAddTruck } from "@/hooks/truckHooks/useAddTruck";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "../Form/FormButton";

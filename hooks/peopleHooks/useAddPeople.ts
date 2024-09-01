@@ -10,7 +10,7 @@ type Person = {
   apellido_materno: string;
 }
 
-export function useAddPerson() {
+export function useAddPeople() {
   const [nombre, setNombre] = useState("");
   const [apellido_paterno, setApellidoPaterno] = useState("");
   const [apellido_materno, setApellidoMaterno] = useState("");
