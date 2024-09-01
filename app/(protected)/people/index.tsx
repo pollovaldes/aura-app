@@ -43,13 +43,6 @@ export default function Page() {
             </Link>
           )}}
         />
-        <Pressable style={styles.addButton} onPress={() => setIsModalVisible(true)}>
-          <Text 
-            style={[styles.itemText, {fontWeight: "bold"}, {color: "white"}]}
-            >Añadir Conductor</Text>
-        </Pressable>
-  
-        <AddPeopleComponent visible={isModalVisible} onClose={() => setIsModalVisible(false)} />
       </>
     );
   }

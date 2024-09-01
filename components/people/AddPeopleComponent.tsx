@@ -21,11 +21,19 @@ interface AddTruckComponentProps {
 
 function AddPeopleComponent({ visible, onClose }: AddTruckComponentProps) {
   const {
-    name,
-    age,
+    nombre,
+    apellido_paterno,
+    apellido_materno,
+    email,
+    phone,
+    password,
     loading,
-    setName,
-    setAge,
+    setNombre,
+    setApellidoPaterno,
+    setApellidoMaterno,
+    setEmail,
+    setPhone,
+    setPassword,
     resetFields,
     handleCreatePerson
   } = useAddPeople();
@@ -48,14 +56,38 @@ function AddPeopleComponent({ visible, onClose }: AddTruckComponentProps) {
           <Text style={styles.modalTitle}>Crear Nuevo Conductor</Text>
           <TextInput
             placeholder="Nombre"
-            value={name}
-            onChangeText={setName}
+            value={nombre}
+            onChangeText={setNombre}
             style={styles.input}
           />
           <TextInput
-            placeholder="Edad"
-            value={age}
-            onChangeText={setAge}
+            placeholder="Apellido Paterno"
+            onChangeText={setApellidoPaterno}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Apellido Materno"
+            value={apellido_materno}
+            onChangeText={setApellidoMaterno}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Telefono"
+            value={phone}
+            onChangeText={setPhone}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Contraseña"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={true}
             style={styles.input}
           />
 
