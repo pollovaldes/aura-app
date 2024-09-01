@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/SessionContext";
 import ChangeDataModal from "@/components/Modal/ChangeDataModal";
 import { FormButton } from "@/components/Form/FormButton";
 

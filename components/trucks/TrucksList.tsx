@@ -12,7 +12,7 @@ import { Link, Stack } from "expo-router";
 import AddTruckComponent from "./AddTruckComponent";
 import { useState } from "react";
 import { ChevronRight, Plus, PlusIcon } from "lucide-react-native";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/SessionContext";
 
 export default function TrucksList() {
   const { trucks, loading } = useTruck({isComplete: false});

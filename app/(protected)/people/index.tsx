@@ -6,7 +6,7 @@
 
 import { StyleSheet, Text, View } from "react-native";
 import PeopleMainScreen from "@/components/people/PeopleMainScreen";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/SessionContext";
 import { Redirect } from "expo-router";
 
 export default function Page() {
