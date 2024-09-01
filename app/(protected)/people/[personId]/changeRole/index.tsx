@@ -1,22 +1,21 @@
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { View, Modal, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { FormButton } from "@/components/Form/FormButton";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
+import AssignRoleModal from "@/components/people/AssignRoleModal";
+import Modal from "@/components/Modal/Modal";
+
+type ModalType = "assignrole" | null;
 
 export default function TruckPeopleAdminContainer() {
   const { styles } = useStyles(stylesheet);
   const [modalVisible, setModalVisible] = useState(false);
-
-  const handleOpenModal = () => {
-    setModalVisible(true);
-  };
-
-  const handleCloseModal = () => {
-    setModalVisible(false);
-  };
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const closeModal = () => setActiveModal(null);
+  const openModal = () => setActiveModal("assignrole");
 
   return (
     <View style={styles.container}>
@@ -33,31 +32,16 @@ export default function TruckPeopleAdminContainer() {
       
       <FormButton
         title="Cambiar rol"
-        onPress={handleOpenModal}
+        onPress = {openModal}
         isLoading={false}
         style={styles.button}
       />
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={handleCloseModal}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Seleccione un nuevo rol</Text>
-            
-            {/* Example role selection buttons */}
-            <TouchableOpacity onPress={() => { /* Handle role selection */ }}>
-              <Text style={styles.modalOption}>Admin</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => { /* Handle role selection */ }}>
-              <Text style={styles.modalOption}>User</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleCloseModal} style={styles.closeButton}>
-              <Text style={styles.textStyle}>Cancelar</Text>
-            </TouchableOpacity>
-          </View>
+      <Modal isOpen={activeModal === "assignrole"}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.closeButton} onPress={closeModal}>
+            Cerrar
+          </Text>
+          <AssignRoleModal closeModal={closeModal} />
         </View>
       </Modal>
     </View>
@@ -73,32 +57,13 @@ const stylesheet = createStyleSheet((theme) => ({
     marginLeft: 18,
     marginRight: 18,
   },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalView: {
-    width: 300,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalText: {
-    fontSize: 18,
-    textAlign: 'center',
-    marginBottom: 20,
-    color: "black",
+  modalContainer: {
+    width: "100%",
+    alignSelf: "center",
+    maxWidth: 500,
+    backgroundColor: theme.ui.colors.card,
+    borderRadius: 10,
+    padding: 24,
   },
   modalOption: {
     fontSize: 16,
@@ -106,12 +71,9 @@ const stylesheet = createStyleSheet((theme) => ({
     color: '#007BFF',
   },
   closeButton: {
-    marginTop: 15,
-    backgroundColor: theme.components.formComponent.buttonMainBG,
-    borderRadius: 10,
-    padding: 10,
-    elevation: 2,
-    color: theme.textPresets.inverted
+    color: theme.ui.colors.primary,
+    fontSize: 18,
+    textAlign: "right",
   },
   textStyle: {
     color: 'white',
