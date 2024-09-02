@@ -1,14 +1,27 @@
+import React from "react";
 import { Stack } from "expo-router";
+import { Platform, Text } from "react-native";
 
-export default function Layout() {
+export const unstable_settings = {
+  initialRouteName: "index",
+};
+
+export default function _layout() {
   return (
     <Stack
       screenOptions={{
         headerShown: true,
-        headerLargeTitle: false,
+        headerLargeTitle: true,
+        headerBlurEffect: "regular",
+        headerTransparent: Platform.OS === "ios" ? true : false,
       }}
     >
-      <Stack.Screen name="index" options={{ title: "Personas" }} />
+      <Stack.Screen
+        name="index"
+        options={{
+          title: "Personas",
+        }}
+      />
     </Stack>
   );
 }

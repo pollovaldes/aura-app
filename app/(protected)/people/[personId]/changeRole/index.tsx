@@ -1,6 +1,6 @@
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { FormButton } from "@/components/Form/FormButton";
 import GroupedList from "@/components/grouped-list/GroupedList";
@@ -23,33 +23,35 @@ export default function TruckPeopleAdminContainer() {
   }
 
   return (
-    <View style={styles.container}>
-      <Stack.Screen options={{ headerBackTitle: "Rol", headerTitle: "Cambiar Rol" }} />
-      
-      <GroupedList header="Rol de usuario">
-        <Row
-          title="Rol actual"
-          trailingType="chevron"
-          caption="Placeholder" // Replace with fetched user role
-          showChevron={false}
+    <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <View style={styles.container}>
+        <Stack.Screen options={{ headerBackTitle: "Rol", headerTitle: "Cambiar Rol" }} />
+        
+        <GroupedList header="Rol de usuario">
+          <Row
+            title="Rol actual"
+            trailingType="chevron"
+            caption="Placeholder" // Replace with fetched user role
+            showChevron={false}
+          />
+        </GroupedList>
+        
+        <FormButton
+          title="Cambiar rol"
+          onPress={openModal}
+          isLoading={false}
+          style={styles.button}
         />
-      </GroupedList>
-      
-      <FormButton
-        title="Cambiar rol"
-        onPress={openModal}
-        isLoading={false}
-        style={styles.button}
-      />
-      <Modal isOpen={activeModal === "assignRole"}>
-         <View style={styles.modalContainer}>
-           <Text style={styles.closeButton} onPress={closeModal}>
-             Cerrar
-           </Text>
-           <AssignRoleModal closeModal={closeModal} />
-        </View>
-      </Modal>
-    </View>
+        <Modal isOpen={activeModal === "assignRole"}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.closeButton} onPress={closeModal}>
+              Cerrar
+            </Text>
+            <AssignRoleModal closeModal={closeModal} />
+          </View>
+        </Modal>
+      </View>
+    </ScrollView>
   );
 }
 
