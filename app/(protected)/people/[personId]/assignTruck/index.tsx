@@ -4,14 +4,21 @@ import { colorPalette } from "@/style/themes";
 import { Pen } from "lucide-react-native";
 import { View, Text, ScrollView } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
+import AssignTruckModal from "@/components/Modal/AssignTruckModal";
+import { useState } from "react";
 
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
+  const [modal, setModal] = useState(false);
+
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View style={styles.container}>
+
+        <AssignTruckModal isOpen={modal} closeModal={() => setModal(false)} />
+          
         <GroupedList
           header="Asignaciones"
           footer="Asigna un camion a su conductor"
@@ -19,7 +26,7 @@ export default function Index() {
           <Row
             title="Asignar camión"
             trailingType="chevron"
-            onPress={() => { }}
+            onPress={() => setModal(true)}
             icon={<Pen size={24} color="white" />}
             color={colorPalette.emerald[500]}
           />
@@ -31,7 +38,7 @@ export default function Index() {
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
-    flex: 1,
+    marginTop: theme.marginsComponents.section,
     gap: theme.marginsComponents.section,
   },
   imageContainer: {},

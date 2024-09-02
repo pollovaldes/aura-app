@@ -53,7 +53,7 @@ export default function PeopleDetail() {
             <Row
               title="Asignar camión"
               trailingType="chevron"
-              onPress={() => router.navigate(`/people/${personId}/asignTruck`)}
+              onPress={() => router.navigate(`/people/${personId}/assignTruck`)}
               icon={<Truck size={24} color="white" />}
               color={colorPalette.emerald[500]}
             />
