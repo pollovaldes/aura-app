@@ -58,7 +58,6 @@ export default function PeopleDetail() {
               color={colorPalette.emerald[500]}
             />
           </GroupedList>
-          <View />
         </View>
       </ScrollView>
     </>
