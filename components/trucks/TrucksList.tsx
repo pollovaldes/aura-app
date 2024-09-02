@@ -6,16 +6,16 @@ import {
   Pressable,
   Image,
 } from "react-native";
-import TruckHandler from "@/components/trucks/TrucksMainLogic";
+import useTruck from "@/hooks/truckHooks/useTruck";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link, Stack } from "expo-router";
 import AddTruckComponent from "./AddTruckComponent";
 import { useState } from "react";
 import { ChevronRight, Plus, PlusIcon } from "lucide-react-native";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/SessionContext";
 
 export default function TrucksList() {
-  const { trucks, loading } = TruckHandler();
+  const { trucks, loading } = useTruck({isComplete: false});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { styles } = useStyles(stylesheet);
   const { isAdmin } = useAuth();
@@ -107,7 +107,7 @@ const stylesheet = createStyleSheet((theme) => ({
     paddingLeft: 10,
     color: theme.textPresets.main,
     flexShrink: 1,
-    marginRight: 8,
+    marginRight: 18,
   },
   plusIcon: {
     fontSize: 16,

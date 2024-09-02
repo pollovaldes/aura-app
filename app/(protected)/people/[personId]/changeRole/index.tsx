@@ -5,17 +5,22 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { FormButton } from "@/components/Form/FormButton";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
-import AssignRoleModal from "@/components/people/AssignRoleModal";
+import AssignRoleModal from "@/components/Modal/AssignRoleModal";
 import Modal from "@/components/Modal/Modal";
 
-type ModalType = "assignrole" | null;
+type ModalType = "assignRole" | null;
 
 export default function TruckPeopleAdminContainer() {
   const { styles } = useStyles(stylesheet);
   const [modalVisible, setModalVisible] = useState(false);
+
   const [activeModal, setActiveModal] = useState<ModalType>(null);
-  const closeModal = () => setActiveModal(null);
-  const openModal = () => setActiveModal("assignrole");
+  const closeModal = () => {
+    setActiveModal(null);
+  }
+  const openModal = () => {
+    setActiveModal("assignRole");
+  }
 
   return (
     <View style={styles.container}>
@@ -32,16 +37,16 @@ export default function TruckPeopleAdminContainer() {
       
       <FormButton
         title="Cambiar rol"
-        onPress = {openModal}
+        onPress={openModal}
         isLoading={false}
         style={styles.button}
       />
-      <Modal isOpen={activeModal === "assignrole"}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.closeButton} onPress={closeModal}>
-            Cerrar
-          </Text>
-          <AssignRoleModal closeModal={closeModal} />
+      <Modal isOpen={activeModal === "assignRole"}>
+         <View style={styles.modalContainer}>
+           <Text style={styles.closeButton} onPress={closeModal}>
+             Cerrar
+           </Text>
+           <AssignRoleModal closeModal={closeModal} />
         </View>
       </Modal>
     </View>
@@ -73,7 +78,6 @@ const stylesheet = createStyleSheet((theme) => ({
   closeButton: {
     color: theme.ui.colors.primary,
     fontSize: 18,
-    textAlign: "right",
   },
   textStyle: {
     color: 'white',
