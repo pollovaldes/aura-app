@@ -4,7 +4,7 @@ import { View, Image, ScrollView } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
-import { Clipboard } from "lucide-react-native";
+import { Clipboard, Info, SquarePen, Truck } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import usePeople from "@/hooks/peopleHooks/usePeople";
 
@@ -35,14 +35,26 @@ export default function PeopleDetail() {
               title="Información del conductor"
               trailingType="chevron"
               onPress={() => router.navigate(`/people/${personId}/details`)}
-              icon={<Clipboard size={24} color="white" />}
-              color={colorPalette.emerald[500]}
+              icon={<Info size={24} color="white" />}
+              color={colorPalette.cyan[500]}
             />
             <Row
               title="Cambiar Rol"
               trailingType="chevron"
               onPress={() => router.navigate(`/people/${personId}/changeRole`)}
-              icon={<Clipboard size={24} color="white" />}
+              icon={<SquarePen size={24} color="white" />}
+              color={colorPalette.orange[500]}
+            />
+          </GroupedList>
+          <GroupedList
+            header="Asignaciones"
+            footer="Asigna un camion a su conductor"
+          >
+            <Row
+              title="Asignar camión"
+              trailingType="chevron"
+              onPress={() => router.navigate(`/people/${personId}/asignTruck`)}
+              icon={<Truck size={24} color="white" />}
               color={colorPalette.emerald[500]}
             />
           </GroupedList>

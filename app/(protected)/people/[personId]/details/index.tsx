@@ -42,31 +42,37 @@ export default function TruckPeopleAdminComponent() {
               title="Nombre"
               trailingType="chevron"
               caption={`${user.nombre}`}
+              showChevron={false}
             />
             <Row
               title="Apellido Paterno"
               trailingType="chevron"
               caption={`${user.apellido_paterno}`}
+              showChevron={false}
             />
             <Row
               title="Apellido Materno"
               trailingType="chevron"
               caption={`${user.apellido_materno}`}
+              showChevron={false}
             />
             <Row
               title="Email"
               trailingType="chevron"
               caption={`${user.email}`}
+              showChevron={false}
             />
             <Row
               title="Phone"
               trailingType="chevron"
               caption={`${user.phone}`}
+              showChevron={false}
             />
             <Row
               title="Registrado"
               trailingType="chevron"
               caption={`${user.registrado}`}
+              showChevron={false}
             />
           </GroupedList>
       </View>
