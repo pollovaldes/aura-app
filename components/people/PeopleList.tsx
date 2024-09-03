@@ -32,17 +32,6 @@ export default function PeopleList() {
   if (isAdmin) {
     return (
       <>
-        {isAdmin && (
-          <Stack.Screen
-            options={{
-              headerRight: () => (
-                <Pressable onPress={() => setIsModalVisible(true)}>
-                  <Plus color={styles.plusIcon.color} />
-                </Pressable>
-              ),
-            }}
-          />
-        )}
         <FlatList
           contentInsetAdjustmentBehavior="automatic"
           data={people}
@@ -55,7 +44,7 @@ export default function PeopleList() {
                     <View style={styles.imageContainer}>
                       <Image
                         style={styles.image}
-                        source={{ uri: "https://placehold.co/512x512.png" }}
+                        source={{ uri: "https://placehold.co/64x64.png" }}
                       />
                     </View>
                     <Text
@@ -69,10 +58,6 @@ export default function PeopleList() {
               </Pressable>
             </Link>
           )}
-        />
-        <AddTruckComponent // This should be AddPeopleComponent
-          visible={isModalVisible}
-          onClose={() => setIsModalVisible(false)}
         />
       </>
     );

@@ -6,6 +6,7 @@ import { View, Text, ScrollView } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import AssignTruckModal from "@/components/Modal/AssignTruckModal";
 import { useState } from "react";
+import { Stack } from "expo-router";
 
 
 export default function Index() {
@@ -16,11 +17,24 @@ export default function Index() {
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View style={styles.container}>
+        <Stack.Screen options={{ headerBackTitle: "Asignar camión", headerTitle: "Asignar camión" }} />
 
         <AssignTruckModal isOpen={modal} closeModal={() => setModal(false)} />
           
         <GroupedList
           header="Asignaciones"
+          footer="Asigna un camion a su conductor"
+        >
+          <Row
+            title="Ver Camiones Asignados"
+            trailingType="chevron"
+            onPress={() => setModal(true)}
+            icon={<Pen size={24} color="white" />}
+            color={colorPalette.emerald[500]}
+          />
+        </GroupedList>
+        <GroupedList
+          header=""
           footer="Asigna un camion a su conductor"
         >
           <Row

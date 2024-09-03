@@ -1,23 +1,26 @@
-import { useState } from "react";
 import Modal from "./Modal";
 import { View, Text, TextInput, Alert } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { supabase } from "@/lib/supabase";
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "../Form/FormButton";
-import { useSession } from "@/context/SessionContext";
+import usePeople from "@/hooks/peopleHooks/usePeople";
+import useTruck from "@/hooks/truckHooks/useTruck";
+import TrucksList from "../trucks/TrucksList";
 
 type ModalProps = {
   isOpen: boolean;
   closeModal: () => void;
 };
 
+
+
 export default function AssignTruckModal({
   isOpen,
   closeModal,
 }: ModalProps) {
   const { styles } = useStyles(stylesheet);
-  const [loading, setLoading] = useState(false);
+  const { people } = usePeople({ justOne: false, isComplete: false });
+  const { trucks } = useTruck({ justOne: false, isComplete: false });
 
 
 
@@ -32,13 +35,14 @@ export default function AssignTruckModal({
           <View style={styles.group}>
             <FormTitle title={`Asignar camion a conductor`} />
             <Text style={styles.subtitle}>
-              Elija un conductor
+              <TrucksList/>
             </Text>
           </View>
           <View style={styles.group}>
             <FormButton
               title="Continuar"
-              onPress={() => {closeModal}}
+              onPress={() => {}}
+              isLoading={false}
             />
           </View>
         </View>
