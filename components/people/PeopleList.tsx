@@ -48,7 +48,7 @@ export default function PeopleList() {
           data={people}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <Link href={{ pathname: `/trucks/${item.id}` }} asChild>
+            <Link href={{ pathname: `/people/${item.id}` }} asChild>
               <Pressable>
                 <View style={styles.container}>
                   <View style={styles.contentContainer}>

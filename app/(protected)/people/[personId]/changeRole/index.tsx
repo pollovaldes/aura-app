@@ -7,12 +7,14 @@ import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import AssignRoleModal from "@/components/Modal/AssignRoleModal";
 import Modal from "@/components/Modal/Modal";
+import { useAuth } from "@/context/SessionContext";
 
 type ModalType = "assignRole" | null;
 
 export default function TruckPeopleAdminContainer() {
   const { styles } = useStyles(stylesheet);
   const [modalVisible, setModalVisible] = useState(false);
+  const { profile } = useAuth();
 
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => {
@@ -25,23 +27,22 @@ export default function TruckPeopleAdminContainer() {
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View style={styles.container}>
-        <Stack.Screen options={{ headerBackTitle: "Rol", headerTitle: "Cambiar Rol" }} />
+        <Stack.Screen options={{ headerBackTitle: "Rol", headerTitle: "Rol" }} />
         
         <GroupedList header="Rol de usuario">
           <Row
             title="Rol actual"
             trailingType="chevron"
-            caption="Placeholder" // Replace with fetched user role
+            caption = {profile.roles}// Replace with fetched user role
             showChevron={false}
           />
+          <Row
+            title="Cambiar rol"
+            trailingType="chevron"
+            showChevron={true}
+            onPress={openModal}
+          />
         </GroupedList>
-        
-        <FormButton
-          title="Cambiar rol"
-          onPress={openModal}
-          isLoading={false}
-          style={styles.button}
-        />
         <Modal isOpen={activeModal === "assignRole"}>
           <View style={styles.modalContainer}>
             <Text style={styles.closeButton} onPress={closeModal}>
