@@ -20,6 +20,10 @@ export default function _layout() {
         name="index"
         options={{
           title: "Personas",
+          headerSearchBarOptions: {
+            placeholder: 'Search name or number',
+            hideWhenScrolling: false,
+          },
         }}
       />
     </Stack>

@@ -14,7 +14,6 @@ type ModalType = "assignRole" | null;
 export default function TruckPeopleAdminContainer() {
   const { styles } = useStyles(stylesheet);
   const [modalVisible, setModalVisible] = useState(false);
-  const { profile } = useAuth();
 
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => {
@@ -33,7 +32,7 @@ export default function TruckPeopleAdminContainer() {
           <Row
             title="Rol actual"
             trailingType="chevron"
-            caption = {profile.roles}// Replace with fetched user role
+            caption = {"vemos"}// No esta funcionando algo
             showChevron={false}
           />
           <Row

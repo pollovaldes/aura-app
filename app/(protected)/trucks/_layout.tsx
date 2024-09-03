@@ -20,6 +20,10 @@ export default function _layout() {
         name="index"
         options={{
           title: "Camiones",
+          headerSearchBarOptions: {
+            placeholder: 'Search name or number',
+            hideWhenScrolling: false,
+          },
         }}
       />
     </Stack>
