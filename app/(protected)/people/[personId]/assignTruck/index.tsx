@@ -23,7 +23,7 @@ export default function Index() {
           <Row
             title="Ver Camiones Asignados"
             trailingType="chevron"
-            onPress={() => setModal(true)}
+            onPress={() => {}}
             icon={<Pen size={24} color="white" />}
             color={colorPalette.emerald[500]}
           />

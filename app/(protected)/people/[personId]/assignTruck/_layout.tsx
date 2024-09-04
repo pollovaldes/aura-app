@@ -20,7 +20,12 @@ export default function Layout() {
         name="ATMS"
         options={{
           presentation: "modal",
-          headerShown: false,
+          headerShown: true,
+          headerTitle: "Seleccionar Camiones",
+          headerSearchBarOptions: {
+            placeholder: 'Search name or number',
+            hideWhenScrolling: false,
+          },
         }}
       />
 
@@ -30,14 +35,14 @@ export default function Layout() {
           headerTitle: "Asignar camión",
           headerShown: true, // Asegura que el header se muestre
           headerLeft: () => (
-            <Pressable onPress={() => { }}>
+            <Pressable onPress={() => router.back()}>
               <View style={styles.closeButtonContainer}>
                 <MaterialIcons
                   name="arrow-back-ios"
                   size={24}
                   color={styles.closeButton.color}
                 />
-                <Text style={styles.closeButton} onPress={() => router.back()}>
+                <Text style={styles.closeButton}>
                   Atras
                 </Text>
               </View>
