@@ -1,11 +1,9 @@
-import { View, Text, Button, ScrollView, FlatList, Pressable, Image, Dimensions, Alert } from 'react-native';
-import { Link, Stack, useRouter } from 'expo-router';
+import { View, Text, FlatList, Pressable, Image, Alert } from 'react-native';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
-import FormTitle from '@/app/auth/FormTitle';
-import { FormButton } from '@/components/Form/FormButton';
-import trucks from '@/app/(protected)/trucks';
-import { ChevronRight, Circle, CheckCircle } from 'lucide-react-native'; // Importamos CheckCircle para mostrar el círculo lleno
+import { Circle, CheckCircle } from 'lucide-react-native';
 import useTruck from '@/hooks/truckHooks/useTruck';
+import { useAssignTruck } from '@/hooks/peopleHooks/useAssignTruck'; // Importa el hook
 import React, { useState } from 'react';
 
 export default function AssignTruckModalScreen() {
@@ -13,6 +11,8 @@ export default function AssignTruckModalScreen() {
   const { styles } = useStyles(stylesheet);
   const { trucks, loading } = useTruck({ isComplete: false });
   const [selectedTrucks, setSelectedTrucks] = useState<Set<string>>(new Set()); // Estado para manejar los camiones seleccionados
+  const { personId } = useLocalSearchParams<{ personId: string }>();
+  const { loading: assignLoading, assignRole } = useAssignTruck({ id_conductor: personId }); // Crea un hook para asignar camiones
 
   const toggleTruckSelection = (id: string) => {
     const updatedSelection = new Set(selectedTrucks);
@@ -24,10 +24,15 @@ export default function AssignTruckModalScreen() {
     setSelectedTrucks(updatedSelection);
   };
 
-  const handleAssign = () => {
-    const selectedArray = Array.from(selectedTrucks);
-    Alert.alert('Camiones asignados', selectedArray.join(', '));
-    console.log('Enviando camiones seleccionados:', selectedArray);
+  const handleAssign = async () => {
+    if (selectedTrucks.size === 0) {
+      Alert.alert("Error", "Por favor, selecciona al menos un camión.");
+      return;
+    }
+    
+    const camionesSeleccionados = Array.from(selectedTrucks);
+    await assignRole(camionesSeleccionados);
+    router.back();
   };
 
   return (
@@ -43,7 +48,8 @@ export default function AssignTruckModalScreen() {
           </Pressable>
         ),
         headerRight: () => (
-          <Pressable onPress={handleAssign}>
+          <Pressable onPress={handleAssign} disabled = {assignLoading} 
+          style = {({pressed}) => [{ opacity: assignLoading ? 0.5 : pressed ? 0.7 : 1 }]}>
             <View style={styles.closeButtonContainer}>
               <Text style={styles.closeButton}>
                 Asignar
@@ -55,7 +61,6 @@ export default function AssignTruckModalScreen() {
       <Text style={styles.closeButton} onPress={() => router.back()}>
         Cerrar
       </Text>
-      {/* Form goes here */}
       <View style={styles.section}>
         <View style={styles.group}>
           <FlatList
@@ -130,7 +135,7 @@ const stylesheet = createStyleSheet((theme) => ({
     paddingHorizontal: 5,
   },
   selectedItem: {
-    backgroundColor: '#cce5ff', // Color de fondo cuando el elemento está seleccionado
+    backgroundColor: '#cce5ff',
   },
   loadingContainer: {
     flex: 1,

@@ -6,29 +6,38 @@ import usePeople from "./usePeople";
 
 type AssignTruckProps = {
   id_conductor: string;
-  id_camion: string;
 };
 
-export function useAssignTruck({ id_conductor: m_id_conductor, id_camion: m_id_camion }: AssignTruckProps) {
+export function useAssignTruck({ id_conductor: m_id_conductor }: AssignTruckProps) {
   const [loading, setLoading] = useState(false);
 
-  const assignRole = async () => {
+  const assignRole = async (id_camiones: string[]) => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("conductor_camion")
-      .insert({
-        id_camion: m_id_camion,
-        id_conductor: m_id_conductor,
-      })
-    if (error) {
-      Alert.alert("Error", error.message);
-      setLoading(false);
-      return;
-    }
-    Alert.alert("Éxito", "Perfil actualizado");
-    setLoading(false);
-  }
 
-  return { loading };
-}
+    try {
+      for (const id_camion of id_camiones) {
+        const { data, error } = await supabase
+          .from("conductor_camion")
+          .insert({
+            id_camion: id_camion,
+            id_conductor: m_id_conductor,
+          })
+
+        if (error) {
+          Alert.alert("Error", error.message);
+          setLoading(false);
+          throw error;
+        }
+      }
+
+      Alert.alert("Éxito", "Camiones asignados correctamente");
+      } catch (error) {
+        Alert.alert("Error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    return { loading, assignRole };
+  }
 
