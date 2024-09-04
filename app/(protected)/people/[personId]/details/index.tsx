@@ -33,7 +33,7 @@ export default function TruckPeopleAdminComponent() {
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View style={styles.container}>
-        <Stack.Screen options={{ title: `${user.nombre} ${user.apellido_paterno}`, headerBackTitle: "Info"}} />
+        <Stack.Screen options={{ title: `${user.nombre} ${user.apellido_paterno}`, headerBackTitle: "Info", headerShown: true}} />
         <GroupedList
             header="Detalles"
             footer="Si necesitas más información, contacta a tu administrador y si vez algun error contacta a tu supervisor, solo los administradores pueden editar la información del camion."

@@ -26,7 +26,7 @@ export default function TruckPeopleAdminContainer() {
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View style={styles.container}>
-        <Stack.Screen options={{ headerBackTitle: "Rol", headerTitle: "Rol" }} />
+        <Stack.Screen options={{ headerBackTitle: "Rol", headerTitle: "Rol", headerShown: true }} />
         
         <GroupedList header="Rol de usuario">
           <Row

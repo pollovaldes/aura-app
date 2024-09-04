@@ -18,7 +18,7 @@ export default function PeopleDetail() {
 
   return (
     <>
-      <Stack.Screen options={{ title: peopleTitle }} />
+      <Stack.Screen options={{ headerShown: true, title: peopleTitle }} />
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View style={styles.container}>
           <View style={styles.imageContainer}>

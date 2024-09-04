@@ -1,5 +1,5 @@
 import React from "react";
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { Platform, Text } from "react-native";
 
 export const unstable_settings = {
@@ -10,7 +10,7 @@ export default function _layout() {
   return (
     <Stack
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
         headerLargeTitle: true,
         headerBlurEffect: "regular",
         headerTransparent: Platform.OS === "ios" ? true : false,
@@ -19,6 +19,7 @@ export default function _layout() {
       <Stack.Screen
         name="index"
         options={{
+          headerShown: true,
           title: "Personas",
           headerSearchBarOptions: {
             placeholder: 'Search name or number',
