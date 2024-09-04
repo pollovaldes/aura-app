@@ -4,14 +4,31 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import FormTitle from '@/app/auth/FormTitle';
 import { FormButton } from '@/components/Form/FormButton';
 import trucks from '@/app/(protected)/trucks';
-import { ChevronRight } from 'lucide-react-native';
+import { ChevronRight, Circle, CheckCircle } from 'lucide-react-native'; // Importamos CheckCircle para mostrar el círculo lleno
 import useTruck from '@/hooks/truckHooks/useTruck';
+import React, { useState } from 'react';
 
 export default function AssignTruckModalScreen() {
   const router = useRouter();
   const { styles } = useStyles(stylesheet);
   const { trucks, loading } = useTruck({ isComplete: false });
+  const [selectedTrucks, setSelectedTrucks] = useState<Set<string>>(new Set()); // Estado para manejar los camiones seleccionados
 
+  const toggleTruckSelection = (id: string) => {
+    const updatedSelection = new Set(selectedTrucks);
+    if (updatedSelection.has(id)) {
+      updatedSelection.delete(id); // Deselecciona el camión si ya está seleccionado
+    } else {
+      updatedSelection.add(id); // Selecciona el camión
+    }
+    setSelectedTrucks(updatedSelection);
+  };
+
+  const handleAssign = () => {
+    const selectedArray = Array.from(selectedTrucks);
+    Alert.alert('Camiones asignados', selectedArray.join(', '));
+    console.log('Enviando camiones seleccionados:', selectedArray);
+  };
 
   return (
     <View style={styles.modalContainer}>
@@ -26,7 +43,7 @@ export default function AssignTruckModalScreen() {
           </Pressable>
         ),
         headerRight: () => (
-          <Pressable onPress={() => {Alert.alert("Peneeee")}}>
+          <Pressable onPress={handleAssign}>
             <View style={styles.closeButtonContainer}>
               <Text style={styles.closeButton}>
                 Asignar
@@ -45,26 +62,33 @@ export default function AssignTruckModalScreen() {
             contentInsetAdjustmentBehavior="automatic"
             data={trucks}
             keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <Pressable>
-                <View style={styles.container}>
-                  <View style={styles.contentContainer}>
-                    <View style={styles.imageContainer}>
-                      <Image
-                        style={styles.image}
-                        source={{ uri: "https://placehold.co/512x512.png" }}
-                      />
+            renderItem={({ item }) => {
+              const isSelected = selectedTrucks.has(item.id);
+              return (
+                <Pressable onPress={() => toggleTruckSelection(item.id)}>
+                  <View style={[styles.container, isSelected ? styles.selectedItem : null]}>
+                    <View style={styles.contentContainer}>
+                      <View style={styles.imageContainer}>
+                        <Image
+                          style={styles.image}
+                          source={{ uri: "https://placehold.co/512x512.png" }}
+                        />
+                      </View>
+                      <Text style={styles.itemText}>
+                        {`${item.marca} ${item.sub_marca} (${item.modelo})`}
+                      </Text>
                     </View>
-                    <Text
-                      style={styles.itemText}
-                    >{`${item.marca} ${item.sub_marca} (${item.modelo})`}</Text>
+                    <View style={styles.chevronView}>
+                      {isSelected ? (
+                        <CheckCircle color={styles.chevron.color} />
+                      ) : (
+                        <Circle color={styles.chevron.color} />
+                      )}
+                    </View>
                   </View>
-                  <View style={styles.chevronView}>
-                    <ChevronRight color={styles.chevron.color} />
-                  </View>
-                </View>
-              </Pressable>
-            )}
+                </Pressable>
+              );
+            }}
           />
         </View>
       </View>
@@ -90,7 +114,7 @@ const stylesheet = createStyleSheet((theme) => ({
   group: {
     gap: theme.marginsComponents.group,
     width: "100%",
-    marginBottom:60,
+    marginBottom: 60,
   },
   subtitle: {
     color: theme.textPresets.main,
@@ -102,6 +126,11 @@ const stylesheet = createStyleSheet((theme) => ({
     alignItems: "center",
     borderBottomWidth: 1,
     borderBottomColor: theme.ui.colors.border,
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+  },
+  selectedItem: {
+    backgroundColor: '#cce5ff', // Color de fondo cuando el elemento está seleccionado
   },
   loadingContainer: {
     flex: 1,
