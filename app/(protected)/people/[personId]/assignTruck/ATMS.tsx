@@ -13,7 +13,7 @@ export default function AssignTruckModalScreen() {
   const { trucks, loading } = useTruck({ isComplete: false });
   const [selectedTrucks, setSelectedTrucks] = useState<Set<string>>(new Set()); // Estado para manejar los camiones seleccionados
   const { personId } = useLocalSearchParams<{ personId: string }>();
-  const { loading: assignLoading, assignRole } = useAssignTruck({ id_conductor: personId }); // Crea un hook para asignar camiones
+  const { loading: assignLoading, assignTruck } = useAssignTruck({ id_conductor: personId }); // Crea un hook para asignar camiones
   const { searchState } = useSearch(); // Get the search state from the context
   const searchQuery = searchState["ATMS"] || ""; // Use the search query for "ATMS"
   const [filteredTrucks, setFilteredTrucks] = useState(trucks);
@@ -44,7 +44,7 @@ export default function AssignTruckModalScreen() {
     }
     
     const camionesSeleccionados = Array.from(selectedTrucks);
-    await assignRole(camionesSeleccionados);
+    await assignTruck(camionesSeleccionados);
     router.back();
   };
 
@@ -63,6 +63,7 @@ export default function AssignTruckModalScreen() {
   }, [searchQuery, trucks]);
 
   if (loading) {
+    console.log('Loading...');
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator />

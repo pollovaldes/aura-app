@@ -26,7 +26,7 @@ export default function SeeTruckModalScreen() {
   //const { trucks, loading } = useTruck({ isComplete: false }); // quitar
 
   const [selectedTrucks, setSelectedTrucks] = useState<Set<string>>(new Set()); // Estado para manejar los camiones seleccionados
-  const { loading: assignLoading, assignRole } = useAssignTruck({ id_conductor: personId }); // Crea un hook para asignar camiones
+  const { loading: assignLoading, assignTruck: assignRole } = useAssignTruck({ id_conductor: personId }); // Crea un hook para asignar camiones
   const { searchState } = useSearch(); // Get the search state from the context
   const searchQuery = searchState["STMS"] || ""; // Use the search query for "ATMS"
   const [filteredTrucks, setFilteredTrucks] = useState(trucks);
@@ -69,7 +69,7 @@ export default function SeeTruckModalScreen() {
       } catch (error) {
         console.error("Error fetching erase trucks:", error);
       } finally {
-        setLoading(false);
+
       }
     };
 
@@ -78,13 +78,11 @@ export default function SeeTruckModalScreen() {
 
   useEffect(() => {
     if (eraseTrucks.length === 0) {
-      setLoading(false);
       return;
     }
 
     const fetchEraseTrucksSelected = async () => {
-      setLoading(true);
-
+      console.log(loading, "a");
       try {
         const truckIds = eraseTrucks.map((truck) => truck.id_camion);
         const { data, error } = await supabase
@@ -114,18 +112,19 @@ export default function SeeTruckModalScreen() {
 
 
   useEffect(() => {
-      if (searchQuery) {
-        const filtered = trucks.filter((truck) =>
-          `${truck.numero_economico} ${truck.marca} ${truck.sub_marca} (${truck.modelo})`
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase())
-        );
-        setFilteredTrucks(filtered);
-      } else {
-        setFilteredTrucks(trucks);
-      }
-    }, [searchQuery, trucks, loading]);
-  
+    if (searchQuery) {
+      const filtered = trucks.filter((truck) =>
+        `${truck.numero_economico} ${truck.marca} ${truck.sub_marca} (${truck.modelo})`
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
+      );
+      setFilteredTrucks(filtered);
+    } else {
+      setFilteredTrucks(trucks);
+    }
+  }, [searchQuery, trucks, loading]);
+
+  console.log(loading);
 
   if (loading) {
     return (
@@ -162,7 +161,7 @@ export default function SeeTruckModalScreen() {
         Cerrar
       </Text>
       <View style={styles.section}>
-        <View style={[styles.group, {height: Dimensions.get("screen").height, paddingBottom: "40%"}]}>
+        <View style={[styles.group, { height: Dimensions.get("screen").height, paddingBottom: "40%" }]}>
           <FlatList
             contentInsetAdjustmentBehavior="automatic"
             data={filteredTrucks}

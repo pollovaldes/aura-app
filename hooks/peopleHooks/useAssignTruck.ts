@@ -38,6 +38,6 @@ export function useAssignTruck({ id_conductor: m_id_conductor }: AssignTruckProp
       }
     };
 
-    return { loading, assignRole: assignTruck };
+    return { loading, assignTruck };
   }
 
