@@ -1,23 +1,37 @@
-import { View, Text, FlatList, Pressable, Image, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, Pressable, Image, Alert, ActivityIndicator, Dimensions } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { Circle, CheckCircle } from 'lucide-react-native';
-import useTruck from '@/hooks/truckHooks/useTruck';
 import { useAssignTruck } from '@/hooks/peopleHooks/useAssignTruck'; // Importa el hook
 import React, { useEffect, useState } from 'react';
 import { useSearch } from '@/context/SearchContext';
+import { supabase } from '@/lib/supabase';
 
-export default function AssignTruckModalScreen() {
+type Truck =
+  {
+    id: string;
+    numero_economico: string;
+    marca: string;
+    sub_marca: string;
+    modelo: string;
+  }
+
+export default function SeeTruckModalScreen() {
   const router = useRouter();
   const { styles } = useStyles(stylesheet);
-  const { trucks, loading } = useTruck({ isComplete: false });
-  const [selectedTrucks, setSelectedTrucks] = useState<Set<string>>(new Set()); // Estado para manejar los camiones seleccionados
   const { personId } = useLocalSearchParams<{ personId: string }>();
+  const [trucks, setTrucks] = useState<Truck[]>([]);
+  const [eraseTrucks, setEraseTrucks] = useState<{ id_camion: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+  //const { trucks, loading } = useTruck({ isComplete: false }); // quitar
+
+  const [selectedTrucks, setSelectedTrucks] = useState<Set<string>>(new Set()); // Estado para manejar los camiones seleccionados
   const { loading: assignLoading, assignRole } = useAssignTruck({ id_conductor: personId }); // Crea un hook para asignar camiones
   const { searchState } = useSearch(); // Get the search state from the context
-  const searchQuery = searchState["ATMS"] || ""; // Use the search query for "ATMS"
+  const searchQuery = searchState["STMS"] || ""; // Use the search query for "ATMS"
   const [filteredTrucks, setFilteredTrucks] = useState(trucks);
 
+  //Esto Sirve
   const capitalizeWords = (text: string | null | undefined): string => {
     if (!text) return ''; // Verifica si el texto es nulo, indefinido o vacío
     return text
@@ -26,6 +40,7 @@ export default function AssignTruckModalScreen() {
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
   };
+
 
   const toggleTruckSelection = (id: string) => {
     const updatedSelection = new Set(selectedTrucks);
@@ -37,30 +52,80 @@ export default function AssignTruckModalScreen() {
     setSelectedTrucks(updatedSelection);
   };
 
-  const handleAssign = async () => {
-    if (selectedTrucks.size === 0) {
-      Alert.alert("Error", "Por favor, selecciona al menos un camión.");
-      return;
-    }
-    
-    const camionesSeleccionados = Array.from(selectedTrucks);
-    await assignRole(camionesSeleccionados);
-    router.back();
-  };
 
   useEffect(() => {
-    // Filter trucks based on the search query
-    if (searchQuery) {
-      const filtered = trucks.filter((truck) =>
-        `${truck.numero_economico} ${truck.marca} ${truck.sub_marca} (${truck.modelo})`
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase())
-      );
-      setFilteredTrucks(filtered);
-    } else {
-      setFilteredTrucks(trucks);
+    const fetchEraseSelected = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("conductor_camion")
+          .select("id_camion")
+          .eq("id_conductor", personId);
+
+        if (error) {
+          throw error;
+        }
+
+        setEraseTrucks(data || []);
+      } catch (error) {
+        console.error("Error fetching erase trucks:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEraseSelected();
+  }, [personId]);
+
+  useEffect(() => {
+    if (eraseTrucks.length === 0) {
+      setLoading(false);
+      return;
     }
-  }, [searchQuery, trucks]);
+
+    const fetchEraseTrucksSelected = async () => {
+      setLoading(true);
+
+      try {
+        const truckIds = eraseTrucks.map((truck) => truck.id_camion);
+        const { data, error } = await supabase
+          .from("camiones")
+          .select("id, numero_economico, marca, sub_marca, modelo")
+          .order('numero_economico', { ascending: true })
+          .in("id", truckIds);
+
+        if (error) {
+          throw error;
+        }
+
+        setTrucks(data as Truck[]);
+      } catch (error) {
+        console.error("Error fetching trucks:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEraseTrucksSelected();
+  }, [eraseTrucks]);
+
+  useEffect(() => {
+    console.log(trucks);
+  }, [trucks]);
+
+
+  useEffect(() => {
+      if (searchQuery) {
+        const filtered = trucks.filter((truck) =>
+          `${truck.numero_economico} ${truck.marca} ${truck.sub_marca} (${truck.modelo})`
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
+        );
+        setFilteredTrucks(filtered);
+      } else {
+        setFilteredTrucks(trucks);
+      }
+    }, [searchQuery, trucks, loading]);
+  
 
   if (loading) {
     return (
@@ -74,7 +139,7 @@ export default function AssignTruckModalScreen() {
     <View style={styles.modalContainer}>
       <Stack.Screen options={{
         headerLeft: () => (
-          <Pressable onPress={() => router.back()} style = {({pressed}) => [{ opacity: pressed ? 0.5 : 1 }]}>
+          <Pressable onPress={() => router.back()} style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1 }]}>
             <View style={styles.closeButtonContainer}>
               <Text style={styles.closeButton}>
                 Cancelar
@@ -83,8 +148,8 @@ export default function AssignTruckModalScreen() {
           </Pressable>
         ),
         headerRight: () => (
-          <Pressable onPress={handleAssign} disabled = {assignLoading} 
-          style = {({pressed}) => [{ opacity: assignLoading ? 0.5 : pressed ? 0.7 : 1 }]}>
+          <Pressable onPress={() => { }} disabled={assignLoading}
+            style={({ pressed }) => [{ opacity: assignLoading ? 0.5 : pressed ? 0.7 : 1 }]}>
             <View style={styles.closeButtonContainer}>
               <Text style={styles.closeButton}>
                 Asignar
@@ -97,11 +162,11 @@ export default function AssignTruckModalScreen() {
         Cerrar
       </Text>
       <View style={styles.section}>
-        <View style={styles.group}>
+        <View style={[styles.group, {height: Dimensions.get("screen").height, paddingBottom: "40%"}]}>
           <FlatList
             contentInsetAdjustmentBehavior="automatic"
             data={filteredTrucks}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => item.id}
             renderItem={({ item }) => {
               const isSelected = selectedTrucks.has(item.id);
               return (
@@ -115,7 +180,7 @@ export default function AssignTruckModalScreen() {
                         />
                       </View>
                       <Text style={styles.itemText}>
-                      <Text style={{ fontWeight: 'bold' }}>{item.numero_economico}</Text>
+                        <Text style={{ fontWeight: 'bold' }}>{item.numero_economico}</Text>
                         {`\n${capitalizeWords(item.marca)} ${capitalizeWords(item.sub_marca)} (${capitalizeWords(item.modelo)})`}
                       </Text>
                     </View>
