@@ -25,10 +25,19 @@ export default function TrucksList() {
   const { searchState } = useSearch();
   const searchQuery = searchState["trucks"] || "";
 
+  const capitalizeWords = (text: string | null | undefined): string => {
+    if (!text) return ''; // Verifica si el texto es nulo, indefinido o vacío
+    return text
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
   useEffect(() => {
     if (searchQuery) {
       const filtered = trucks.filter((truck) =>
-        `${truck.marca} ${truck.sub_marca} (${truck.modelo})`
+        `${truck.numero_economico} ${truck.marca} ${truck.sub_marca} (${truck.modelo})`
           .toLowerCase()
           .includes(searchQuery.toLowerCase())
       );
@@ -76,7 +85,11 @@ export default function TrucksList() {
                   </View>
                   <Text
                     style={styles.itemText}
-                  >{`${item.marca} ${item.sub_marca} (${item.modelo})`}</Text>
+                  >
+                    <Text style={{ fontWeight: 'bold' }}>{item.numero_economico}</Text>
+                    {` / ${capitalizeWords(item.marca)} 
+                    ${capitalizeWords(item.sub_marca)} 
+                    (${capitalizeWords(item.modelo)})`}</Text>
                 </View>
                 <View style={styles.chevronView}>
                   <ChevronRight color={styles.chevron.color} />

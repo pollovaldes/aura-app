@@ -5,7 +5,7 @@ import { useLocalSearchParams } from "expo-router";
 export type Truck = 
 {
   id: string;
-  numero_economico?: string;
+  numero_economico: string;
   marca: string;
   sub_marca: string;
   modelo: string;
@@ -28,9 +28,9 @@ export default function useTruck({ justOne = false, isComplete = true }: TruckPr
   useEffect(() => {
     const fetchTrucks = async () => {
 
-      const fieldsToSelect = isComplete ? "*" : "id, marca, sub_marca, modelo";
+      const fieldsToSelect = isComplete ? "*" : "id, numero_economico ,marca, sub_marca, modelo";
 
-      let query = supabase.from("camiones").select(fieldsToSelect);
+      let query = supabase.from("camiones").select(fieldsToSelect).order('marca', { ascending: true });;
 
       if (justOne && truckId) {
         query = query.eq("id", truckId);

@@ -28,7 +28,7 @@ export default function usePeople({ justOne = false, isComplete = true }: Person
 
       const fieldsToSelect = isComplete ? "*" : "id, nombre, apellido_paterno, apellido_materno";
 
-      let query = supabase.from("profiles").select(fieldsToSelect);
+      let query = supabase.from("profiles").select(fieldsToSelect).order('nombre', { ascending: true });;
 
       if (justOne && personId) {
         query = query.eq("id", personId);
