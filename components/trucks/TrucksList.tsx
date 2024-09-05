@@ -10,15 +10,33 @@ import useTruck from "@/hooks/truckHooks/useTruck";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link, Stack } from "expo-router";
 import AddTruckComponent from "./AddTruckComponent";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronRight, Plus, PlusIcon } from "lucide-react-native";
 import { useAuth } from "@/context/SessionContext";
+import { useSearch } from "@/context/SearchContext";
 
 export default function TrucksList() {
-  const { trucks, loading } = useTruck({isComplete: false});
+  const { trucks, loading } = useTruck({ isComplete: false });
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [filteredTrucks, setFilteredTrucks] = useState(trucks);
+
   const { styles } = useStyles(stylesheet);
   const { isAdmin } = useAuth();
+  const { searchQuery } = useSearch();
+
+  useEffect(() => {
+    // Filtrar camiones basados en la consulta de búsqueda
+    if (searchQuery) {
+      const filtered = trucks.filter((truck) =>
+        `${truck.marca} ${truck.sub_marca} (${truck.modelo})`
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
+      );
+      setFilteredTrucks(filtered);
+    } else {
+      setFilteredTrucks(trucks); // Si no hay búsqueda, mostrar todos los camiones
+    }
+  }, [searchQuery, trucks]);
 
   if (loading) {
     return (
@@ -43,7 +61,7 @@ export default function TrucksList() {
       )}
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
-        data={trucks}
+        data={filteredTrucks}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <Link href={{ pathname: `/trucks/${item.id}` }} asChild>

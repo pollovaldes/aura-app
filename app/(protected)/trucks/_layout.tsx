@@ -1,12 +1,24 @@
+// _layout.tsx
 import React from "react";
 import { Stack } from "expo-router";
-import { Platform, Text } from "react-native";
+import { Platform } from "react-native";
+import { SearchProvider, useSearch } from "@/context/SearchContext";
 
 export const unstable_settings = {
   initialRouteName: "index",
 };
 
 export default function _layout() {
+  return (
+    <SearchProvider>
+      <SearchConsumer />
+    </SearchProvider>
+  );
+}
+
+function SearchConsumer() {
+  const { setSearchQuery } = useSearch(); // Usa el contexto de búsqueda aquí
+
   return (
     <Stack
       screenOptions={{
@@ -21,8 +33,9 @@ export default function _layout() {
         options={{
           title: "Camiones",
           headerSearchBarOptions: {
-            placeholder: 'Search name or number',
+            placeholder: "Search name or number",
             hideWhenScrolling: false,
+            onChangeText: (event) => setSearchQuery(event.nativeEvent.text), // Actualiza la búsqueda en el contexto
           },
         }}
       />
