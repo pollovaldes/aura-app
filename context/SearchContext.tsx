@@ -1,25 +1,46 @@
+// SearchContext.tsx
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
-// Define la interfaz para el contexto de búsqueda
-interface SearchContextProps {
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
+interface SearchState {
+  [key: string]: string; // Cada búsqueda tendrá un identificador único y un término de búsqueda asociado
 }
 
-// Inicializa el contexto con valores predeterminados
+interface SearchContextProps {
+  searchState: SearchState;
+  setSearchQuery: (id: string, query: string) => void;
+  clearSearchQuery: (id: string) => void;
+}
+
+// Crear el contexto de búsqueda
 const SearchContext = createContext<SearchContextProps | undefined>(undefined);
 
-// Define las props para el proveedor del contexto
 interface SearchProviderProps {
-  children: ReactNode; // 'children' se tipa como ReactNode
+  children: ReactNode;
 }
 
 // Proveedor del contexto de búsqueda
 export function SearchProvider({ children }: SearchProviderProps) {
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchState, setSearchState] = useState<SearchState>({});
+
+  // Función para establecer el término de búsqueda para un buscador específico
+  const setSearchQuery = (id: string, query: string) => {
+    setSearchState((prevState) => ({
+      ...prevState,
+      [id]: query,
+    }));
+  };
+
+  // Función para limpiar el término de búsqueda para un buscador específico
+  const clearSearchQuery = (id: string) => {
+    setSearchState((prevState) => {
+      const newState = { ...prevState };
+      delete newState[id];
+      return newState;
+    });
+  };
 
   return (
-    <SearchContext.Provider value={{ searchQuery, setSearchQuery }}>
+    <SearchContext.Provider value={{ searchState, setSearchQuery, clearSearchQuery }}>
       {children}
     </SearchContext.Provider>
   );

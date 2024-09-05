@@ -4,7 +4,8 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { Circle, CheckCircle } from 'lucide-react-native';
 import useTruck from '@/hooks/truckHooks/useTruck';
 import { useAssignTruck } from '@/hooks/peopleHooks/useAssignTruck'; // Importa el hook
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSearch } from '@/context/SearchContext';
 
 export default function AssignTruckModalScreen() {
   const router = useRouter();
@@ -13,6 +14,9 @@ export default function AssignTruckModalScreen() {
   const [selectedTrucks, setSelectedTrucks] = useState<Set<string>>(new Set()); // Estado para manejar los camiones seleccionados
   const { personId } = useLocalSearchParams<{ personId: string }>();
   const { loading: assignLoading, assignRole } = useAssignTruck({ id_conductor: personId }); // Crea un hook para asignar camiones
+  const { searchState } = useSearch(); // Get the search state from the context
+  const searchQuery = searchState["ATMS"] || ""; // Use the search query for "ATMS"
+  const [filteredTrucks, setFilteredTrucks] = useState(trucks);
 
   const toggleTruckSelection = (id: string) => {
     const updatedSelection = new Set(selectedTrucks);
@@ -34,6 +38,21 @@ export default function AssignTruckModalScreen() {
     await assignRole(camionesSeleccionados);
     router.back();
   };
+
+  useEffect(() => {
+    // Filter trucks based on the search query
+    if (searchQuery) {
+      const filtered = trucks.filter((truck) =>
+        `${truck.marca} ${truck.sub_marca} (${truck.modelo})`
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
+      );
+      setFilteredTrucks(filtered);
+    } else {
+      setFilteredTrucks(trucks);
+    }
+  }, [searchQuery, trucks]);
+
 
   return (
     <View style={styles.modalContainer}>
@@ -65,7 +84,7 @@ export default function AssignTruckModalScreen() {
         <View style={styles.group}>
           <FlatList
             contentInsetAdjustmentBehavior="automatic"
-            data={trucks}
+            data={filteredTrucks}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => {
               const isSelected = selectedTrucks.has(item.id);
@@ -106,6 +125,7 @@ const stylesheet = createStyleSheet((theme) => ({
     backgroundColor: theme.ui.colors.card,
     borderRadius: 10,
     padding: 24,
+    flex: 1,
   },
   closeButton: {
     color: theme.ui.colors.primary,
@@ -119,7 +139,7 @@ const stylesheet = createStyleSheet((theme) => ({
   group: {
     gap: theme.marginsComponents.group,
     width: "100%",
-    marginBottom: 60,
+    marginBottom: 20,
   },
   subtitle: {
     color: theme.textPresets.main,

@@ -10,16 +10,34 @@ import usePeople from "@/hooks/peopleHooks/usePeople";
 import AddPeopleComponent from "@/components/people/AddPeopleComponent";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link, Redirect, Stack } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/context/SessionContext";
 import { ChevronRight, Plus } from "lucide-react-native";
-import AddTruckComponent from "../trucks/AddTruckComponent";
+import { useSearch } from "@/context/SearchContext";
 
 export default function PeopleList() {
   const { isAdmin } = useAuth();
   const { people, loading } = usePeople({ isComplete: false });
   const { styles } = useStyles(stylesheet);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const  { searchState, setSearchQuery } = useSearch();
+
+  const searchQuery = searchState["people"] || ""; // Usa un identificador único "people" para esta búsqueda
+  const [filteredPeople, setFilteredPeople] = useState(people); // Lista de personas filtradas
+
+  useEffect(() => {
+    // Filtrar personas basadas en la consulta de búsqueda
+    if (searchQuery) {
+      const filtered = people.filter((person) =>
+        `${person.nombre} ${person.apellido_paterno} ${person.apellido_materno}`
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
+      );
+      setFilteredPeople(filtered);
+    } else {
+      setFilteredPeople(people); // Si no hay búsqueda, mostrar todas las personas
+    }
+  }, [searchQuery, people]);
+
 
   if (loading) {
     return (
@@ -34,7 +52,7 @@ export default function PeopleList() {
       <>
         <FlatList
           contentInsetAdjustmentBehavior="automatic"
-          data={people}
+          data={filteredPeople}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <Link href={{ pathname: `/people/${item.id}` }} asChild>

@@ -35,7 +35,7 @@ function SearchConsumer() {
           headerSearchBarOptions: {
             placeholder: "Search name or number",
             hideWhenScrolling: false,
-            onChangeText: (event) => setSearchQuery(event.nativeEvent.text), // Actualiza la búsqueda en el contexto
+            onChangeText: (event) => setSearchQuery("trucks" ,event.nativeEvent.text), // Actualiza la búsqueda en el contexto
           },
         }}
       />

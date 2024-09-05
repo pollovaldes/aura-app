@@ -3,11 +3,22 @@ import React from "react";
 import { Pressable, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { MaterialIcons } from "@expo/vector-icons";
+import { SearchProvider, useSearch } from "@/context/SearchContext";
 
 export default function Layout() {
-  const { styles } = useStyles(stylesheet);
+  
+  return (
+    // Wrap the Stack with SearchProvider to provide search context to all screens
+    <SearchProvider>
+      <SearchConsumer />
+    </SearchProvider>
+  );
+}
 
-  //Arturo, resuleve ya porfavor JAJAJAJJAJJ. La navegacion no sirve 
+//Arturo, resuleve ya porfavor JAJAJAJJAJJ. La navegacion no sirve 
+function SearchConsumer() {
+  const { styles } = useStyles(stylesheet);
+  const { setSearchQuery } = useSearch();
 
   return (
     <Stack
@@ -25,6 +36,8 @@ export default function Layout() {
           headerSearchBarOptions: {
             placeholder: 'Search name or number',
             hideWhenScrolling: false,
+            onChangeText: (event) =>
+              setSearchQuery("ATMS", event.nativeEvent.text),
           },
         }}
       />

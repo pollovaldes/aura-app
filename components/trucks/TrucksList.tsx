@@ -22,10 +22,10 @@ export default function TrucksList() {
 
   const { styles } = useStyles(stylesheet);
   const { isAdmin } = useAuth();
-  const { searchQuery } = useSearch();
+  const { searchState } = useSearch();
+  const searchQuery = searchState["trucks"] || "";
 
   useEffect(() => {
-    // Filtrar camiones basados en la consulta de búsqueda
     if (searchQuery) {
       const filtered = trucks.filter((truck) =>
         `${truck.marca} ${truck.sub_marca} (${truck.modelo})`
@@ -34,7 +34,7 @@ export default function TrucksList() {
       );
       setFilteredTrucks(filtered);
     } else {
-      setFilteredTrucks(trucks); // Si no hay búsqueda, mostrar todos los camiones
+      setFilteredTrucks(trucks);
     }
   }, [searchQuery, trucks]);
 
