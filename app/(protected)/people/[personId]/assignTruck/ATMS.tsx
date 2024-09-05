@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Pressable, Image, Alert } from 'react-native';
+import { View, Text, FlatList, Pressable, Image, Alert, ActivityIndicator } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { Circle, CheckCircle } from 'lucide-react-native';
@@ -17,6 +17,15 @@ export default function AssignTruckModalScreen() {
   const { searchState } = useSearch(); // Get the search state from the context
   const searchQuery = searchState["ATMS"] || ""; // Use the search query for "ATMS"
   const [filteredTrucks, setFilteredTrucks] = useState(trucks);
+
+  const capitalizeWords = (text: string | null | undefined): string => {
+    if (!text) return ''; // Verifica si el texto es nulo, indefinido o vacío
+    return text
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
 
   const toggleTruckSelection = (id: string) => {
     const updatedSelection = new Set(selectedTrucks);
@@ -43,7 +52,7 @@ export default function AssignTruckModalScreen() {
     // Filter trucks based on the search query
     if (searchQuery) {
       const filtered = trucks.filter((truck) =>
-        `${truck.marca} ${truck.sub_marca} (${truck.modelo})`
+        `${truck.numero_economico} ${truck.marca} ${truck.sub_marca} (${truck.modelo})`
           .toLowerCase()
           .includes(searchQuery.toLowerCase())
       );
@@ -53,6 +62,13 @@ export default function AssignTruckModalScreen() {
     }
   }, [searchQuery, trucks]);
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.modalContainer}>
@@ -99,7 +115,8 @@ export default function AssignTruckModalScreen() {
                         />
                       </View>
                       <Text style={styles.itemText}>
-                        {`${item.marca} ${item.sub_marca} (${item.modelo})`}
+                      <Text style={{ fontWeight: 'bold' }}>{item.numero_economico}</Text>
+                        {`\n${capitalizeWords(item.marca)} ${capitalizeWords(item.sub_marca)} (${capitalizeWords(item.modelo)})`}
                       </Text>
                     </View>
                     <View style={styles.chevronView}>
