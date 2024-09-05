@@ -38,7 +38,7 @@ const Row = ({
       disabled={isLoading || disabled}
       onPress={onPress}
       style={({ pressed }) => [
-        { opacity: disabled ? 0.45 : 1 },
+        { opacity: disabled ? 0.75 : 1 },
         pressed && { opacity: 0.45 },
       ]}
     >

@@ -1,7 +1,7 @@
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import { colorPalette } from "@/style/themes";
-import { Pen } from "lucide-react-native";
+import { BookUser, NotebookPen } from "lucide-react-native";
 import { View, Text, ScrollView } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { useState } from "react";
@@ -24,8 +24,8 @@ export default function Index() {
             title="Ver Camiones Asignados"
             trailingType="chevron"
             onPress={() => {}}
-            icon={<Pen size={24} color="white" />}
-            color={colorPalette.emerald[500]}
+            icon={<BookUser size={24} color="white" />}
+            color={colorPalette.neutral[500]}
           />
         </GroupedList>
         <GroupedList
@@ -36,8 +36,8 @@ export default function Index() {
             title="Asignar camión"
             trailingType="chevron"
             onPress={() => router.navigate(`/people/${personId}/assignTruck/ATMS`)}
-            icon={<Pen size={24} color="white" />}
-            color={colorPalette.emerald[500]}
+            icon={<NotebookPen size={24} color="white" />}
+            color={colorPalette.orange[500]}
           />
         </GroupedList>
       </View>

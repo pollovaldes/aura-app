@@ -56,7 +56,7 @@ function SearchConsumer() {
                   color={styles.closeButton.color}
                 />
                 <Text style={styles.closeButton}>
-                  Atras
+                  Info
                 </Text>
               </View>
             </Pressable>

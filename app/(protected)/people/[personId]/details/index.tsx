@@ -15,8 +15,8 @@ export default function TruckPeopleAdminComponent() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator />
         <Stack.Screen options={{ title: "", headerBackTitle: "Info" }} />
+        <ActivityIndicator />
       </View>
     );
   }
@@ -36,43 +36,42 @@ export default function TruckPeopleAdminComponent() {
         <Stack.Screen options={{ title: `${user.nombre} ${user.apellido_paterno}`, headerBackTitle: "Info", headerShown: true}} />
         <GroupedList
             header="Detalles"
-            footer="Si necesitas más información, contacta a tu administrador y si vez algun error contacta a tu supervisor, solo los administradores pueden editar la información del camion."
+            footer="Si necesitas más información, contacta a tu administrador y si vez algun error contacta a tu supervisor."
           >
             <Row
               title="Nombre"
               trailingType="chevron"
               caption={`${user.nombre}`}
               showChevron={false}
+              disabled={true}
             />
             <Row
               title="Apellido Paterno"
               trailingType="chevron"
               caption={`${user.apellido_paterno}`}
               showChevron={false}
+              disabled={true}
             />
             <Row
               title="Apellido Materno"
               trailingType="chevron"
               caption={`${user.apellido_materno}`}
               showChevron={false}
+              disabled={true}
             />
             <Row
               title="Email"
               trailingType="chevron"
               caption={`${user.email}`}
               showChevron={false}
+              disabled={true}
             />
             <Row
               title="Phone"
               trailingType="chevron"
               caption={`${user.phone}`}
               showChevron={false}
-            />
-            <Row
-              title="Registrado"
-              trailingType="chevron"
-              caption={`${user.registrado}`}
-              showChevron={false}
+              disabled={true}
             />
           </GroupedList>
       </View>

@@ -26,7 +26,7 @@ export default function TruckPeopleAdminContainer() {
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View style={styles.container}>
-        <Stack.Screen options={{ headerBackTitle: "Rol", headerTitle: "Rol", headerShown: true }} />
+        <Stack.Screen options={{ headerBackTitle: "Info", title: "Cambiar Rol", headerShown: true }} />
         
         <GroupedList header="Rol de usuario">
           <Row
@@ -34,6 +34,7 @@ export default function TruckPeopleAdminContainer() {
             trailingType="chevron"
             caption = {"vemos"}// No esta funcionando algo
             showChevron={false}
+            disabled={true}
           />
           <Row
             title="Cambiar rol"
