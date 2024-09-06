@@ -5,7 +5,7 @@ import useTruck from "../truckHooks/useTruck";
 import usePeople from "./usePeople";
 
 type AssignTruckProps = {
-  id_conductor: string;
+  id_conductor: string | undefined;
 };
 
 export function useAssignTruck({ id_conductor: m_id_conductor }: AssignTruckProps) {
