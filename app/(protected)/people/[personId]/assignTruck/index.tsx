@@ -9,7 +9,6 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
-  const [modal, setModal] = useState(false);
   const router = useRouter();
   const { personId } = useLocalSearchParams<{ personId: string }>();
 
@@ -23,7 +22,7 @@ export default function Index() {
           <Row
             title="Ver Camiones Asignados"
             trailingType="chevron"
-            onPress={() => {}}
+            onPress={() => {router.navigate(`/people/${personId}/assignTruck/STMS`)}}
             icon={<BookUser size={24} color="white" />}
             color={colorPalette.neutral[500]}
           />

@@ -24,6 +24,15 @@ export default function PeopleList() {
   const searchQuery = searchState["people"] || ""; // Usa un identificador único "people" para esta búsqueda
   const [filteredPeople, setFilteredPeople] = useState(people); // Lista de personas filtradas
 
+  const capitalizeWords = (text: string | null | undefined): string => {
+    if (!text) return ''; // Verifica si el texto es nulo, indefinido o vacío
+    return text
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
   useEffect(() => {
     // Filtrar personas basadas en la consulta de búsqueda
     if (searchQuery) {
@@ -67,7 +76,7 @@ export default function PeopleList() {
                     </View>
                     <Text
                       style={styles.itemText}
-                    >{`${item.nombre} ${item.apellido_paterno} ${item.apellido_materno}`}</Text>
+                    >{`${capitalizeWords(item.nombre)} ${capitalizeWords(item.apellido_paterno)} ${capitalizeWords(item.apellido_materno)}`}</Text>
                   </View>
                   <View style={styles.chevronView}>
                     <ChevronRight color={styles.chevron.color} />

@@ -11,7 +11,7 @@ type AssignTruckProps = {
 export function useAssignTruck({ id_conductor: m_id_conductor }: AssignTruckProps) {
   const [loading, setLoading] = useState(false);
 
-  const assignRole = async (id_camiones: string[]) => {
+  const assignTruck = async (id_camiones: string[]) => {
     setLoading(true);
 
     try {
@@ -38,6 +38,6 @@ export function useAssignTruck({ id_conductor: m_id_conductor }: AssignTruckProp
       }
     };
 
-    return { loading, assignRole };
+    return { loading, assignTruck };
   }
 

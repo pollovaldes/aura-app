@@ -41,6 +41,20 @@ function SearchConsumer() {
           },
         }}
       />
+      <Stack.Screen
+        name="STMS"
+        options={{
+          presentation: "modal",
+          headerShown: true,
+          headerTitle: "Seleccionar Camiones",
+          headerSearchBarOptions: {
+            placeholder: 'Search name or number',
+            hideWhenScrolling: false,
+            onChangeText: (event) =>
+              setSearchQuery("STMS", event.nativeEvent.text),
+          },
+        }}
+      />
 
       <Stack.Screen
         name="index"
@@ -48,7 +62,7 @@ function SearchConsumer() {
           headerTitle: "Asignar camión",
           headerShown: true, // Asegura que el header se muestre
           headerLeft: () => (
-            <Pressable onPress={() => router.back()}>
+            <Pressable onPress={() => router.back()} style = {({pressed}) => [{ opacity: pressed ? 0.5 : 1 }]}>
               <View style={styles.closeButtonContainer}>
                 <MaterialIcons
                   name="arrow-back-ios"

@@ -30,7 +30,7 @@ export default function useTruck({ justOne = false, isComplete = true }: TruckPr
 
       const fieldsToSelect = isComplete ? "*" : "id, numero_economico ,marca, sub_marca, modelo";
 
-      let query = supabase.from("camiones").select(fieldsToSelect).order('marca', { ascending: true });;
+      let query = supabase.from("camiones").select(fieldsToSelect).order('numero_economico', { ascending: true });;
 
       if (justOne && truckId) {
         query = query.eq("id", truckId);

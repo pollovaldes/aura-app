@@ -87,9 +87,7 @@ export default function TrucksList() {
                     style={styles.itemText}
                   >
                     <Text style={{ fontWeight: 'bold' }}>{item.numero_economico}</Text>
-                    {` / ${capitalizeWords(item.marca)} 
-                    ${capitalizeWords(item.sub_marca)} 
-                    (${capitalizeWords(item.modelo)})`}</Text>
+                    {`\n${capitalizeWords(item.marca)} ${capitalizeWords(item.sub_marca)}\n(${capitalizeWords(item.modelo)})`}</Text>
                 </View>
                 <View style={styles.chevronView}>
                   <ChevronRight color={styles.chevron.color} />
