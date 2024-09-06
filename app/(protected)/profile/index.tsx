@@ -8,10 +8,14 @@ import TermsAndPrivacy from "@/app/auth/TermsAndPrivacy";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import Modal from "@/components/Modal/Modal";
+import ImageItem from "@/components/profile/ImageRender";
+import ImageUpload from "@/components/profile/ImageUpload";
 import PersonalInfoModal from "@/components/profile/PersonalInfoModal";
 import RoleModal from "@/components/profile/RoleModal";
+import { useSession } from "@/context/SessionContext";
 import useRegistration from "@/hooks/useRegistration";
 import { supabase } from "@/lib/supabase";
+import { FileObject } from "@supabase/storage-js";
 import { useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -22,6 +26,7 @@ export default function Index() {
   const { styles } = useStyles(stylesheet);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
+  const session = useSession();
 
   const signOut = async () => {
     let { error } = await supabase.auth.signOut();
@@ -31,6 +36,9 @@ export default function Index() {
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <View>
+         <ImageUpload />
+      </View>
       <Modal isOpen={activeModal === "personal_info"}>
         <View style={styles.modalContainer}>
           <Text style={styles.closeButton} onPress={closeModal}>
