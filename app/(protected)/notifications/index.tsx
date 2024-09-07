@@ -15,8 +15,8 @@ export default function Page() {
       <View style={styles.container}>
 
         <Notification
-          title="informacion"
-          caption="Breve descripcion de la notificacion informativa"
+          title="Nuevo Camion"
+          caption="Breve descripcion Tambien es una descripcion bien pinches grandote de la notificacion informativa"
           kind="info"
           onPressDiscard={() => { }}
         />

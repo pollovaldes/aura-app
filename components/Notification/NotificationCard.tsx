@@ -22,6 +22,7 @@ interface BaseProps {
 // Properties when trailingType is "default"
 interface DefaultProps extends BaseProps {
   caption?: string;
+  childrenRight?: ReactNode;
   children?: ReactNode;
 }
 
@@ -37,6 +38,7 @@ const NotificationCard = ({
   isLoading,
   kind = "message",
   simple = true,
+  childrenRight,
   children
 }: DefaultProps) => {
   const { styles } = useStyles(stylesheet);
@@ -62,11 +64,11 @@ const NotificationCard = ({
           <View style={styles.leadingContainer}>
             {kindIcon && kindColor && <RowIcon icon={kindIcon} backgroundColor={kindColor.backgroundColor} />}
             <View style={styles.titleContainer}>
-              <Text style={styles.title}>{title}</Text>
+              <Text style={styles.title}>{childrenRight ? (title.length > 15 ? null : title) : title}</Text>
             </View>
 
-            <View style={[styles.titleContainer,{ width: children ? 66 : 32, marginLeft: children ? 0 : 34 }]}>
-              {children}
+            <View style={[styles.titleContainer, { width: childrenRight ? 66 : 32, marginLeft: childrenRight ? 0 : 34 }]}>
+              {childrenRight}
             </View>
           </View>
           <View style={styles.trailingContainer}>
@@ -74,6 +76,7 @@ const NotificationCard = ({
               <ActivityIndicator />
             ) : (
               <>
+                {childrenRight && title.length > 15 ? <Text style={[styles.title, { paddingBottom: 16 }]}>{title}</Text> : null}
                 <Text style={styles.caption}>{caption}</Text>
                 {simple && (
                   <View style={styles.section}>
@@ -93,6 +96,12 @@ const NotificationCard = ({
                         />
                       </View>
                     </View>
+                  </View>
+                )}
+
+                {children && !simple && (
+                  <View style={styles.section}>
+                    {children}
                   </View>
                 )}
 

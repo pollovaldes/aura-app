@@ -63,12 +63,14 @@ export default function Notification({
                 kind={kind}
                 caption={caption}
                 simple={false}
-                children={
+                childrenRight={
                   <Text style={styles.closeButton} onPress={() => setIsOpen(false)}>
                     Cerrar
                   </Text>
                 }
-              />
+              >
+                <Text>Hola</Text>
+              </NotificationCard>
             </View>
             <View style={styles.group}>
             </View>
