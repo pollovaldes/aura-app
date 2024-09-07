@@ -59,7 +59,7 @@ const NotificationCard = ({
         pressed && { opacity: 0.45 },
       ]}
     >
-      <GroupedList extraStyles={{ borderColor: kindColor.backgroundColor, borderWidth: 4 }}>
+      <GroupedList>
         <View style={styles.container}>
           <View style={styles.leadingContainer}>
             {kindIcon && kindColor && <RowIcon icon={kindIcon} backgroundColor={kindColor.backgroundColor} />}

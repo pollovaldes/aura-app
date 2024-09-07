@@ -69,7 +69,7 @@ export default function Notification({
                   </Text>
                 }
               >
-                <Text>Hola</Text>
+                <Text>{description}</Text>
               </NotificationCard>
             </View>
             <View style={styles.group}>

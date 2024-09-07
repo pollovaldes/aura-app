@@ -2,18 +2,18 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useLocalSearchParams } from "expo-router";
 
-export type Truck = 
-{
-  id: string;
-  numero_economico: string;
-  marca: string;
-  sub_marca: string;
-  modelo: string;
-  no_serie?: string;
-  placa?: string;
-  poliza?: string;
-  id_usuario?: string;
-  } 
+export type Truck =
+  {
+    id: string;
+    numero_economico: string;
+    marca: string;
+    sub_marca: string;
+    modelo: string;
+    no_serie?: string;
+    placa?: string;
+    poliza?: string;
+    id_usuario?: string;
+  }
 
 type TruckProps = {
   justOne?: boolean;

@@ -16,9 +16,10 @@ export default function Page() {
 
         <Notification
           title="Nuevo Camion"
-          caption="Breve descripcion Tambien es una descripcion bien pinches grandote de la notificacion informativa"
+          caption="Breve Motivo"
           kind="info"
           onPressDiscard={() => { }}
+          description="Descripción detallada"
         />
 
       </View>
