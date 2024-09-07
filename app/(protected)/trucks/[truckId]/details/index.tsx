@@ -22,7 +22,7 @@ export default function Index() {
   const [placa, setPlaca] = useState(false);
   const [poliza, setPoliza] = useState(false);
 
-  console.log(trucks)
+  console.log(trucks, "Trucks")
 
   if (loading) {
     return (
@@ -158,7 +158,7 @@ export default function Index() {
         </GroupedList>
         {isAdmin && (
         <GroupedList>
-            <FormButton title="Borrar Camión" onPress={() => Alert.alert("A")} isRed={true}/>
+            <FormButton title="Borrar Camión" onPress={() => Alert.alert("Se tiene que borrar de muchas tablas, ver al final")} isRed={true}/>
         </GroupedList>
         )}
       </View>

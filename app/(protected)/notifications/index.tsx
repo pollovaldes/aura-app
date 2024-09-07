@@ -1,43 +1,56 @@
-/*
- * index.tsx - Created on Mon Jun 24 2024 by Luis Arturo Valdes Romero
- *
- * Copyright (c) 2024 Aura Residuos Sustentables
- */
-
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import useDatabaseOperations from "@/hooks/useDatabaseOperations";
-import { useEffect } from "react";
-import { useUser } from "@/context/SessionContext";
+import { Pressable, ScrollView, Text, View } from "react-native";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
+import Notification from "@/components/grouped-list/Notification";
+import GroupedList from "@/components/grouped-list/GroupedList";
+import { BookUser, Info } from "lucide-react-native";
+import { colorPalette } from "@/style/themes";
 
 export default function Page() {
+  const { styles } = useStyles(stylesheet);
 
 
   return (
-    <View style={styles.container}>
-      <View style={styles.main}>
-        <Text style={styles.title}>Stack de notificaciones</Text>
+    <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <View style={styles.container}>
+
+        <Notification
+          title="informacion"
+          onPress={() => { }}
+          caption="Breve descripcion de la notificacion informativa"
+          kind="info"
+        />
+        <Notification
+          title="Aprobado"
+          onPress={() => { }}
+          caption="Mensajes buenos, aprovaciones, confirmaciones"
+          kind="good"
+        />
+        <Notification
+          title="Rechazado"
+          onPress={() => { }}
+          caption="Mensajes malos, rechazos, errores"
+          kind="bad"
+        />
+        <Notification
+          title="Aviso"
+          onPress={() => { }}
+          caption="Mensajes importantes, advertencias, avisos"
+          kind="message"
+        />
+
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
+const stylesheet = createStyleSheet((theme) => ({
   container: {
-    flex: 1,
-    alignItems: "center",
-    padding: 24,
+    gap: theme.marginsComponents.section,
+    marginTop: theme.marginsComponents.section, //Excepción
+
   },
-  main: {
-    flex: 1,
-    justifyContent: "center",
-    maxWidth: 960,
-    marginHorizontal: "auto",
+  group: {
+    gap: theme.marginsComponents.group,
+    width: "100%",
   },
-  title: {
-    fontSize: 30,
-  },
-  subtitle: {
-    fontSize: 36,
-    color: "#38434D",
-  },
-});
+}));

@@ -11,6 +11,7 @@ interface BaseProps {
   color?: string;
   onPress?: () => void;
   disabled?: boolean;
+  
   isLoading?: boolean;
   showChevron?: boolean;
 }

@@ -46,9 +46,7 @@ export function FormButton({
         style={[
           styles.button,
           style,
-          { opacity: isLoading || isDisabled ? 0.3 : 1, 
-            backgroundColor: isRed ? "red" : styles.button.backgroundColor,
-          },
+          { opacity: isLoading || isDisabled ? 0.3 : 1},
         ]}
         onPress={onPress}
         disabled={isLoading || isDisabled}
@@ -81,5 +79,8 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.textPresets.inverted,
     userSelect: "none",
     fontSize: 18,
+  },
+  redButton: {
+    backgroundColor: theme.components.formComponent.buttonRedBG,
   },
 }));

@@ -26,7 +26,7 @@ export default function SeeTruckModalScreen() {
   //const { trucks, loading } = useTruck({ isComplete: false }); // quitar
 
   const [selectedTrucks, setSelectedTrucks] = useState<Set<string>>(new Set()); // Estado para manejar los camiones seleccionados
-  const { loading: assignLoading, assignTruck: assignRole } = useAssignTruck({ id_conductor: personId }); // Crea un hook para asignar camiones
+  const { loading: assignLoading, assignTruck } = useAssignTruck({ id_conductor: personId }); // Crea un hook para asignar camiones
   const { searchState } = useSearch(); // Get the search state from the context
   const searchQuery = searchState["STMS"] || ""; // Use the search query for "ATMS"
   const [filteredTrucks, setFilteredTrucks] = useState(trucks);
@@ -147,11 +147,11 @@ export default function SeeTruckModalScreen() {
           </Pressable>
         ),
         headerRight: () => (
-          <Pressable onPress={() => { }} disabled={assignLoading}
+          <Pressable onPress={() => {Alert.alert("Aqui futuramente se desasignaran camiones")}} disabled={assignLoading}
             style={({ pressed }) => [{ opacity: assignLoading ? 0.5 : pressed ? 0.7 : 1 }]}>
             <View style={styles.closeButtonContainer}>
               <Text style={styles.closeButton}>
-                Asignar
+                Desasignar
               </Text>
             </View>
           </Pressable>

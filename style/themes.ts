@@ -188,6 +188,7 @@ export const lightTheme = {
     },
     formComponent: {
       buttonMainBG: colorPalette.emerald[600],
+      buttonRedBG: colorPalette.red[500],
       buttonSecondaryBG: colorPalette.neutral[600],
     },
     navBarListItem: {
@@ -195,6 +196,12 @@ export const lightTheme = {
       hoveredBG: colorPalette.neutral[100],
       selectedBG: colorPalette.neutral[200],
     },
+    notificationColors: {
+      info: colorPalette.sky[600],
+      bad: colorPalette.red[500],
+      good: colorPalette.lime[600],
+      message: colorPalette.neutral[600],
+    }
   },
   textInput: {
     backgroundColor: colorPalette.neutral[200],
@@ -238,6 +245,7 @@ export const darkTheme = {
     },
     formComponent: {
       buttonMainBG: colorPalette.emerald[300],
+      buttonRedBG: colorPalette.red[300],
       buttonSecondaryBG: colorPalette.neutral[300],
     },
     navBarListItem: {
@@ -245,6 +253,12 @@ export const darkTheme = {
       hoveredBG: colorPalette.neutral[700],
       selectedBG: colorPalette.neutral[800],
     },
+    notificationColors: {
+      info: colorPalette.sky[300],
+      bad: colorPalette.red[200],
+      good: colorPalette.lime[300],
+      message: colorPalette.neutral[300],
+    }
   },
   textInput: {
     backgroundColor: colorPalette.neutral[800],

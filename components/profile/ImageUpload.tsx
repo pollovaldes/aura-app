@@ -15,7 +15,6 @@ import ImageItem from "./ImageRender";
 
 export default function ImageUpload() {
   const { documentId } = useLocalSearchParams<{ documentId: string }>();
-  console.log(documentId);
   const { styles } = useStyles(stylesheet);
   const session = useSession();
   const [files, setFiles] = useState<FileObject[]>([]);

@@ -6,9 +6,10 @@ interface GroupedListProps {
   header?: string;
   footer?: string;
   children: React.ReactNode;
+  extraStyles?: ViewStyle;
 }
 
-const GroupedList = ({ children, header, footer }: GroupedListProps) => {
+const GroupedList = ({ children, header, footer, extraStyles }: GroupedListProps) => {
   const rows = Children.toArray(children);
   const rowsCount = rows.length;
 
@@ -39,7 +40,7 @@ const GroupedList = ({ children, header, footer }: GroupedListProps) => {
       )}
 
       {rows.map((row, i) => (
-        <View key={`row-${i}`} style={getRowStyleFromIndex(i)}>
+        <View key={`row-${i}`} style={[getRowStyleFromIndex(i), extraStyles]}>
           {row}
         </View>
       ))}
