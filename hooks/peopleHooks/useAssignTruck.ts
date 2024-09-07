@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Alert } from "react-native";
 import useTruck from "../truckHooks/useTruck";
 import usePeople from "./usePeople";
+import { useCreateNotification } from "../notifications/useCreateNotification";
 
 type AssignTruckProps = {
   id_conductor: string | undefined;
@@ -16,6 +17,7 @@ export function useAssignTruck({ id_conductor: m_id_conductor }: AssignTruckProp
 
     try {
       for (const id_camion of id_camiones) {
+
         const { data, error } = await supabase
           .from("conductor_camion")
           .insert({
@@ -31,13 +33,13 @@ export function useAssignTruck({ id_conductor: m_id_conductor }: AssignTruckProp
       }
 
       Alert.alert("Éxito", "Camiones asignados correctamente");
-      } catch (error) {
-        Alert.alert("Error");
-      } finally {
-        setLoading(false);
-      }
-    };
+    } catch (error) {
+      Alert.alert("Error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return { loading, assignTruck };
-  }
+  return { loading, assignTruck };
+}
 

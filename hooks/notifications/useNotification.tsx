@@ -12,6 +12,7 @@ export type Notification =
     description: string;
     status: string;
     timestamp: string;
+    emisor: string;
   }
 
 type NotificationProps = {

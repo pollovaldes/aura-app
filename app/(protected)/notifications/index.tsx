@@ -11,8 +11,6 @@ export default function Page() {
   const { styles } = useStyles(stylesheet);
   const { notifications, loading } = useNotifications({ justOne: false, isComplete: true });
 
-  console.log(notifications);
-
   if (loading) {
     return (
       <View style={styles.loadingContainer}>

@@ -6,6 +6,7 @@ import useTruck from '@/hooks/truckHooks/useTruck';
 import { useAssignTruck } from '@/hooks/peopleHooks/useAssignTruck'; // Importa el hook
 import React, { useEffect, useState } from 'react';
 import { useSearch } from '@/context/SearchContext';
+import { useCreateNotification } from '@/hooks/notifications/useCreateNotification';
 
 export default function AssignTruckModalScreen() {
   const router = useRouter();
@@ -13,7 +14,18 @@ export default function AssignTruckModalScreen() {
   const { trucks, loading } = useTruck({ isComplete: false });
   const [selectedTrucks, setSelectedTrucks] = useState<Set<string>>(new Set()); // Estado para manejar los camiones seleccionados
   const { personId } = useLocalSearchParams<{ personId: string }>();
+
   const { loading: assignLoading, assignTruck } = useAssignTruck({ id_conductor: personId }); // Crea un hook para asignar camiones
+  const { 
+    setIdUsuario,
+    setTitle,
+    setCaption,
+    setKind,
+    setDescription,
+    loading: createNotificationLoading,
+    handleCreateNotification,
+    resetFields, } = useCreateNotification();
+
   const { searchState } = useSearch(); // Get the search state from the context
   const searchQuery = searchState["ATMS"] || ""; // Use the search query for "ATMS"
   const [filteredTrucks, setFilteredTrucks] = useState(trucks);
@@ -42,7 +54,7 @@ export default function AssignTruckModalScreen() {
       Alert.alert("Error", "Por favor, selecciona al menos un camión.");
       return;
     }
-    
+
     const camionesSeleccionados = Array.from(selectedTrucks);
     await assignTruck(camionesSeleccionados);
     router.back();
@@ -75,7 +87,7 @@ export default function AssignTruckModalScreen() {
     <View style={styles.modalContainer}>
       <Stack.Screen options={{
         headerLeft: () => (
-          <Pressable onPress={() => router.back()} style = {({pressed}) => [{ opacity: pressed ? 0.5 : 1 }]}>
+          <Pressable onPress={() => router.back()} style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1 }]}>
             <View style={styles.closeButtonContainer}>
               <Text style={styles.closeButton}>
                 Cancelar
@@ -84,8 +96,8 @@ export default function AssignTruckModalScreen() {
           </Pressable>
         ),
         headerRight: () => (
-          <Pressable onPress={handleAssign} disabled = {assignLoading} 
-          style = {({pressed}) => [{ opacity: assignLoading ? 0.5 : pressed ? 0.7 : 1 }]}>
+          <Pressable onPress={handleAssign} disabled={assignLoading}
+            style={({ pressed }) => [{ opacity: assignLoading ? 0.5 : pressed ? 0.7 : 1 }]}>
             <View style={styles.closeButtonContainer}>
               <Text style={styles.closeButton}>
                 Asignar
@@ -116,7 +128,7 @@ export default function AssignTruckModalScreen() {
                         />
                       </View>
                       <Text style={styles.itemText}>
-                      <Text style={{ fontWeight: 'bold' }}>{item.numero_economico}</Text>
+                        <Text style={{ fontWeight: 'bold' }}>{item.numero_economico}</Text>
                         {`\n${capitalizeWords(item.marca)} ${capitalizeWords(item.sub_marca)} (${capitalizeWords(item.modelo)})`}
                       </Text>
                     </View>
