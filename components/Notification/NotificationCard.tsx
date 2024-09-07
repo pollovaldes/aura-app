@@ -1,9 +1,9 @@
 import { View, Text, Pressable, ActivityIndicator } from "react-native";
 import React, { ReactNode } from "react";
-import RowIcon from "./RowIcon";
+import RowIcon from "../grouped-list/RowIcon";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { FormButton } from "../Form/FormButton";
-import GroupedList from "./GroupedList";
+import GroupedList from "../grouped-list/GroupedList";
 import { Info, Siren, CircleAlert, Megaphone, Smile } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 
@@ -11,25 +11,33 @@ import { colorPalette } from "@/style/themes";
 interface BaseProps {
   title: string;
   onPress?: () => void;
+  onPressSeeMore: () => void;
+  onPressDiscard: () => void;
   disabled?: boolean;
   isLoading?: boolean;
   kind?: kind;
+  simple?: boolean;
 }
 
 // Properties when trailingType is "default"
 interface DefaultProps extends BaseProps {
   caption?: string;
+  children?: ReactNode;
 }
 
 type kind = "message" | "bad" | "good" | "info";
 
-const Notification = ({
+const NotificationCard = ({
   title,
   caption,
   onPress,
-  disabled = false,
+  onPressSeeMore,
+  onPressDiscard,
+  disabled = true,
   isLoading,
   kind = "message",
+  simple = true,
+  children
 }: DefaultProps) => {
   const { styles } = useStyles(stylesheet);
   const kindColor = kind === "message" ? styles.message : kind === "bad" ? styles.bad : kind === "good" ? styles.good : styles.info;
@@ -39,18 +47,17 @@ const Notification = ({
         : kind === "good" ? <Smile size={24} color="white" />
           : <Info size={24} color="white" />;
 
-
   //Arturo Ayuda a que se vea bonito
   return (
     <Pressable
       disabled={isLoading || disabled}
       onPress={onPress}
       style={({ pressed }) => [
-        { opacity: disabled ? 0.75 : 1 },
+        { opacity: disabled ? 1 : 1 },
         pressed && { opacity: 0.45 },
       ]}
     >
-      <GroupedList extraStyles={{borderColor:kindColor.backgroundColor, borderWidth:4}}>
+      <GroupedList extraStyles={{ borderColor: kindColor.backgroundColor, borderWidth: 4 }}>
         <View style={styles.container}>
           <View style={styles.leadingContainer}>
             {kindIcon && kindColor && <RowIcon icon={kindIcon} backgroundColor={kindColor.backgroundColor} />}
@@ -58,7 +65,9 @@ const Notification = ({
               <Text style={styles.title}>{title}</Text>
             </View>
 
-            <View style={{ width: 32, marginLeft: 34 }} />
+            <View style={[styles.titleContainer,{ width: children ? 66 : 32, marginLeft: children ? 0 : 34 }]}>
+              {children}
+            </View>
           </View>
           <View style={styles.trailingContainer}>
             {isLoading ? (
@@ -66,24 +75,26 @@ const Notification = ({
             ) : (
               <>
                 <Text style={styles.caption}>{caption}</Text>
-                <View style={styles.section}>
-                  <View style={styles.group}>
-                    <View style={styles.buttonContainer}>
-                      <FormButton
-                        title="Descartar"
-                        onPress={() => { }}
-                        style={{ paddingHorizontal: 12 , backgroundColor: colorPalette.neutral[400]}}
-                      />
-                    </View>
-                    <View style={styles.buttonContainer}>
-                      <FormButton
-                        title="Ver Más"
-                        onPress={() => { }}
-                        style={{ paddingHorizontal: 12, backgroundColor: colorPalette.emerald[500] }}
-                      />
+                {simple && (
+                  <View style={styles.section}>
+                    <View style={styles.group}>
+                      <View style={styles.buttonContainer}>
+                        <FormButton
+                          title="Descartar"
+                          onPress={onPressDiscard}
+                          style={{ paddingHorizontal: 12, backgroundColor: colorPalette.neutral[400] }}
+                        />
+                      </View>
+                      <View style={styles.buttonContainer}>
+                        <FormButton
+                          title="Ver Más"
+                          onPress={onPressSeeMore}
+                          style={{ paddingHorizontal: 12, backgroundColor: colorPalette.emerald[500] }}
+                        />
+                      </View>
                     </View>
                   </View>
-                </View>
+                )}
 
               </>
             )}
@@ -94,7 +105,7 @@ const Notification = ({
   );
 };
 
-export default Notification;
+export default NotificationCard;
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {

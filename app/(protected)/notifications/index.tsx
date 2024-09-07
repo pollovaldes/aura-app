@@ -1,9 +1,10 @@
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import Notification from "@/components/grouped-list/Notification";
+import NotificationCard from "@/components/Notification/NotificationCard";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import { BookUser, Info } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
+import Notification from "@/components/Notification/Notification";
 
 export default function Page() {
   const { styles } = useStyles(stylesheet);
@@ -15,27 +16,9 @@ export default function Page() {
 
         <Notification
           title="informacion"
-          onPress={() => { }}
           caption="Breve descripcion de la notificacion informativa"
           kind="info"
-        />
-        <Notification
-          title="Aprobado"
-          onPress={() => { }}
-          caption="Mensajes buenos, aprovaciones, confirmaciones"
-          kind="good"
-        />
-        <Notification
-          title="Rechazado"
-          onPress={() => { }}
-          caption="Mensajes malos, rechazos, errores"
-          kind="bad"
-        />
-        <Notification
-          title="Aviso"
-          onPress={() => { }}
-          caption="Mensajes importantes, advertencias, avisos"
-          kind="message"
+          onPressDiscard={() => { }}
         />
 
       </View>
