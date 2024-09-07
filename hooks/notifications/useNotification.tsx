@@ -11,6 +11,7 @@ export type Notification =
     kind: string;
     description: string;
     status: string;
+    timestamp: string;
   }
 
 type NotificationProps = {
@@ -26,9 +27,9 @@ export default function useNotifications({ justOne = false, isComplete = true }:
   useEffect(() => {
     const fetchNotifications = async () => {
 
-      const fieldsToSelect = isComplete ? "*" : "id, numero_economico ,marca, sub_marca, modelo";
+      const fieldsToSelect = isComplete ? "*" : "id, id_usuario, title, caption, kind, status";
 
-      let query = supabase.from("notificaciones").select(fieldsToSelect).order('numero_economico', { ascending: true });;
+      let query = supabase.from("notifications").select(fieldsToSelect).order('status', { ascending: true });;
 
       if (justOne && notificationId) {
         query = query.eq("id", notificationId);
@@ -46,5 +47,5 @@ export default function useNotifications({ justOne = false, isComplete = true }:
 
     fetchNotifications();
   }, []);
-  return { notificationId, loading };
+  return { notifications, loading };
 }

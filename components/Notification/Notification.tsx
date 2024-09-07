@@ -16,8 +16,7 @@ interface NotificationProps {
 interface DefaultProps extends NotificationProps {
   caption?: string;
   description?: string;
-  creationDate?: string;
-  time?: string;
+  timestamp?: string;
   creator?: string;
   target?: string;
   status?: status;
@@ -37,8 +36,7 @@ export default function Notification({
   kind = "message",
   caption,
   description,
-  creationDate,
-  time,
+  timestamp,
   creator,
   target,
   status = "unread",

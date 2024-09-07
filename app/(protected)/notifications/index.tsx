@@ -1,29 +1,45 @@
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, Pressable, ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import NotificationCard from "@/components/Notification/NotificationCard";
 import GroupedList from "@/components/grouped-list/GroupedList";
-import { BookUser, Info } from "lucide-react-native";
+import { BookUser, ChevronRight, Info, Link } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import Notification from "@/components/Notification/Notification";
+import useNotifications from "@/hooks/notifications/useNotification";
 
 export default function Page() {
   const { styles } = useStyles(stylesheet);
+  const { notifications, loading } = useNotifications({ justOne: false, isComplete: true });
 
+  console.log(notifications);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
 
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <View style={styles.container}>
-
-        <Notification
-          title="Nuevo Camion"
-          caption="Breve Motivo"
-          kind="info"
-          onPressDiscard={() => { }}
-          description="Descripción detallada"
+        <FlatList
+          contentInsetAdjustmentBehavior="automatic"
+          data={notifications}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.container}>
+              <View>
+                <Notification
+                  title={item.title}
+                  caption={item.caption}
+                  kind={item.kind as any}
+                  onPressDiscard={() => { }}
+                  description={item.description}
+                />
+              </View>
+            </View>
+          )}
         />
-
-      </View>
-    </ScrollView>
   );
 }
 
@@ -36,5 +52,10 @@ const stylesheet = createStyleSheet((theme) => ({
   group: {
     gap: theme.marginsComponents.group,
     width: "100%",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 }));
