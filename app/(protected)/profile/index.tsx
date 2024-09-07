@@ -8,8 +8,7 @@ import TermsAndPrivacy from "@/app/auth/TermsAndPrivacy";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import Modal from "@/components/Modal/Modal";
-import ImageItem from "@/components/profile/ImageRender";
-import ImageUpload from "@/components/profile/ImageUpload";
+import PictureUpload from "@/components/profile/PictureUpload";
 import PersonalInfoModal from "@/components/profile/PersonalInfoModal";
 import RoleModal from "@/components/profile/RoleModal";
 import { useSession } from "@/context/SessionContext";
@@ -36,9 +35,6 @@ export default function Index() {
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <View>
-         <ImageUpload />
-      </View>
       <Modal isOpen={activeModal === "personal_info"}>
         <View style={styles.modalContainer}>
           <Text style={styles.closeButton} onPress={closeModal}>
@@ -56,6 +52,7 @@ export default function Index() {
         </View>
       </Modal>
       <View style={styles.container}>
+        <PictureUpload />
         <GroupedList
           footer="Para obtener acceso completo a la aplicación, asegúrate de completar estos puntos necesarios. Aunque ya tengas una cuenta, esta información es crucial para ofrecerte acceso completo."
           header="Acceso a la App"
