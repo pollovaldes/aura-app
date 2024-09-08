@@ -39,11 +39,16 @@ export default function Notification({
   timestamp,
   creator,
   target,
-  status = "unread",
+  status,
   simple
 }: DefaultProps) {
   const { styles } = useStyles(stylesheet);
   const [isOpen, setIsOpen] = useState(false);
+
+  console.log(status);
+  if (status === "read") {
+    return null;
+  }
 
   return (
     <>

@@ -61,7 +61,7 @@ export default function AssignTruckModalScreen() {
     await handleCreateNotification({
       id_usuario: personId,
       title: `Nuevos camiones asignados`,
-      caption: `Se han asignado ${detallesCamiones.length} camiones:`,
+      caption: `Se han asignado ${camionesDetalles.length} camiones:`,
       description: 'Se han asignado los camiones:\n' + detallesCamiones,
       kind: 'info'
     });
