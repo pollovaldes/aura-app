@@ -2,17 +2,31 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useUser } from "@/context/SessionContext";
 
-export function useCreateNotification({ id_usuario, title, caption, kind, description }: { id_usuario: string | undefined, title: string, caption: string, kind: string, description: string }) {
+type NotificationProps = {
+  id_usuario: string | undefined;
+  title: string;
+  caption: string;
+  kind: string;
+  description: string;
+};
+
+export function useCreateNotification() {
   const [loading, setLoading] = useState(false);
 
   const user = useUser();
 
-  const handleCreateNotification = async () => {
+  const handleCreateNotification = async (
+    {
+      id_usuario,
+      title,
+      caption,
+      kind,
+      description
+    }: NotificationProps) => {
     setLoading(true);
     try {
-      console.log(id_usuario, title, caption, kind, description, user?.id);
       const { error } = await supabase.from("notifications").insert([
-        {  
+        {
           id_usuario,
           title,
           caption,

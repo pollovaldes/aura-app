@@ -10,20 +10,14 @@ import { useCreateNotification } from '@/hooks/notifications/useCreateNotificati
 
 export default function AssignTruckModalScreen() {
   const router = useRouter();
+  const { handleCreateNotification } = useCreateNotification();
+
   const { styles } = useStyles(stylesheet);
   const { trucks, loading } = useTruck({ isComplete: false });
   const [selectedTrucks, setSelectedTrucks] = useState<Set<string>>(new Set()); // Estado para manejar los camiones seleccionados
   const { personId } = useLocalSearchParams<{ personId: string }>();
 
   const { loading: assignLoading, assignTruck } = useAssignTruck({ id_conductor: personId }); // Crea un hook para asignar camiones
-  const { handleCreateNotification }
-    = useCreateNotification({
-      id_usuario: personId,
-      title: 'Camión asignado',
-      caption: 'Se te ha asignado un camión',
-      kind: 'info',
-      description: 'Se te ha asignado un camión para que puedas comenzar a trabajar.'
-    });
 
   const { searchState } = useSearch(); // Get the search state from the context
   const searchQuery = searchState["ATMS"] || ""; // Use the search query for "ATMS"
@@ -57,7 +51,20 @@ export default function AssignTruckModalScreen() {
 
     const camionesSeleccionados = Array.from(selectedTrucks);
     await assignTruck(camionesSeleccionados);
-    await handleCreateNotification();
+
+    const camionesDetalles = trucks.filter(truck => camionesSeleccionados.includes(truck.id));
+
+    // Crear un texto con la información de todos los camiones seleccionados
+    const detallesCamiones = camionesDetalles.map(truck => `Camión ${truck.numero_economico} ${truck.marca} ${truck.sub_marca} (${truck.modelo})`).join(',\n');
+
+
+    await handleCreateNotification({
+      id_usuario: personId,
+      title: `Nuevos camiones asignados`,
+      caption: `Se han asignado ${detallesCamiones.length} camiones:`,
+      description: 'Se han asignado los camiones:\n' + detallesCamiones,
+      kind: 'info'
+    });
     router.back();
   };
 

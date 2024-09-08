@@ -64,7 +64,7 @@ const NotificationCard = ({
           <View style={styles.leadingContainer}>
             {kindIcon && kindColor && <RowIcon icon={kindIcon} backgroundColor={kindColor.backgroundColor} />}
             <View style={styles.titleContainer}>
-              <Text style={styles.title}>{childrenRight ? (title.length > 15 ? null : title) : title}</Text>
+              <Text style={[styles.title, {maxWidth: 270, textAlign: "center"}]}>{childrenRight ? (title.length > 15 ? null : title) : title}</Text>
             </View>
 
             <View style={[styles.titleContainer, { width: childrenRight ? 66 : 32, marginLeft: childrenRight ? 0 : 34 }]}>
