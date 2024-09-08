@@ -39,7 +39,7 @@ export default function Notification({
   timestamp,
   creator,
   target,
-  status,
+  status = "unread",
   simple
 }: DefaultProps) {
   const { styles } = useStyles(stylesheet);

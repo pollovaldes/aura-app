@@ -31,20 +31,23 @@ export default function Page() {
           contentInsetAdjustmentBehavior="automatic"
           data={notifications}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.container}>
-              <View>
-                <Notification
-                  title={item.title}
-                  caption={item.caption}
-                  kind={item.kind as any}
-                  onPressDiscard={() => markAsRead(item.id)}
-                  description={item.description}
-                  status={!item ? "unread" : item.user_notifications[0].status}
-                />
+          renderItem={({ item }) => {
+            console.log("this ", item);
+            return (
+              <View style={styles.container}>
+                <View>
+                  <Notification
+                    title={item.title}
+                    caption={item.caption}
+                    kind={item.kind as any}
+                    onPressDiscard={() => markAsRead(item.id)}
+                    description={item.description}
+                    status={/*item.user_notifications === []? "unread" : item.user_notifications[0].status*/"unread"}
+                  />
+                </View>
               </View>
-            </View>
-          )}
+            );
+          }}
         />
   );
 }

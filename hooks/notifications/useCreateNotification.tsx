@@ -8,6 +8,7 @@ type NotificationProps = {
   caption: string;
   kind: string;
   description: string;
+  target: "user" | "supervisor" |"admin";
 };
 
 export function useCreateNotification() {
@@ -21,7 +22,8 @@ export function useCreateNotification() {
       title,
       caption,
       kind,
-      description
+      description,
+      target
     }: NotificationProps) => {
     setLoading(true);
     try {
@@ -32,7 +34,8 @@ export function useCreateNotification() {
           caption,
           kind,
           description,
-          emisor: user?.id
+          emisor: user?.id,
+          target
         },
       ]);
       if (error) {

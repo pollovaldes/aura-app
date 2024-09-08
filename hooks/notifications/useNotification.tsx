@@ -13,6 +13,7 @@ export type Notification =
     description: string;
     timestamp: string;
     emisor: string;
+    forWho: string;
     user_notifications: any;
   }
 
@@ -38,6 +39,7 @@ export default function useNotifications({ justOne = false, isComplete = true }:
       let query = supabase
         .from("notifications")
         .select(fieldsToSelect)
+        .eq("user_notifications.id_usuario", user?.id)
         .order('title', { ascending: true });
 
       if (justOne && notificationId) {
