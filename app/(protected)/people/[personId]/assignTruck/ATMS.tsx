@@ -16,15 +16,14 @@ export default function AssignTruckModalScreen() {
   const { personId } = useLocalSearchParams<{ personId: string }>();
 
   const { loading: assignLoading, assignTruck } = useAssignTruck({ id_conductor: personId }); // Crea un hook para asignar camiones
-  const { 
-    setIdUsuario,
-    setTitle,
-    setCaption,
-    setKind,
-    setDescription,
-    loading: createNotificationLoading,
-    handleCreateNotification,
-    resetFields, } = useCreateNotification();
+  const { handleCreateNotification }
+    = useCreateNotification({
+      id_usuario: personId,
+      title: 'Camión asignado',
+      caption: 'Se te ha asignado un camión',
+      kind: 'info',
+      description: 'Se te ha asignado un camión para que puedas comenzar a trabajar.'
+    });
 
   const { searchState } = useSearch(); // Get the search state from the context
   const searchQuery = searchState["ATMS"] || ""; // Use the search query for "ATMS"
@@ -46,6 +45,7 @@ export default function AssignTruckModalScreen() {
     } else {
       updatedSelection.add(id); // Selecciona el camión
     }
+
     setSelectedTrucks(updatedSelection);
   };
 
@@ -57,6 +57,7 @@ export default function AssignTruckModalScreen() {
 
     const camionesSeleccionados = Array.from(selectedTrucks);
     await assignTruck(camionesSeleccionados);
+    await handleCreateNotification();
     router.back();
   };
 

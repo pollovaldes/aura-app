@@ -2,23 +2,10 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useUser } from "@/context/SessionContext";
 
-export function useCreateNotification() {
-  const [id_usuario, setIdUsuario] = useState<string | undefined>(undefined);
-  const [title, setTitle] = useState("");
-  const [caption, setCaption] = useState("");
-  const [kind, setKind] = useState("");
-  const [description, setDescription] = useState("");
+export function useCreateNotification({ id_usuario, title, caption, kind, description }: { id_usuario: string | undefined, title: string, caption: string, kind: string, description: string }) {
   const [loading, setLoading] = useState(false);
 
   const user = useUser();
-
-  const resetFields = () => {
-    setIdUsuario("");
-    setTitle("");
-    setCaption("");
-    setKind("");
-    setDescription("");
-  };
 
   const handleCreateNotification = async () => {
     setLoading(true);
@@ -36,8 +23,6 @@ export function useCreateNotification() {
       ]);
       if (error) {
         console.error("Error al crear notificacion:", error);
-      } else {
-        resetFields();
       }
     } finally {
       setLoading(false);
@@ -45,13 +30,7 @@ export function useCreateNotification() {
   };
 
   return {
-    setIdUsuario,
-    setTitle,
-    setCaption,
-    setKind,
-    setDescription,
     loading,
     handleCreateNotification,
-    resetFields,
   };
 }
