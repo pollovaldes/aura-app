@@ -31,11 +31,12 @@ function SearchConsumer() {
       <Stack.Screen
         name="index"
         options={{
-          title: "Camiones",
+          title: "Vehículos",
           headerSearchBarOptions: {
-            placeholder: "Search name or number",
+            placeholder: "Buscar por nombre o número",
             hideWhenScrolling: false,
-            onChangeText: (event) => setSearchQuery("trucks" ,event.nativeEvent.text), // Actualiza la búsqueda en el contexto
+            onChangeText: (event) =>
+              setSearchQuery("trucks", event.nativeEvent.text), // Actualiza la búsqueda en el contexto
           },
         }}
       />

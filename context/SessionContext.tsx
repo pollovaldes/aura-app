@@ -6,8 +6,12 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { AuthError, PostgrestError, Session, SupabaseClient } from "@supabase/supabase-js";
-import { supabase } from "@/lib/supabase";
+import {
+  AuthError,
+  PostgrestError,
+  Session,
+  SupabaseClient,
+} from "@supabase/supabase-js";
 
 export type SessionContext = {
   isLoading: boolean;
@@ -16,7 +20,7 @@ export type SessionContext = {
   supabaseClient: SupabaseClient;
   profile: any;
   isAdmin: boolean;
-}
+};
 
 const SessionContext = createContext<SessionContext>({
   isLoading: true,
@@ -68,11 +72,12 @@ export const SessionContextProvider = ({
         setSession(session);
 
         if (session) {
-          const { data: profileData, error: profileError } = await supabaseClient
-            .from("profiles")
-            .select("*")
-            .eq("id", session.user.id)
-            .single();
+          const { data: profileData, error: profileError } =
+            await supabaseClient
+              .from("profiles")
+              .select("*")
+              .eq("id", session.user.id)
+              .single();
 
           if (profileError) {
             setError(profileError);
@@ -86,36 +91,36 @@ export const SessionContextProvider = ({
 
     getSession();
 
-    const { data: { subscription } } = supabaseClient.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
+    const {
+      data: { subscription },
+    } = supabaseClient.auth.onAuthStateChange((event, session) => {
+      setSession(session);
 
-        if (
-          session &&
-          (event === "SIGNED_IN" ||
-            event === "TOKEN_REFRESHED" ||
-            event === "USER_UPDATED")
-        ) {
-          supabaseClient
-            .from("profiles")
-            .select("*")
-            .eq("id", session.user.id)
-            .single()
-            .then(({ data, error }) => {
-              if (!error) {
-                setProfile(data || null);
-              } else {
-                setError(error);
-              }
-            });
-        }
-
-        if (event === "SIGNED_OUT") {
-          setSession(null);
-          setProfile(null);
-        }
+      if (
+        session &&
+        (event === "SIGNED_IN" ||
+          event === "TOKEN_REFRESHED" ||
+          event === "USER_UPDATED")
+      ) {
+        supabaseClient
+          .from("profiles")
+          .select("*")
+          .eq("id", session.user.id)
+          .single()
+          .then(({ data, error }) => {
+            if (!error) {
+              setProfile(data || null);
+            } else {
+              setError(error);
+            }
+          });
       }
-    );
+
+      if (event === "SIGNED_OUT") {
+        setSession(null);
+        setProfile(null);
+      }
+    });
 
     return () => {
       mounted = false;
@@ -189,11 +194,11 @@ export const useUser = () => {
 
 export const useAuth = () => {
   const context = useContext(SessionContext);
-  
+
   return {
     profile: context.profile,
     session: context.session,
     isLoading: context.isLoading,
     isAdmin: context.profile?.roles === "ADMIN",
   };
-  }
+};

@@ -11,30 +11,37 @@ type Person = {
   email?: string;
   phone?: string;
   registrado?: boolean;
-}
+};
 
 type PersonProps = {
   justOne?: boolean;
   isComplete?: boolean;
-}
+};
 
-export default function usePeople({ justOne = false, isComplete = true }: PersonProps) {
+export default function usePeople({
+  justOne = false,
+  isComplete = true,
+}: PersonProps) {
   const [people, setPeople] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
   const { personId } = useLocalSearchParams<{ personId: string }>();
 
   useEffect(() => {
     const fetchPeople = async () => {
+      const fieldsToSelect = isComplete
+        ? "*"
+        : "id, nombre, apellido_paterno, apellido_materno";
 
-      const fieldsToSelect = isComplete ? "*" : "id, nombre, apellido_paterno, apellido_materno";
-
-      let query = supabase.from("profiles").select(fieldsToSelect).order('nombre', { ascending: true });;
+      let query = supabase
+        .from("profiles")
+        .select(fieldsToSelect)
+        .order("nombre", { ascending: true });
 
       if (justOne && personId) {
         query = query.eq("id", personId);
       }
 
-      const { data, error } = await query
+      const { data, error } = await query;
 
       if (error) {
         console.error(error);
@@ -42,11 +49,10 @@ export default function usePeople({ justOne = false, isComplete = true }: Person
         setPeople(data as unknown as Person[]); // Si algun día checas esto arturo, soluciona, funciona pero no se por que tengo que poner el unkown
       }
       setLoading(false);
-      };
+    };
 
     fetchPeople();
-  
-    }, []);
+  }, []);
 
   return { people, loading };
 }

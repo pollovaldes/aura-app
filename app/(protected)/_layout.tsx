@@ -43,7 +43,6 @@ export default function HomeLayout() {
     );
   }
 
-
   if (!registered && path !== "/profile") {
     return <Redirect href="/profile" />;
   }
@@ -58,12 +57,12 @@ export default function HomeLayout() {
             title="Camiones"
             iconComponent={<Truck color={styles.icon.color} size={19} />}
           />
-          { isAdmin && (
-          <ListItem
-            href={isAdmin || registered ? "people" : null}
-            title="Personas"
-            iconComponent={<UsersRound color={styles.icon.color} size={19} />}
-          />
+          {isAdmin && (
+            <ListItem
+              href={isAdmin || registered ? "people" : null}
+              title="Personas"
+              iconComponent={<UsersRound color={styles.icon.color} size={19} />}
+            />
           )}
           <ListItem
             href={registered ? "notifications" : null}

@@ -11,9 +11,9 @@ interface BaseProps {
   color?: string;
   onPress?: () => void;
   disabled?: boolean;
-  
   isLoading?: boolean;
   showChevron?: boolean;
+  children?: ReactNode;
 }
 
 // Properties when trailingType is "default"
@@ -31,6 +31,7 @@ const Row = ({
   disabled = false,
   isLoading,
   showChevron = true,
+  children,
 }: DefaultProps) => {
   const { styles } = useStyles(stylesheet);
 
@@ -44,6 +45,7 @@ const Row = ({
       ]}
     >
       <View style={styles.container}>
+        {children && <View style={styles.childrenContainer}>{children}</View>}
         <View style={styles.leadingContainer}>
           {icon && color && <RowIcon icon={icon} backgroundColor={color} />}
           <Text style={styles.title}>{title}</Text>
@@ -54,7 +56,9 @@ const Row = ({
           ) : (
             <>
               <Text style={styles.caption}>{caption}</Text>
-              { showChevron ? <MaterialIcons name="chevron-right" size={25} color="#c4c4c7" /> : null }
+              {showChevron ? (
+                <MaterialIcons name="chevron-right" size={25} color="#c4c4c7" />
+              ) : null}
             </>
           )}
         </View>
@@ -67,11 +71,16 @@ export default Row;
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
-    height: 50,
+    minHeight: 50,
     marginHorizontal: 20,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  childrenContainer: {
+    width: "80%",
+    marginVertical: 12,
+    height: 80,
   },
   trailingContainer: {
     flexDirection: "row",

@@ -11,21 +11,26 @@ import Modal from "@/components/Modal/Modal";
 import PictureUpload from "@/components/profile/PictureUpload";
 import PersonalInfoModal from "@/components/profile/PersonalInfoModal";
 import RoleModal from "@/components/profile/RoleModal";
-import { useSession } from "@/context/SessionContext";
 import useRegistration from "@/hooks/useRegistration";
 import { supabase } from "@/lib/supabase";
-import { FileObject } from "@supabase/storage-js";
 import { useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
+import ProfileRow from "@/components/profile/ProfileRow";
+import ChangeImageModal from "@/components/profile/ChangeImageModal";
 
-type ModalType = "personal_info" | "role" | "email" | "password" | null;
+type ModalType =
+  | "personal_info"
+  | "role"
+  | "email"
+  | "password"
+  | "change_image"
+  | null;
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
-  const session = useSession();
 
   const signOut = async () => {
     let { error } = await supabase.auth.signOut();
@@ -51,8 +56,24 @@ export default function Index() {
           <RoleModal closeModal={closeModal} />
         </View>
       </Modal>
+      <Modal isOpen={activeModal === "change_image"}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.closeButton} onPress={closeModal}>
+            Cerrar
+          </Text>
+          <ChangeImageModal closeModal={closeModal} />
+        </View>
+      </Modal>
       <View style={styles.container}>
-        <PictureUpload />
+        <GroupedList>
+          <Row
+            trailingType="chevron"
+            title=""
+            onPress={() => setActiveModal("change_image")}
+          >
+            <ProfileRow />
+          </Row>
+        </GroupedList>
         <GroupedList
           footer="Para obtener acceso completo a la aplicación, asegúrate de completar estos puntos necesarios. Aunque ya tengas una cuenta, esta información es crucial para ofrecerte acceso completo."
           header="Acceso a la App"

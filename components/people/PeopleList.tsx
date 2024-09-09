@@ -19,18 +19,18 @@ export default function PeopleList() {
   const { isAdmin } = useAuth();
   const { people, loading } = usePeople({ isComplete: false });
   const { styles } = useStyles(stylesheet);
-  const  { searchState, setSearchQuery } = useSearch();
+  const { searchState, setSearchQuery } = useSearch();
 
   const searchQuery = searchState["people"] || ""; // Usa un identificador único "people" para esta búsqueda
   const [filteredPeople, setFilteredPeople] = useState(people); // Lista de personas filtradas
 
   const capitalizeWords = (text: string | null | undefined): string => {
-    if (!text) return ''; // Verifica si el texto es nulo, indefinido o vacío
+    if (!text) return ""; // Verifica si el texto es nulo, indefinido o vacío
     return text
       .toLowerCase()
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   };
 
   useEffect(() => {
@@ -46,7 +46,6 @@ export default function PeopleList() {
       setFilteredPeople(people); // Si no hay búsqueda, mostrar todas las personas
     }
   }, [searchQuery, people]);
-
 
   if (loading) {
     return (
@@ -71,7 +70,7 @@ export default function PeopleList() {
                     <View style={styles.imageContainer}>
                       <Image
                         style={styles.image}
-                        source={{ uri: "https://placehold.co/64x64.png" }}
+                        source={{ uri: "https://placehold.co/128x128.png" }}
                       />
                     </View>
                     <Text
@@ -88,9 +87,8 @@ export default function PeopleList() {
         />
       </>
     );
-  }
-  else {
-    return <Redirect href={'/trucks'} />
+  } else {
+    return <Redirect href={"/trucks"} />;
   }
 }
 
