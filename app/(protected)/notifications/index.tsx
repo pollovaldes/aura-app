@@ -42,7 +42,7 @@ export default function Page() {
                     kind={item.kind as any}
                     onPressDiscard={() => markAsRead(item.id)}
                     description={item.description}
-                    status={/*item.user_notifications === []? "unread" : item.user_notifications[0].status*/"unread"}
+                    status={item.user_notifications[0].status}
                   />
                 </View>
               </View>
