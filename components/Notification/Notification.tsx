@@ -45,6 +45,11 @@ export default function Notification({
   const { styles } = useStyles(stylesheet);
   const [isOpen, setIsOpen] = useState(false);
 
+  console.log(status);
+  if (status === "read") {
+    return null;
+  }
+
   return (
     <>
       <Modal isOpen={isOpen}>

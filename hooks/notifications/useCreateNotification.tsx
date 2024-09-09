@@ -2,42 +2,44 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useUser } from "@/context/SessionContext";
 
+type NotificationProps = {
+  id_usuario: string | undefined;
+  title: string;
+  caption: string;
+  kind: string;
+  description: string;
+  target: "USER" | "SUPERVISOR" |"ADMIN";
+};
+
 export function useCreateNotification() {
-  const [id_usuario, setIdUsuario] = useState<string | undefined>(undefined);
-  const [title, setTitle] = useState("");
-  const [caption, setCaption] = useState("");
-  const [kind, setKind] = useState("");
-  const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
   const user = useUser();
 
-  const resetFields = () => {
-    setIdUsuario("");
-    setTitle("");
-    setCaption("");
-    setKind("");
-    setDescription("");
-  };
-
-  const handleCreateNotification = async () => {
+  const handleCreateNotification = async (
+    {
+      id_usuario,
+      title,
+      caption,
+      kind,
+      description,
+      target
+    }: NotificationProps) => {
     setLoading(true);
     try {
-      console.log(id_usuario, title, caption, kind, description, user?.id);
       const { error } = await supabase.from("notifications").insert([
-        {  
+        {
           id_usuario,
           title,
           caption,
           kind,
           description,
-          emisor: user?.id
+          emisor: user?.id,
+          target
         },
       ]);
       if (error) {
         console.error("Error al crear notificacion:", error);
-      } else {
-        resetFields();
       }
     } finally {
       setLoading(false);
@@ -45,13 +47,7 @@ export function useCreateNotification() {
   };
 
   return {
-    setIdUsuario,
-    setTitle,
-    setCaption,
-    setKind,
-    setDescription,
     loading,
     handleCreateNotification,
-    resetFields,
   };
 }

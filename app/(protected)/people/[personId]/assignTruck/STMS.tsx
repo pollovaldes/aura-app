@@ -124,7 +124,24 @@ export default function SeeTruckModalScreen() {
     }
   }, [searchQuery, trucks, loading]);
 
-  console.log(loading);
+  if (trucks.length === 0) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Stack.Screen options={{
+          headerLeft: () => (
+            <Pressable onPress={() => router.back()} style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1 }]}>
+              <View style={styles.closeButtonContainer}>
+                <Text style={styles.closeButton}>
+                  Cancelar
+                </Text>
+              </View>
+            </Pressable>
+          )
+        }} />
+        <Text style={{ fontSize: 36, textAlign: 'center' }}>No hay camiones asignados</Text>
+      </View>
+    );
+  }
 
   if (loading) {
     return (
@@ -147,7 +164,7 @@ export default function SeeTruckModalScreen() {
           </Pressable>
         ),
         headerRight: () => (
-          <Pressable onPress={() => {Alert.alert("Aqui futuramente se desasignaran camiones")}} disabled={assignLoading}
+          <Pressable onPress={() => { Alert.alert("Aqui futuramente se desasignaran camiones") }} disabled={assignLoading}
             style={({ pressed }) => [{ opacity: assignLoading ? 0.5 : pressed ? 0.7 : 1 }]}>
             <View style={styles.closeButtonContainer}>
               <Text style={styles.closeButton}>

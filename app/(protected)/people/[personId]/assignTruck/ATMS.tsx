@@ -10,21 +10,14 @@ import { useCreateNotification } from '@/hooks/notifications/useCreateNotificati
 
 export default function AssignTruckModalScreen() {
   const router = useRouter();
+  const { handleCreateNotification } = useCreateNotification();
+
   const { styles } = useStyles(stylesheet);
   const { trucks, loading } = useTruck({ isComplete: false });
   const [selectedTrucks, setSelectedTrucks] = useState<Set<string>>(new Set()); // Estado para manejar los camiones seleccionados
   const { personId } = useLocalSearchParams<{ personId: string }>();
 
   const { loading: assignLoading, assignTruck } = useAssignTruck({ id_conductor: personId }); // Crea un hook para asignar camiones
-  const { 
-    setIdUsuario,
-    setTitle,
-    setCaption,
-    setKind,
-    setDescription,
-    loading: createNotificationLoading,
-    handleCreateNotification,
-    resetFields, } = useCreateNotification();
 
   const { searchState } = useSearch(); // Get the search state from the context
   const searchQuery = searchState["ATMS"] || ""; // Use the search query for "ATMS"
@@ -46,6 +39,7 @@ export default function AssignTruckModalScreen() {
     } else {
       updatedSelection.add(id); // Selecciona el camión
     }
+
     setSelectedTrucks(updatedSelection);
   };
 
@@ -57,6 +51,22 @@ export default function AssignTruckModalScreen() {
 
     const camionesSeleccionados = Array.from(selectedTrucks);
     await assignTruck(camionesSeleccionados);
+
+    const camionesDetalles = trucks.filter(truck => camionesSeleccionados.includes(truck.id));
+
+    // Crear un texto con la información de todos los camiones seleccionados
+    const detallesCamiones = camionesDetalles.map(truck => `Camión ${truck.numero_economico} ${truck.marca} ${truck.sub_marca} (${truck.modelo})`).join(',\n');
+
+
+    await handleCreateNotification({
+      id_usuario: personId,
+      title: `Nuevos camiones asignados`,
+      caption: `Se han asignado ${camionesDetalles.length} camiones:`,
+      description: 'Se han asignado los camiones:\n' + detallesCamiones,
+      kind: 'info',
+      target: 'USER',
+    });
+
     router.back();
   };
 
