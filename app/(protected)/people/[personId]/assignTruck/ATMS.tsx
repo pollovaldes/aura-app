@@ -64,7 +64,7 @@ export default function AssignTruckModalScreen() {
       caption: `Se han asignado ${camionesDetalles.length} camiones:`,
       description: 'Se han asignado los camiones:\n' + detallesCamiones,
       kind: 'info',
-      target: 'user',
+      target: 'USER',
     });
 
     router.back();

@@ -8,7 +8,7 @@ type NotificationProps = {
   caption: string;
   kind: string;
   description: string;
-  target: "user" | "supervisor" |"admin";
+  target: "USER" | "SUPERVISOR" |"ADMIN";
 };
 
 export function useCreateNotification() {
