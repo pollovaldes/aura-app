@@ -7,13 +7,13 @@ import {
   Image,
 } from "react-native";
 import usePeople from "@/hooks/peopleHooks/usePeople";
-import AddPeopleComponent from "@/components/people/AddPeopleComponent";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { Link, Redirect, Stack } from "expo-router";
+import { Link, Redirect } from "expo-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/SessionContext";
-import { ChevronRight, Plus } from "lucide-react-native";
+import { ChevronRight } from "lucide-react-native";
 import { useSearch } from "@/context/SearchContext";
+import SegmentedControl from "@react-native-segmented-control/segmented-control";
 
 export default function PeopleList() {
   const { isAdmin } = useAuth();
