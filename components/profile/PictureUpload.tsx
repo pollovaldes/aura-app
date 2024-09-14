@@ -1,16 +1,16 @@
 import { useSession } from "@/context/SessionContext";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { View, ActivityIndicator, Image } from "react-native";
+import { View, ActivityIndicator, Image, Text } from "react-native";
 import { FileObject } from "@supabase/storage-js";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import * as ImagePicker from "expo-image-picker";
 import { supabase } from "@/lib/supabase";
 import * as FileSystem from "expo-file-system";
 import { decode } from "base64-arraybuffer";
+import { UserRound } from "lucide-react-native";
 
 export default function PictureUpload() {
-  const { documentId } = useLocalSearchParams<{ documentId: string }>();
   const { styles } = useStyles(stylesheet);
   const session = useSession();
   const [profileImage, setProfileImage] = useState<FileObject | null>(null);
@@ -101,7 +101,9 @@ export default function PictureUpload() {
           {imageUri ? (
             <Image source={{ uri: imageUri }} style={styles.profileImage} />
           ) : (
-            <View style={styles.placeholderImage} /> // Placeholder for no image
+            <View style={styles.placeholderImage}>
+              <UserRound size={35} color="#535353" />
+            </View>
           )}
           {/* <TouchableOpacity onPress={onSelectImage} style={styles.uploadButton}>
             <Pencil size={18} color={styles.uploadIcon.color} />
@@ -122,13 +124,16 @@ const stylesheet = createStyleSheet((theme) => ({
   profileImage: {
     height: 80,
     width: 80,
-    borderRadius: 60, // Makes the image circular
+    borderRadius: 60,
   },
   placeholderImage: {
+    justifyContent: "center",
+    alignItems: "center",
     height: 80,
     width: 80,
     backgroundColor: "#e0e0e0",
     marginBottom: 10,
+    borderRadius: 60,
   },
   uploadButton: {
     gap: 10,

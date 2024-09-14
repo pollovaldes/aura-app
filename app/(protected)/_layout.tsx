@@ -1,9 +1,3 @@
-/*
- * index.tsx - Created on Mon Jun 24 2024 by Luis Arturo Valdes Romero
- *
- * Copyright (c) 2024 Aura Residuos Sustentables
- */
-
 import { Redirect, Slot, Tabs, usePathname } from "expo-router";
 import { Text, View, useWindowDimensions } from "react-native";
 import Sidebar from "../../components/sidebar/Sidebar";
@@ -13,7 +7,6 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { useSessionContext } from "@/context/SessionContext";
 import LoadingScreen from "@/components/Auth/LoadingScreen";
 import useRegistration from "@/hooks/useRegistration";
-import { useEffect } from "react";
 import { useAuth } from "@/context/SessionContext";
 
 export default function HomeLayout() {
@@ -22,7 +15,7 @@ export default function HomeLayout() {
   const widthThreshold = 600; // TODO: Move dimensions to a theme file.
   const { isLoading: isSessionLoading, error, session } = useSessionContext();
   const { isLoading: isUserNameLoading, registered } = useRegistration();
-  const { isAdmin, profile } = useAuth();
+  const { isAdmin } = useAuth();
 
   const path = usePathname();
 

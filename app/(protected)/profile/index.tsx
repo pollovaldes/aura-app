@@ -38,6 +38,13 @@ export default function Index() {
 
   const { name, email, phone, isLoading } = useRegistration();
 
+  const getSessions = async () => {
+    const { data, error } = await supabase.auth.getUserIdentities();
+    console.log(data);
+  };
+
+  getSessions();
+
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <Modal isOpen={activeModal === "personal_info"}>

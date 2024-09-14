@@ -26,12 +26,12 @@ export default function TrucksList() {
   const searchQuery = searchState["trucks"] || "";
 
   const capitalizeWords = (text: string | null | undefined): string => {
-    if (!text) return ''; // Verifica si el texto es nulo, indefinido o vacío
+    if (!text) return ""; // Verifica si el texto es nulo, indefinido o vacío
     return text
       .toLowerCase()
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   };
 
   useEffect(() => {
@@ -83,11 +83,12 @@ export default function TrucksList() {
                       source={{ uri: "https://placehold.co/512x512.png" }}
                     />
                   </View>
-                  <Text
-                    style={styles.itemText}
-                  >
-                    <Text style={{ fontWeight: 'bold' }}>{item.numero_economico}</Text>
-                    {`\n${capitalizeWords(item.marca)} ${capitalizeWords(item.sub_marca)}\n(${capitalizeWords(item.modelo)})`}</Text>
+                  <Text style={styles.itemText}>
+                    <Text style={{ fontWeight: "bold" }}>
+                      {item.numero_economico}
+                    </Text>
+                    {`\n${capitalizeWords(item.marca)} ${capitalizeWords(item.sub_marca)}\n(${capitalizeWords(item.modelo)})`}
+                  </Text>
                 </View>
                 <View style={styles.chevronView}>
                   <ChevronRight color={styles.chevron.color} />

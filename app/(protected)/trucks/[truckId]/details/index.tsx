@@ -10,10 +10,10 @@ import { FormButton } from "@/components/Form/FormButton";
 import useTruck, { Truck } from "@/hooks/truckHooks/useTruck";
 
 export default function Index() {
-  const { trucks, loading } = useTruck({ justOne: true}); // Usa el hook
+  const { trucks, loading } = useTruck({ justOne: true }); // Usa el hook
   const { styles } = useStyles(stylesheet);
   const { isAdmin } = useAuth();
-  
+
   const [numEco, setNumEco] = useState(false);
   const [marca, setMarca] = useState(false);
   const [subMarca, setSubMarca] = useState(false);
@@ -22,7 +22,7 @@ export default function Index() {
   const [placa, setPlaca] = useState(false);
   const [poliza, setPoliza] = useState(false);
 
-  console.log(trucks, "Trucks")
+  console.log(trucks, "Trucks");
 
   if (loading) {
     return (
@@ -42,7 +42,7 @@ export default function Index() {
     );
   }
 
-  const truck: Truck = trucks[0]
+  const truck: Truck = trucks[0];
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
@@ -104,7 +104,9 @@ export default function Index() {
       />
 
       <View style={styles.container}>
-        <Stack.Screen options={{ title: `${truck.marca} ${truck.sub_marca}` }} />
+        <Stack.Screen
+          options={{ title: `${truck.marca} ${truck.sub_marca}` }}
+        />
         <GroupedList
           header="Detalles"
           footer="Si necesitas más información, contacta a tu administrador y si ves algún error contacta a tu supervisor, solo los administradores pueden editar la información del camión."
@@ -135,12 +137,13 @@ export default function Index() {
             onPress={() => setModelo(true)}
             trailingType="chevron"
             caption={`${truck.modelo}`}
-            showChevron={isAdmin} />
+            showChevron={isAdmin}
+          />
           <Row
             title="No de Serie"
             onPress={() => setNoSerie(true)}
             trailingType="chevron"
-            caption={`${truck.no_serie?.substring(0, 8) ?? 'No disponible'}${truck.no_serie && truck.no_serie.length > 8 ? '...' : ''}`}
+            caption={`${truck.no_serie?.substring(0, 8) ?? "No disponible"}${truck.no_serie && truck.no_serie.length > 8 ? "..." : ""}`}
             showChevron={isAdmin}
           />
           <Row
@@ -148,18 +151,28 @@ export default function Index() {
             onPress={() => setPlaca(true)}
             trailingType="chevron"
             caption={`${truck.placa}`}
-            showChevron={isAdmin} />
+            showChevron={isAdmin}
+          />
           <Row
             title="Poliza"
             onPress={() => setPoliza(true)}
             trailingType="chevron"
             caption={`${truck.poliza}`}
-            showChevron={isAdmin} />
+            showChevron={isAdmin}
+          />
         </GroupedList>
         {isAdmin && (
-        <GroupedList>
-            <FormButton title="Borrar Camión" onPress={() => Alert.alert("Se tiene que borrar de muchas tablas, ver al final")} isRed={true}/>
-        </GroupedList>
+          <GroupedList>
+            <FormButton
+              title="Borrar Camión"
+              onPress={() =>
+                Alert.alert(
+                  "Se tiene que borrar de muchas tablas, ver al final"
+                )
+              }
+              isRed={true}
+            />
+          </GroupedList>
         )}
       </View>
     </ScrollView>
