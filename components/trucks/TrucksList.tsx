@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  ActivityIndicator,
-  FlatList,
-  Pressable,
-  Image,
-} from "react-native";
+import { View, Text, FlatList, Pressable, Image } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link, Stack } from "expo-router";
 import AddTruckComponent from "./AddTruckComponent";
@@ -14,7 +7,6 @@ import { ChevronRight, Plus } from "lucide-react-native";
 import { useSearch } from "@/context/SearchContext";
 import useProfile from "@/hooks/useProfile";
 import useTruck from "@/hooks/truckHooks/useTruck";
-import { FormButton } from "../Form/FormButton";
 import LoadingScreen from "../dataStates/LoadingScreen";
 import ErrorScreen from "../dataStates/ErrorScreen";
 import EmptyScreen from "../dataStates/EmptyScreen";
@@ -57,6 +49,10 @@ export default function TrucksList() {
 
   if (trucks.length === 0) {
     return <EmptyScreen caption="Ningún vehículo por aquí" />;
+  }
+
+  if (filteredTrucks?.length === 0 && searchQuery) {
+    return <EmptyScreen caption="Ningún resultado" />;
   }
 
   return (
