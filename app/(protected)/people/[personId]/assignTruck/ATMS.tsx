@@ -1,35 +1,43 @@
-import { View, Text, FlatList, Pressable, Image, Alert, ActivityIndicator } from 'react-native';
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { createStyleSheet, useStyles } from 'react-native-unistyles';
-import { Circle, CheckCircle } from 'lucide-react-native';
-import useTruck from '@/hooks/truckHooks/useTruck';
-import { useAssignTruck } from '@/hooks/peopleHooks/useAssignTruck'; // Importa el hook
-import React, { useEffect, useState } from 'react';
-import { useSearch } from '@/context/SearchContext';
-import { useCreateNotification } from '@/hooks/notifications/useCreateNotification';
+import {
+  View,
+  Text,
+  FlatList,
+  Pressable,
+  Image,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { Circle, CheckCircle } from "lucide-react-native";
+import useTruck from "@/hooks/truckHooks/useTruck";
+import { useAssignTruck } from "@/hooks/peopleHooks/useAssignTruck"; // Importa el hook
+import React, { useEffect, useState } from "react";
+import { useSearch } from "@/context/SearchContext";
 
 export default function AssignTruckModalScreen() {
   const router = useRouter();
-  const { handleCreateNotification } = useCreateNotification();
 
   const { styles } = useStyles(stylesheet);
   const { trucks, loading } = useTruck({ isComplete: false });
   const [selectedTrucks, setSelectedTrucks] = useState<Set<string>>(new Set()); // Estado para manejar los camiones seleccionados
   const { personId } = useLocalSearchParams<{ personId: string }>();
 
-  const { loading: assignLoading, assignTruck } = useAssignTruck({ id_conductor: personId }); // Crea un hook para asignar camiones
+  const { loading: assignLoading, assignTruck } = useAssignTruck({
+    id_conductor: personId,
+  }); // Crea un hook para asignar camiones
 
   const { searchState } = useSearch(); // Get the search state from the context
   const searchQuery = searchState["ATMS"] || ""; // Use the search query for "ATMS"
   const [filteredTrucks, setFilteredTrucks] = useState(trucks);
 
   const capitalizeWords = (text: string | null | undefined): string => {
-    if (!text) return ''; // Verifica si el texto es nulo, indefinido o vacío
+    if (!text) return ""; // Verifica si el texto es nulo, indefinido o vacío
     return text
       .toLowerCase()
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   };
 
   const toggleTruckSelection = (id: string) => {
@@ -52,20 +60,17 @@ export default function AssignTruckModalScreen() {
     const camionesSeleccionados = Array.from(selectedTrucks);
     await assignTruck(camionesSeleccionados);
 
-    const camionesDetalles = trucks.filter(truck => camionesSeleccionados.includes(truck.id));
+    const camionesDetalles = trucks.filter((truck) =>
+      camionesSeleccionados.includes(truck.id)
+    );
 
     // Crear un texto con la información de todos los camiones seleccionados
-    const detallesCamiones = camionesDetalles.map(truck => `Camión ${truck.numero_economico} ${truck.marca} ${truck.sub_marca} (${truck.modelo})`).join(',\n');
-
-
-    await handleCreateNotification({
-      id_usuario: personId,
-      title: `Nuevos camiones asignados`,
-      caption: `Se han asignado ${camionesDetalles.length} camiones:`,
-      description: 'Se han asignado los camiones:\n' + detallesCamiones,
-      kind: 'info',
-      target: 'USER',
-    });
+    const detallesCamiones = camionesDetalles
+      .map(
+        (truck) =>
+          `Camión ${truck.numero_economico} ${truck.marca} ${truck.sub_marca} (${truck.modelo})`
+      )
+      .join(",\n");
 
     router.back();
   };
@@ -85,7 +90,7 @@ export default function AssignTruckModalScreen() {
   }, [searchQuery, trucks]);
 
   if (loading) {
-    console.log('Loading...');
+    console.log("Loading...");
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator />
@@ -95,27 +100,33 @@ export default function AssignTruckModalScreen() {
 
   return (
     <View style={styles.modalContainer}>
-      <Stack.Screen options={{
-        headerLeft: () => (
-          <Pressable onPress={() => router.back()} style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1 }]}>
-            <View style={styles.closeButtonContainer}>
-              <Text style={styles.closeButton}>
-                Cancelar
-              </Text>
-            </View>
-          </Pressable>
-        ),
-        headerRight: () => (
-          <Pressable onPress={handleAssign} disabled={assignLoading}
-            style={({ pressed }) => [{ opacity: assignLoading ? 0.5 : pressed ? 0.7 : 1 }]}>
-            <View style={styles.closeButtonContainer}>
-              <Text style={styles.closeButton}>
-                Asignar
-              </Text>
-            </View>
-          </Pressable>
-        ),
-      }} />
+      <Stack.Screen
+        options={{
+          headerLeft: () => (
+            <Pressable
+              onPress={() => router.back()}
+              style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1 }]}
+            >
+              <View style={styles.closeButtonContainer}>
+                <Text style={styles.closeButton}>Cancelar</Text>
+              </View>
+            </Pressable>
+          ),
+          headerRight: () => (
+            <Pressable
+              onPress={handleAssign}
+              disabled={assignLoading}
+              style={({ pressed }) => [
+                { opacity: assignLoading ? 0.5 : pressed ? 0.7 : 1 },
+              ]}
+            >
+              <View style={styles.closeButtonContainer}>
+                <Text style={styles.closeButton}>Asignar</Text>
+              </View>
+            </Pressable>
+          ),
+        }}
+      />
       <Text style={styles.closeButton} onPress={() => router.back()}>
         Cerrar
       </Text>
@@ -129,7 +140,12 @@ export default function AssignTruckModalScreen() {
               const isSelected = selectedTrucks.has(item.id);
               return (
                 <Pressable onPress={() => toggleTruckSelection(item.id)}>
-                  <View style={[styles.container, isSelected ? styles.selectedItem : null]}>
+                  <View
+                    style={[
+                      styles.container,
+                      isSelected ? styles.selectedItem : null,
+                    ]}
+                  >
                     <View style={styles.contentContainer}>
                       <View style={styles.imageContainer}>
                         <Image
@@ -138,7 +154,9 @@ export default function AssignTruckModalScreen() {
                         />
                       </View>
                       <Text style={styles.itemText}>
-                        <Text style={{ fontWeight: 'bold' }}>{item.numero_economico}</Text>
+                        <Text style={{ fontWeight: "bold" }}>
+                          {item.numero_economico}
+                        </Text>
                         {`\n${capitalizeWords(item.marca)} ${capitalizeWords(item.sub_marca)} (${capitalizeWords(item.modelo)})`}
                       </Text>
                     </View>
@@ -195,7 +213,7 @@ const stylesheet = createStyleSheet((theme) => ({
     paddingHorizontal: 5,
   },
   selectedItem: {
-    backgroundColor: '#cce5ff',
+    backgroundColor: "#cce5ff",
   },
   loadingContainer: {
     flex: 1,

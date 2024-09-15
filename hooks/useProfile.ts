@@ -13,7 +13,7 @@ export default function useProfile() {
   const [isFullyRegistered, setIsFullyRegistered] = useState<boolean | null>(
     null
   );
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const { supabaseClient, session } = useSessionContext();
 
   const fetchProfile = async () => {

@@ -7,6 +7,7 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { useSessionContext } from "@/context/SessionContext";
 import LoadingScreen from "@/components/Auth/LoadingScreen";
 import useProfile from "@/hooks/useProfile";
+import { TrucksContextProvider } from "@/context/TrucksContext";
 
 export default function HomeLayout() {
   const { styles } = useStyles(stylesheet);
@@ -35,79 +36,80 @@ export default function HomeLayout() {
     );
   }
 
-  if (!isFullyRegistered && path !== "/profile") {
-    return <Redirect href="/profile" />;
-  }
-
-  //Show a web-like sidebar for occupying max space
-  if (width > widthThreshold) {
-    return (
-      <View style={styles.container}>
-        <Sidebar>
-          <ListItem
-            href={isFullyRegistered ? "trucks" : null}
-            title="Camiones"
-            iconComponent={<Truck color={styles.icon.color} size={19} />}
-          />
-          {role === "ADMIN" && (
-            <ListItem
-              href={role === "ADMIN" || isFullyRegistered ? "people" : null}
-              title="Personas"
-              iconComponent={<UsersRound color={styles.icon.color} size={19} />}
-            />
-          )}
-          <ListItem
-            href={isFullyRegistered ? "notifications" : null}
-            title="Notificaciones"
-            iconComponent={<Bell color={styles.icon.color} size={19} />}
-          />
-          <ListItem
-            href="profile"
-            title="Perfil"
-            iconComponent={
-              <CircleUserRound color={styles.icon.color} size={19} />
-            }
-          />
-        </Sidebar>
-        <Slot />
-      </View>
-    );
-  }
+  // if (!isFullyRegistered && path !== "/profile") {
+  //   return <Redirect href="/profile" />;
+  // }
 
   return (
-    <Tabs screenOptions={{ headerShown: false }}>
-      <Tabs.Screen
-        name="trucks"
-        options={{
-          href: !isFullyRegistered ? null : undefined,
-          title: "Camiones",
-          tabBarIcon: ({ color }) => <Truck color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="people"
-        options={{
-          href: role !== "ADMIN" || !isFullyRegistered ? null : undefined,
-          title: "Personas",
-          tabBarIcon: ({ color }) => <UsersRound color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="notifications"
-        options={{
-          href: !isFullyRegistered ? null : undefined,
-          title: "Notificaciones",
-          tabBarIcon: ({ color }) => <Bell color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: "Perfil",
-          tabBarIcon: ({ color }) => <CircleUserRound color={color} />,
-        }}
-      />
-    </Tabs>
+    <TrucksContextProvider>
+      {width > widthThreshold ? (
+        <View style={styles.container}>
+          <Sidebar>
+            <ListItem
+              href={isFullyRegistered ? "trucks" : null}
+              title="Camiones"
+              iconComponent={<Truck color={styles.icon.color} size={19} />}
+            />
+            {role === "ADMIN" && (
+              <ListItem
+                href={role === "ADMIN" || isFullyRegistered ? "people" : null}
+                title="Personas"
+                iconComponent={
+                  <UsersRound color={styles.icon.color} size={19} />
+                }
+              />
+            )}
+            <ListItem
+              href={isFullyRegistered ? "notifications" : null}
+              title="Notificaciones"
+              iconComponent={<Bell color={styles.icon.color} size={19} />}
+            />
+            <ListItem
+              href="profile"
+              title="Perfil"
+              iconComponent={
+                <CircleUserRound color={styles.icon.color} size={19} />
+              }
+            />
+          </Sidebar>
+          <Slot />
+        </View>
+      ) : (
+        <Tabs screenOptions={{ headerShown: false }}>
+          <Tabs.Screen
+            name="trucks"
+            options={{
+              href: !isFullyRegistered ? null : undefined,
+              title: "Camiones",
+              tabBarIcon: ({ color }) => <Truck color={color} />,
+            }}
+          />
+          <Tabs.Screen
+            name="people"
+            options={{
+              href: role !== "ADMIN" || !isFullyRegistered ? null : undefined,
+              title: "Personas",
+              tabBarIcon: ({ color }) => <UsersRound color={color} />,
+            }}
+          />
+          <Tabs.Screen
+            name="notifications"
+            options={{
+              href: !isFullyRegistered ? null : undefined,
+              title: "Notificaciones",
+              tabBarIcon: ({ color }) => <Bell color={color} />,
+            }}
+          />
+          <Tabs.Screen
+            name="profile"
+            options={{
+              title: "Perfil",
+              tabBarIcon: ({ color }) => <CircleUserRound color={color} />,
+            }}
+          />
+        </Tabs>
+      )}
+    </TrucksContextProvider>
   );
 }
 

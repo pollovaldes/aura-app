@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { View, Image, ScrollView, Alert } from "react-native";
-import useTruck from "@/hooks/truckHooks/useTruck";
+import useTruck, { Truck } from "@/hooks/truckHooks/useTruck";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
@@ -15,13 +15,14 @@ import {
   Wrench,
 } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
+import TrucksContext from "@/context/TrucksContext";
 
 export default function TruckDetail() {
-  const { trucks } = useTruck({ justOne: true ,isComplete: false });
   const { styles } = useStyles(stylesheet);
   const { truckId } = useLocalSearchParams<{ truckId: string }>();
-  const truck = trucks[0]
-  const truckTitle = `${truck?.marca ?? ""} ${truck?.sub_marca ?? ""} ${truck?.modelo ?? ""}`;
+  const { trucks } = useContext(TrucksContext) ?? { trucks: [] };
+  const truck = trucks.find((Truck) => Truck.id === truckId);
+  const truckTitle = `${truck?.brand ?? ""} ${truck?.sub_brand ?? ""} (${truck?.year ?? ""})`;
 
   return (
     <>

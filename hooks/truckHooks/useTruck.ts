@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useContext, Dispatch, SetStateAction } from "react";
 import { supabase } from "@/lib/supabase";
-import { useLocalSearchParams } from "expo-router";
+import TrucksContext from "@/context/TrucksContext";
 
 export type Truck = {
   id: string;
@@ -12,43 +12,29 @@ export type Truck = {
   economic_number: string;
 };
 
-type TruckProps = {
-  justOne?: boolean;
-  isComplete?: boolean;
-};
-
-export default function useTruck({
-  justOne = false,
-  isComplete = true,
-}: TruckProps) {
-  const [trucks, setTrucks] = useState<Truck[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { truckId } = useLocalSearchParams<{ truckId: string }>();
+export default function useTruck() {
+  const { trucks, setTrucks } = useContext(TrucksContext) ?? {
+    trucks: [] as Truck[],
+    setTrucks: (() => {}) as Dispatch<SetStateAction<Truck[]>>, // Fallback for setTrucks
+  };
 
   const fetchTrucks = async () => {
-    const fieldsToSelect = isComplete
-      ? "*"
-      : "id, brand ,sub_brand, year, plate, serial_number, economic_number";
-
-    let query = supabase.from("vehicles").select(fieldsToSelect);
-
-    if (justOne && truckId) {
-      query = query.eq("id", truckId);
-    }
-
-    const { data, error } = await query;
+    const { data, error } = await supabase
+      .from("vehicles")
+      .select(
+        "id, brand ,sub_brand, year, plate, serial_number, economic_number"
+      );
 
     if (error) {
       console.error(error);
     } else {
       setTrucks(data as unknown as Truck[]); // Si algun día checas esto arturo, soluciona, funciona pero no se por que tengo que poner el unkown
-      console.log(data);
+      console.log("Desde el hook", data);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
     fetchTrucks();
   }, []);
-  return { trucks, loading };
+  return { trucks };
 }
