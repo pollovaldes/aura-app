@@ -1,22 +1,41 @@
+// ChangeImageModal.tsx
+import React from "react";
+import { View, Text, Alert } from "react-native";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "@/components/Form/FormButton";
-import { useSession } from "@/context/SessionContext";
-import { supabase } from "@/lib/supabase";
-import { useLocalSearchParams } from "expo-router";
-import { useState } from "react";
-import { Text, View } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { FileObject } from "@supabase/storage-js";
-import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
-import { decode } from "base64-arraybuffer";
+import { useProfileImage } from "@/context/ProfileImageContext";
 
 export default function ChangeImageModal({
   closeModal,
 }: {
   closeModal: () => void;
 }) {
+  const { onSelectImage, deleteProfileImage, loading } = useProfileImage();
   const { styles } = useStyles(stylesheet);
+
+  const handleSelectImage = async () => {
+    await onSelectImage();
+    closeModal();
+  };
+
+  const handleDeleteImage = () => {
+    Alert.alert(
+      "Confirmación",
+      "¿Estás seguro de que deseas eliminar tu foto de perfil?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: async () => {
+            await deleteProfileImage();
+            closeModal();
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <View style={styles.section}>
@@ -28,13 +47,13 @@ export default function ChangeImageModal({
         <View style={styles.group}>
           <FormButton
             title="Elegir nueva imagen"
-            onPress={() => console.log()}
+            onPress={handleSelectImage}
           />
         </View>
         <View style={styles.group}>
           <FormButton
             title="Eliminar foto de perfil"
-            onPress={() => console.log()}
+            onPress={handleDeleteImage}
           />
         </View>
       </View>
@@ -51,22 +70,9 @@ const stylesheet = createStyleSheet((theme) => ({
     gap: theme.marginsComponents.group,
     width: "100%",
   },
-  logo: {
-    color: theme.colors.inverted,
-    width: 180,
-    height: 60,
-  },
   subtitle: {
     color: theme.textPresets.main,
     textAlign: "center",
   },
-  textInput: {
-    height: 45,
-    borderRadius: 5,
-    paddingHorizontal: 12,
-    fontSize: 18,
-    color: theme.textPresets.main,
-    placehoolderTextColor: theme.textPresets.subtitle,
-    backgroundColor: theme.textInput.backgroundColor,
-  },
+  // Removed unused styles like logo and textInput
 }));

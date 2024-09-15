@@ -9,14 +9,17 @@ import { supabase } from "@/lib/supabase";
 import * as FileSystem from "expo-file-system";
 import { decode } from "base64-arraybuffer";
 import { UserRound } from "lucide-react-native";
+import { useProfileImage } from "@/context/ProfileImageContext";
 
 export default function PictureUpload() {
   const { styles } = useStyles(stylesheet);
   const session = useSession();
   const [profileImage, setProfileImage] = useState<FileObject | null>(null);
-  const [imageUri, setImageUri] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-
+  //const [imageUri, setImageUri] = useState<string | null>(null);
+  const { imageUri, loading } = useProfileImage();
+  //const [loading, setLoading] = useState<boolean>(false);
+  
+  /*
   useEffect(() => {
     if (!session) return;
     loadProfileImage();
@@ -91,6 +94,7 @@ export default function PictureUpload() {
       }
     }
   };
+  */
 
   return (
     <View style={styles.container}>

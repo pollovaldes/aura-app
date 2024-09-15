@@ -10,6 +10,7 @@ import { TrucksContextProvider } from "@/context/TrucksContext";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { supabase } from "@/lib/supabase";
+import { ProfileImageProvider } from "@/context/ProfileImageContext";
 
 export default function HomeLayout() {
   const { styles } = useStyles(stylesheet);
@@ -51,73 +52,75 @@ export default function HomeLayout() {
 
   return (
     <TrucksContextProvider>
-      {width > widthThreshold ? (
-        <View style={styles.container}>
-          <Sidebar>
-            <ListItem
-              href={isFullyRegistered ? "trucks" : null}
-              title="Camiones"
-              iconComponent={<Truck color={styles.icon.color} size={19} />}
-            />
-            {role === "ADMIN" && (
+      <ProfileImageProvider>
+        {width > widthThreshold ? (
+          <View style={styles.container}>
+            <Sidebar>
               <ListItem
-                href={role === "ADMIN" || isFullyRegistered ? "people" : null}
-                title="Personas"
+                href={isFullyRegistered ? "trucks" : null}
+                title="Camiones"
+                iconComponent={<Truck color={styles.icon.color} size={19} />}
+              />
+              {role === "ADMIN" && (
+                <ListItem
+                  href={role === "ADMIN" || isFullyRegistered ? "people" : null}
+                  title="Personas"
+                  iconComponent={
+                    <UsersRound color={styles.icon.color} size={19} />
+                  }
+                />
+              )}
+              <ListItem
+                href={isFullyRegistered ? "notifications" : null}
+                title="Notificaciones"
+                iconComponent={<Bell color={styles.icon.color} size={19} />}
+              />
+              <ListItem
+                href="profile"
+                title="Perfil"
                 iconComponent={
-                  <UsersRound color={styles.icon.color} size={19} />
+                  <CircleUserRound color={styles.icon.color} size={19} />
                 }
               />
-            )}
-            <ListItem
-              href={isFullyRegistered ? "notifications" : null}
-              title="Notificaciones"
-              iconComponent={<Bell color={styles.icon.color} size={19} />}
+            </Sidebar>
+            <Slot />
+          </View>
+        ) : (
+          <Tabs screenOptions={{ headerShown: false }}>
+            <Tabs.Screen
+              name="trucks"
+              options={{
+                href: !isFullyRegistered ? null : undefined,
+                title: "Camiones",
+                tabBarIcon: ({ color }) => <Truck color={color} />,
+              }}
             />
-            <ListItem
-              href="profile"
-              title="Perfil"
-              iconComponent={
-                <CircleUserRound color={styles.icon.color} size={19} />
-              }
+            <Tabs.Screen
+              name="people"
+              options={{
+                href: role !== "ADMIN" || !isFullyRegistered ? null : undefined,
+                title: "Personas",
+                tabBarIcon: ({ color }) => <UsersRound color={color} />,
+              }}
             />
-          </Sidebar>
-          <Slot />
-        </View>
-      ) : (
-        <Tabs screenOptions={{ headerShown: false }}>
-          <Tabs.Screen
-            name="trucks"
-            options={{
-              href: !isFullyRegistered ? null : undefined,
-              title: "Camiones",
-              tabBarIcon: ({ color }) => <Truck color={color} />,
-            }}
-          />
-          <Tabs.Screen
-            name="people"
-            options={{
-              href: role !== "ADMIN" || !isFullyRegistered ? null : undefined,
-              title: "Personas",
-              tabBarIcon: ({ color }) => <UsersRound color={color} />,
-            }}
-          />
-          <Tabs.Screen
-            name="notifications"
-            options={{
-              href: !isFullyRegistered ? null : undefined,
-              title: "Notificaciones",
-              tabBarIcon: ({ color }) => <Bell color={color} />,
-            }}
-          />
-          <Tabs.Screen
-            name="profile"
-            options={{
-              title: "Perfil",
-              tabBarIcon: ({ color }) => <CircleUserRound color={color} />,
-            }}
-          />
-        </Tabs>
-      )}
+            <Tabs.Screen
+              name="notifications"
+              options={{
+                href: !isFullyRegistered ? null : undefined,
+                title: "Notificaciones",
+                tabBarIcon: ({ color }) => <Bell color={color} />,
+              }}
+            />
+            <Tabs.Screen
+              name="profile"
+              options={{
+                title: "Perfil",
+                tabBarIcon: ({ color }) => <CircleUserRound color={color} />,
+              }}
+            />
+          </Tabs>
+        )}
+      </ProfileImageProvider>
     </TrucksContextProvider>
   );
 }
