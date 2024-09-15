@@ -1,13 +1,15 @@
-import { Redirect, Slot, Tabs, usePathname } from "expo-router";
+import { Redirect, Slot, Stack, Tabs, usePathname } from "expo-router";
 import { Text, View, useWindowDimensions } from "react-native";
 import Sidebar from "../../components/sidebar/Sidebar";
 import ListItem from "../../components/sidebar/ListItem";
 import { Bell, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { useSessionContext } from "@/context/SessionContext";
-import LoadingScreen from "@/components/Auth/LoadingScreen";
 import useProfile from "@/hooks/useProfile";
 import { TrucksContextProvider } from "@/context/TrucksContext";
+import LoadingScreen from "@/components/dataStates/LoadingScreen";
+import ErrorScreen from "@/components/dataStates/ErrorScreen";
+import { supabase } from "@/lib/supabase";
 
 export default function HomeLayout() {
   const { styles } = useStyles(stylesheet);
@@ -20,7 +22,11 @@ export default function HomeLayout() {
   const { role } = useProfile();
 
   if (isSessionLoading || isProfileLoading) {
-    return <LoadingScreen />;
+    return (
+      <View style={styles.fullscreenView}>
+        <LoadingScreen caption="Cargando sesión" />
+      </View>
+    );
   }
 
   if (!session) {
@@ -29,16 +35,19 @@ export default function HomeLayout() {
 
   if (error) {
     return (
-      <>
-        <Text>Un error inesperado ocurrió.</Text>
-        <Text>{String(error)}</Text>
-      </>
+      <View style={styles.fullscreenView}>
+        <ErrorScreen
+          caption="Ocurrió un error al recuperar tu sesión"
+          buttonCaption="Intentar cerrar sesión"
+          retryFunction={() => supabase.auth.signOut()}
+        />
+      </View>
     );
   }
 
-  // if (!isFullyRegistered && path !== "/profile") {
-  //   return <Redirect href="/profile" />;
-  // }
+  if (!isFullyRegistered && path !== "/profile") {
+    return <Redirect href="/profile" />;
+  }
 
   return (
     <TrucksContextProvider>
@@ -114,6 +123,10 @@ export default function HomeLayout() {
 }
 
 const stylesheet = createStyleSheet((theme) => ({
+  fullscreenView: {
+    flex: 1,
+    backgroundColor: theme.ui.colors.card,
+  },
   container: {
     flexDirection: "row",
     height: "100%",
