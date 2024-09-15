@@ -1,4 +1,5 @@
-import { useSessionContext, useUser } from "@/context/SessionContext";
+import { useSession, useSessionContext } from "@/context/SessionContext";
+import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 
 export type ProfileRoles = "NO_ROLE" | "OWNER" | "DRIVER" | "BANNED" | "ADMIN";
@@ -14,12 +15,12 @@ export default function useProfile() {
     null
   );
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const { supabaseClient, session } = useSessionContext();
+  const { session, isLoading: isSessionLoading } = useSessionContext();
 
   const fetchProfile = async () => {
     setIsLoading(true);
     try {
-      let { data: profile, error } = await supabaseClient
+      let { data: profile, error } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", session?.user.id)
@@ -41,8 +42,11 @@ export default function useProfile() {
   };
 
   useEffect(() => {
-    fetchProfile();
-  }, []);
+    // Only fetch profile data when the session is ready and not loading
+    if (!isSessionLoading && session?.user?.id) {
+      fetchProfile();
+    }
+  }, [isSessionLoading, session]);
 
   return {
     isLoading,
