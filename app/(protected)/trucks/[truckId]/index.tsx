@@ -1,6 +1,13 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { View, Image, ScrollView, Text, ActivityIndicator } from "react-native";
+import {
+  View,
+  Image,
+  ScrollView,
+  Text,
+  ActivityIndicator,
+  RefreshControl,
+} from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
@@ -19,6 +26,7 @@ import useTruck from "@/hooks/truckHooks/useTruck";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
+import LoadingScreen from "@/components/dataStates/LoadingScreen";
 
 export default function TruckDetail() {
   const { styles } = useStyles(stylesheet);
@@ -27,44 +35,60 @@ export default function TruckDetail() {
 
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator />
-        <Text style={styles.loadingText}>Cargando vehículos</Text>
-      </View>
+      <>
+        <Stack.Screen options={{ title: "Cargando..." }} />
+        <LoadingScreen caption="Cargando vehículos" />
+      </>
     );
   }
 
   if (trucks === null) {
     return (
-      <ErrorScreen
-        caption={`Ocurrió un error y no \npudimos cargar los vehículos`}
-        buttonCaption="Reintentar"
-        retryFunction={fetchTrucks}
-      />
+      <>
+        <Stack.Screen options={{ title: "Recurso inaccesible" }} />
+        <ErrorScreen
+          caption={`Ocurrió un error y no \npudimos cargar los vehículos`}
+          buttonCaption="Reintentar"
+          retryFunction={fetchTrucks}
+        />
+      </>
     );
   }
 
   if (trucks.length === 0) {
-    return <EmptyScreen caption="Ningún detalle por aquí" />;
+    return (
+      <>
+        <Stack.Screen options={{ title: "Recurso inaccesible" }} />
+        <EmptyScreen caption="Ningún detalle por aquí" />;
+      </>
+    );
   }
 
   const truck = trucks.find((Truck) => Truck.id === truckId);
   if (!truck) {
     return (
-      <UnauthorizedScreen
-        caption="No tienes acceso a este recurso."
-        buttonCaption="Reintentar"
-        retryFunction={fetchTrucks}
-      />
+      <>
+        <Stack.Screen options={{ title: "Recurso inaccesible" }} />
+        <UnauthorizedScreen
+          caption="No tienes acceso a este recurso."
+          buttonCaption="Reintentar"
+          retryFunction={fetchTrucks}
+        />
+      </>
     );
   }
 
-  const truckTitle = `${truck?.brand ?? ""} ${truck?.sub_brand ?? ""} (${truck?.year ?? ""})`;
+  const truckTitle = `${truck.brand ?? ""} ${truck.sub_brand ?? ""} (${truck.year ?? ""})`;
 
   return (
     <>
       <Stack.Screen options={{ title: truckTitle }} />
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={fetchTrucks} />
+        }
+      >
         <View style={styles.container}>
           <View style={styles.imageContainer}>
             <Image

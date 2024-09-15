@@ -73,6 +73,8 @@ export default function TrucksList() {
         />
       )}
       <FlatList
+        refreshing={isLoading}
+        onRefresh={fetchTrucks}
         contentInsetAdjustmentBehavior="automatic"
         data={filteredTrucks}
         keyExtractor={(item) => item.id.toString()}
