@@ -8,16 +8,16 @@ import TermsAndPrivacy from "@/app/auth/TermsAndPrivacy";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import Modal from "@/components/Modal/Modal";
-import PictureUpload from "@/components/profile/PictureUpload";
 import PersonalInfoModal from "@/components/profile/PersonalInfoModal";
 import RoleModal from "@/components/profile/RoleModal";
-import useRegistration from "@/hooks/useRegistration";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import ProfileRow from "@/components/profile/ProfileRow";
 import ChangeImageModal from "@/components/profile/ChangeImageModal";
+import useProfile from "@/hooks/useProfile";
+import { useSessionContext } from "@/context/SessionContext";
 
 type ModalType =
   | "personal_info"
@@ -36,14 +36,8 @@ export default function Index() {
     let { error } = await supabase.auth.signOut();
   };
 
-  const { name, email, phone, isLoading } = useRegistration();
-
-  const getSessions = async () => {
-    const { data, error } = await supabase.auth.getUserIdentities();
-    console.log(data);
-  };
-
-  getSessions();
+  const { session } = useSessionContext();
+  const { isFullyRegistered, isLoading } = useProfile();
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
@@ -72,15 +66,17 @@ export default function Index() {
         </View>
       </Modal>
       <View style={styles.container}>
-        <GroupedList>
-          <Row
-            trailingType="chevron"
-            title=""
-            onPress={() => setActiveModal("change_image")}
-          >
-            <ProfileRow />
-          </Row>
-        </GroupedList>
+        {isFullyRegistered && (
+          <GroupedList>
+            <Row
+              trailingType="chevron"
+              title=""
+              onPress={() => setActiveModal("change_image")}
+            >
+              <ProfileRow />
+            </Row>
+          </GroupedList>
+        )}
         <GroupedList
           footer="Para obtener acceso completo a la aplicación, asegúrate de completar estos puntos necesarios. Aunque ya tengas una cuenta, esta información es crucial para ofrecerte acceso completo."
           header="Acceso a la App"
@@ -90,12 +86,13 @@ export default function Index() {
             trailingType="chevron"
             disabled={isLoading}
             isLoading={isLoading}
-            caption={name ? "Completo ✅" : "Sin completar ⚠️"}
+            caption={isFullyRegistered ? "Completo ✅" : "Sin completar ⚠️"}
             onPress={() => setActiveModal("personal_info")}
           />
           <Row
             title="Rol"
             trailingType="chevron"
+            isLoading={isLoading}
             caption="Sin rol ⚠️"
             onPress={() => setActiveModal("role")}
           />
@@ -107,7 +104,7 @@ export default function Index() {
           <Row
             title="Correo electrónico"
             trailingType="chevron"
-            caption={email ? "Completo ✅" : "Sin completar ⚠️"}
+            caption={session?.user.email ? "Vinculado" : "Sin vinculado"}
           />
           <Row title="Contraseña" trailingType="chevron" />
           <Row title="Dispositivos y sesiones" trailingType="chevron" />
@@ -120,12 +117,12 @@ export default function Index() {
           <Row
             title="Correo electrónico"
             trailingType="chevron"
-            caption={email ? "Vinculado" : "Sin vincular"}
+            caption={session?.user.email ? "Vinculado" : "Sin vincular"}
           />
           <Row
             title="Número de celular"
             trailingType="chevron"
-            caption={phone ? "Vinculado" : "Sin vincular"}
+            caption={session?.user.phone ? "Vinculado" : "Sin vincular"}
           />
           <Row title="Apple" trailingType="chevron" caption="Sin vincular" />
           <Row title="Google" trailingType="chevron" caption="Sin vincular" />

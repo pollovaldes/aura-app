@@ -1,3 +1,4 @@
+import { AuthError, Session, SupabaseClient } from "@supabase/supabase-js";
 import React, {
   createContext,
   PropsWithChildren,
@@ -6,29 +7,38 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import {
-  AuthError,
-  PostgrestError,
-  Session,
-  SupabaseClient,
-} from "@supabase/supabase-js";
 
-export type SessionContext = {
-  isLoading: boolean;
-  session: Session | null;
-  error: AuthError | PostgrestError | null;
-  supabaseClient: SupabaseClient;
-  profile: any;
-  isAdmin: boolean;
-};
+export type SessionContext =
+  | {
+      isLoading: true;
+      session: null;
+      error: null;
+      supabaseClient: SupabaseClient;
+    }
+  | {
+      isLoading: false;
+      session: Session;
+      error: null;
+      supabaseClient: SupabaseClient;
+    }
+  | {
+      isLoading: false;
+      session: null;
+      error: AuthError;
+      supabaseClient: SupabaseClient;
+    }
+  | {
+      isLoading: false;
+      session: null;
+      error: null;
+      supabaseClient: SupabaseClient;
+    };
 
 const SessionContext = createContext<SessionContext>({
   isLoading: true,
   session: null,
   error: null,
-  supabaseClient: {} as SupabaseClient, //any
-  profile: null,
-  isAdmin: false,
+  supabaseClient: {} as any,
 });
 
 export interface SessionContextProviderProps {
@@ -43,8 +53,7 @@ export const SessionContextProvider = ({
 }: PropsWithChildren<SessionContextProviderProps>) => {
   const [session, setSession] = useState<Session | null>(initialSession);
   const [isLoading, setIsLoading] = useState<boolean>(!initialSession);
-  const [error, setError] = useState<AuthError | PostgrestError | null>(null);
-  const [profile, setProfile] = useState<any>(null);
+  const [error, setError] = useState<AuthError>();
 
   useEffect(() => {
     if (!session && initialSession) {
@@ -70,77 +79,66 @@ export const SessionContextProvider = ({
         }
 
         setSession(session);
-
-        if (session) {
-          const { data: profileData, error: profileError } =
-            await supabaseClient
-              .from("profiles")
-              .select("*")
-              .eq("id", session.user.id)
-              .single();
-
-          if (profileError) {
-            setError(profileError);
-          } else {
-            setProfile(profileData || null);
-          }
-        }
         setIsLoading(false);
       }
     }
 
     getSession();
 
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
     const {
       data: { subscription },
     } = supabaseClient.auth.onAuthStateChange((event, session) => {
-      setSession(session);
-
       if (
         session &&
         (event === "SIGNED_IN" ||
           event === "TOKEN_REFRESHED" ||
           event === "USER_UPDATED")
       ) {
-        supabaseClient
-          .from("profiles")
-          .select("*")
-          .eq("id", session.user.id)
-          .single()
-          .then(({ data, error }) => {
-            if (!error) {
-              setProfile(data || null);
-            } else {
-              setError(error);
-            }
-          });
+        setSession(session);
       }
 
       if (event === "SIGNED_OUT") {
         setSession(null);
-        setProfile(null);
       }
     });
 
     return () => {
-      mounted = false;
       subscription.unsubscribe();
     };
-  }, [supabaseClient]);
+  }, []);
 
-  const isAdmin = useMemo(() => profile?.role === "ADMIN", [profile]);
+  const value: SessionContext = useMemo(() => {
+    if (isLoading) {
+      return {
+        isLoading: true,
+        session: null,
+        error: null,
+        supabaseClient,
+      };
+    }
 
-  const value = useMemo(
-    () => ({
-      isLoading,
+    if (error) {
+      return {
+        isLoading: false,
+        session: null,
+        error,
+        supabaseClient,
+      };
+    }
+
+    return {
+      isLoading: false,
       session,
-      error,
+      error: null,
       supabaseClient,
-      profile,
-      isAdmin,
-    }),
-    [isLoading, session, error, supabaseClient, profile, isAdmin]
-  );
+    };
+  }, [isLoading, session, error]);
 
   return (
     <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
@@ -190,15 +188,4 @@ export const useUser = () => {
   }
 
   return context.session?.user ?? null;
-};
-
-export const useAuth = () => {
-  const context = useContext(SessionContext);
-
-  return {
-    profile: context.profile,
-    session: context.session,
-    isLoading: context.isLoading,
-    isAdmin: context.profile?.roles === "ADMIN",
-  };
 };

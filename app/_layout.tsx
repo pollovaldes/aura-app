@@ -13,10 +13,10 @@ export default function RootLayout() {
   return (
     <SessionContextProvider supabaseClient={supabase}>
       <ThemeProvider
-          value={colorScheme === "dark" ? darkTheme.ui : lightTheme.ui}
-        >
-          {path === "/" && <Redirect href="/auth" />}
-          <Slot />
+        value={colorScheme === "dark" ? darkTheme.ui : lightTheme.ui}
+      >
+        {path === "/" && <Redirect href="/auth" />}
+        <Slot />
       </ThemeProvider>
     </SessionContextProvider>
   );

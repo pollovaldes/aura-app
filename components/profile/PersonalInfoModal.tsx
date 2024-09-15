@@ -1,7 +1,9 @@
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "@/components/Form/FormButton";
 import { useSession } from "@/context/SessionContext";
+import useProfile from "@/hooks/useProfile";
 import { supabase } from "@/lib/supabase";
+import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, Text, TextInput, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -14,40 +16,42 @@ export default function PersonalInfoModal({
   const { styles } = useStyles(stylesheet);
 
   const [name, setName] = useState("");
-  const [firstLastName, setFirstLastName] = useState("");
-  const [secondLastName, setSecondLastName] = useState("");
+  const [fatherLastName, setFirstLastName] = useState("");
+  const [motherLastName, setSecondLastName] = useState("");
+  const [position, setPosition] = useState("");
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<any>();
 
   const session = useSession();
-
   const maySubmit: boolean =
-    name === "" || firstLastName === "" || secondLastName === "";
+    name === "" ||
+    fatherLastName === "" ||
+    motherLastName === "" ||
+    position === "";
 
-  const checkUserProfile = async () => {
+  const updateProfile = async () => {
     setLoading(true);
     if (session) {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("profiles")
         .update({
-          nombre: name.trim(),
-          apellido_paterno: firstLastName.trim(),
-          apellido_materno: secondLastName.trim(),
+          name: name.trim(),
+          father_last_name: fatherLastName.trim(),
+          mother_last_name: motherLastName.trim(),
+          position: position.trim(),
         })
         .eq("id", session.user.id)
         .single();
 
-      setData(data);
-
-      if (error) {
-        Alert.alert("Error", error.message);
+      if (!error) {
+        alert("¡Se actualizaron los datos con éxito!");
+        setLoading(false);
+        closeModal();
+        router.replace("/"); //Refresh the whole app
+      } else {
+        alert(`¡Ocurrió un error!\n${error.message}`);
         setLoading(false);
         return;
       }
-
-      Alert.alert("Éxito", "Perfil actualizado");
-      setLoading(false);
-      closeModal();
     }
   };
 
@@ -84,9 +88,17 @@ export default function PersonalInfoModal({
           autoCorrect={false}
           onChangeText={setSecondLastName}
         />
+        <TextInput
+          placeholder="Posición"
+          inputMode="text"
+          style={styles.textInput}
+          placeholderTextColor={styles.textInput.placehoolderTextColor}
+          autoCorrect={false}
+          onChangeText={setPosition}
+        />
         <FormButton
           title="Guardar"
-          onPress={checkUserProfile}
+          onPress={updateProfile}
           isLoading={loading}
           isDisabled={maySubmit}
         />

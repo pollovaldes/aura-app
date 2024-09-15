@@ -4,14 +4,12 @@ import { useLocalSearchParams } from "expo-router";
 
 export type Truck = {
   id: string;
-  numero_economico: string;
-  marca: string;
-  sub_marca: string;
-  modelo: string;
-  no_serie?: string;
-  placa?: string;
-  poliza?: string;
-  id_usuario?: string;
+  brand: string;
+  sub_brand: string;
+  year: number;
+  plate: string;
+  serial_number: string;
+  economic_number: string;
 };
 
 type TruckProps = {
@@ -27,31 +25,29 @@ export default function useTruck({
   const [loading, setLoading] = useState(true);
   const { truckId } = useLocalSearchParams<{ truckId: string }>();
 
+  const fetchTrucks = async () => {
+    const fieldsToSelect = isComplete
+      ? "*"
+      : "id, brand ,sub_brand, year, plate, serial_number, economic_number";
+
+    let query = supabase.from("vehicles").select(fieldsToSelect);
+
+    if (justOne && truckId) {
+      query = query.eq("id", truckId);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error(error);
+    } else {
+      setTrucks(data as unknown as Truck[]); // Si algun día checas esto arturo, soluciona, funciona pero no se por que tengo que poner el unkown
+      console.log(data);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetchTrucks = async () => {
-      const fieldsToSelect = isComplete
-        ? "*"
-        : "id, numero_economico ,marca, sub_marca, modelo";
-
-      let query = supabase
-        .from("camiones")
-        .select(fieldsToSelect)
-        .order("numero_economico", { ascending: true });
-
-      if (justOne && truckId) {
-        query = query.eq("id", truckId);
-      }
-
-      const { data, error } = await query;
-
-      if (error) {
-        console.error(error);
-      } else {
-        setTrucks(data as unknown as Truck[]); // Si algun día checas esto arturo, soluciona, funciona pero no se por que tengo que poner el unkown
-      }
-      setLoading(false);
-    };
-
     fetchTrucks();
   }, []);
   return { trucks, loading };

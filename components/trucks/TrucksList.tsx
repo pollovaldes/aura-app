@@ -12,16 +12,15 @@ import { Link, Stack } from "expo-router";
 import AddTruckComponent from "./AddTruckComponent";
 import { useEffect, useState } from "react";
 import { ChevronRight, Plus, PlusIcon } from "lucide-react-native";
-import { useAuth } from "@/context/SessionContext";
 import { useSearch } from "@/context/SearchContext";
+import useProfile from "@/hooks/useProfile";
 
 export default function TrucksList() {
   const { trucks, loading } = useTruck({ isComplete: false });
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [filteredTrucks, setFilteredTrucks] = useState(trucks);
-
+  const { role } = useProfile();
   const { styles } = useStyles(stylesheet);
-  const { isAdmin } = useAuth();
   const { searchState } = useSearch();
   const searchQuery = searchState["trucks"] || "";
 
@@ -37,7 +36,7 @@ export default function TrucksList() {
   useEffect(() => {
     if (searchQuery) {
       const filtered = trucks.filter((truck) =>
-        `${truck.numero_economico} ${truck.marca} ${truck.sub_marca} (${truck.modelo})`
+        `${truck.economic_number} ${truck.brand} ${truck.sub_brand} (${truck.year})`
           .toLowerCase()
           .includes(searchQuery.toLowerCase())
       );
@@ -57,7 +56,7 @@ export default function TrucksList() {
 
   return (
     <>
-      {isAdmin && (
+      {role === "ADMIN" && (
         <Stack.Screen
           options={{
             headerRight: () => (
@@ -84,10 +83,11 @@ export default function TrucksList() {
                     />
                   </View>
                   <Text style={styles.itemText}>
-                    <Text style={{ fontWeight: "bold" }}>
-                      {item.numero_economico}
-                    </Text>
-                    {`\n${capitalizeWords(item.marca)} ${capitalizeWords(item.sub_marca)}\n(${capitalizeWords(item.modelo)})`}
+                    <Text
+                      style={{ fontWeight: "bold" }}
+                    >{`${capitalizeWords(item.brand)} ${item.sub_brand} (${item.year})\n`}</Text>
+                    {`Placas: ${item.plate}\n`}
+                    {`Número económico: ${item.economic_number}\n`}
                   </Text>
                 </View>
                 <View style={styles.chevronView}>

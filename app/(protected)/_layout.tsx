@@ -6,20 +6,19 @@ import { Bell, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { useSessionContext } from "@/context/SessionContext";
 import LoadingScreen from "@/components/Auth/LoadingScreen";
-import useRegistration from "@/hooks/useRegistration";
-import { useAuth } from "@/context/SessionContext";
+import useProfile from "@/hooks/useProfile";
 
 export default function HomeLayout() {
   const { styles } = useStyles(stylesheet);
   const { width } = useWindowDimensions();
   const widthThreshold = 600; // TODO: Move dimensions to a theme file.
   const { isLoading: isSessionLoading, error, session } = useSessionContext();
-  const { isLoading: isUserNameLoading, registered } = useRegistration();
-  const { isAdmin } = useAuth();
+  const { isFullyRegistered, isLoading: isProfileLoading } = useProfile();
 
   const path = usePathname();
+  const { role } = useProfile();
 
-  if (isSessionLoading || isUserNameLoading) {
+  if (isSessionLoading || isProfileLoading) {
     return <LoadingScreen />;
   }
 
@@ -36,7 +35,7 @@ export default function HomeLayout() {
     );
   }
 
-  if (!registered && path !== "/profile") {
+  if (!isFullyRegistered && path !== "/profile") {
     return <Redirect href="/profile" />;
   }
 
@@ -46,19 +45,19 @@ export default function HomeLayout() {
       <View style={styles.container}>
         <Sidebar>
           <ListItem
-            href={registered ? "trucks" : null}
+            href={isFullyRegistered ? "trucks" : null}
             title="Camiones"
             iconComponent={<Truck color={styles.icon.color} size={19} />}
           />
-          {isAdmin && (
+          {role === "ADMIN" && (
             <ListItem
-              href={isAdmin || registered ? "people" : null}
+              href={role === "ADMIN" || isFullyRegistered ? "people" : null}
               title="Personas"
               iconComponent={<UsersRound color={styles.icon.color} size={19} />}
             />
           )}
           <ListItem
-            href={registered ? "notifications" : null}
+            href={isFullyRegistered ? "notifications" : null}
             title="Notificaciones"
             iconComponent={<Bell color={styles.icon.color} size={19} />}
           />
@@ -80,7 +79,7 @@ export default function HomeLayout() {
       <Tabs.Screen
         name="trucks"
         options={{
-          href: !registered ? null : undefined,
+          href: !isFullyRegistered ? null : undefined,
           title: "Camiones",
           tabBarIcon: ({ color }) => <Truck color={color} />,
         }}
@@ -88,7 +87,7 @@ export default function HomeLayout() {
       <Tabs.Screen
         name="people"
         options={{
-          href: !isAdmin || !registered ? null : undefined,
+          href: role !== "ADMIN" || !isFullyRegistered ? null : undefined,
           title: "Personas",
           tabBarIcon: ({ color }) => <UsersRound color={color} />,
         }}
@@ -96,7 +95,7 @@ export default function HomeLayout() {
       <Tabs.Screen
         name="notifications"
         options={{
-          href: !registered ? null : undefined,
+          href: !isFullyRegistered ? null : undefined,
           title: "Notificaciones",
           tabBarIcon: ({ color }) => <Bell color={color} />,
         }}
