@@ -6,17 +6,21 @@ import {
   Pressable,
   Image,
 } from "react-native";
-import useTruck from "@/hooks/truckHooks/useTruck";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link, Stack } from "expo-router";
 import AddTruckComponent from "./AddTruckComponent";
 import { useEffect, useState } from "react";
-import { ChevronRight, Plus, PlusIcon } from "lucide-react-native";
+import { ChevronRight, Plus } from "lucide-react-native";
 import { useSearch } from "@/context/SearchContext";
 import useProfile from "@/hooks/useProfile";
+import useTruck from "@/hooks/truckHooks/useTruck";
+import { FormButton } from "../Form/FormButton";
+import LoadingScreen from "../dataStates/LoadingScreen";
+import ErrorScreen from "../dataStates/ErrorScreen";
+import EmptyScreen from "../dataStates/EmptyScreen";
 
 export default function TrucksList() {
-  const { trucks, loading } = useTruck({ isComplete: false });
+  const { trucks, isLoading, fetchTrucks } = useTruck();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [filteredTrucks, setFilteredTrucks] = useState(trucks);
   const { role } = useProfile();
@@ -24,17 +28,8 @@ export default function TrucksList() {
   const { searchState } = useSearch();
   const searchQuery = searchState["trucks"] || "";
 
-  const capitalizeWords = (text: string | null | undefined): string => {
-    if (!text) return ""; // Verifica si el texto es nulo, indefinido o vacío
-    return text
-      .toLowerCase()
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
-
   useEffect(() => {
-    if (searchQuery) {
+    if (searchQuery && trucks) {
       const filtered = trucks.filter((truck) =>
         `${truck.economic_number} ${truck.brand} ${truck.sub_brand} (${truck.year})`
           .toLowerCase()
@@ -46,12 +41,22 @@ export default function TrucksList() {
     }
   }, [searchQuery, trucks]);
 
-  if (loading) {
+  if (isLoading) {
+    return <LoadingScreen caption="Cargando vehículos" />;
+  }
+
+  if (trucks === null) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator />
-      </View>
+      <ErrorScreen
+        caption={`Ocurrió un error y no \npudimos cargar los vehículos`}
+        buttonCaption="Reintentar"
+        retryFunction={fetchTrucks}
+      />
     );
+  }
+
+  if (trucks.length === 0) {
+    return <EmptyScreen caption="Ningún vehículo por aquí" />;
   }
 
   return (
@@ -85,7 +90,7 @@ export default function TrucksList() {
                   <Text style={styles.itemText}>
                     <Text
                       style={{ fontWeight: "bold" }}
-                    >{`${capitalizeWords(item.brand)} ${item.sub_brand} (${item.year})\n`}</Text>
+                    >{`${item.brand} ${item.sub_brand} (${item.year})\n`}</Text>
                     {`Placas: ${item.plate}\n`}
                     {`Número económico: ${item.economic_number}\n`}
                   </Text>
@@ -115,9 +120,24 @@ const stylesheet = createStyleSheet((theme) => ({
     borderBottomColor: theme.ui.colors.border,
   },
   loadingContainer: {
+    gap: 6,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  loadingText: {
+    fontSize: 16,
+    color: theme.textPresets.subtitle,
+  },
+  errorText: {
+    color: "red",
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  lackText: {
+    fontSize: 16,
+    color: theme.textPresets.main,
   },
   contentContainer: {
     flexDirection: "row",

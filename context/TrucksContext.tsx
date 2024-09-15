@@ -1,4 +1,4 @@
-import { Truck } from "@/hooks/truckHooks/useTruck";
+import { Truck } from "@/types/Truck";
 import {
   createContext,
   ReactNode,
@@ -7,13 +7,13 @@ import {
   SetStateAction,
 } from "react";
 
-// Define the type for the context value
 interface TrucksContextType {
-  trucks: Truck[];
-  setTrucks: Dispatch<SetStateAction<Truck[]>>;
+  trucks: Truck[] | null; // Allow null or Truck[]
+  setTrucks: Dispatch<SetStateAction<Truck[] | null>>; // Update setTrucks accordingly
+  isLoading: boolean;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
 }
 
-// Create the context with a default value
 const Context = createContext<TrucksContextType | undefined>(undefined);
 
 interface TrucksContextProviderProps {
@@ -23,10 +23,11 @@ interface TrucksContextProviderProps {
 export function TrucksContextProvider({
   children,
 }: TrucksContextProviderProps) {
-  const [trucks, setTrucks] = useState<Truck[]>([]);
+  const [trucks, setTrucks] = useState<Truck[] | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   return (
-    <Context.Provider value={{ trucks, setTrucks }}>
+    <Context.Provider value={{ trucks, setTrucks, isLoading, setIsLoading }}>
       {children}
     </Context.Provider>
   );

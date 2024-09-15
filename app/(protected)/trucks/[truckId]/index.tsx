@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { View, Image, ScrollView, Alert } from "react-native";
-import useTruck, { Truck } from "@/hooks/truckHooks/useTruck";
+import { View, Image, ScrollView, Text, ActivityIndicator } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
@@ -10,18 +9,56 @@ import {
   Clipboard,
   Fuel,
   Images,
+  RotateCw,
   UsersRoundIcon,
   Waypoints,
   Wrench,
 } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
-import TrucksContext from "@/context/TrucksContext";
+import useTruck from "@/hooks/truckHooks/useTruck";
+import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
+import EmptyScreen from "@/components/dataStates/EmptyScreen";
+import ErrorScreen from "@/components/dataStates/ErrorScreen";
 
 export default function TruckDetail() {
   const { styles } = useStyles(stylesheet);
   const { truckId } = useLocalSearchParams<{ truckId: string }>();
-  const { trucks } = useContext(TrucksContext) ?? { trucks: [] };
+  const { trucks, fetchTrucks, isLoading } = useTruck();
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator />
+        <Text style={styles.loadingText}>Cargando vehículos</Text>
+      </View>
+    );
+  }
+
+  if (trucks === null) {
+    return (
+      <ErrorScreen
+        caption={`Ocurrió un error y no \npudimos cargar los vehículos`}
+        buttonCaption="Reintentar"
+        retryFunction={fetchTrucks}
+      />
+    );
+  }
+
+  if (trucks.length === 0) {
+    return <EmptyScreen caption="Ningún detalle por aquí" />;
+  }
+
   const truck = trucks.find((Truck) => Truck.id === truckId);
+  if (!truck) {
+    return (
+      <UnauthorizedScreen
+        caption="No tienes acceso a este recurso."
+        buttonCaption="Reintentar"
+        retryFunction={fetchTrucks}
+      />
+    );
+  }
+
   const truckTitle = `${truck?.brand ?? ""} ${truck?.sub_brand ?? ""} (${truck?.year ?? ""})`;
 
   return (
@@ -95,6 +132,14 @@ export default function TruckDetail() {
               icon={<Wrench size={24} color="white" />}
               color={colorPalette.green[500]}
             />
+            <Row
+              title="Actualizar datos"
+              trailingType="chevron"
+              icon={<RotateCw size={24} color="white" />}
+              color={colorPalette.orange[500]}
+              onPress={fetchTrucks}
+              caption="Dev only"
+            />
           </GroupedList>
           <View />
         </View>
@@ -104,9 +149,38 @@ export default function TruckDetail() {
 }
 
 const stylesheet = createStyleSheet((theme) => ({
+  loadingText: {
+    fontSize: 16,
+    color: theme.textPresets.subtitle,
+  },
   container: {
     flex: 1,
     gap: theme.marginsComponents.section,
+  },
+  loadingContainer: {
+    gap: 6,
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  noTrucksContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  noTrucksText: {
+    fontSize: 18,
+    color: theme.textPresets.main,
   },
   imageContainer: {},
   title: {
