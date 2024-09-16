@@ -82,7 +82,7 @@ export default function TrucksList() {
                   <View style={styles.imageContainer}>
                     <Image
                       style={styles.image}
-                      source={{ uri: "https://placehold.co/512x512.png" }}
+                      source={{ uri: item.fotoPerfil as string }}
                     />
                   </View>
                   <Text style={styles.itemText}>

@@ -7,6 +7,8 @@ import {
   Text,
   ActivityIndicator,
   RefreshControl,
+  Pressable,
+  Modal,
 } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
@@ -27,11 +29,22 @@ import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
+import ChangeTruckImageModal from "@/components/trucks/ChangeTruckImages";
 
 export default function TruckDetail() {
   const { styles } = useStyles(stylesheet);
   const { truckId } = useLocalSearchParams<{ truckId: string }>();
-  const { trucks, fetchTrucks, isLoading } = useTruck();
+  const {
+    trucks,
+    fetchTrucks,
+    isLoading,
+    seleccionarFotoPerfil,
+    agregarFotoGaleria,
+    eliminarFotoPerfil,
+    eliminarFotoGaleria,
+  } = useTruck();
+
+  const [activeModal, setActiveModal] = useState(false);
 
   if (isLoading) {
     return (
@@ -83,6 +96,16 @@ export default function TruckDetail() {
   return (
     <>
       <Stack.Screen options={{ title: truckTitle }} />
+      <ChangeTruckImageModal
+        visible={activeModal}
+        closeModal={() => setActiveModal(false)}
+        truck={truck}
+        seleccionarFotoPerfil={seleccionarFotoPerfil}
+        agregarFotoGaleria={agregarFotoGaleria}
+        eliminarFotoPerfil={eliminarFotoPerfil}
+        eliminarFotoGaleria={eliminarFotoGaleria}
+      />
+
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         refreshControl={
@@ -91,10 +114,16 @@ export default function TruckDetail() {
       >
         <View style={styles.container}>
           <View style={styles.imageContainer}>
-            <Image
-              style={styles.image}
-              source={{ uri: "https://placehold.co/2048x2048.png" }}
-            />
+            <Pressable onPress={() => setActiveModal(true)}>
+              <Image
+                style={styles.image}
+                source={
+                  truck.fotoPerfil
+                    ? { uri: truck.fotoPerfil }
+                    : { uri: "https://placehold.co/2048x2048.png" }
+                }
+              />
+            </Pressable>
           </View>
           <GroupedList
             header="Consulta"
@@ -186,6 +215,14 @@ const stylesheet = createStyleSheet((theme) => ({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  modalContainer: {
+    width: "100%",
+    alignSelf: "center",
+    maxWidth: 500,
+    backgroundColor: theme.ui.colors.card,
+    borderRadius: 10,
+    padding: 24,
   },
   errorContainer: {
     flex: 1,
