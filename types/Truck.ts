@@ -1,4 +1,4 @@
-export type GaleriaImage = {
+export type GaleryImage = {
   uri: string;
   fileName: string;
 };
@@ -11,6 +11,6 @@ export type Truck = {
   plate: string;
   serial_number: string;
   economic_number: string;
-  fotoPerfil: string | undefined | null;
-  galeria: GaleriaImage[];
+  thumbnail: string | null;
+  galery: GaleryImage[];
 };

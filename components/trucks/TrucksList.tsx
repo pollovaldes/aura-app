@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Pressable, Image } from "react-native";
+import { View, Text, FlatList, Pressable } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link, Stack } from "expo-router";
 import AddTruckComponent from "./AddTruckComponent";
@@ -10,9 +10,10 @@ import useTruck from "@/hooks/truckHooks/useTruck";
 import LoadingScreen from "../dataStates/LoadingScreen";
 import ErrorScreen from "../dataStates/ErrorScreen";
 import EmptyScreen from "../dataStates/EmptyScreen";
+import TruckThumbnail from "./TruckThumbnail";
 
 export default function TrucksList() {
-  const { trucks, isLoading, fetchTrucks } = useTruck();
+  const { trucks, trucksAreLoading, fetchTrucks } = useTruck();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [filteredTrucks, setFilteredTrucks] = useState(trucks);
   const { role } = useProfile();
@@ -33,7 +34,7 @@ export default function TrucksList() {
     }
   }, [searchQuery, trucks]);
 
-  if (isLoading) {
+  if (trucksAreLoading) {
     return <LoadingScreen caption="Cargando vehículos" />;
   }
 
@@ -69,21 +70,18 @@ export default function TrucksList() {
         />
       )}
       <FlatList
-        refreshing={isLoading}
+        refreshing={trucksAreLoading}
         onRefresh={fetchTrucks}
         contentInsetAdjustmentBehavior="automatic"
         data={filteredTrucks}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Link href={{ pathname: `/trucks/${item.id}` }} asChild>
             <Pressable>
               <View style={styles.container}>
                 <View style={styles.contentContainer}>
                   <View style={styles.imageContainer}>
-                    <Image
-                      style={styles.image}
-                      source={{ uri: item.fotoPerfil as string }}
-                    />
+                    <TruckThumbnail truckId={item.id} />
                   </View>
                   <Text style={styles.itemText}>
                     <Text
@@ -149,6 +147,17 @@ const stylesheet = createStyleSheet((theme) => ({
     borderRadius: 6,
     width: 100,
     height: 100,
+  },
+  emptyImageContainer: {
+    borderRadius: 6,
+    backgroundColor: theme.ui.colors.border,
+    width: 100,
+    height: 100,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  noImageIcon: {
+    color: theme.textPresets.main,
   },
   itemText: {
     fontSize: 18,

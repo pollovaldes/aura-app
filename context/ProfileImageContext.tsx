@@ -1,9 +1,13 @@
 // ProfileImageContext.tsx
-import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 import { supabase } from "@/lib/supabase";
-import { FileObject } from "@supabase/storage-js";
 import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
 import { decode } from "base64-arraybuffer";
 import { useSession } from "@/context/SessionContext";
 
@@ -14,12 +18,16 @@ interface ProfileImageContextProps {
   deleteProfileImage: () => Promise<void>;
 }
 
-const ProfileImageContext = createContext<ProfileImageContextProps | undefined>(undefined);
+const ProfileImageContext = createContext<ProfileImageContextProps | undefined>(
+  undefined
+);
 
 export const useProfileImage = (): ProfileImageContextProps => {
   const context = useContext(ProfileImageContext);
   if (!context) {
-    throw new Error("useProfileImage must be used within a ProfileImageProvider");
+    throw new Error(
+      "useProfileImage must be used within a ProfileImageProvider"
+    );
   }
   return context;
 };
@@ -28,7 +36,7 @@ interface ProfileImageProviderProps {
   children: ReactNode;
 }
 
-export function ProfileImageProvider({ children } : ProfileImageProviderProps) {
+export function ProfileImageProvider({ children }: ProfileImageProviderProps) {
   const session = useSession();
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -41,7 +49,9 @@ export function ProfileImageProvider({ children } : ProfileImageProviderProps) {
   const loadProfileImage = async () => {
     setLoading(true);
     try {
-      const { data } = await supabase.storage.from("avatars").list(session?.user?.id);
+      const { data } = await supabase.storage
+        .from("avatars")
+        .list(session?.user?.id);
       if (data && data.length > 0) {
         const file = data[0];
         const { data: imageData, error } = await supabase.storage
@@ -84,10 +94,16 @@ export function ProfileImageProvider({ children } : ProfileImageProviderProps) {
         const filePath = `${session?.user?.id}/${new Date().getTime()}.png`;
 
         // Delete the old image if it exists
-        const { data: existingFiles } = await supabase.storage.from("avatars").list(session?.user?.id);
+        const { data: existingFiles } = await supabase.storage
+          .from("avatars")
+          .list(session?.user?.id);
         if (existingFiles && existingFiles.length > 0) {
-          const deletePaths = existingFiles.map((file) => `${session?.user?.id}/${file.name}`);
-          const { error: deleteError } = await supabase.storage.from("avatars").remove(deletePaths);
+          const deletePaths = existingFiles.map(
+            (file) => `${session?.user?.id}/${file.name}`
+          );
+          const { error: deleteError } = await supabase.storage
+            .from("avatars")
+            .remove(deletePaths);
           if (deleteError) {
             console.error("Error deleting the old image:", deleteError.message);
             return;
@@ -95,11 +111,9 @@ export function ProfileImageProvider({ children } : ProfileImageProviderProps) {
         }
 
         // Upload the new image
-        const { error: uploadError } = await supabase.storage.from("avatars").upload(
-          filePath,
-          decode(base64),
-          { contentType: "image/png" }
-        );
+        const { error: uploadError } = await supabase.storage
+          .from("avatars")
+          .upload(filePath, decode(base64), { contentType: "image/png" });
 
         if (uploadError) {
           console.error("Error uploading new image:", uploadError.message);
@@ -118,10 +132,16 @@ export function ProfileImageProvider({ children } : ProfileImageProviderProps) {
     if (!session) return;
     setLoading(true);
     try {
-      const { data: existingFiles } = await supabase.storage.from("avatars").list(session.user.id);
+      const { data: existingFiles } = await supabase.storage
+        .from("avatars")
+        .list(session.user.id);
       if (existingFiles && existingFiles.length > 0) {
-        const deletePaths = existingFiles.map((file) => `${session.user.id}/${file.name}`);
-        const { error: deleteError } = await supabase.storage.from("avatars").remove(deletePaths);
+        const deletePaths = existingFiles.map(
+          (file) => `${session.user.id}/${file.name}`
+        );
+        const { error: deleteError } = await supabase.storage
+          .from("avatars")
+          .remove(deletePaths);
         if (deleteError) {
           console.error("Error deleting the image:", deleteError.message);
         } else {
@@ -136,8 +156,10 @@ export function ProfileImageProvider({ children } : ProfileImageProviderProps) {
   };
 
   return (
-    <ProfileImageContext.Provider value={{ imageUri, loading, onSelectImage, deleteProfileImage }}>
+    <ProfileImageContext.Provider
+      value={{ imageUri, loading, onSelectImage, deleteProfileImage }}
+    >
       {children}
     </ProfileImageContext.Provider>
   );
-};
+}

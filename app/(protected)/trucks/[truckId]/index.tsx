@@ -37,7 +37,7 @@ export default function TruckDetail() {
   const {
     trucks,
     fetchTrucks,
-    isLoading,
+    trucksAreLoading: isLoading,
     seleccionarFotoPerfil,
     agregarFotoGaleria,
     eliminarFotoPerfil,
@@ -118,8 +118,8 @@ export default function TruckDetail() {
               <Image
                 style={styles.image}
                 source={
-                  truck.fotoPerfil
-                    ? { uri: truck.fotoPerfil }
+                  truck.thumbnail
+                    ? { uri: truck.thumbnail }
                     : { uri: "https://placehold.co/2048x2048.png" }
                 }
               />

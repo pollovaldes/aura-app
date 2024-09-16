@@ -29,7 +29,7 @@ export default function useProfile() {
         setName(profile.name);
         setFatherLastName(profile.father_last_name);
         setMotherLastName(profile.mother_last_name);
-        setRole(profile.position);
+        setRole(profile.role);
         setIsFullyRegistered(profile.is_fully_registered);
         setPosition(profile.position);
       }

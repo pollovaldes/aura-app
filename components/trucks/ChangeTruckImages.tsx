@@ -1,8 +1,17 @@
 // components/trucks/ChangeTruckImages.tsx
 import React from "react";
-import { View, Text, Alert, Modal, ScrollView, Image, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Alert,
+  Modal,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { FormButton } from "@/components/Form/FormButton"; // Asegúrate de que la ruta es correcta
-import { Truck, GaleriaImage } from "@/types/Truck";
+import { Truck, GaleryImage } from "@/types/Truck";
 
 interface ChangeTruckImageModalProps {
   visible: boolean;
@@ -70,29 +79,46 @@ export default function ChangeTruckImageModal({
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={closeModal}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>Foto de Perfil - {truck.brand} {truck.sub_brand}</Text>
+        <Text style={styles.title}>
+          Foto de Perfil - {truck.brand} {truck.sub_brand}
+        </Text>
 
         <View style={styles.section}>
-          {truck.fotoPerfil ? (
+          {truck.thumbnail ? (
             <View style={styles.imageContainer}>
-              <Image source={{ uri: truck.fotoPerfil }} style={styles.profileImage} />
-              <TouchableOpacity onPress={handleDeleteProfileImage} style={styles.deleteButton}>
+              <Image
+                source={{ uri: truck.thumbnail as string }}
+                style={styles.profileImage}
+              />
+              <TouchableOpacity
+                onPress={handleDeleteProfileImage}
+                style={styles.deleteButton}
+              >
                 <Text style={{ color: "red" }}>Eliminar Foto de Perfil</Text>
               </TouchableOpacity>
             </View>
           ) : (
             <Text>No hay foto de perfil.</Text>
           )}
-          <FormButton title="Elegir nueva foto de perfil" onPress={handleSelectImage} />
+          <FormButton
+            title="Elegir nueva foto de perfil"
+            onPress={handleSelectImage}
+          />
         </View>
 
         <View style={styles.section}>
           <Text style={styles.subtitle}>Galería</Text>
-          {truck.galeria.length > 0 ? (
-            truck.galeria.map((image, index) => (
+          {truck.galery.length > 0 ? (
+            truck.galery.map((image, index) => (
               <View key={index} style={styles.galeriaItem}>
-                <Image source={{ uri: image.uri }} style={styles.galeriaImage} />
-                <TouchableOpacity onPress={() => handleDeleteGalleryImage(image.fileName)} style={styles.deleteButton}>
+                <Image
+                  source={{ uri: image.uri }}
+                  style={styles.galeriaImage}
+                />
+                <TouchableOpacity
+                  onPress={() => handleDeleteGalleryImage(image.fileName)}
+                  style={styles.deleteButton}
+                >
                   <Text style={{ color: "red" }}>Eliminar</Text>
                 </TouchableOpacity>
               </View>
@@ -100,7 +126,10 @@ export default function ChangeTruckImageModal({
           ) : (
             <Text>No hay imágenes en la galería.</Text>
           )}
-          <FormButton title="Agregar foto a la galería" onPress={handleAddGalleryImage} />
+          <FormButton
+            title="Agregar foto a la galería"
+            onPress={handleAddGalleryImage}
+          />
         </View>
 
         <FormButton title="Cerrar" onPress={closeModal} />

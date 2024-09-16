@@ -17,10 +17,14 @@ export default function HomeLayout() {
   const { width } = useWindowDimensions();
   const widthThreshold = 600; // TODO: Move dimensions to a theme file.
   const { isLoading: isSessionLoading, error, session } = useSessionContext();
-  const { isFullyRegistered, isLoading: isProfileLoading } = useProfile();
+  const {
+    isFullyRegistered,
+    isLoading: isProfileLoading,
+    role,
+    position,
+  } = useProfile();
 
   const path = usePathname();
-  const { role } = useProfile();
 
   if (isSessionLoading || isProfileLoading) {
     return (

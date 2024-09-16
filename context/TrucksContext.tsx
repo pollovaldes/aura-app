@@ -10,8 +10,10 @@ import {
 interface TrucksContextType {
   trucks: Truck[] | null; // Allow null or Truck[]
   setTrucks: Dispatch<SetStateAction<Truck[] | null>>; // Update setTrucks accordingly
-  isLoading: boolean;
-  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  trucksAreLoading: boolean;
+  setTrucksAreLoading: Dispatch<SetStateAction<boolean>>;
+  thumbanilIsLoading: boolean;
+  setThumbnailIsLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 const Context = createContext<TrucksContextType | undefined>(undefined);
@@ -24,10 +26,20 @@ export function TrucksContextProvider({
   children,
 }: TrucksContextProviderProps) {
   const [trucks, setTrucks] = useState<Truck[] | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [trucksAreLoading, setTrucksAreLoading] = useState<boolean>(true);
+  const [thumbanilIsLoading, setThumbnailIsLoading] = useState<boolean>(false);
 
   return (
-    <Context.Provider value={{ trucks, setTrucks, isLoading, setIsLoading }}>
+    <Context.Provider
+      value={{
+        trucks,
+        setTrucks,
+        trucksAreLoading: trucksAreLoading,
+        setTrucksAreLoading: setTrucksAreLoading,
+        thumbanilIsLoading: thumbanilIsLoading,
+        setThumbnailIsLoading: setThumbnailIsLoading,
+      }}
+    >
       {children}
     </Context.Provider>
   );
