@@ -1,6 +1,6 @@
 export type GaleryImage = {
-  uri: string;
-  fileName: string;
+  uri: string | null;
+  fileName: string | null;
 };
 
 export type Truck = {

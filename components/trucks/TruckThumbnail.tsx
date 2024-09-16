@@ -1,108 +1,22 @@
-import useTruck from "@/hooks/truckHooks/useTruck";
-import { supabase } from "@/lib/supabase";
 import { Truck } from "lucide-react-native";
-import { useEffect, useState } from "react";
 import { ActivityIndicator, Image, View } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { useStyles, createStyleSheet } from "react-native-unistyles";
+import useTruck from "@/hooks/truckHooks/useTruck";
+import useTruckThumbnail from "@/hooks/truckHooks/useTruckThumbnail";
 
 type TruckThumbnailProps = {
   truckId: string;
-};
-
-const listProfileImages = async (truckId: string) => {
-  const { data, error } = await supabase.storage
-    .from("imagenes-camiones")
-    .list(`${truckId}/perfil`);
-
-  if (error) {
-    console.error(`Error listing thumbnails for ${truckId}: `, error);
-    return null;
-  }
-
-  return data?.length ? data[0].name : null;
-};
-
-const downloadImage = async (truckId: string, fileName: string) => {
-  const { data: downloadData, error: downloadError } = await supabase.storage
-    .from("imagenes-camiones")
-    .download(`${truckId}/perfil/${fileName}`);
-
-  if (downloadError) {
-    console.error(
-      `Error downloading thumbnail for ${truckId}: `,
-      downloadError
-    );
-    return null;
-  }
-
-  return downloadData;
-};
-
-const readImageAsDataURL = (file: Blob): Promise<string | null> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = () => {
-      console.error("Error reading the profile image");
-      reject(null);
-    };
-    reader.readAsDataURL(file);
-  });
-};
-
-const fetchThumbnail = async (truckId: string): Promise<string | null> => {
-  try {
-    const fileName = await listProfileImages(truckId);
-    if (!fileName) return null;
-
-    const file = await downloadImage(truckId, fileName);
-    if (!file) return null;
-
-    return await readImageAsDataURL(file);
-  } catch (error) {
-    console.error(`Error fetching profile image for ${truckId}: `, error);
-    return null;
-  }
 };
 
 export default function TruckThumbnail({ truckId }: TruckThumbnailProps) {
   const { styles } = useStyles(stylesheet);
   const { trucks, setTrucks } = useTruck();
 
-  if (!trucks) return null; //TODO make a better error handling
-  const item = trucks.find((truck) => truck.id === truckId); //Up to here I know which truck im talking about
-  if (!item) return null; //TODO make a better error handling
+  if (!trucks) return null;
+  const item = trucks.find((truck) => truck.id === truckId);
+  if (!item) return null;
 
-  const [thumbnailIsLoading, setThumbnailIsLoading] = useState(true); // local state to handle loading of thumbnail
-
-  useEffect(() => {
-    const loadThumbnail = async () => {
-      // Check if the thumbnail already exists in the truck's data
-      if (item.thumbnail) {
-        setThumbnailIsLoading(false); // Thumbnail is already loaded
-        return;
-      }
-
-      const thumbnail = await fetchThumbnail(truckId);
-      if (thumbnail) {
-        // Update only the specific truck's thumbnail in the global state
-        setTrucks(
-          (prevTrucks) =>
-            prevTrucks?.map((truck) =>
-              truck.id === truckId ? { ...truck, thumbnail } : truck
-            ) || null
-        );
-      }
-      setThumbnailIsLoading(false); // Stop the loading indicator
-    };
-
-    loadThumbnail(); // Run on mount
-  }, []); // No dependencies, run only on mount
-
-  const isValidThumbnail =
-    item.thumbnail &&
-    typeof item.thumbnail === "string" &&
-    item.thumbnail.length >= 150;
+  const { thumbnailIsLoading } = useTruckThumbnail(truckId, trucks, setTrucks);
 
   return (
     <>
@@ -110,11 +24,8 @@ export default function TruckThumbnail({ truckId }: TruckThumbnailProps) {
         <View style={styles.emptyImageContainer}>
           <ActivityIndicator />
         </View>
-      ) : isValidThumbnail ? (
-        <Image
-          style={styles.image}
-          source={{ uri: item.thumbnail as string }}
-        />
+      ) : item.thumbnail ? (
+        <Image style={styles.image} source={{ uri: item.thumbnail }} />
       ) : (
         <View style={styles.emptyImageContainer}>
           <Truck

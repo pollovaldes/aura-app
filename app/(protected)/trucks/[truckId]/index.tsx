@@ -1,14 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import {
   View,
   Image,
   ScrollView,
-  Text,
-  ActivityIndicator,
   RefreshControl,
   Pressable,
-  Modal,
+  ActivityIndicator,
 } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
@@ -19,6 +17,7 @@ import {
   Fuel,
   Images,
   RotateCw,
+  Truck,
   UsersRoundIcon,
   Waypoints,
   Wrench,
@@ -30,23 +29,34 @@ import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ChangeTruckImageModal from "@/components/trucks/ChangeTruckImages";
+import useTruckThumbnail from "@/hooks/truckHooks/useTruckThumbnail";
+import { FormButton } from "@/components/Form/FormButton";
 
 export default function TruckDetail() {
   const { styles } = useStyles(stylesheet);
   const { truckId } = useLocalSearchParams<{ truckId: string }>();
   const {
     trucks,
+    setTrucks,
     fetchTrucks,
-    trucksAreLoading: isLoading,
-    seleccionarFotoPerfil,
-    agregarFotoGaleria,
-    eliminarFotoPerfil,
-    eliminarFotoGaleria,
+    trucksAreLoading,
+    addPhotoToGalley,
+    deletePhotoFromGallery,
+    selectThumbnail,
+    deleteThumbnail,
   } = useTruck();
 
   const [activeModal, setActiveModal] = useState(false);
 
-  if (isLoading) {
+  const truck = trucks?.find((Truck) => Truck.id === truckId);
+
+  const { thumbnailIsLoading } = useTruckThumbnail(
+    truck?.id as string,
+    trucks,
+    setTrucks
+  );
+
+  if (trucksAreLoading) {
     return (
       <>
         <Stack.Screen options={{ title: "Cargando..." }} />
@@ -77,7 +87,6 @@ export default function TruckDetail() {
     );
   }
 
-  const truck = trucks.find((Truck) => Truck.id === truckId);
   if (!truck) {
     return (
       <>
@@ -100,29 +109,34 @@ export default function TruckDetail() {
         visible={activeModal}
         closeModal={() => setActiveModal(false)}
         truck={truck}
-        seleccionarFotoPerfil={seleccionarFotoPerfil}
-        agregarFotoGaleria={agregarFotoGaleria}
-        eliminarFotoPerfil={eliminarFotoPerfil}
-        eliminarFotoGaleria={eliminarFotoGaleria}
+        selectThumbnail={selectThumbnail}
+        addPhotoToGallery={addPhotoToGalley}
+        deleteThumbnail={deleteThumbnail}
+        deletePhotoFromGalley={deletePhotoFromGallery}
       />
 
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={fetchTrucks} />
+          <RefreshControl
+            refreshing={trucksAreLoading}
+            onRefresh={fetchTrucks}
+          />
         }
       >
         <View style={styles.container}>
           <View style={styles.imageContainer}>
             <Pressable onPress={() => setActiveModal(true)}>
-              <Image
-                style={styles.image}
-                source={
-                  truck.thumbnail
-                    ? { uri: truck.thumbnail }
-                    : { uri: "https://placehold.co/2048x2048.png" }
-                }
-              />
+              {thumbnailIsLoading ? (
+                <ActivityIndicator />
+              ) : truck.thumbnail ? (
+                <Image style={styles.image} source={{ uri: truck.thumbnail }} />
+              ) : (
+                <FormButton
+                  title="Seleccionar imagen"
+                  onPress={() => setActiveModal(true)}
+                />
+              )}
             </Pressable>
           </View>
           <GroupedList

@@ -9,36 +9,39 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import { FormButton } from "@/components/Form/FormButton"; // Asegúrate de que la ruta es correcta
-import { Truck, GaleryImage } from "@/types/Truck";
+import { Truck } from "@/types/Truck";
+import useTruck from "@/hooks/truckHooks/useTruck";
+import useTruckThumbnail from "@/hooks/truckHooks/useTruckThumbnail";
 
 interface ChangeTruckImageModalProps {
   visible: boolean;
   closeModal: () => void;
   truck: Truck;
-  seleccionarFotoPerfil: (truckId: string) => Promise<void>;
-  agregarFotoGaleria: (truckId: string) => Promise<void>;
-  eliminarFotoPerfil: (truckId: string) => Promise<void>;
-  eliminarFotoGaleria: (truckId: string, fileName: string) => Promise<void>;
+  selectThumbnail: (truckId: string) => Promise<void>;
+  addPhotoToGallery: (truckId: string) => Promise<void>;
+  deleteThumbnail: (truckId: string) => Promise<void>;
+  deletePhotoFromGalley: (truckId: string, fileName: string) => Promise<void>;
 }
 
 export default function ChangeTruckImageModal({
   visible,
   closeModal,
   truck,
-  seleccionarFotoPerfil,
-  agregarFotoGaleria,
-  eliminarFotoPerfil,
-  eliminarFotoGaleria,
+  selectThumbnail,
+  addPhotoToGallery,
+  deleteThumbnail,
+  deletePhotoFromGalley,
 }: ChangeTruckImageModalProps) {
   const handleSelectImage = async () => {
-    await seleccionarFotoPerfil(truck.id);
+    await selectThumbnail(truck.id);
     closeModal();
   };
 
   const handleAddGalleryImage = async () => {
-    await agregarFotoGaleria(truck.id);
+    await addPhotoToGallery(truck.id);
   };
 
   const handleDeleteProfileImage = () => {
@@ -51,7 +54,7 @@ export default function ChangeTruckImageModal({
           text: "Eliminar",
           style: "destructive",
           onPress: async () => {
-            await eliminarFotoPerfil(truck.id);
+            await deleteThumbnail(truck.id);
             closeModal();
           },
         },
@@ -69,12 +72,15 @@ export default function ChangeTruckImageModal({
           text: "Eliminar",
           style: "destructive",
           onPress: async () => {
-            await eliminarFotoGaleria(truck.id, fileName);
+            await deletePhotoFromGalley(truck.id, fileName);
           },
         },
       ]
     );
   };
+
+  const { trucks, setTrucks } = useTruck();
+  const { thumbnailIsLoading } = useTruckThumbnail(truck.id, trucks, setTrucks);
 
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={closeModal}>
@@ -84,10 +90,12 @@ export default function ChangeTruckImageModal({
         </Text>
 
         <View style={styles.section}>
-          {truck.thumbnail ? (
+          {thumbnailIsLoading ? (
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : truck.thumbnail ? (
             <View style={styles.imageContainer}>
               <Image
-                source={{ uri: truck.thumbnail as string }}
+                source={{ uri: truck.thumbnail }}
                 style={styles.profileImage}
               />
               <TouchableOpacity
@@ -106,17 +114,19 @@ export default function ChangeTruckImageModal({
           />
         </View>
 
-        <View style={styles.section}>
+        {/* <View style={styles.section}>
           <Text style={styles.subtitle}>Galería</Text>
           {truck.galery.length > 0 ? (
             truck.galery.map((image, index) => (
               <View key={index} style={styles.galeriaItem}>
                 <Image
-                  source={{ uri: image.uri }}
+                  source={{ uri: image.uri as string }}
                   style={styles.galeriaImage}
                 />
                 <TouchableOpacity
-                  onPress={() => handleDeleteGalleryImage(image.fileName)}
+                  onPress={() =>
+                    handleDeleteGalleryImage(image.fileName as string)
+                  }
                   style={styles.deleteButton}
                 >
                   <Text style={{ color: "red" }}>Eliminar</Text>
@@ -130,7 +140,7 @@ export default function ChangeTruckImageModal({
             title="Agregar foto a la galería"
             onPress={handleAddGalleryImage}
           />
-        </View>
+        </View> */}
 
         <FormButton title="Cerrar" onPress={closeModal} />
       </ScrollView>
