@@ -28,6 +28,7 @@ import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ChangeVehicleImageModal from "@/components/trucks/ChangeVehicleThumbnail";
 import { FormButton } from "@/components/Form/FormButton";
+import useVehicleThumbnail from "@/hooks/truckHooks/useVehicleThumbnail";
 
 export default function VehicleDetail() {
   const { styles } = useStyles(stylesheet);
@@ -36,6 +37,13 @@ export default function VehicleDetail() {
 
   const [activeModal, setActiveModal] = useState(false);
   const vehicle = vehicles?.find((Vehicle) => Vehicle.id === truckId);
+
+  const {
+    addPhotoToGallery,
+    deletePhotoFromGallery,
+    deleteThumbnail,
+    selectThumbnail,
+  } = useVehicleThumbnail();
 
   if (vehiclesAreLoading) {
     return (
@@ -92,10 +100,10 @@ export default function VehicleDetail() {
         visible={activeModal}
         closeModal={() => setActiveModal(false)}
         vehicle={vehicle}
-        selectThumbnail={selectThumbnail}
-        addPhotoToGallery={addPhotoToGalley}
-        deleteThumbnail={deleteThumbnail}
-        deletePhotoFromGalley={deletePhotoFromGallery}
+        selectThumbnail={() => selectThumbnail(truckId as string)}
+        addPhotoToGallery={() => addPhotoToGallery(truckId as string)}
+        deleteThumbnail={() => deleteThumbnail(truckId as string)}
+        deletePhotoFromGalley={() => deletePhotoFromGallery(truckId as string)}
       />
 
       <ScrollView

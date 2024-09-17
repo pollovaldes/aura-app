@@ -1,4 +1,13 @@
 import { supabase } from "@/lib/supabase";
+import { decode } from "base64-arraybuffer";
+import {
+  ImagePickerOptions,
+  launchImageLibraryAsync,
+  MediaTypeOptions,
+} from "expo-image-picker";
+import useVehicle from "./useVehicle";
+
+const { fetchVehicles } = useVehicle();
 
 const listProfileImages = async (truckId: string) => {
   const { data, error } = await supabase.storage
@@ -64,8 +73,191 @@ const fetchThumbnail = async (truckId: string): Promise<string | null> => {
   }
 };
 
+const selectThumbnail = async (truckId: string) => {
+  const options: ImagePickerOptions = {
+    mediaTypes: MediaTypeOptions.Images,
+    allowsEditing: true,
+    base64: true,
+  };
+
+  const result = await launchImageLibraryAsync(options);
+
+  if (!result.canceled) {
+    try {
+      const img = result.assets[0];
+      const base64 = img.base64;
+      if (!base64) throw new Error("No se pudo obtener datos base64");
+
+      const filePath = `${truckId}/perfil/${new Date().getTime()}.png`;
+
+      // Eliminar foto de perfil existente
+      const { data: existingFiles, error: listError } = await supabase.storage
+        .from("imagenes-camiones")
+        .list(`${truckId}/perfil`);
+
+      if (listError) {
+        console.error(
+          `Error listando imágenes de perfil para ${truckId}: `,
+          listError
+        );
+        return;
+      }
+
+      if (existingFiles && existingFiles.length > 0) {
+        const deletePaths = existingFiles.map(
+          (file) => `${truckId}/perfil/${file.name}`
+        );
+        const { error: deleteError } = await supabase.storage
+          .from("imagenes-camiones")
+          .remove(deletePaths);
+        if (deleteError) {
+          console.error(
+            `Error eliminando la foto de perfil existente para ${truckId}: `,
+            deleteError.message
+          );
+          return;
+        }
+      }
+
+      // Subir nueva foto de perfil
+      const { error: uploadError } = await supabase.storage
+        .from("imagenes-camiones")
+        .upload(filePath, decode(base64), { contentType: "image/png" });
+
+      if (uploadError) {
+        console.error(
+          `Error subiendo la nueva foto de perfil para ${truckId}: `,
+          uploadError.message
+        );
+      } else {
+        // Actualizar la lista de camiones con la nueva imagen
+        await fetchVehicles();
+      }
+    } catch (error) {
+      console.error(
+        `Error al seleccionar foto de perfil para ${truckId}: `,
+        error
+      );
+    }
+  }
+};
+
+const addPhotoToGallery = async (truckId: string) => {
+  const options: ImagePickerOptions = {
+    mediaTypes: MediaTypeOptions.Images,
+    allowsEditing: true,
+    base64: true,
+  };
+
+  const result = await launchImageLibraryAsync(options);
+
+  if (!result.canceled) {
+    try {
+      const img = result.assets[0];
+      const base64 = img.base64;
+      if (!base64) throw new Error("No se pudo obtener datos base64");
+
+      const filePath = `${truckId}/galeria/${new Date().getTime()}.png`;
+
+      // Subir nueva foto a la galería
+      const { error: uploadError } = await supabase.storage
+        .from("imagenes-camiones")
+        .upload(filePath, decode(base64), { contentType: "image/png" });
+
+      if (uploadError) {
+        console.error(
+          `Error subiendo la foto a la galería para ${truckId}: `,
+          uploadError.message
+        );
+      } else {
+        // Actualizar la lista de camiones con la nueva imagen de galería
+        await fetchVehicles();
+      }
+    } catch (error) {
+      console.error(
+        `Error al agregar foto a la galería para ${truckId}: `,
+        error
+      );
+    }
+  }
+};
+
+const deleteThumbnail = async (truckId: string) => {
+  try {
+    const { data: existingFiles, error: listError } = await supabase.storage
+      .from("imagenes-camiones")
+      .list(`${truckId}/perfil`);
+
+    if (listError) {
+      console.error(
+        `Error listando imágenes de perfil para eliminar: ${truckId}: `,
+        listError
+      );
+      alert("No se pudo listar las imágenes de perfil.");
+      return;
+    }
+
+    if (existingFiles && existingFiles.length > 0) {
+      const deletePaths = existingFiles.map(
+        (file) => `${truckId}/perfil/${file.name}`
+      );
+      const { error: deleteError } = await supabase.storage
+        .from("imagenes-camiones")
+        .remove(deletePaths);
+      if (deleteError) {
+        console.error(
+          `Error eliminando la foto de perfil para ${truckId}: `,
+          deleteError.message
+        );
+        alert("No se pudo eliminar la foto de perfil.");
+      } else {
+        alert("Foto de perfil eliminada.");
+        await fetchVehicles();
+      }
+    }
+  } catch (error) {
+    console.error(
+      `Error al eliminar la foto de perfil para ${truckId}: `,
+      error
+    );
+    alert("Ocurrió un error al eliminar la foto de perfil.");
+  }
+};
+
+const deletePhotoFromGallery = async (truckId: string, fileName: string) => {
+  try {
+    const filePath = `${truckId}/galeria/${fileName}`;
+    const { error: deleteError } = await supabase.storage
+      .from("imagenes-camiones")
+      .remove([filePath]);
+
+    if (deleteError) {
+      console.error(
+        `Error eliminando la foto de galería ${fileName} para ${truckId}: `,
+        deleteError.message
+      );
+      alert("No se pudo eliminar la foto de la galería.");
+    } else {
+      alert("Foto de la galería eliminada.");
+      await fetchVehicles();
+    }
+  } catch (error) {
+    console.error(
+      `Error al eliminar la foto de galería para ${truckId}: `,
+      error
+    );
+    alert("Ocurrió un error al eliminar la foto de la galería.");
+  }
+};
+
 const useVehicleThumbnail = () => {
-  return { fetchThumbnail };
+  return {
+    fetchThumbnail,
+    selectThumbnail,
+    addPhotoToGallery,
+    deleteThumbnail,
+    deletePhotoFromGallery,
+  };
 };
 
 export default useVehicleThumbnail;

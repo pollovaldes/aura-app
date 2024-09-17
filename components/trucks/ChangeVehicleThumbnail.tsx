@@ -9,7 +9,6 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  ActivityIndicator,
 } from "react-native";
 import { FormButton } from "@/components/Form/FormButton"; // Asegúrate de que la ruta es correcta
 import { Vehicle } from "@/types/Vehicle";
