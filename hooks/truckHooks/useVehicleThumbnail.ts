@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { Truck } from "@/types/Truck";
 
 const listProfileImages = async (truckId: string) => {
   const { data, error } = await supabase.storage
@@ -66,46 +64,8 @@ const fetchThumbnail = async (truckId: string): Promise<string | null> => {
   }
 };
 
-const useTruckThumbnail = (
-  truckId: string,
-  trucks: Truck[] | null,
-  setTrucks: any
-) => {
-  const [thumbnailIsLoading, setThumbnailIsLoading] = useState(true);
-  const item = trucks?.find((truck) => truck.id === truckId);
-  if (!item) return;
-
-  useEffect(() => {
-    if (!item) {
-      // Truck not found, no need to proceed
-      setThumbnailIsLoading(false);
-      return;
-    }
-
-    setThumbnailIsLoading(true);
-
-    const loadThumbnail = async () => {
-      if (item.thumbnail) {
-        setThumbnailIsLoading(false);
-        return;
-      }
-
-      const thumbnail = await fetchThumbnail(truckId);
-      if (thumbnail) {
-        setTrucks(
-          (prevTrucks: Truck[] | null) =>
-            prevTrucks?.map((truck) =>
-              truck.id === truckId ? { ...truck, thumbnail } : truck
-            ) || null
-        );
-      }
-      setThumbnailIsLoading(false);
-    };
-
-    loadThumbnail();
-  }, []);
-
-  return { thumbnailIsLoading };
+const useVehicleThumbnail = () => {
+  return { fetchThumbnail };
 };
 
-export default useTruckThumbnail;
+export default useVehicleThumbnail;

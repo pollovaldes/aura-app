@@ -6,7 +6,6 @@ import {
   ScrollView,
   RefreshControl,
   Pressable,
-  ActivityIndicator,
 } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
@@ -17,46 +16,28 @@ import {
   Fuel,
   Images,
   RotateCw,
-  Truck,
   UsersRoundIcon,
   Waypoints,
   Wrench,
 } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
-import useTruck from "@/hooks/truckHooks/useTruck";
+import useVehicle from "@/hooks/truckHooks/useVehicle";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
-import ChangeTruckImageModal from "@/components/trucks/ChangeTruckImages";
-import useTruckThumbnail from "@/hooks/truckHooks/useTruckThumbnail";
+import ChangeVehicleImageModal from "@/components/trucks/ChangeVehicleThumbnail";
 import { FormButton } from "@/components/Form/FormButton";
 
-export default function TruckDetail() {
+export default function VehicleDetail() {
   const { styles } = useStyles(stylesheet);
   const { truckId } = useLocalSearchParams<{ truckId: string }>();
-  const {
-    trucks,
-    setTrucks,
-    fetchTrucks,
-    trucksAreLoading,
-    addPhotoToGalley,
-    deletePhotoFromGallery,
-    selectThumbnail,
-    deleteThumbnail,
-  } = useTruck();
+  const { vehicles, fetchVehicles, vehiclesAreLoading } = useVehicle();
 
   const [activeModal, setActiveModal] = useState(false);
+  const vehicle = vehicles?.find((Vehicle) => Vehicle.id === truckId);
 
-  const truck = trucks?.find((Truck) => Truck.id === truckId);
-
-  const { thumbnailIsLoading } = useTruckThumbnail(
-    truck?.id as string,
-    trucks,
-    setTrucks
-  );
-
-  if (trucksAreLoading) {
+  if (vehiclesAreLoading) {
     return (
       <>
         <Stack.Screen options={{ title: "Cargando..." }} />
@@ -65,20 +46,22 @@ export default function TruckDetail() {
     );
   }
 
-  if (trucks === null) {
+  if (vehicles === null) {
     return (
       <>
-        <Stack.Screen options={{ title: "Recurso inaccesible" }} />
+        <Stack.Screen
+          options={{ title: "Recurso inaccesible", headerLargeTitle: false }}
+        />
         <ErrorScreen
           caption={`Ocurrió un error y no \npudimos cargar los vehículos`}
           buttonCaption="Reintentar"
-          retryFunction={fetchTrucks}
+          retryFunction={fetchVehicles}
         />
       </>
     );
   }
 
-  if (trucks.length === 0) {
+  if (vehicles.length === 0) {
     return (
       <>
         <Stack.Screen options={{ title: "Recurso inaccesible" }} />
@@ -87,28 +70,28 @@ export default function TruckDetail() {
     );
   }
 
-  if (!truck) {
+  if (!vehicle) {
     return (
       <>
         <Stack.Screen options={{ title: "Recurso inaccesible" }} />
         <UnauthorizedScreen
           caption="No tienes acceso a este recurso."
           buttonCaption="Reintentar"
-          retryFunction={fetchTrucks}
+          retryFunction={fetchVehicles}
         />
       </>
     );
   }
 
-  const truckTitle = `${truck.brand ?? ""} ${truck.sub_brand ?? ""} (${truck.year ?? ""})`;
+  const vehicleTitle = `${vehicle.brand ?? ""} ${vehicle.sub_brand ?? ""} (${vehicle.year ?? ""})`;
 
   return (
     <>
-      <Stack.Screen options={{ title: truckTitle }} />
-      <ChangeTruckImageModal
+      <Stack.Screen options={{ title: vehicleTitle }} />
+      <ChangeVehicleImageModal
         visible={activeModal}
         closeModal={() => setActiveModal(false)}
-        truck={truck}
+        vehicle={vehicle}
         selectThumbnail={selectThumbnail}
         addPhotoToGallery={addPhotoToGalley}
         deleteThumbnail={deleteThumbnail}
@@ -119,26 +102,31 @@ export default function TruckDetail() {
         contentInsetAdjustmentBehavior="automatic"
         refreshControl={
           <RefreshControl
-            refreshing={trucksAreLoading}
-            onRefresh={fetchTrucks}
+            refreshing={vehiclesAreLoading}
+            onRefresh={fetchVehicles}
           />
         }
       >
         <View style={styles.container}>
-          <View style={styles.imageContainer}>
+          <>
             <Pressable onPress={() => setActiveModal(true)}>
-              {thumbnailIsLoading ? (
-                <ActivityIndicator />
-              ) : truck.thumbnail ? (
-                <Image style={styles.image} source={{ uri: truck.thumbnail }} />
-              ) : (
-                <FormButton
-                  title="Seleccionar imagen"
-                  onPress={() => setActiveModal(true)}
+              {vehicle.thumbnail ? (
+                <Image
+                  style={styles.image}
+                  source={{ uri: vehicle.thumbnail }}
                 />
+              ) : (
+                <View style={styles.missingThumbanilContainer}>
+                  <View style={styles.missingThumbanilContent}>
+                    <FormButton
+                      title="Seleccionar imagen"
+                      onPress={() => setActiveModal(true)}
+                    />
+                  </View>
+                </View>
               )}
             </Pressable>
-          </View>
+          </>
           <GroupedList
             header="Consulta"
             footer="Ve distintos datos a lo largo del tiempo o actuales sobre este camión."
@@ -152,7 +140,7 @@ export default function TruckDetail() {
             <Row
               title="Ficha técnica"
               trailingType="chevron"
-              onPress={() => router.navigate(`/trucks/${truckId}/details`)}
+              onPress={() => router.navigate(`/vehicles/${truckId}/details`)}
               icon={<Clipboard size={24} color="white" />}
               color={colorPalette.emerald[500]}
             />
@@ -162,7 +150,7 @@ export default function TruckDetail() {
               icon={<BookOpen size={24} color="white" />}
               color={colorPalette.orange[500]}
               onPress={() =>
-                router.navigate(`/trucks/${truckId}/documentation`)
+                router.navigate(`/vehicles/${truckId}/documentation`)
               }
             />
             <Row
@@ -176,7 +164,7 @@ export default function TruckDetail() {
               trailingType="chevron"
               icon={<Fuel size={24} color="white" />}
               color={colorPalette.red[500]}
-              onPress={() => router.navigate(`/trucks/${truckId}/gasoline`)}
+              onPress={() => router.navigate(`/vehicles/${vehicleId}/gasoline`)}
             />
           </GroupedList>
           <GroupedList header="Acciones" footer="Alguna descripción.">
@@ -185,7 +173,7 @@ export default function TruckDetail() {
               trailingType="chevron"
               icon={<UsersRoundIcon size={24} color="white" />}
               color={colorPalette.sky[500]}
-              onPress={() => router.navigate(`/trucks/${truckId}/people`)}
+              onPress={() => router.navigate(`/vehicles/${truckId}/people`)}
             />
             <Row
               title="Registrar carga de gasolina"
@@ -204,7 +192,7 @@ export default function TruckDetail() {
               trailingType="chevron"
               icon={<RotateCw size={24} color="white" />}
               color={colorPalette.orange[500]}
-              onPress={fetchTrucks}
+              onPress={fetchVehicles}
               caption="Dev only"
             />
           </GroupedList>
@@ -248,16 +236,26 @@ const stylesheet = createStyleSheet((theme) => ({
     fontSize: 18,
     fontWeight: "bold",
   },
-  noTrucksContainer: {
+  noVehiclesContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  noTrucksText: {
+  noVehiclesText: {
     fontSize: 18,
     color: theme.textPresets.main,
   },
-  imageContainer: {},
+  missingThumbanilContainer: {
+    width: "100%",
+    height: 250,
+    backgroundColor: theme.ui.colors.border,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  missingThumbanilContent: {
+    flexDirection: "column",
+    width: 200,
+  },
   title: {
     fontSize: 24,
     fontWeight: "bold",

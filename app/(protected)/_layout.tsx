@@ -6,7 +6,7 @@ import { Bell, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { useSessionContext } from "@/context/SessionContext";
 import useProfile from "@/hooks/useProfile";
-import { TrucksContextProvider } from "@/context/TrucksContext";
+import { VehiclesContextProvider } from "@/context/VehiclesContext";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { supabase } from "@/lib/supabase";
@@ -55,7 +55,7 @@ export default function HomeLayout() {
   }
 
   return (
-    <TrucksContextProvider>
+    <VehiclesContextProvider>
       <ProfileImageProvider>
         {width > widthThreshold ? (
           <View style={styles.container}>
@@ -125,7 +125,7 @@ export default function HomeLayout() {
           </Tabs>
         )}
       </ProfileImageProvider>
-    </TrucksContextProvider>
+    </VehiclesContextProvider>
   );
 }
 

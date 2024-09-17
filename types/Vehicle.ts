@@ -3,7 +3,7 @@ export type GaleryImage = {
   fileName: string | null;
 };
 
-export type Truck = {
+export type Vehicle = {
   id: string;
   brand: string;
   sub_brand: string;

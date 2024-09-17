@@ -1,22 +1,52 @@
-import { Truck } from "lucide-react-native";
+import { Truck as TruckIcon } from "lucide-react-native";
 import { ActivityIndicator, Image, View } from "react-native";
 import { useStyles, createStyleSheet } from "react-native-unistyles";
-import useTruck from "@/hooks/truckHooks/useTruck";
-import useTruckThumbnail from "@/hooks/truckHooks/useTruckThumbnail";
+import useVehicle from "@/hooks/truckHooks/useVehicle";
+import { useEffect, useState } from "react";
+import { Vehicle } from "@/types/Vehicle";
+import useVehicleThumbnail from "@/hooks/truckHooks/useVehicleThumbnail";
 
-type TruckThumbnailProps = {
+type VehicleThumbnailProps = {
   truckId: string;
 };
 
-export default function TruckThumbnail({ truckId }: TruckThumbnailProps) {
+export default function VehicleThumbnail({ truckId }: VehicleThumbnailProps) {
   const { styles } = useStyles(stylesheet);
-  const { trucks, setTrucks } = useTruck();
+  const { vehicles, setVehicles } = useVehicle();
+  const { fetchThumbnail } = useVehicleThumbnail();
+  const [thumbnailIsLoading, setThumbnailIsLoading] = useState(false);
 
-  if (!trucks) return null;
-  const item = trucks.find((truck) => truck.id === truckId);
-  if (!item) return null;
+  if (!vehicles) return null;
+  const item = vehicles.find((truck) => truck.id === truckId);
 
-  const { thumbnailIsLoading } = useTruckThumbnail(truckId, trucks, setTrucks);
+  useEffect(() => {
+    if (!item) {
+      setThumbnailIsLoading(false);
+      return;
+    }
+
+    setThumbnailIsLoading(true);
+
+    const loadThumbnail = async () => {
+      if (item.thumbnail) {
+        setThumbnailIsLoading(false);
+        return;
+      }
+
+      const thumbnail = await fetchThumbnail(truckId);
+      if (thumbnail) {
+        setVehicles(
+          (prevVehicles: Vehicle[] | null) =>
+            prevVehicles?.map((truck) =>
+              truck.id === truckId ? { ...truck, thumbnail } : truck
+            ) || null
+        );
+      }
+      setThumbnailIsLoading(false);
+    };
+
+    loadThumbnail();
+  }, []);
 
   return (
     <>
@@ -28,7 +58,7 @@ export default function TruckThumbnail({ truckId }: TruckThumbnailProps) {
         <Image style={styles.image} source={{ uri: item.thumbnail }} />
       ) : (
         <View style={styles.emptyImageContainer}>
-          <Truck
+          <TruckIcon
             size={35}
             color={styles.noImageIcon.color}
             strokeWidth={1.25}

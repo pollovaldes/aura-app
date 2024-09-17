@@ -1,58 +1,58 @@
 import { View, Text, FlatList, Pressable } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link, Stack } from "expo-router";
-import AddTruckComponent from "./AddTruckComponent";
+import AddTruckComponent from "./AddVehicleComponent";
 import { useEffect, useState } from "react";
 import { ChevronRight, Plus } from "lucide-react-native";
 import { useSearch } from "@/context/SearchContext";
 import useProfile from "@/hooks/useProfile";
-import useTruck from "@/hooks/truckHooks/useTruck";
+import useVehicle from "@/hooks/truckHooks/useVehicle";
 import LoadingScreen from "../dataStates/LoadingScreen";
 import ErrorScreen from "../dataStates/ErrorScreen";
 import EmptyScreen from "../dataStates/EmptyScreen";
 import TruckThumbnail from "./TruckThumbnail";
 
-export default function TrucksList() {
-  const { trucks, trucksAreLoading, fetchTrucks } = useTruck();
+export default function VehicleList() {
+  const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [filteredTrucks, setFilteredTrucks] = useState(trucks);
+  const [filteredVehicles, setFilteredVehicles] = useState(vehicles);
   const { role } = useProfile();
   const { styles } = useStyles(stylesheet);
   const { searchState } = useSearch();
   const searchQuery = searchState["trucks"] || "";
 
   useEffect(() => {
-    if (searchQuery && trucks) {
-      const filtered = trucks.filter((truck) =>
+    if (searchQuery && vehicles) {
+      const filtered = vehicles.filter((truck) =>
         `${truck.economic_number} ${truck.brand} ${truck.sub_brand} (${truck.year})`
           .toLowerCase()
           .includes(searchQuery.toLowerCase())
       );
-      setFilteredTrucks(filtered);
+      setFilteredVehicles(filtered);
     } else {
-      setFilteredTrucks(trucks);
+      setFilteredVehicles(vehicles);
     }
-  }, [searchQuery, trucks]);
+  }, [searchQuery, vehicles]);
 
-  if (trucksAreLoading) {
+  if (vehiclesAreLoading) {
     return <LoadingScreen caption="Cargando vehículos" />;
   }
 
-  if (trucks === null) {
+  if (vehicles === null) {
     return (
       <ErrorScreen
         caption={`Ocurrió un error y no \npudimos cargar los vehículos`}
         buttonCaption="Reintentar"
-        retryFunction={fetchTrucks}
+        retryFunction={fetchVehicles}
       />
     );
   }
 
-  if (trucks.length === 0) {
+  if (vehicles.length === 0) {
     return <EmptyScreen caption="Ningún vehículo por aquí" />;
   }
 
-  if (filteredTrucks?.length === 0 && searchQuery) {
+  if (filteredVehicles?.length === 0 && searchQuery) {
     return <EmptyScreen caption="Ningún resultado" />;
   }
 
@@ -70,10 +70,10 @@ export default function TrucksList() {
         />
       )}
       <FlatList
-        refreshing={trucksAreLoading}
-        onRefresh={fetchTrucks}
+        refreshing={vehiclesAreLoading}
+        onRefresh={fetchVehicles}
         contentInsetAdjustmentBehavior="automatic"
-        data={filteredTrucks}
+        data={filteredVehicles}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Link href={{ pathname: `/trucks/${item.id}` }} asChild>

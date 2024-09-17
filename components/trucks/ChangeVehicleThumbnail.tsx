@@ -1,4 +1,4 @@
-// components/trucks/ChangeTruckImages.tsx
+// components/vehicles/ChangeVehicleImages.tsx
 import React from "react";
 import {
   View,
@@ -12,36 +12,35 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { FormButton } from "@/components/Form/FormButton"; // Asegúrate de que la ruta es correcta
-import { Truck } from "@/types/Truck";
-import useTruck from "@/hooks/truckHooks/useTruck";
-import useTruckThumbnail from "@/hooks/truckHooks/useTruckThumbnail";
+import { Vehicle } from "@/types/Vehicle";
+import useVehicle from "@/hooks/truckHooks/useVehicle";
 
-interface ChangeTruckImageModalProps {
+interface ChangeVehicleImageModalProps {
   visible: boolean;
   closeModal: () => void;
-  truck: Truck;
-  selectThumbnail: (truckId: string) => Promise<void>;
-  addPhotoToGallery: (truckId: string) => Promise<void>;
-  deleteThumbnail: (truckId: string) => Promise<void>;
-  deletePhotoFromGalley: (truckId: string, fileName: string) => Promise<void>;
+  vehicle: Vehicle;
+  selectThumbnail: (vehicleId: string) => Promise<void>;
+  addPhotoToGallery: (vehicleId: string) => Promise<void>;
+  deleteThumbnail: (vehicleId: string) => Promise<void>;
+  deletePhotoFromGalley: (vehicleId: string, fileName: string) => Promise<void>;
 }
 
-export default function ChangeTruckImageModal({
+export default function ChangeVehicleImageModal({
   visible,
   closeModal,
-  truck,
+  vehicle,
   selectThumbnail,
   addPhotoToGallery,
   deleteThumbnail,
   deletePhotoFromGalley,
-}: ChangeTruckImageModalProps) {
+}: ChangeVehicleImageModalProps) {
   const handleSelectImage = async () => {
-    await selectThumbnail(truck.id);
+    await selectThumbnail(vehicle.id);
     closeModal();
   };
 
   const handleAddGalleryImage = async () => {
-    await addPhotoToGallery(truck.id);
+    await addPhotoToGallery(vehicle.id);
   };
 
   const handleDeleteProfileImage = () => {
@@ -54,7 +53,7 @@ export default function ChangeTruckImageModal({
           text: "Eliminar",
           style: "destructive",
           onPress: async () => {
-            await deleteThumbnail(truck.id);
+            await deleteThumbnail(vehicle.id);
             closeModal();
           },
         },
@@ -72,30 +71,27 @@ export default function ChangeTruckImageModal({
           text: "Eliminar",
           style: "destructive",
           onPress: async () => {
-            await deletePhotoFromGalley(truck.id, fileName);
+            await deletePhotoFromGalley(vehicle.id, fileName);
           },
         },
       ]
     );
   };
 
-  const { trucks, setTrucks } = useTruck();
-  const { thumbnailIsLoading } = useTruckThumbnail(truck.id, trucks, setTrucks);
+  const { vehicles, setVehicles } = useVehicle();
 
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={closeModal}>
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>
-          Foto de Perfil - {truck.brand} {truck.sub_brand}
+          Foto de Perfil - {vehicle.brand} {vehicle.sub_brand}
         </Text>
 
         <View style={styles.section}>
-          {thumbnailIsLoading ? (
-            <ActivityIndicator size="large" color="#0000ff" />
-          ) : truck.thumbnail ? (
+          {vehicle.thumbnail ? (
             <View style={styles.imageContainer}>
               <Image
-                source={{ uri: truck.thumbnail }}
+                source={{ uri: vehicle.thumbnail }}
                 style={styles.profileImage}
               />
               <TouchableOpacity
@@ -116,8 +112,8 @@ export default function ChangeTruckImageModal({
 
         {/* <View style={styles.section}>
           <Text style={styles.subtitle}>Galería</Text>
-          {truck.galery.length > 0 ? (
-            truck.galery.map((image, index) => (
+          {vehicle.galery.length > 0 ? (
+            vehicle.galery.map((image, index) => (
               <View key={index} style={styles.galeriaItem}>
                 <Image
                   source={{ uri: image.uri as string }}

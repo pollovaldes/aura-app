@@ -4,8 +4,8 @@
  * Copyright (c) 2024 Aura Residuos Sustentables
  */
 
-import TrucksList from "@/components/trucks/TrucksList";
+import VehicleList from "@/components/trucks/VehicleList";
 
 export default function Page() {
-  return <TrucksList />;
+  return <VehicleList />;
 }

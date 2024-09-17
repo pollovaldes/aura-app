@@ -10,26 +10,27 @@ import {
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Circle, CheckCircle } from "lucide-react-native";
-import useTruck from "@/hooks/truckHooks/useTruck";
-import { useAssignTruck } from "@/hooks/peopleHooks/useAssignTruck"; // Importa el hook
+import useVehicle from "@/hooks/truckHooks/useVehicle";
 import React, { useEffect, useState } from "react";
 import { useSearch } from "@/context/SearchContext";
 
-export default function AssignTruckModalScreen() {
+export default function AssignVehicleModalScreen() {
   const router = useRouter();
 
   const { styles } = useStyles(stylesheet);
-  const { trucks, loading } = useTruck({ isComplete: false });
-  const [selectedTrucks, setSelectedTrucks] = useState<Set<string>>(new Set()); // Estado para manejar los camiones seleccionados
+  const { vehicles, vehiclesAreLoading } = useVehicle();
+  const [selectedVehicles, setSelectedVehicles] = useState<Set<string>>(
+    new Set()
+  ); // Estado para manejar los camiones seleccionados
   const { personId } = useLocalSearchParams<{ personId: string }>();
 
-  const { loading: assignLoading, assignTruck } = useAssignTruck({
+  const { loading: assignLoading, assignVehicle } = useAssignVehicle({
     id_conductor: personId,
   }); // Crea un hook para asignar camiones
 
   const { searchState } = useSearch(); // Get the search state from the context
   const searchQuery = searchState["ATMS"] || ""; // Use the search query for "ATMS"
-  const [filteredTrucks, setFilteredTrucks] = useState(trucks);
+  const [filteredVehicles, setFilteredVehicles] = useState(vehicles);
 
   const capitalizeWords = (text: string | null | undefined): string => {
     if (!text) return ""; // Verifica si el texto es nulo, indefinido o vacío
@@ -40,27 +41,27 @@ export default function AssignTruckModalScreen() {
       .join(" ");
   };
 
-  const toggleTruckSelection = (id: string) => {
-    const updatedSelection = new Set(selectedTrucks);
+  const toggleVehicleSelection = (id: string) => {
+    const updatedSelection = new Set(selectedVehicles);
     if (updatedSelection.has(id)) {
       updatedSelection.delete(id); // Deselecciona el camión si ya está seleccionado
     } else {
       updatedSelection.add(id); // Selecciona el camión
     }
 
-    setSelectedTrucks(updatedSelection);
+    setSelectedVehicles(updatedSelection);
   };
 
   const handleAssign = async () => {
-    if (selectedTrucks.size === 0) {
+    if (selectedVehicles.size === 0) {
       Alert.alert("Error", "Por favor, selecciona al menos un camión.");
       return;
     }
 
-    const camionesSeleccionados = Array.from(selectedTrucks);
-    await assignTruck(camionesSeleccionados);
+    const camionesSeleccionados = Array.from(selectedVehicles);
+    await assignVehicle(camionesSeleccionados);
 
-    const camionesDetalles = trucks.filter((truck) =>
+    const camionesDetalles = vehicles.filter((truck) =>
       camionesSeleccionados.includes(truck.id)
     );
 
@@ -76,18 +77,18 @@ export default function AssignTruckModalScreen() {
   };
 
   useEffect(() => {
-    // Filter trucks based on the search query
+    // Filter vehicles based on the search query
     if (searchQuery) {
-      const filtered = trucks.filter((truck) =>
+      const filtered = vehicles.filter((truck) =>
         `${truck.numero_economico} ${truck.marca} ${truck.sub_marca} (${truck.modelo})`
           .toLowerCase()
           .includes(searchQuery.toLowerCase())
       );
-      setFilteredTrucks(filtered);
+      setFilteredVehicles(filtered);
     } else {
-      setFilteredTrucks(trucks);
+      setFilteredVehicles(vehicles);
     }
-  }, [searchQuery, trucks]);
+  }, [searchQuery, vehicles]);
 
   if (loading) {
     console.log("Loading...");
@@ -134,12 +135,12 @@ export default function AssignTruckModalScreen() {
         <View style={styles.group}>
           <FlatList
             contentInsetAdjustmentBehavior="automatic"
-            data={filteredTrucks}
+            data={filteredVehicles}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => {
-              const isSelected = selectedTrucks.has(item.id);
+              const isSelected = selectedVehicles.has(item.id);
               return (
-                <Pressable onPress={() => toggleTruckSelection(item.id)}>
+                <Pressable onPress={() => toggleVehicleSelection(item.id)}>
                   <View
                     style={[
                       styles.container,

@@ -1,18 +1,15 @@
 import { View, Text, ActivityIndicator, ScrollView, Alert } from "react-native";
 import { Stack } from "expo-router";
 import { useState } from "react";
-import { useAuth } from "@/context/SessionContext";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import ChangeDataModal from "@/components/Modal/ChangeDataModal";
 import { FormButton } from "@/components/Form/FormButton";
-import useTruck, { Truck } from "@/hooks/truckHooks/useTruck";
 
 export default function Index() {
-  const { trucks, loading } = useTruck({ justOne: true }); // Usa el hook
+  const { trucks, loading } = useVehicle({ justOne: true }); // Usa el hook
   const { styles } = useStyles(stylesheet);
-  const { isAdmin } = useAuth();
 
   const [numEco, setNumEco] = useState(false);
   const [marca, setMarca] = useState(false);
