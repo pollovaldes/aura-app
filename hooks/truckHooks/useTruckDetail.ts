@@ -14,18 +14,18 @@ type Truck = {
 };
 
 export function useTruckDetail() {
-  const { truckId } = useLocalSearchParams<{ truckId: string }>();
+  const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const [truck, setTruck] = useState<Truck | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchTruckData = async () => {
-      if (truckId) {
+      if (vehicleId) {
         try {
           const { data, error } = await supabase
             .from("camiones")
             .select("*")
-            .eq("id", truckId)
+            .eq("id", vehicleId)
             .single();
 
           if (error) throw error;
@@ -40,7 +40,7 @@ export function useTruckDetail() {
     };
 
     fetchTruckData();
-  }, [truckId]);
+  }, [vehicleId]);
 
   return { truck, loading };
 }

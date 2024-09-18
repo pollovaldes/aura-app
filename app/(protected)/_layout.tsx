@@ -61,7 +61,7 @@ export default function HomeLayout() {
           <View style={styles.container}>
             <Sidebar>
               <ListItem
-                href={isFullyRegistered ? "trucks" : null}
+                href={isFullyRegistered ? "vehicles" : null}
                 title="Camiones"
                 iconComponent={<Truck color={styles.icon.color} size={19} />}
               />
@@ -92,7 +92,7 @@ export default function HomeLayout() {
         ) : (
           <Tabs screenOptions={{ headerShown: false }}>
             <Tabs.Screen
-              name="trucks"
+              name="vehicles"
               options={{
                 href: !isFullyRegistered ? null : undefined,
                 title: "Camiones",

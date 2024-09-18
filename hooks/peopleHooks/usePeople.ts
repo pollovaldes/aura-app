@@ -5,12 +5,12 @@ import { useLocalSearchParams } from "expo-router";
 
 type Person = {
   id: string;
-  nombre: string;
-  apellido_paterno: string;
-  apellido_materno: string;
-  email?: string;
-  phone?: string;
-  registrado?: boolean;
+  name: string;
+  father_last_name: string;
+  mother_last_name: string;
+  position?: string;
+  role?: string;
+  is_full_registered?: boolean;
 };
 
 type PersonProps = {
@@ -30,12 +30,12 @@ export default function usePeople({
     const fetchPeople = async () => {
       const fieldsToSelect = isComplete
         ? "*"
-        : "id, nombre, apellido_paterno, apellido_materno";
+        : "id, name, father_last_name, mother_last_name";
 
       let query = supabase
         .from("profiles")
         .select(fieldsToSelect)
-        .order("nombre", { ascending: true });
+        .order("name", { ascending: true });
 
       if (justOne && personId) {
         query = query.eq("id", personId);

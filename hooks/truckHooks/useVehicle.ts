@@ -20,7 +20,7 @@ export default function useVehicle() {
       if (!error) {
         const vehiclesData = data as Vehicle[];
         setVehicles(vehiclesData);
-        console.log("Desde el hook", vehiclesData);
+        //console.log("Desde el hook", vehiclesData);
         setVehiclesAreLoading(false);
       } else {
         console.error("Error from useTruck: ", error);

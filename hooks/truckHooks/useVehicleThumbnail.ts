@@ -9,27 +9,27 @@ import useVehicle from "./useVehicle";
 
 const { fetchVehicles } = useVehicle();
 
-const listProfileImages = async (truckId: string) => {
+const listProfileImages = async (vehicleId: string) => {
   const { data, error } = await supabase.storage
     .from("imagenes-camiones")
-    .list(`${truckId}/perfil`);
+    .list(`${vehicleId}/perfil`);
 
   if (error) {
-    console.error(`Error listing thumbnails for ${truckId}: `, error);
+    console.error(`Error listing thumbnails for ${vehicleId}: `, error);
     return null;
   }
 
   return data?.length ? data[0].name : null;
 };
 
-const downloadImage = async (truckId: string, fileName: string) => {
+const downloadImage = async (vehicleId: string, fileName: string) => {
   const { data: downloadData, error: downloadError } = await supabase.storage
     .from("imagenes-camiones")
-    .download(`${truckId}/perfil/${fileName}`);
+    .download(`${vehicleId}/perfil/${fileName}`);
 
   if (downloadError) {
     console.error(
-      `Error downloading thumbnail for ${truckId}: `,
+      `Error downloading thumbnail for ${vehicleId}: `,
       downloadError
     );
     return null;
@@ -58,22 +58,22 @@ const readImageAsDataURL = (file: Blob): Promise<string | null> => {
   });
 };
 
-const fetchThumbnail = async (truckId: string): Promise<string | null> => {
+const fetchThumbnail = async (vehicleId: string): Promise<string | null> => {
   try {
-    const fileName = await listProfileImages(truckId);
+    const fileName = await listProfileImages(vehicleId);
     if (!fileName) return null;
 
-    const file = await downloadImage(truckId, fileName);
+    const file = await downloadImage(vehicleId, fileName);
     if (!file) return null;
 
     return await readImageAsDataURL(file);
   } catch (error) {
-    console.error(`Error fetching profile image for ${truckId}: `, error);
+    console.error(`Error fetching profile image for ${vehicleId}: `, error);
     return null;
   }
 };
 
-const selectThumbnail = async (truckId: string) => {
+const selectThumbnail = async (vehicleId: string) => {
   const options: ImagePickerOptions = {
     mediaTypes: MediaTypeOptions.Images,
     allowsEditing: true,
@@ -88,16 +88,16 @@ const selectThumbnail = async (truckId: string) => {
       const base64 = img.base64;
       if (!base64) throw new Error("No se pudo obtener datos base64");
 
-      const filePath = `${truckId}/perfil/${new Date().getTime()}.png`;
+      const filePath = `${vehicleId}/perfil/${new Date().getTime()}.png`;
 
       // Eliminar foto de perfil existente
       const { data: existingFiles, error: listError } = await supabase.storage
         .from("imagenes-camiones")
-        .list(`${truckId}/perfil`);
+        .list(`${vehicleId}/perfil`);
 
       if (listError) {
         console.error(
-          `Error listando imágenes de perfil para ${truckId}: `,
+          `Error listando imágenes de perfil para ${vehicleId}: `,
           listError
         );
         return;
@@ -105,14 +105,14 @@ const selectThumbnail = async (truckId: string) => {
 
       if (existingFiles && existingFiles.length > 0) {
         const deletePaths = existingFiles.map(
-          (file) => `${truckId}/perfil/${file.name}`
+          (file) => `${vehicleId}/perfil/${file.name}`
         );
         const { error: deleteError } = await supabase.storage
           .from("imagenes-camiones")
           .remove(deletePaths);
         if (deleteError) {
           console.error(
-            `Error eliminando la foto de perfil existente para ${truckId}: `,
+            `Error eliminando la foto de perfil existente para ${vehicleId}: `,
             deleteError.message
           );
           return;
@@ -126,7 +126,7 @@ const selectThumbnail = async (truckId: string) => {
 
       if (uploadError) {
         console.error(
-          `Error subiendo la nueva foto de perfil para ${truckId}: `,
+          `Error subiendo la nueva foto de perfil para ${vehicleId}: `,
           uploadError.message
         );
       } else {
@@ -135,14 +135,14 @@ const selectThumbnail = async (truckId: string) => {
       }
     } catch (error) {
       console.error(
-        `Error al seleccionar foto de perfil para ${truckId}: `,
+        `Error al seleccionar foto de perfil para ${vehicleId}: `,
         error
       );
     }
   }
 };
 
-const addPhotoToGallery = async (truckId: string) => {
+const addPhotoToGallery = async (vehicleId: string) => {
   const options: ImagePickerOptions = {
     mediaTypes: MediaTypeOptions.Images,
     allowsEditing: true,
@@ -157,7 +157,7 @@ const addPhotoToGallery = async (truckId: string) => {
       const base64 = img.base64;
       if (!base64) throw new Error("No se pudo obtener datos base64");
 
-      const filePath = `${truckId}/galeria/${new Date().getTime()}.png`;
+      const filePath = `${vehicleId}/galeria/${new Date().getTime()}.png`;
 
       // Subir nueva foto a la galería
       const { error: uploadError } = await supabase.storage
@@ -166,7 +166,7 @@ const addPhotoToGallery = async (truckId: string) => {
 
       if (uploadError) {
         console.error(
-          `Error subiendo la foto a la galería para ${truckId}: `,
+          `Error subiendo la foto a la galería para ${vehicleId}: `,
           uploadError.message
         );
       } else {
@@ -175,22 +175,22 @@ const addPhotoToGallery = async (truckId: string) => {
       }
     } catch (error) {
       console.error(
-        `Error al agregar foto a la galería para ${truckId}: `,
+        `Error al agregar foto a la galería para ${vehicleId}: `,
         error
       );
     }
   }
 };
 
-const deleteThumbnail = async (truckId: string) => {
+const deleteThumbnail = async (vehicleId: string) => {
   try {
     const { data: existingFiles, error: listError } = await supabase.storage
       .from("imagenes-camiones")
-      .list(`${truckId}/perfil`);
+      .list(`${vehicleId}/perfil`);
 
     if (listError) {
       console.error(
-        `Error listando imágenes de perfil para eliminar: ${truckId}: `,
+        `Error listando imágenes de perfil para eliminar: ${vehicleId}: `,
         listError
       );
       alert("No se pudo listar las imágenes de perfil.");
@@ -199,14 +199,14 @@ const deleteThumbnail = async (truckId: string) => {
 
     if (existingFiles && existingFiles.length > 0) {
       const deletePaths = existingFiles.map(
-        (file) => `${truckId}/perfil/${file.name}`
+        (file) => `${vehicleId}/perfil/${file.name}`
       );
       const { error: deleteError } = await supabase.storage
         .from("imagenes-camiones")
         .remove(deletePaths);
       if (deleteError) {
         console.error(
-          `Error eliminando la foto de perfil para ${truckId}: `,
+          `Error eliminando la foto de perfil para ${vehicleId}: `,
           deleteError.message
         );
         alert("No se pudo eliminar la foto de perfil.");
@@ -217,23 +217,23 @@ const deleteThumbnail = async (truckId: string) => {
     }
   } catch (error) {
     console.error(
-      `Error al eliminar la foto de perfil para ${truckId}: `,
+      `Error al eliminar la foto de perfil para ${vehicleId}: `,
       error
     );
     alert("Ocurrió un error al eliminar la foto de perfil.");
   }
 };
 
-const deletePhotoFromGallery = async (truckId: string, fileName: string) => {
+const deletePhotoFromGallery = async (vehicleId: string, fileName: string) => {
   try {
-    const filePath = `${truckId}/galeria/${fileName}`;
+    const filePath = `${vehicleId}/galeria/${fileName}`;
     const { error: deleteError } = await supabase.storage
       .from("imagenes-camiones")
       .remove([filePath]);
 
     if (deleteError) {
       console.error(
-        `Error eliminando la foto de galería ${fileName} para ${truckId}: `,
+        `Error eliminando la foto de galería ${fileName} para ${vehicleId}: `,
         deleteError.message
       );
       alert("No se pudo eliminar la foto de la galería.");
@@ -243,7 +243,7 @@ const deletePhotoFromGallery = async (truckId: string, fileName: string) => {
     }
   } catch (error) {
     console.error(
-      `Error al eliminar la foto de galería para ${truckId}: `,
+      `Error al eliminar la foto de galería para ${vehicleId}: `,
       error
     );
     alert("Ocurrió un error al eliminar la foto de la galería.");

@@ -32,11 +32,11 @@ import useVehicleThumbnail from "@/hooks/truckHooks/useVehicleThumbnail";
 
 export default function VehicleDetail() {
   const { styles } = useStyles(stylesheet);
-  const { truckId } = useLocalSearchParams<{ truckId: string }>();
+  const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const { vehicles, fetchVehicles, vehiclesAreLoading } = useVehicle();
 
   const [activeModal, setActiveModal] = useState(false);
-  const vehicle = vehicles?.find((Vehicle) => Vehicle.id === truckId);
+  const vehicle = vehicles?.find((Vehicle) => Vehicle.id === vehicleId);
 
   const {
     addPhotoToGallery,
@@ -100,10 +100,10 @@ export default function VehicleDetail() {
         visible={activeModal}
         closeModal={() => setActiveModal(false)}
         vehicle={vehicle}
-        selectThumbnail={() => selectThumbnail(truckId as string)}
-        addPhotoToGallery={() => addPhotoToGallery(truckId as string)}
-        deleteThumbnail={() => deleteThumbnail(truckId as string)}
-        deletePhotoFromGalley={() => deletePhotoFromGallery(truckId as string)}
+        selectThumbnail={() => selectThumbnail(vehicleId as string)}
+        addPhotoToGallery={() => addPhotoToGallery(vehicleId as string)}
+        deleteThumbnail={() => deleteThumbnail(vehicleId as string)}
+        deletePhotoFromGalley={() => deletePhotoFromGallery(vehicleId as string, vehicle.thumbnail as string)}
       />
 
       <ScrollView
@@ -148,7 +148,7 @@ export default function VehicleDetail() {
             <Row
               title="Ficha técnica"
               trailingType="chevron"
-              onPress={() => router.navigate(`/vehicles/${truckId}/details`)}
+              onPress={() => router.navigate(`/vehicles/${vehicleId}/details`)}
               icon={<Clipboard size={24} color="white" />}
               color={colorPalette.emerald[500]}
             />
@@ -158,7 +158,7 @@ export default function VehicleDetail() {
               icon={<BookOpen size={24} color="white" />}
               color={colorPalette.orange[500]}
               onPress={() =>
-                router.navigate(`/vehicles/${truckId}/documentation`)
+                router.navigate(`/vehicles/${vehicleId}/documentation`)
               }
             />
             <Row
@@ -181,7 +181,7 @@ export default function VehicleDetail() {
               trailingType="chevron"
               icon={<UsersRoundIcon size={24} color="white" />}
               color={colorPalette.sky[500]}
-              onPress={() => router.navigate(`/vehicles/${truckId}/people`)}
+              onPress={() => router.navigate(`/vehicles/${vehicleId}/people`)}
             />
             <Row
               title="Registrar carga de gasolina"

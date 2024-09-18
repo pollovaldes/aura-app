@@ -18,21 +18,21 @@ export default function useIsAdmin() {
 
         const { data, error } = await supabase
           .from("profiles")
-          .select("roles")
+          .select("id, role")
           .eq("id", session.user.id)
           .single();
 
         if (error) {
-          console.error("Error fetching profile", error);
+          console.error("Error fetching profilee", error);
           setIsAdminLoading(false);
           return;
         }
 
-        if (data.roles === "admin") {
+        if (data.role === "ADMIN") {
           setIsAdmin("admin");
         }
 
-        if (data.roles === "user") {
+        if (data.role === "USER") {
           setIsAdmin("user");
         }
 

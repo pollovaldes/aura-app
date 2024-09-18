@@ -76,12 +76,12 @@ export default function VehicleList() {
         data={filteredVehicles}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Link href={{ pathname: `/trucks/${item.id}` }} asChild>
+          <Link href={{ pathname: `/vehicles/${item.id}` }} asChild>
             <Pressable>
               <View style={styles.container}>
                 <View style={styles.contentContainer}>
                   <View style={styles.imageContainer}>
-                    <TruckThumbnail truckId={item.id} />
+                    <TruckThumbnail vehicleId={item.id} />
                   </View>
                   <Text style={styles.itemText}>
                     <Text

@@ -10,13 +10,13 @@ import usePeople from "@/hooks/peopleHooks/usePeople";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link, Redirect } from "expo-router";
 import { useEffect, useState } from "react";
-import { useAuth } from "@/context/SessionContext";
+import useIsAdmin from "@/hooks/useIsAdmin";
 import { ChevronRight } from "lucide-react-native";
 import { useSearch } from "@/context/SearchContext";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 
 export default function PeopleList() {
-  const { isAdmin } = useAuth();
+  const { isAdmin, isAdminLoading } = useIsAdmin();
   const { people, loading } = usePeople({ isComplete: false });
   const { styles } = useStyles(stylesheet);
   const { searchState, setSearchQuery } = useSearch();
@@ -37,7 +37,7 @@ export default function PeopleList() {
     // Filtrar personas basadas en la consulta de búsqueda
     if (searchQuery) {
       const filtered = people.filter((person) =>
-        `${person.nombre} ${person.apellido_paterno} ${person.apellido_materno}`
+        `${person.name} ${person.father_last_name} ${person.mother_last_name}`
           .toLowerCase()
           .includes(searchQuery.toLowerCase())
       );
@@ -47,7 +47,7 @@ export default function PeopleList() {
     }
   }, [searchQuery, people]);
 
-  if (loading) {
+  if (loading || isAdminLoading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator />
@@ -75,7 +75,7 @@ export default function PeopleList() {
                     </View>
                     <Text
                       style={styles.itemText}
-                    >{`${capitalizeWords(item.nombre)} ${capitalizeWords(item.apellido_paterno)} ${capitalizeWords(item.apellido_materno)}`}</Text>
+                    >{`${capitalizeWords(item.name)} ${capitalizeWords(item.father_last_name)} ${capitalizeWords(item.mother_last_name)}`}</Text>
                   </View>
                   <View style={styles.chevronView}>
                     <ChevronRight color={styles.chevron.color} />
@@ -88,7 +88,7 @@ export default function PeopleList() {
       </>
     );
   } else {
-    return <Redirect href={"/trucks"} />;
+    return <Redirect href={"/vehicles"} />;
   }
 }
 

@@ -7,17 +7,17 @@ import { Vehicle } from "@/types/Vehicle";
 import useVehicleThumbnail from "@/hooks/truckHooks/useVehicleThumbnail";
 
 type VehicleThumbnailProps = {
-  truckId: string;
+  vehicleId: string;
 };
 
-export default function VehicleThumbnail({ truckId }: VehicleThumbnailProps) {
+export default function VehicleThumbnail({ vehicleId }: VehicleThumbnailProps) {
   const { styles } = useStyles(stylesheet);
   const { vehicles, setVehicles } = useVehicle();
   const { fetchThumbnail } = useVehicleThumbnail();
   const [thumbnailIsLoading, setThumbnailIsLoading] = useState(false);
 
   if (!vehicles) return null;
-  const item = vehicles.find((truck) => truck.id === truckId);
+  const item = vehicles.find((truck) => truck.id === vehicleId);
 
   useEffect(() => {
     if (!item) {
@@ -33,12 +33,12 @@ export default function VehicleThumbnail({ truckId }: VehicleThumbnailProps) {
         return;
       }
 
-      const thumbnail = await fetchThumbnail(truckId);
+      const thumbnail = await fetchThumbnail(vehicleId);
       if (thumbnail) {
         setVehicles(
           (prevVehicles: Vehicle[] | null) =>
             prevVehicles?.map((truck) =>
-              truck.id === truckId ? { ...truck, thumbnail } : truck
+              truck.id === vehicleId ? { ...truck, thumbnail } : truck
             ) || null
         );
       }
@@ -54,7 +54,7 @@ export default function VehicleThumbnail({ truckId }: VehicleThumbnailProps) {
         <View style={styles.emptyImageContainer}>
           <ActivityIndicator />
         </View>
-      ) : item.thumbnail ? (
+      ) : item && item.thumbnail ? (
         <Image style={styles.image} source={{ uri: item.thumbnail }} />
       ) : (
         <View style={styles.emptyImageContainer}>

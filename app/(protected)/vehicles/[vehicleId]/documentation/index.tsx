@@ -1,15 +1,16 @@
 import { View, Text, ActivityIndicator, ScrollView, Alert } from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { useAuth } from "@/context/SessionContext";
+//import { useAuth } from "@/context/SessionContext";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
+import useIsAdmin from "@/hooks/useIsAdmin";
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
-  const { isAdmin } = useAuth();
-  const { truckId } = useLocalSearchParams<{ truckId: string }>();
+  const { isAdmin } = useIsAdmin();
+  const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
@@ -22,7 +23,7 @@ export default function Index() {
           <Row
             title="Seguro"
             trailingType="chevron"
-            onPress={() => router.navigate(`/trucks/[truckId]/documentation/iddeldocumento`) }  // Reemplazar el id del cocumento. Para Jackson: Aqui no se como funcione el storage pero en algun momento deberias tener que obtener el id de un documento, que seria algo asi como truckId.documentId
+            onPress={() => router.navigate(`/vehicles/[vehicleId]/documentation/iddeldocumento`) }  // Reemplazar el id del cocumento. Para Jackson: Aqui no se como funcione el storage pero en algun momento deberias tener que obtener el id de un documento, que seria algo asi como .documentId
           />
           <Row
             title="Licencia"

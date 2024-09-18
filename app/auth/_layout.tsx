@@ -15,7 +15,7 @@ export default function Layout() {
   }
 
   if (session) {
-    return <Redirect href="/trucks" />;
+    return <Redirect href="/vehicles" />;
   }
 
   return (
