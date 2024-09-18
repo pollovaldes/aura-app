@@ -1,58 +1,46 @@
-import { useEffect, useState } from "react";
+import { useEffect, useContext, Dispatch, SetStateAction } from "react";
 import { supabase } from "@/lib/supabase";
-import { useSession, useSessionContext } from "@/context/SessionContext";
-import { useLocalSearchParams } from "expo-router";
+import { Person } from "@/types/People";
+import PeopleContext from "@/context/PeopleContext";
 
-type Person = {
-  id: string;
-  name: string;
-  father_last_name: string;
-  mother_last_name: string;
-  position?: string;
-  role?: string;
-  is_full_registered?: boolean;
-};
+export default function useVehicle() {
+  const { setPeople, peopleAreLoading, setPeopleAreLoading, people } =
+    useContext(PeopleContext);
 
-type PersonProps = {
-  justOne?: boolean;
-  isComplete?: boolean;
-};
+  const fetchVehicles = async () => {
+    setPeopleAreLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select(
+          "id, name, father_last_name, mother_last_name, position, role, is_fully_registered"
+        );
 
-export default function usePeople({
-  justOne = false,
-  isComplete = true,
-}: PersonProps) {
-  const [people, setPeople] = useState<Person[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { personId } = useLocalSearchParams<{ personId: string }>();
+      if (!error) {
+        const vehiclesData = data as Person[];
+        setPeople(vehiclesData);
+        setPeopleAreLoading(false);
+      } else {
+        console.error("Error from usePeople: ", error);
+        setPeople(null);
+        setPeopleAreLoading(false);
+      }
+    } catch (error) {
+      console.error("Error fetching profiles: ", error);
+      setPeople(null);
+    }
+  };
 
   useEffect(() => {
-    const fetchPeople = async () => {
-      const fieldsToSelect = isComplete
-        ? "*"
-        : "id, name, father_last_name, mother_last_name";
-
-      let query = supabase
-        .from("profiles")
-        .select(fieldsToSelect)
-        .order("name", { ascending: true });
-
-      if (justOne && personId) {
-        query = query.eq("id", personId);
-      }
-
-      const { data, error } = await query;
-
-      if (error) {
-        console.error(error);
-      } else {
-        setPeople(data as unknown as Person[]); // Si algun día checas esto arturo, soluciona, funciona pero no se por que tengo que poner el unkown
-      }
-      setLoading(false);
-    };
-
-    fetchPeople();
+    if (!people) {
+      fetchVehicles();
+    }
   }, []);
 
-  return { people, loading };
+  return {
+    people,
+    peopleAreLoading,
+    setPeople,
+    fetchVehicles,
+  };
 }

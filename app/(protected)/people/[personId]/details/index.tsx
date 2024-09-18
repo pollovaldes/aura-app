@@ -3,16 +3,18 @@
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import usePeople from "@/hooks/peopleHooks/usePeople";
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { View, Text, ActivityIndicator, ScrollView } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function TruckPeopleAdminComponent() {
   const { styles } = useStyles(stylesheet);
-  const { people, loading } = usePeople({ justOne: true, isComplete: true });
-  const user = people[0];
+  const { people, peopleAreLoading } = usePeople();
+  
+  const { personId } = useLocalSearchParams<{ personId: string }>();
+  const user = people?.find((People) => People.id === personId);
 
-  if (loading) {
+  if (peopleAreLoading) {
     return (
       <View style={styles.loadingContainer}>
         <Stack.Screen options={{ title: "", headerBackTitle: "Info" }} />

@@ -17,7 +17,7 @@ import SegmentedControl from "@react-native-segmented-control/segmented-control"
 
 export default function PeopleList() {
   const { isAdmin, isAdminLoading } = useIsAdmin();
-  const { people, loading } = usePeople({ isComplete: false });
+  const { people, peopleAreLoading } = usePeople();
   const { styles } = useStyles(stylesheet);
   const { searchState, setSearchQuery } = useSearch();
 
@@ -35,7 +35,7 @@ export default function PeopleList() {
 
   useEffect(() => {
     // Filtrar personas basadas en la consulta de búsqueda
-    if (searchQuery) {
+    if (searchQuery && people) {
       const filtered = people.filter((person) =>
         `${person.name} ${person.father_last_name} ${person.mother_last_name}`
           .toLowerCase()
@@ -47,7 +47,7 @@ export default function PeopleList() {
     }
   }, [searchQuery, people]);
 
-  if (loading || isAdminLoading) {
+  if (peopleAreLoading || isAdminLoading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator />
