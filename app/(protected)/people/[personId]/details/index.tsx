@@ -35,7 +35,7 @@ export default function TruckPeopleAdminComponent() {
       <View style={styles.container}>
         <Stack.Screen
           options={{
-            title: `${user.nombre} ${user.apellido_paterno}`,
+            title: `${user.name} ${user.father_last_name}`,
             headerBackTitle: "Info",
             headerShown: true,
           }}
@@ -47,35 +47,28 @@ export default function TruckPeopleAdminComponent() {
           <Row
             title="Nombre"
             trailingType="chevron"
-            caption={`${user.nombre}`}
+            caption={`${user.name}`}
             showChevron={false}
             disabled={true}
           />
           <Row
             title="Apellido Paterno"
             trailingType="chevron"
-            caption={`${user.apellido_paterno}`}
+            caption={`${user.father_last_name}`}
             showChevron={false}
             disabled={true}
           />
           <Row
             title="Apellido Materno"
             trailingType="chevron"
-            caption={`${user.apellido_materno}`}
+            caption={`${user.mother_last_name}`}
             showChevron={false}
             disabled={true}
           />
           <Row
-            title="Email"
+            title="Posición"
             trailingType="chevron"
-            caption={`${user.email}`}
-            showChevron={false}
-            disabled={true}
-          />
-          <Row
-            title="Phone"
-            trailingType="chevron"
-            caption={`${user.phone}`}
+            caption={`${user.position}`}
             showChevron={false}
             disabled={true}
           />

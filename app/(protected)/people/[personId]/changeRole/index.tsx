@@ -7,7 +7,6 @@ import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import AssignRoleModal from "@/components/Modal/AssignRoleModal";
 import Modal from "@/components/Modal/Modal";
-import { useAuth } from "@/context/SessionContext";
 
 type ModalType = "assignRole" | null;
 

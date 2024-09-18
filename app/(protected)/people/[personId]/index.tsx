@@ -14,7 +14,7 @@ export default function PeopleDetail() {
   const { styles } = useStyles(stylesheet);
 
   const user = people[0];
-  const peopleTitle = `${user?.nombre ?? ""} ${user?.apellido_paterno ?? ""} ${user?.apellido_materno ?? ""}`;
+  const peopleTitle = `${user?.name ?? ""} ${user?.father_last_name ?? ""} ${user?.mother_last_name ?? ""}`;
 
   return (
     <>
