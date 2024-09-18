@@ -1,20 +1,17 @@
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
 import { Alert } from "react-native";
-import useVehicle from "../truckHooks/useVehicle";
-import usePeople from "./usePeople";
-import { useCreateNotification } from "../notifications/useCreateNotification";
 
-type AssignTruckProps = {
+type AssignTruckVehicle = {
   id_conductor: string | undefined;
 };
 
-export function useAssignTruck({
+export default function useAssignVehicle({
   id_conductor: m_id_conductor,
-}: AssignTruckProps) {
+}: AssignTruckVehicle) {
   const [loading, setLoading] = useState(false);
 
-  const assignTruck = async (id_camiones: string[]) => {
+  const assignVehicle = async (id_camiones: string[]) => {
     setLoading(true);
 
     try {
@@ -39,5 +36,5 @@ export function useAssignTruck({
     }
   };
 
-  return { loading, assignTruck };
+  return { loading, assignVehicle };
 }

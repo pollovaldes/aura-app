@@ -2,7 +2,7 @@ import { View, Text, FlatList, Pressable, Image, Alert, ActivityIndicator, Dimen
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import { Circle, CheckCircle } from 'lucide-react-native';
-import { useAssignTruck } from '@/hooks/peopleHooks/useAssignTruck'; // Importa el hook
+import useAssignVehicle from '@/hooks/peopleHooks/useAssignVehicle';
 import React, { useEffect, useState } from 'react';
 import { useSearch } from '@/context/SearchContext';
 import { supabase } from '@/lib/supabase';
@@ -26,7 +26,7 @@ export default function SeeTruckModalScreen() {
   //const { trucks, loading } = useTruck({ isComplete: false }); // quitar
 
   const [selectedTrucks, setSelectedTrucks] = useState<Set<string>>(new Set()); // Estado para manejar los camiones seleccionados
-  const { loading: assignLoading, assignTruck } = useAssignTruck({ id_conductor: personId }); // Crea un hook para asignar camiones
+  const { loading: assignLoading, assignVehicle } = useAssignVehicle({ id_conductor: personId }); // Crea un hook para asignar camiones
   const { searchState } = useSearch(); // Get the search state from the context
   const searchQuery = searchState["STMS"] || ""; // Use the search query for "ATMS"
   const [filteredTrucks, setFilteredTrucks] = useState(trucks);

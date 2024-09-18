@@ -13,6 +13,7 @@ import { Circle, CheckCircle } from "lucide-react-native";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
 import React, { useEffect, useState } from "react";
 import { useSearch } from "@/context/SearchContext";
+import useAssignVehicle from "@/hooks/peopleHooks/useAssignVehicle";
 
 export default function AssignVehicleModalScreen() {
   const router = useRouter();
@@ -61,6 +62,7 @@ export default function AssignVehicleModalScreen() {
     const camionesSeleccionados = Array.from(selectedVehicles);
     await assignVehicle(camionesSeleccionados);
 
+    if (vehicles) {
     const camionesDetalles = vehicles.filter((truck) =>
       camionesSeleccionados.includes(truck.id)
     );
@@ -68,19 +70,19 @@ export default function AssignVehicleModalScreen() {
     // Crear un texto con la información de todos los camiones seleccionados
     const detallesCamiones = camionesDetalles
       .map(
-        (truck) =>
-          `Camión ${truck.numero_economico} ${truck.marca} ${truck.sub_marca} (${truck.modelo})`
+        (vehicle) =>
+          `Camión ${vehicle.economic_number} ${vehicle.brand} ${vehicle.sub_brand} (${vehicle.year})`
       )
       .join(",\n");
-
+    }
     router.back();
   };
 
   useEffect(() => {
     // Filter vehicles based on the search query
-    if (searchQuery) {
-      const filtered = vehicles.filter((truck) =>
-        `${truck.numero_economico} ${truck.marca} ${truck.sub_marca} (${truck.modelo})`
+    if (searchQuery && vehicles) {
+      const filtered = vehicles.filter((vehicle) =>
+        `${vehicle.economic_number} ${vehicle.brand} ${vehicle.sub_brand} (${vehicle.year})`
           .toLowerCase()
           .includes(searchQuery.toLowerCase())
       );
@@ -90,7 +92,7 @@ export default function AssignVehicleModalScreen() {
     }
   }, [searchQuery, vehicles]);
 
-  if (loading) {
+  if (assignLoading || vehiclesAreLoading) {
     console.log("Loading...");
     return (
       <View style={styles.loadingContainer}>
@@ -156,9 +158,9 @@ export default function AssignVehicleModalScreen() {
                       </View>
                       <Text style={styles.itemText}>
                         <Text style={{ fontWeight: "bold" }}>
-                          {item.numero_economico}
+                          {item.economic_number}
                         </Text>
-                        {`\n${capitalizeWords(item.marca)} ${capitalizeWords(item.sub_marca)} (${capitalizeWords(item.modelo)})`}
+                        {`\n${capitalizeWords(item.brand)} ${capitalizeWords(item.sub_brand)} (${(item.year)})`}
                       </Text>
                     </View>
                     <View style={styles.chevronView}>
