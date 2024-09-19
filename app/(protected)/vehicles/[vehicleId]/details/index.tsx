@@ -8,9 +8,9 @@ import ChangeDataModal from "@/components/Modal/ChangeDataModal";
 import { FormButton } from "@/components/Form/FormButton";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
 import useIsAdmin from "@/hooks/useIsAdmin";
+import useProfile from "@/hooks/useProfile";
 
 export default function Index() {
-  const { vehicles, vehiclesAreLoading } = useVehicle(); // Usa el hook
   const { styles } = useStyles(stylesheet);
 
   const [numEco, setNumEco] = useState(false);
@@ -20,9 +20,9 @@ export default function Index() {
   const [noSerie, setNoSerie] = useState(false);
   const [placa, setPlaca] = useState(false);
   const [poliza, setPoliza] = useState(false);
+  const { role } = useProfile();
 
-  const isAdmin = useIsAdmin();
-
+  const { vehicles, vehiclesAreLoading } = useVehicle(); // Usa el hook
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const vehicle = vehicles?.find((Vehicle) => Vehicle.id === vehicleId);
 
@@ -48,7 +48,7 @@ export default function Index() {
     vehicle && (
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <ChangeDataModal
-          isOpen={isAdmin ? numEco : false}
+          isOpen={role === "ADMIN" ? numEco : false}
           currentDataType="Numero Economico"
           currentData={vehicle.economic_number}
           closeModal={() => setNumEco(false)}
@@ -56,7 +56,7 @@ export default function Index() {
           id={vehicle.id}
         />
         <ChangeDataModal
-          isOpen={isAdmin ? marca : false}
+          isOpen={role === "ADMIN" ? marca : false}
           currentDataType="Marca"
           currentData={vehicle.brand}
           closeModal={() => setMarca(false)}
@@ -64,7 +64,7 @@ export default function Index() {
           id={vehicle.id}
         />
         <ChangeDataModal
-          isOpen={isAdmin ? subMarca : false}
+          isOpen={role === "ADMIN" ? subMarca : false}
           currentDataType="Sub Marca"
           currentData={vehicle.sub_brand}
           closeModal={() => setSubMarca(false)}
@@ -72,7 +72,7 @@ export default function Index() {
           id={vehicle.id}
         />
         <ChangeDataModal
-          isOpen={isAdmin ? modelo : false}
+          isOpen={role === "ADMIN" ? modelo : false}
           currentDataType="Modelo"
           currentData={vehicle.year}
           closeModal={() => setModelo(false)}
@@ -80,7 +80,7 @@ export default function Index() {
           id={vehicle.id}
         />
         <ChangeDataModal
-          isOpen={isAdmin ? noSerie : false}
+          isOpen={role === "ADMIN" ? noSerie : false}
           currentDataType="No de Serie"
           currentData={vehicle.serial_number}
           closeModal={() => setNoSerie(false)}
@@ -88,7 +88,7 @@ export default function Index() {
           id={vehicle.id}
         />
         <ChangeDataModal
-          isOpen={isAdmin ? placa : false}
+          isOpen={role === "ADMIN" ? placa : false}
           currentDataType="Placa"
           currentData={vehicle.plate}
           closeModal={() => setPlaca(false)}
@@ -109,45 +109,45 @@ export default function Index() {
               onPress={() => setNumEco(true)}
               trailingType="chevron"
               caption={`${vehicle.economic_number}`}
-              showChevron={!!isAdmin}
+              showChevron={role === "ADMIN"}
             />
             <Row
               title="Marca"
               onPress={() => setMarca(true)}
               trailingType="chevron"
               caption={`${vehicle.brand}`}
-              showChevron={!!isAdmin}
+              showChevron={role === "ADMIN"}
             />
             <Row
               title="Sub Marca"
               onPress={() => setSubMarca(true)}
               trailingType="chevron"
               caption={`${vehicle.sub_brand}`}
-              showChevron={!!isAdmin}
+              showChevron={role === "ADMIN"}
             />
             <Row
               title="Modelo"
               onPress={() => setModelo(true)}
               trailingType="chevron"
               caption={`${vehicle.year}`}
-              showChevron={!!isAdmin}
+              showChevron={role === "ADMIN"}
             />
             <Row
               title="No de Serie"
               onPress={() => setNoSerie(true)}
               trailingType="chevron"
               caption={`${vehicle.serial_number?.substring(0, 8) ?? "No disponible"}${vehicle.serial_number && vehicle.serial_number.length > 8 ? "..." : ""}`}
-              showChevron={!!isAdmin}
+              showChevron={role === "ADMIN"}
             />
             <Row
               title="Placa"
               onPress={() => setPlaca(true)}
               trailingType="chevron"
               caption={`${vehicle.plate}`}
-              showChevron={!!isAdmin}
+              showChevron={role === "ADMIN"}
             />
           </GroupedList>
-          {isAdmin && (
+          {role === "ADMIN" && (
             <GroupedList>
               <FormButton
                 title="Borrar Camión"

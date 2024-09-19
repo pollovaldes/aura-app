@@ -1,4 +1,4 @@
-import { Person } from "@/types/People";
+import { Person } from "@/types/Person";
 import {
   createContext,
   ReactNode,

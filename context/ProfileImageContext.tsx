@@ -9,7 +9,7 @@ import React, {
 import { supabase } from "@/lib/supabase";
 import * as ImagePicker from "expo-image-picker";
 import { decode } from "base64-arraybuffer";
-import { useSession } from "@/context/SessionContext";
+import { useSessionContext } from "@/context/SessionContext";
 
 interface ProfileImageContextProps {
   imageUri: string | null;
@@ -37,7 +37,7 @@ interface ProfileImageProviderProps {
 }
 
 export function ProfileImageProvider({ children }: ProfileImageProviderProps) {
-  const session = useSession();
+  const { session } = useSessionContext();
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 

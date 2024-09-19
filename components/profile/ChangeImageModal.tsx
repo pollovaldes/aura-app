@@ -1,6 +1,6 @@
 // ChangeImageModal.tsx
 import React from "react";
-import { View, Text, Alert } from "react-native";
+import { View, Text, Alert, ActivityIndicator } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "@/components/Form/FormButton";
@@ -43,20 +43,27 @@ export default function ChangeImageModal({
         <FormTitle title="Foto de perfil" />
         <Text style={styles.subtitle}>Personaliza tu foto</Text>
       </View>
-      <View style={styles.group}>
-        <View style={styles.group}>
-          <FormButton
-            title="Elegir nueva imagen"
-            onPress={handleSelectImage}
-          />
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator />
+          <Text>Subiendo imagen...</Text>
         </View>
+      ) : (
         <View style={styles.group}>
-          <FormButton
-            title="Eliminar foto de perfil"
-            onPress={handleDeleteImage}
-          />
+          <View style={styles.group}>
+            <FormButton
+              title="Elegir nueva imagen"
+              onPress={handleSelectImage}
+            />
+          </View>
+          <View style={styles.group}>
+            <FormButton
+              title="Eliminar foto de perfil"
+              onPress={handleDeleteImage}
+            />
+          </View>
         </View>
-      </View>
+      )}
     </View>
   );
 }
@@ -74,5 +81,10 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.textPresets.main,
     textAlign: "center",
   },
-  // Removed unused styles like logo and textInput
+  loadingContainer: {
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
+  },
 }));
