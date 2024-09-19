@@ -3,22 +3,22 @@ import { useState } from "react";
 import { Alert } from "react-native";
 
 type AssignTruckVehicle = {
-  id_conductor: string | undefined;
+  user_id: string | undefined;
 };
 
 export default function useAssignVehicle({
-  id_conductor: m_id_conductor,
+  user_id,
 }: AssignTruckVehicle) {
   const [loading, setLoading] = useState(false);
 
-  const assignVehicle = async (id_camiones: string[]) => {
+  const assignVehicle = async (vehicle_ids: string[]) => {
     setLoading(true);
 
     try {
-      for (const id_camion of id_camiones) {
-        const { data, error } = await supabase.from("conductor_camion").insert({
-          id_camion: id_camion,
-          id_conductor: m_id_conductor,
+      for (const vehicle_id of vehicle_ids) {
+        const { data, error } = await supabase.from("vehicle_user").insert({
+          vehicle_id,
+          user_id,
         });
 
         if (error) {
@@ -29,8 +29,8 @@ export default function useAssignVehicle({
       }
 
       Alert.alert("Éxito", "Camiones asignados correctamente");
-    } catch (error) {
-      Alert.alert("Error");
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
     } finally {
       setLoading(false);
     }

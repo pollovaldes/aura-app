@@ -26,7 +26,7 @@ export default function AssignVehicleModalScreen() {
   const { personId } = useLocalSearchParams<{ personId: string }>();
 
   const { loading: assignLoading, assignVehicle } = useAssignVehicle({
-    id_conductor: personId,
+    user_id: personId,
   }); // Crea un hook para asignar camiones
 
   const { searchState } = useSearch(); // Get the search state from the context

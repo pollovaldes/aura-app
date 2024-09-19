@@ -26,7 +26,7 @@ export default function SeeTruckModalScreen() {
   //const { trucks, loading } = useTruck({ isComplete: false }); // quitar
 
   const [selectedTrucks, setSelectedTrucks] = useState<Set<string>>(new Set()); // Estado para manejar los camiones seleccionados
-  const { loading: assignLoading, assignVehicle } = useAssignVehicle({ id_conductor: personId }); // Crea un hook para asignar camiones
+  const { loading: assignLoading, assignVehicle } = useAssignVehicle({ user_id: personId }); // Crea un hook para asignar camiones
   const { searchState } = useSearch(); // Get the search state from the context
   const searchQuery = searchState["STMS"] || ""; // Use the search query for "ATMS"
   const [filteredTrucks, setFilteredTrucks] = useState(trucks);
