@@ -21,7 +21,7 @@ export default function SeeTruckModalScreen() {
   const { styles } = useStyles(stylesheet);
   const { personId } = useLocalSearchParams<{ personId: string }>();
   const [trucks, setTrucks] = useState<Truck[]>([]);
-  const [eraseTrucks, setEraseTrucks] = useState<{ id_camion: string }[]>([]);
+  const [eraseTrucks, setEraseTrucks] = useState<{ vehicle_id: string }[]>([]);
   const [loading, setLoading] = useState(true);
   //const { trucks, loading } = useTruck({ isComplete: false }); // quitar
 
@@ -57,9 +57,9 @@ export default function SeeTruckModalScreen() {
     const fetchEraseSelected = async () => {
       try {
         const { data, error } = await supabase
-          .from("conductor_camion")
-          .select("id_camion")
-          .eq("id_conductor", personId);
+          .from("vehicle_user")
+          .select("vehicle_id")
+          .eq("user_id", personId);
 
         if (error) {
           throw error;
@@ -84,7 +84,7 @@ export default function SeeTruckModalScreen() {
     const fetchEraseTrucksSelected = async () => {
       console.log(loading, "a");
       try {
-        const truckIds = eraseTrucks.map((truck) => truck.id_camion);
+        const truckIds = eraseTrucks.map((truck) => truck.vehicle_id);
         const { data, error } = await supabase
           .from("camiones")
           .select("id, numero_economico, marca, sub_marca, modelo")
