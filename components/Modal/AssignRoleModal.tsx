@@ -17,10 +17,10 @@ export default function AssignRoleModal({ closeModal }: { closeModal: () => void
         <TouchableOpacity onPress={() => assignUserRole("ADMIN")}>
           <Text style={styles.optionText}>Administrador</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => assignUserRole("USER")}>
+        <TouchableOpacity onPress={() => assignUserRole("DRIVER")}>
           <Text style={styles.optionText}>Operador</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => assignUserRole("DENEGADO")}>
+        <TouchableOpacity onPress={() => assignUserRole("NO_ROLE")}>
           <Text style={styles.optionText}>Denegar acceso</Text>
         </TouchableOpacity>
         <Text style={styles.subtitle}>

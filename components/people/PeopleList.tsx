@@ -17,7 +17,7 @@ import SegmentedControl from "@react-native-segmented-control/segmented-control"
 
 export default function PeopleList() {
   const { isAdmin, isAdminLoading } = useIsAdmin();
-  const { people, peopleAreLoading } = usePeople();
+  const { people, peopleAreLoading, fetchPeople } = usePeople();
   const { styles } = useStyles(stylesheet);
   const { searchState, setSearchQuery } = useSearch();
 
@@ -59,6 +59,8 @@ export default function PeopleList() {
     return (
       <>
         <FlatList
+          refreshing={peopleAreLoading}
+          onRefresh={fetchPeople}
           contentInsetAdjustmentBehavior="automatic"
           data={filteredPeople}
           keyExtractor={(item) => item.id.toString()}

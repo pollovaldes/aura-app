@@ -29,12 +29,6 @@ export default function SignUp() {
   return (
     <>
       <TextInput
-        placeholder="Nombre"
-        autoComplete="name"
-        style={styles.textInput}
-        placeholderTextColor={styles.textInput.placehoolderTextColor}
-      />
-      <TextInput
         placeholder="Correo electrónico"
         inputMode="email"
         autoComplete="username"

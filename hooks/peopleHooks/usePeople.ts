@@ -1,13 +1,13 @@
 import { useEffect, useContext, Dispatch, SetStateAction } from "react";
 import { supabase } from "@/lib/supabase";
-import { Person } from "@/types/People";
+import { Person } from "@/types/Person";
 import PeopleContext from "@/context/PeopleContext";
 
 export default function useVehicle() {
   const { setPeople, peopleAreLoading, setPeopleAreLoading, people } =
     useContext(PeopleContext);
 
-  const fetchVehicles = async () => {
+  const fetchPeople = async () => {
     setPeopleAreLoading(true);
     try {
       const { data, error } = await supabase
@@ -17,8 +17,8 @@ export default function useVehicle() {
         );
 
       if (!error) {
-        const vehiclesData = data as Person[];
-        setPeople(vehiclesData);
+        const personData = data as Person[];
+        setPeople(personData);
         setPeopleAreLoading(false);
       } else {
         console.error("Error from usePeople: ", error);
@@ -33,7 +33,7 @@ export default function useVehicle() {
 
   useEffect(() => {
     if (!people) {
-      fetchVehicles();
+      fetchPeople();
     }
   }, []);
 
@@ -41,6 +41,6 @@ export default function useVehicle() {
     people,
     peopleAreLoading,
     setPeople,
-    fetchVehicles,
+    fetchPeople,
   };
 }

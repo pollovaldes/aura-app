@@ -9,14 +9,14 @@ export function useAssignRole() {
   const session = useSession();
   const {personId} = useLocalSearchParams<{personId: string}>()
 
-  type Roles = "USER" | "ADMIN" | "DENEGADO" | "NULL";
+  type Roles = "DRIVER" | "ADMIN" | "OWNER" | "NO_ROLE";
 
   const assignUserRole = async (role : Roles) => {
     setLoading(true);
     const { data, error } = await supabase
       .from("profiles")
       .update({
-        roles: role,
+        role,
       })
       .eq("id", personId)
       .single();
