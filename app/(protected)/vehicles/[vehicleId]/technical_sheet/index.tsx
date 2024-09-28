@@ -14,7 +14,6 @@ import EmptyScreen from "@/components/dataStates/EmptyScreen";
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
-
   const [numEco, setNumEco] = useState(false);
   const [marca, setMarca] = useState(false);
   const [subMarca, setSubMarca] = useState(false);
@@ -22,9 +21,19 @@ export default function Index() {
   const [noSerie, setNoSerie] = useState(false);
   const [placa, setPlaca] = useState(false);
   const { profile, isProfileLoading, fetchProfile } = useProfile();
-
-  const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle(); // Usa el hook
+  const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
+
+  if (vehiclesAreLoading) {
+    return (
+      <>
+        <LoadingScreen caption="Cargando vehículos" />
+        <Stack.Screen
+          options={{ title: "Cargando...", headerLargeTitle: false }}
+        />
+      </>
+    );
+  }
 
   if (isProfileLoading) {
     return (
@@ -46,15 +55,6 @@ export default function Index() {
         />
       </>
     );
-  }
-
-  if (vehiclesAreLoading) {
-    <>
-      <LoadingScreen caption="Cargando vehículos" />
-      <Stack.Screen
-        options={{ title: "Cargando...", headerLargeTitle: false }}
-      />
-    </>;
   }
 
   if (!vehicles) {
@@ -87,8 +87,11 @@ export default function Index() {
         contentInsetAdjustmentBehavior="automatic"
         refreshControl={
           <RefreshControl
-            refreshing={vehiclesAreLoading}
-            onRefresh={fetchVehicles}
+            refreshing={vehiclesAreLoading || isProfileLoading}
+            onRefresh={() => {
+              fetchVehicles();
+              fetchProfile();
+            }}
           />
         }
       >
@@ -143,7 +146,7 @@ export default function Index() {
 
         <View style={styles.container}>
           <Stack.Screen
-            options={{ title: "Ficha técnica", headerLargeTitle: true }}
+            options={{ title: "Ficha técnica", headerLargeTitle: false }}
           />
           <GroupedList
             header="Detalles"

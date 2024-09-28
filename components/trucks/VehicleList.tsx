@@ -39,7 +39,7 @@ export default function VehicleList() {
   }
 
   if (isProfileLoading) {
-    return <LoadingScreen caption="Cargando perfil" />;
+    return <LoadingScreen caption="Cargando perfil y permisos" />;
   }
 
   if (!profile) {
