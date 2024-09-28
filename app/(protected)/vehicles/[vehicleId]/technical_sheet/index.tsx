@@ -9,6 +9,9 @@ import { FormButton } from "@/components/Form/FormButton";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
 import useIsAdmin from "@/hooks/useIsAdmin";
 import useProfile from "@/hooks/useProfile";
+import LoadingScreen from "@/components/dataStates/LoadingScreen";
+import ErrorScreen from "@/components/dataStates/ErrorScreen";
+import EmptyScreen from "@/components/dataStates/EmptyScreen";
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
@@ -20,27 +23,63 @@ export default function Index() {
   const [noSerie, setNoSerie] = useState(false);
   const [placa, setPlaca] = useState(false);
   const [poliza, setPoliza] = useState(false);
-  const { role } = useProfile();
+  const { profile, isProfileLoading, fetchProfile } = useProfile();
 
-  const { vehicles, vehiclesAreLoading } = useVehicle(); // Usa el hook
+  const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle(); // Usa el hook
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
-  const vehicle = vehicles?.find((Vehicle) => Vehicle.id === vehicleId);
+
+  if (isProfileLoading) {
+    return (
+      <>
+        <Stack.Screen options={{ title: "Cargando..." }} />
+        <LoadingScreen caption="Cargando perfil y permisos" />
+      </>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <>
+        <Stack.Screen options={{ title: "Error", headerLargeTitle: false }} />
+        <ErrorScreen
+          caption="Ocurrió un error al cargar tu perfil"
+          buttonCaption="Reintentar"
+          retryFunction={fetchProfile}
+        />
+      </>
+    );
+  }
 
   if (vehiclesAreLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator />
-        <Stack.Screen options={{ title: "" }} />
-      </View>
-    );
+    <>
+      <Stack.Screen
+        options={{ title: "Cargando...", headerLargeTitle: false }}
+      />
+      <LoadingScreen caption="Cargando vehículos" />
+    </>;
   }
 
   if (!vehicles) {
     return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.details}>Este camión no existe…</Text>
-        <Stack.Screen options={{ title: "Error" }} />
-      </View>
+      <>
+        <Stack.Screen options={{ title: "Error", headerLargeTitle: false }} />
+        <ErrorScreen
+          caption="Ocurrió un error al cargar los vehículos"
+          buttonCaption="Reintentar"
+          retryFunction={fetchProfile}
+        />
+      </>
+    );
+  }
+
+  const vehicle = vehicles.find((Vehicle) => Vehicle.id === vehicleId);
+
+  if (!vehicle) {
+    return (
+      <>
+        <Stack.Screen options={{ title: "Error", headerLargeTitle: false }} />
+        <EmptyScreen caption="No se encuentra la ficha técnica de este vehículo" />
+      </>
     );
   }
 
@@ -48,7 +87,7 @@ export default function Index() {
     vehicle && (
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <ChangeDataModal
-          isOpen={role === "ADMIN" ? numEco : false}
+          isOpen={profile.role === "ADMIN" ? numEco : false}
           currentDataType="Numero Economico"
           currentData={vehicle.economic_number}
           closeModal={() => setNumEco(false)}
@@ -56,7 +95,7 @@ export default function Index() {
           id={vehicle.id}
         />
         <ChangeDataModal
-          isOpen={role === "ADMIN" ? marca : false}
+          isOpen={profile.role === "ADMIN" ? marca : false}
           currentDataType="Marca"
           currentData={vehicle.brand}
           closeModal={() => setMarca(false)}
@@ -64,7 +103,7 @@ export default function Index() {
           id={vehicle.id}
         />
         <ChangeDataModal
-          isOpen={role === "ADMIN" ? subMarca : false}
+          isOpen={profile.role === "ADMIN" ? subMarca : false}
           currentDataType="Sub Marca"
           currentData={vehicle.sub_brand}
           closeModal={() => setSubMarca(false)}
@@ -72,7 +111,7 @@ export default function Index() {
           id={vehicle.id}
         />
         <ChangeDataModal
-          isOpen={role === "ADMIN" ? modelo : false}
+          isOpen={profile.role === "ADMIN" ? modelo : false}
           currentDataType="Modelo"
           currentData={vehicle.year}
           closeModal={() => setModelo(false)}
@@ -80,7 +119,7 @@ export default function Index() {
           id={vehicle.id}
         />
         <ChangeDataModal
-          isOpen={role === "ADMIN" ? noSerie : false}
+          isOpen={profile.role === "ADMIN" ? noSerie : false}
           currentDataType="No de Serie"
           currentData={vehicle.serial_number}
           closeModal={() => setNoSerie(false)}
@@ -88,7 +127,7 @@ export default function Index() {
           id={vehicle.id}
         />
         <ChangeDataModal
-          isOpen={role === "ADMIN" ? placa : false}
+          isOpen={profile.role === "ADMIN" ? placa : false}
           currentDataType="Placa"
           currentData={vehicle.plate}
           closeModal={() => setPlaca(false)}
@@ -98,7 +137,7 @@ export default function Index() {
 
         <View style={styles.container}>
           <Stack.Screen
-            options={{ title: `${vehicle.brand} ${vehicle.sub_brand}` }}
+            options={{ title: "Ficha técnica", headerLargeTitle: true }}
           />
           <GroupedList
             header="Detalles"
@@ -109,45 +148,45 @@ export default function Index() {
               onPress={() => setNumEco(true)}
               trailingType="chevron"
               caption={`${vehicle.economic_number}`}
-              showChevron={role === "ADMIN"}
+              showChevron={profile.role === "ADMIN"}
             />
             <Row
               title="Marca"
               onPress={() => setMarca(true)}
               trailingType="chevron"
               caption={`${vehicle.brand}`}
-              showChevron={role === "ADMIN"}
+              showChevron={profile.role === "ADMIN"}
             />
             <Row
               title="Sub Marca"
               onPress={() => setSubMarca(true)}
               trailingType="chevron"
               caption={`${vehicle.sub_brand}`}
-              showChevron={role === "ADMIN"}
+              showChevron={profile.role === "ADMIN"}
             />
             <Row
               title="Modelo"
               onPress={() => setModelo(true)}
               trailingType="chevron"
               caption={`${vehicle.year}`}
-              showChevron={role === "ADMIN"}
+              showChevron={profile.role === "ADMIN"}
             />
             <Row
               title="No de Serie"
               onPress={() => setNoSerie(true)}
               trailingType="chevron"
               caption={`${vehicle.serial_number?.substring(0, 8) ?? "No disponible"}${vehicle.serial_number && vehicle.serial_number.length > 8 ? "..." : ""}`}
-              showChevron={role === "ADMIN"}
+              showChevron={profile.role === "ADMIN"}
             />
             <Row
               title="Placa"
               onPress={() => setPlaca(true)}
               trailingType="chevron"
               caption={`${vehicle.plate}`}
-              showChevron={role === "ADMIN"}
+              showChevron={profile.role === "ADMIN"}
             />
           </GroupedList>
-          {role === "ADMIN" && (
+          {profile.role === "ADMIN" && (
             <GroupedList>
               <FormButton
                 title="Borrar Camión"

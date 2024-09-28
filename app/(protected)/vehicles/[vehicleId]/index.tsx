@@ -153,7 +153,9 @@ export default function VehicleDetail() {
             <Row
               title="Ficha técnica"
               trailingType="chevron"
-              onPress={() => router.navigate(`/vehicles/${vehicleId}/details`)}
+              onPress={() =>
+                router.navigate(`/vehicles/${vehicleId}/technical_sheet`)
+              }
               icon={<Clipboard size={24} color="white" />}
               color={colorPalette.emerald[500]}
             />
