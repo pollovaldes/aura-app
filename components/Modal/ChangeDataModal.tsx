@@ -5,7 +5,6 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { supabase } from "@/lib/supabase";
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "../Form/FormButton";
-import { useSession } from "@/context/SessionContext";
 
 type ModalProps = {
   isOpen: boolean;
@@ -26,7 +25,7 @@ export default function ChangeDataModal({
   dataChange,
   id,
   table = "camiones",
-  identifier = "id"
+  identifier = "id",
 }: ModalProps) {
   const { styles } = useStyles(stylesheet);
   const [loading, setLoading] = useState(false);
@@ -74,10 +73,7 @@ export default function ChangeDataModal({
               autoCorrect={false}
               onChangeText={setNewData}
             />
-            <FormButton
-              title="Continuar"
-              onPress={checkUserProfile}
-            />
+            <FormButton title="Continuar" onPress={checkUserProfile} />
           </View>
         </View>
       </View>

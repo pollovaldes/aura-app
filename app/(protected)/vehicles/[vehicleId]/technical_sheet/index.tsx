@@ -1,4 +1,8 @@
-import { View, Text, ActivityIndicator, ScrollView, Alert } from "react-native";
+import {
+  View, ScrollView,
+  Alert,
+  RefreshControl
+} from "react-native";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -7,7 +11,6 @@ import Row from "@/components/grouped-list/Row";
 import ChangeDataModal from "@/components/Modal/ChangeDataModal";
 import { FormButton } from "@/components/Form/FormButton";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
-import useIsAdmin from "@/hooks/useIsAdmin";
 import useProfile from "@/hooks/useProfile";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
@@ -22,7 +25,6 @@ export default function Index() {
   const [modelo, setModelo] = useState(false);
   const [noSerie, setNoSerie] = useState(false);
   const [placa, setPlaca] = useState(false);
-  const [poliza, setPoliza] = useState(false);
   const { profile, isProfileLoading, fetchProfile } = useProfile();
 
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle(); // Usa el hook
@@ -52,10 +54,10 @@ export default function Index() {
 
   if (vehiclesAreLoading) {
     <>
+      <LoadingScreen caption="Cargando vehículos" />
       <Stack.Screen
         options={{ title: "Cargando...", headerLargeTitle: false }}
       />
-      <LoadingScreen caption="Cargando vehículos" />
     </>;
   }
 
@@ -66,7 +68,7 @@ export default function Index() {
         <ErrorScreen
           caption="Ocurrió un error al cargar los vehículos"
           buttonCaption="Reintentar"
-          retryFunction={fetchProfile}
+          retryFunction={fetchVehicles}
         />
       </>
     );
@@ -85,7 +87,15 @@ export default function Index() {
 
   return (
     vehicle && (
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        refreshControl={
+          <RefreshControl
+            refreshing={vehiclesAreLoading}
+            onRefresh={fetchVehicles}
+          />
+        }
+      >
         <ChangeDataModal
           isOpen={profile.role === "ADMIN" ? numEco : false}
           currentDataType="Numero Economico"
