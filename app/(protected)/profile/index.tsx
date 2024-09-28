@@ -69,6 +69,16 @@ export default function Index() {
     );
   }
 
+  if (!session.user.identities) {
+    return (
+      <ErrorScreen
+        caption="Ocurrió un error al recuperar tus identidades"
+        buttonCaption="Intentar cerrar sesión"
+        retryFunction={() => supabase.auth.signOut()}
+      />
+    );
+  }
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -156,10 +166,9 @@ export default function Index() {
           <Row
             title="Correo electrónico"
             trailingType="chevron"
-            caption={session?.user.email ? "Vinculado" : "Sin vinculado"}
+            caption={session.user.email ? "Vinculado" : "Sin vinculado"}
           />
           <Row title="Contraseña" trailingType="chevron" />
-          <Row title="Dispositivos y sesiones" trailingType="chevron" />
           <Row title="2FA" trailingType="chevron" caption="No configurado" />
         </GroupedList>
         <GroupedList
@@ -169,15 +178,47 @@ export default function Index() {
           <Row
             title="Correo electrónico"
             trailingType="chevron"
-            caption={session?.user.email ? "Vinculado" : "Sin vincular"}
+            caption={
+              session.user.identities.some(
+                (identity) => identity.provider === "email"
+              )
+                ? "Vinculado"
+                : "Sin vincular"
+            }
           />
           <Row
             title="Número de celular"
             trailingType="chevron"
-            caption={session?.user.phone ? "Vinculado" : "Sin vincular"}
+            caption={
+              session.user.identities.some(
+                (identity) => identity.provider === "phone"
+              )
+                ? "Vinculado"
+                : "Sin vincular"
+            }
           />
-          <Row title="Apple" trailingType="chevron" caption="Sin vincular" />
-          <Row title="Google" trailingType="chevron" caption="Sin vincular" />
+          <Row
+            title="Apple"
+            trailingType="chevron"
+            caption={
+              session.user.identities.some(
+                (identity) => identity.provider === "apple"
+              )
+                ? "Vinculado"
+                : "Sin vincular"
+            }
+          />
+          <Row
+            title="Google"
+            trailingType="chevron"
+            caption={
+              session.user.identities.some(
+                (identity) => identity.provider === "google"
+              )
+                ? "Vinculado"
+                : "Sin vincular"
+            }
+          />
         </GroupedList>
 
         <GroupedList>

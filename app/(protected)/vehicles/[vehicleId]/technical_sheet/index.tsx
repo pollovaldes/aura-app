@@ -1,8 +1,4 @@
-import {
-  View, ScrollView,
-  Alert,
-  RefreshControl
-} from "react-native";
+import { View, ScrollView, Alert, RefreshControl } from "react-native";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
