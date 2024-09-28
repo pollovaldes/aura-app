@@ -1,12 +1,14 @@
-import { ActivityIndicator, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import PictureUpload from "./PictureUpload";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import useProfile from "@/hooks/useProfile";
+import { Profile } from "@/hooks/useProfile";
 
-export default function ProfileRow() {
+type ProfileRowProps = {
+  profile: Profile;
+};
+
+export default function ProfileRow({ profile }: ProfileRowProps) {
   const { styles } = useStyles(stylesheet);
-  const { name, fatherLastName, motherLastName, position, isLoading } =
-    useProfile();
 
   return (
     <View style={styles.container}>
@@ -14,20 +16,13 @@ export default function ProfileRow() {
         <PictureUpload />
       </View>
       <View style={styles.descriptioonContainer}>
-        {isLoading ? (
-          <View style={styles.loadingContainer}>
-            <Text style={styles.description}>Obteniendo datos...</Text>
-            <ActivityIndicator />
-          </View>
-        ) : (
-          <>
-            <Text style={styles.name}>{name}</Text>
-            <Text
-              style={styles.name}
-            >{`${fatherLastName} ${motherLastName}`}</Text>
-            <Text style={styles.description}>{position}</Text>
-          </>
-        )}
+        <>
+          <Text style={styles.name}>{profile.name}</Text>
+          <Text
+            style={styles.name}
+          >{`${profile.father_last_name} ${profile.mother_last_name}`}</Text>
+          <Text style={styles.description}>{profile.position}</Text>
+        </>
       </View>
     </View>
   );

@@ -12,12 +12,14 @@ import PersonalInfoModal from "@/components/profile/PersonalInfoModal";
 import RoleModal from "@/components/profile/RoleModal";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { RefreshControl, ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import ProfileRow from "@/components/profile/ProfileRow";
 import ChangeImageModal from "@/components/profile/ChangeImageModal";
 import useProfile from "@/hooks/useProfile";
 import { useSessionContext } from "@/context/SessionContext";
+import LoadingScreen from "@/components/dataStates/LoadingScreen";
+import ErrorScreen from "@/components/dataStates/ErrorScreen";
 
 type ModalType =
   | "personal_info"
@@ -36,11 +38,47 @@ export default function Index() {
     let { error } = await supabase.auth.signOut();
   };
 
-  const { session } = useSessionContext();
-  const { isFullyRegistered, isLoading } = useProfile();
+  const { session, isLoading: isSessionLoading } = useSessionContext();
+  const { profile, isProfileLoading, fetchProfile } = useProfile();
+
+  if (isSessionLoading) {
+    return <LoadingScreen caption="Cargando sesión" />;
+  }
+
+  if (isProfileLoading) {
+    return <LoadingScreen caption="Cargando perfil" />;
+  }
+
+  if (!profile) {
+    return (
+      <ErrorScreen
+        caption="Ocurrió un error al recuperar tu perfil"
+        buttonCaption="Reintentar"
+        retryFunction={fetchProfile}
+      />
+    );
+  }
+
+  if (!session) {
+    return (
+      <ErrorScreen
+        caption="Ocurrió un error al recuperar tu sesión"
+        buttonCaption="Intentar cerrar sesión"
+        retryFunction={() => supabase.auth.signOut()}
+      />
+    );
+  }
 
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      refreshControl={
+        <RefreshControl
+          refreshing={isProfileLoading}
+          onRefresh={fetchProfile}
+        />
+      }
+    >
       <Modal isOpen={activeModal === "personal_info"}>
         <View style={styles.modalContainer}>
           <Text style={styles.closeButton} onPress={closeModal}>
@@ -66,14 +104,14 @@ export default function Index() {
         </View>
       </Modal>
       <View style={styles.container}>
-        {isFullyRegistered && (
+        {profile.is_fully_registered && (
           <GroupedList>
             <Row
               trailingType="chevron"
               title=""
               onPress={() => setActiveModal("change_image")}
             >
-              <ProfileRow />
+              <ProfileRow profile={profile} />
             </Row>
           </GroupedList>
         )}
@@ -84,15 +122,14 @@ export default function Index() {
           <Row
             title="Datos personales"
             trailingType="chevron"
-            disabled={isLoading}
-            isLoading={isLoading}
-            caption={isFullyRegistered ? "Completo ✅" : "Sin completar ⚠️"}
+            caption={
+              profile.is_fully_registered ? "Completo ✅" : "Sin completar ⚠️"
+            }
             onPress={() => setActiveModal("personal_info")}
           />
           <Row
             title="Rol"
             trailingType="chevron"
-            isLoading={isLoading}
             caption="Sin rol ⚠️"
             onPress={() => setActiveModal("role")}
           />

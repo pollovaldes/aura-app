@@ -34,10 +34,10 @@ export function VehiclesContextProvider({
   return (
     <VehiclesContext.Provider
       value={{
-        vehicles: vehicles,
+        vehicles,
         setVehicles,
-        vehiclesAreLoading: vehiclesAreLoading,
-        setVehiclesAreLoading: setVehiclesAreLoading,
+        vehiclesAreLoading,
+        setVehiclesAreLoading,
       }}
     >
       {children}

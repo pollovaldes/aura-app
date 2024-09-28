@@ -34,7 +34,7 @@ export default function VehicleDetail() {
   const { styles } = useStyles(stylesheet);
   const { vehicles, fetchVehicles, vehiclesAreLoading } = useVehicle();
   const [activeModal, setActiveModal] = useState(false);
-  
+
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const vehicle = vehicles?.find((Vehicle) => Vehicle.id === vehicleId);
 
@@ -103,7 +103,12 @@ export default function VehicleDetail() {
         selectThumbnail={() => selectThumbnail(vehicleId as string)}
         addPhotoToGallery={() => addPhotoToGallery(vehicleId as string)}
         deleteThumbnail={() => deleteThumbnail(vehicleId as string)}
-        deletePhotoFromGalley={() => deletePhotoFromGallery(vehicleId as string, vehicle.thumbnail as string)}
+        deletePhotoFromGalley={() =>
+          deletePhotoFromGallery(
+            vehicleId as string,
+            vehicle.thumbnail as string
+          )
+        }
       />
 
       <ScrollView

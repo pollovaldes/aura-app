@@ -1,5 +1,5 @@
-import { Redirect, Slot, Stack, Tabs, usePathname } from "expo-router";
-import { Text, View, useWindowDimensions } from "react-native";
+import { Redirect, Slot, Tabs, usePathname } from "expo-router";
+import { View, useWindowDimensions } from "react-native";
 import Sidebar from "../../components/sidebar/Sidebar";
 import ListItem from "../../components/sidebar/ListItem";
 import { Bell, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
@@ -18,12 +18,7 @@ export default function HomeLayout() {
   const { width } = useWindowDimensions();
   const widthThreshold = 600; // TODO: Move dimensions to a theme file.
   const { isLoading: isSessionLoading, error, session } = useSessionContext();
-  const {
-    isFullyRegistered,
-    isLoading: isProfileLoading,
-    role,
-    position,
-  } = useProfile();
+  const { isProfileLoading, profile } = useProfile();
 
   const path = usePathname();
 
@@ -39,11 +34,11 @@ export default function HomeLayout() {
     return <Redirect href="/auth" />;
   }
 
-  if (error) {
+  if (error || !profile) {
     return (
       <View style={styles.fullscreenView}>
         <ErrorScreen
-          caption="Ocurrió un error al recuperar tu sesión"
+          caption="Ocurrió un error al recuperar tu sesión o tu perfil"
           buttonCaption="Intentar cerrar sesión"
           retryFunction={() => supabase.auth.signOut()}
         />
@@ -51,7 +46,7 @@ export default function HomeLayout() {
     );
   }
 
-  if (!isFullyRegistered && path !== "/profile") {
+  if (!profile.is_fully_registered && path !== "/profile") {
     return <Redirect href="/profile" />;
   }
 
@@ -63,13 +58,17 @@ export default function HomeLayout() {
             <View style={styles.container}>
               <Sidebar>
                 <ListItem
-                  href={isFullyRegistered ? "vehicles" : null}
+                  href={profile.is_fully_registered ? "vehicles" : null}
                   title="Camiones"
                   iconComponent={<Truck color={styles.icon.color} size={19} />}
                 />
-                {role === "ADMIN" && (
+                {profile.role === "ADMIN" && (
                   <ListItem
-                    href={role === "ADMIN" || isFullyRegistered ? "people" : null}
+                    href={
+                      profile.role === "ADMIN" || profile.is_fully_registered
+                        ? "people"
+                        : null
+                    }
                     title="Personas"
                     iconComponent={
                       <UsersRound color={styles.icon.color} size={19} />
@@ -77,7 +76,7 @@ export default function HomeLayout() {
                   />
                 )}
                 <ListItem
-                  href={isFullyRegistered ? "notifications" : null}
+                  href={profile.is_fully_registered ? "notifications" : null}
                   title="Notificaciones"
                   iconComponent={<Bell color={styles.icon.color} size={19} />}
                 />
@@ -96,7 +95,7 @@ export default function HomeLayout() {
               <Tabs.Screen
                 name="vehicles"
                 options={{
-                  href: !isFullyRegistered ? null : undefined,
+                  href: !profile.is_fully_registered ? null : undefined,
                   title: "Camiones",
                   tabBarIcon: ({ color }) => <Truck color={color} />,
                 }}
@@ -104,7 +103,10 @@ export default function HomeLayout() {
               <Tabs.Screen
                 name="people"
                 options={{
-                  href: role !== "ADMIN" || !isFullyRegistered ? null : undefined,
+                  href:
+                    profile.role !== "ADMIN" || !profile.is_fully_registered
+                      ? null
+                      : undefined,
                   title: "Personas",
                   tabBarIcon: ({ color }) => <UsersRound color={color} />,
                 }}
@@ -112,7 +114,7 @@ export default function HomeLayout() {
               <Tabs.Screen
                 name="notifications"
                 options={{
-                  href: !isFullyRegistered ? null : undefined,
+                  href: !profile.is_fully_registered ? null : undefined,
                   title: "Notificaciones",
                   tabBarIcon: ({ color }) => <Bell color={color} />,
                 }}

@@ -16,7 +16,7 @@ export default function VehicleList() {
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [filteredVehicles, setFilteredVehicles] = useState(vehicles);
-  const { role } = useProfile();
+  const { profile, isProfileLoading, fetchProfile } = useProfile();
   const { styles } = useStyles(stylesheet);
   const { searchState } = useSearch();
   const searchQuery = searchState["trucks"] || "";
@@ -36,6 +36,20 @@ export default function VehicleList() {
 
   if (vehiclesAreLoading) {
     return <LoadingScreen caption="Cargando vehículos" />;
+  }
+
+  if (isProfileLoading) {
+    return <LoadingScreen caption="Cargando perfil" />;
+  }
+
+  if (!profile) {
+    return (
+      <ErrorScreen
+        caption="Ocurrió un error al recuperar tu perfil"
+        buttonCaption="Reintentar"
+        retryFunction={fetchProfile}
+      />
+    );
   }
 
   if (vehicles === null) {
@@ -58,7 +72,7 @@ export default function VehicleList() {
 
   return (
     <>
-      {role === "ADMIN" && (
+      {profile.role === "ADMIN" && (
         <Stack.Screen
           options={{
             headerRight: () => (
