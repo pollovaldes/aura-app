@@ -46,9 +46,41 @@ export default function HomeLayout() {
     );
   }
 
-  if (!profile.is_fully_registered && path !== "/profile") {
+  //REFRESH APP IF BANNED FOR UPDATING UI
+  if (profile.role === "BANNED") {
+    <Redirect href="/" />;
+  }
+
+  if (
+    (!profile.is_fully_registered || profile.role === "BANNED") &&
+    path !== "/profile"
+  ) {
     return <Redirect href="/profile" />;
   }
+
+  const showTabsAndListItems =
+    profile.is_fully_registered && profile.role === "ADMIN";
+  const isBanned = profile.role === "BANNED";
+
+  const mayShowTab = {
+    vehicles: isBanned ? null : profile.is_fully_registered ? undefined : null,
+    people: isBanned ? null : showTabsAndListItems ? undefined : null,
+    notifications: isBanned
+      ? null
+      : profile.is_fully_registered
+        ? undefined
+        : null,
+  };
+
+  const mayShowListItem = {
+    vehicles: isBanned ? null : profile.is_fully_registered ? "vehicles" : null,
+    people: isBanned ? null : showTabsAndListItems ? "people" : null,
+    notifications: isBanned
+      ? null
+      : profile.is_fully_registered
+        ? "notifications"
+        : null,
+  };
 
   return (
     <VehiclesContextProvider>
@@ -58,17 +90,13 @@ export default function HomeLayout() {
             <View style={styles.container}>
               <Sidebar>
                 <ListItem
-                  href={profile.is_fully_registered ? "vehicles" : null}
-                  title="Camiones"
+                  href={mayShowListItem.vehicles}
+                  title="Vehículos"
                   iconComponent={<Truck color={styles.icon.color} size={19} />}
                 />
                 {profile.role === "ADMIN" && (
                   <ListItem
-                    href={
-                      profile.role === "ADMIN" || profile.is_fully_registered
-                        ? "people"
-                        : null
-                    }
+                    href={mayShowListItem.people}
                     title="Personas"
                     iconComponent={
                       <UsersRound color={styles.icon.color} size={19} />
@@ -76,7 +104,7 @@ export default function HomeLayout() {
                   />
                 )}
                 <ListItem
-                  href={profile.is_fully_registered ? "notifications" : null}
+                  href={mayShowListItem.notifications}
                   title="Notificaciones"
                   iconComponent={<Bell color={styles.icon.color} size={19} />}
                 />
@@ -95,18 +123,15 @@ export default function HomeLayout() {
               <Tabs.Screen
                 name="vehicles"
                 options={{
-                  href: !profile.is_fully_registered ? null : undefined,
-                  title: "Camiones",
+                  href: mayShowTab.vehicles,
+                  title: "Vehículos",
                   tabBarIcon: ({ color }) => <Truck color={color} />,
                 }}
               />
               <Tabs.Screen
                 name="people"
                 options={{
-                  href:
-                    profile.role !== "ADMIN" || !profile.is_fully_registered
-                      ? null
-                      : undefined,
+                  href: mayShowTab.people,
                   title: "Personas",
                   tabBarIcon: ({ color }) => <UsersRound color={color} />,
                 }}
@@ -114,7 +139,7 @@ export default function HomeLayout() {
               <Tabs.Screen
                 name="notifications"
                 options={{
-                  href: !profile.is_fully_registered ? null : undefined,
+                  href: mayShowTab.notifications,
                   title: "Notificaciones",
                   tabBarIcon: ({ color }) => <Bell color={color} />,
                 }}

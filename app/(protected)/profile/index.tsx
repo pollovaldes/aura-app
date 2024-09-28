@@ -92,7 +92,7 @@ export default function Index() {
           <Text style={styles.closeButton} onPress={closeModal}>
             Cerrar
           </Text>
-          <RoleModal closeModal={closeModal} />
+          <RoleModal closeModal={closeModal} profile={profile} />
         </View>
       </Modal>
       <Modal isOpen={activeModal === "change_image"}>
@@ -130,7 +130,22 @@ export default function Index() {
           <Row
             title="Rol"
             trailingType="chevron"
-            caption="Sin rol ⚠️"
+            caption={(() => {
+              switch (profile.role) {
+                case "ADMIN":
+                  return "Administrador";
+                case "DRIVER":
+                  return "Conductor";
+                case "BANNED":
+                  return "Bloqueado";
+                case "NO_ROLE":
+                  return "Sin rol";
+                case "OWNER":
+                  return "Dueño";
+                default:
+                  return "Indefinido";
+              }
+            })()}
             onPress={() => setActiveModal("role")}
           />
         </GroupedList>
