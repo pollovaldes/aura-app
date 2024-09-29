@@ -10,13 +10,16 @@ import usePeople from "@/hooks/peopleHooks/usePeople";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link, Redirect } from "expo-router";
 import { useEffect, useState } from "react";
-import useIsAdmin from "@/hooks/useIsAdmin";
 import { ChevronRight } from "lucide-react-native";
 import { useSearch } from "@/context/SearchContext";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
+import React from "react";
+import useProfile from "@/hooks/useProfile";
+import LoadingScreen from "../dataStates/LoadingScreen";
+import ErrorScreen from "../dataStates/ErrorScreen";
 
 export default function PeopleList() {
-  const { isAdmin, isAdminLoading } = useIsAdmin();
+  const { profile, isProfileLoading, fetchProfile } = useProfile();
   const { people, peopleAreLoading, fetchPeople } = usePeople();
   const { styles } = useStyles(stylesheet);
   const { searchState, setSearchQuery } = useSearch();
@@ -47,15 +50,35 @@ export default function PeopleList() {
     }
   }, [searchQuery, people]);
 
-  if (peopleAreLoading || isAdminLoading) {
+  if (peopleAreLoading) {
+    return <LoadingScreen caption="Cargando vehículos" />;
+  }
+
+  if (isProfileLoading) {
+    return <LoadingScreen caption="Cargando perfil y permisos" />;
+  }
+
+  if (!profile) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator />
-      </View>
+      <ErrorScreen
+        caption="Ocurrió un error al recuperar tu perfil"
+        buttonCaption="Reintentar"
+        retryFunction={fetchProfile}
+      />
     );
   }
 
-  if (isAdmin) {
+  if (people === null) {
+    return (
+      <ErrorScreen
+        caption={`Ocurrió un error y no \npudimos cargar los vehículos`}
+        buttonCaption="Reintentar"
+        retryFunction={fetchPeople}
+      />
+    );
+  }
+
+  if (profile?.role === "ADMIN" || profile?.role === "OWNER") {
     return (
       <>
         <FlatList
