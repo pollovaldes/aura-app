@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useSessionContext } from "@/context/SessionContext";
 import { Subscription } from "@supabase/supabase-js";
+import { router } from "expo-router";
 
 export interface Profile {
   name: string | null;
@@ -49,6 +50,25 @@ export default function useProfile() {
   useEffect(() => {
     if (!isSessionLoading && session?.user?.id) {
       fetchProfile();
+
+      // Subscribe to profile updates in real-time
+      const profileSubscription = supabase
+        .channel("public:profiles")
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "profiles", filter: `id=eq.${session.user.id}` },
+          (payload) => {
+            console.log("Change received!", payload);
+            router.replace("/");
+          }
+        )
+        .subscribe();
+
+      // Cleanup the subscription when the component unmounts
+      return () => {
+        supabase.removeChannel(profileSubscription);
+      };
+
     }
   }, [isSessionLoading, session]);
 
