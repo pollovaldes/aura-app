@@ -11,6 +11,7 @@ import LoadingScreen from "../dataStates/LoadingScreen";
 import ErrorScreen from "../dataStates/ErrorScreen";
 import EmptyScreen from "../dataStates/EmptyScreen";
 import TruckThumbnail from "./TruckThumbnail";
+import React from "react";
 
 export default function VehicleList() {
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();

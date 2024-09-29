@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { Person } from "@/types/Person";
 import PeopleContext from "@/context/PeopleContext";
 
-export default function useVehicle() {
+export default function usePeople() {
   const { setPeople, peopleAreLoading, setPeopleAreLoading, people } =
     useContext(PeopleContext);
 

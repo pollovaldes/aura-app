@@ -11,6 +11,7 @@ import useProfile from "@/hooks/useProfile";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
+import React from "react";
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);

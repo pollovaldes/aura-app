@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useSessionContext } from "@/context/SessionContext";
+import { Subscription } from "@supabase/supabase-js";
 
 export interface Profile {
   name: string | null;
@@ -48,12 +49,27 @@ export default function useProfile() {
   useEffect(() => {
     if (!isSessionLoading && session?.user?.id) {
       fetchProfile();
-    }
+    }  
   }, [isSessionLoading, session]);
 
-  return {
-    isProfileLoading,
-    profile,
-    fetchProfile,
+useEffect(() => {
+  const subscription = supabase
+    .channel('todos')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'todos' }, () => {
+      fetchProfile();
+    })
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(subscription);
   };
+}, []);
+
+
+
+return {
+  isProfileLoading,
+  profile,
+  fetchProfile,
+};
 }
