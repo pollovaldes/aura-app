@@ -73,7 +73,7 @@ export default function VehicleList() {
 
   return (
     <>
-      {profile.role === "ADMIN" && (
+      {profile.role === "ADMIN" || profile.role === "OWNER" && (
         <Stack.Screen
           options={{
             headerRight: () => (

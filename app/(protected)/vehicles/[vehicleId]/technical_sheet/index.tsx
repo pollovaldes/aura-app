@@ -97,7 +97,7 @@ export default function Index() {
         }
       >
         <ChangeDataModal
-          isOpen={profile.role === "ADMIN" ? numEco : false}
+          isOpen={profile.role === "ADMIN" || profile.role === "OWNER" ? numEco : false}
           currentDataType="Numero Economico"
           currentData={vehicle.economic_number}
           closeModal={() => setNumEco(false)}
@@ -105,7 +105,7 @@ export default function Index() {
           id={vehicle.id}
         />
         <ChangeDataModal
-          isOpen={profile.role === "ADMIN" ? marca : false}
+          isOpen={profile.role === "ADMIN" || profile.role === "OWNER" ? marca : false}
           currentDataType="Marca"
           currentData={vehicle.brand}
           closeModal={() => setMarca(false)}
@@ -113,7 +113,7 @@ export default function Index() {
           id={vehicle.id}
         />
         <ChangeDataModal
-          isOpen={profile.role === "ADMIN" ? subMarca : false}
+          isOpen={profile.role === "ADMIN" || profile.role === "OWNER" ? subMarca : false}
           currentDataType="Sub Marca"
           currentData={vehicle.sub_brand}
           closeModal={() => setSubMarca(false)}
@@ -121,7 +121,7 @@ export default function Index() {
           id={vehicle.id}
         />
         <ChangeDataModal
-          isOpen={profile.role === "ADMIN" ? modelo : false}
+          isOpen={profile.role === "ADMIN" || profile.role === "OWNER" ? modelo : false}
           currentDataType="Modelo"
           currentData={vehicle.year}
           closeModal={() => setModelo(false)}
@@ -129,7 +129,7 @@ export default function Index() {
           id={vehicle.id}
         />
         <ChangeDataModal
-          isOpen={profile.role === "ADMIN" ? noSerie : false}
+          isOpen={profile.role === "ADMIN" || profile.role === "OWNER" ? noSerie : false}
           currentDataType="No de Serie"
           currentData={vehicle.serial_number}
           closeModal={() => setNoSerie(false)}
@@ -137,7 +137,7 @@ export default function Index() {
           id={vehicle.id}
         />
         <ChangeDataModal
-          isOpen={profile.role === "ADMIN" ? placa : false}
+          isOpen={profile.role === "ADMIN" || profile.role === "OWNER" ? placa : false}
           currentDataType="Placa"
           currentData={vehicle.plate}
           closeModal={() => setPlaca(false)}
@@ -158,45 +158,45 @@ export default function Index() {
               onPress={() => setNumEco(true)}
               trailingType="chevron"
               caption={`${vehicle.economic_number}`}
-              showChevron={profile.role === "ADMIN"}
+              showChevron={profile.role === "ADMIN" || profile.role === "OWNER"}
             />
             <Row
               title="Marca"
               onPress={() => setMarca(true)}
               trailingType="chevron"
               caption={`${vehicle.brand}`}
-              showChevron={profile.role === "ADMIN"}
+              showChevron={profile.role === "ADMIN" || profile.role === "OWNER"}
             />
             <Row
               title="Sub Marca"
               onPress={() => setSubMarca(true)}
               trailingType="chevron"
               caption={`${vehicle.sub_brand}`}
-              showChevron={profile.role === "ADMIN"}
+              showChevron={profile.role === "ADMIN" || profile.role === "OWNER"}
             />
             <Row
               title="Modelo"
               onPress={() => setModelo(true)}
               trailingType="chevron"
               caption={`${vehicle.year}`}
-              showChevron={profile.role === "ADMIN"}
+              showChevron={profile.role === "ADMIN" || profile.role === "OWNER"}
             />
             <Row
               title="No de Serie"
               onPress={() => setNoSerie(true)}
               trailingType="chevron"
               caption={`${vehicle.serial_number?.substring(0, 8) ?? "No disponible"}${vehicle.serial_number && vehicle.serial_number.length > 8 ? "..." : ""}`}
-              showChevron={profile.role === "ADMIN"}
+              showChevron={profile.role === "ADMIN" || profile.role === "OWNER"}
             />
             <Row
               title="Placa"
               onPress={() => setPlaca(true)}
               trailingType="chevron"
               caption={`${vehicle.plate}`}
-              showChevron={profile.role === "ADMIN"}
+              showChevron={profile.role === "ADMIN" || profile.role === "OWNER"}
             />
           </GroupedList>
-          {profile.role === "ADMIN" && (
+          {profile.role === "ADMIN" || profile.role === "OWNER" && (
             <GroupedList>
               <FormButton
                 title="Borrar Camión"

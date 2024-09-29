@@ -9,7 +9,7 @@ export function useAssignRole() {
   const session = useSession();
   const {personId} = useLocalSearchParams<{personId: string}>()
 
-  type Roles = "DRIVER" | "ADMIN" | "OWNER" | "NO_ROLE";
+  type Roles = "DRIVER" | "ADMIN" | "OWNER" | "NO_ROLE" | "BANNED";
 
   const assignUserRole = async (role : Roles) => {
     setLoading(true);
