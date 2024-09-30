@@ -1,33 +1,60 @@
 import React from "react";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { View, Image, ScrollView } from "react-native";
+import { View, ScrollView } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
-import { Clipboard, Info, SquarePen, Truck } from "lucide-react-native";
+import { Info, SquarePen, Truck } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
+import ProfileColumn from "@/components/people/ProfileColumn";
+import LoadingScreen from "@/components/dataStates/LoadingScreen";
+import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import usePeople from "@/hooks/peopleHooks/usePeople";
+import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 
 export default function PeopleDetail() {
-  const { people } = usePeople();
-  
   const { personId } = useLocalSearchParams<{ personId: string }>();
-  const user = people?.find((People) => People.id === personId);
-
   const { styles } = useStyles(stylesheet);
+  const { people, fetchPeople, peopleAreLoading } = usePeople();
 
-  const peopleTitle = `${user?.name ?? ""} ${user?.father_last_name ?? ""} ${user?.mother_last_name ?? ""}`;
+  if (peopleAreLoading) {
+    return <LoadingScreen caption="Cargando perfil" />;
+  }
+
+  if (!people) {
+    return (
+      <ErrorScreen
+        caption="Ocurrió un error al recuperar tu perfil"
+        buttonCaption="Reintentar"
+        retryFunction={fetchPeople}
+      />
+    );
+  }
+
+  const user = people.find((People) => People.id === personId);
+
+  if (!user) {
+    return (
+      <>
+        <Stack.Screen options={{ title: "Recurso inaccesible" }} />
+        <UnauthorizedScreen
+          caption="No tienes acceso a este recurso."
+          buttonCaption="Reintentar"
+          retryFunction={fetchPeople}
+        />
+      </>
+    );
+  }
 
   return (
     <>
-      <Stack.Screen options={{ headerShown: true, title: peopleTitle }} />
+      <Stack.Screen
+        options={{ headerShown: true, title: "", headerLargeTitle: false }}
+      />
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View style={styles.container}>
           <View style={styles.imageContainer}>
-            <Image
-              style={styles.image}
-              source={{ uri: "https://placehold.co/2048x2048.png" }}
-            />
+            <ProfileColumn profile={user} />
           </View>
           <GroupedList
             header="Datos"
@@ -71,7 +98,9 @@ const stylesheet = createStyleSheet((theme) => ({
     flex: 1,
     gap: theme.marginsComponents.section,
   },
-  imageContainer: {},
+  imageContainer: {
+    alignItems: "center",
+  },
   title: {
     fontSize: 24,
     fontWeight: "bold",

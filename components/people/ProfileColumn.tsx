@@ -1,19 +1,19 @@
 import { Text, View } from "react-native";
-import PictureUpload from "./PictureUpload";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Profile } from "@/hooks/useProfile";
+import PictureUpload from "../profile/PictureUpload";
 
 type ProfileRowProps = {
   profile: Profile;
 };
 
-export default function ProfileRow({ profile }: ProfileRowProps) {
+export default function ProfileColumn({ profile }: ProfileRowProps) {
   const { styles } = useStyles(stylesheet);
 
   return (
     <View style={styles.container}>
       <View>
-        <PictureUpload size={80} />
+        <PictureUpload size={120} />
       </View>
       <View style={styles.descriptioonContainer}>
         <>
@@ -30,25 +30,24 @@ export default function ProfileRow({ profile }: ProfileRowProps) {
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
-    flexDirection: "row",
+    flexDirection: "column",
     gap: 18,
     alignItems: "center",
+    marginTop: 12,
   },
   descriptioonContainer: {
     flexDirection: "column",
   },
-  loadingContainer: {
-    flexDirection: "row",
-    gap: 12,
-  },
   name: {
-    fontSize: 22,
+    fontSize: 30,
     fontWeight: "bold",
     color: theme.textPresets.main,
+    textAlign: "center",
   },
   description: {
-    fontSize: 14,
+    fontSize: 16,
     paddingVertical: 6,
     color: theme.textPresets.subtitle,
+    textAlign: "center",
   },
 }));

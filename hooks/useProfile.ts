@@ -1,21 +1,12 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useSessionContext } from "@/context/SessionContext";
-import { Subscription } from "@supabase/supabase-js";
 import { router } from "expo-router";
-
-export interface Profile {
-  name: string | null;
-  father_last_name: string | null;
-  mother_last_name: string | null;
-  position: string | null;
-  role: "NO_ROLE" | "OWNER" | "DRIVER" | "BANNED" | "ADMIN";
-  is_fully_registered: boolean | null;
-}
+import { Person } from "@/types/Person";
 
 export default function useProfile() {
   const { session, isLoading: isSessionLoading } = useSessionContext();
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<Person | null>(null);
   const [isProfileLoading, setIsProfileLoading] = useState<boolean>(false);
 
   const fetchProfile = async () => {
@@ -30,6 +21,7 @@ export default function useProfile() {
 
       if (profileData) {
         setProfile({
+          id: profileData.id,
           name: profileData.name,
           father_last_name: profileData.father_last_name,
           mother_last_name: profileData.mother_last_name,

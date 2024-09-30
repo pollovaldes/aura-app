@@ -17,14 +17,15 @@ import React from "react";
 import useProfile from "@/hooks/useProfile";
 import LoadingScreen from "../dataStates/LoadingScreen";
 import ErrorScreen from "../dataStates/ErrorScreen";
+import PictureUpload from "../profile/PictureUpload";
+import EmptyScreen from "../dataStates/EmptyScreen";
 
 export default function PeopleList() {
   const { profile, isProfileLoading, fetchProfile } = useProfile();
-  const { people, peopleAreLoading, fetchPeople } = usePeople();
   const { styles } = useStyles(stylesheet);
   const { searchState, setSearchQuery } = useSearch();
-
   const searchQuery = searchState["people"] || ""; // Usa un identificador único "people" para esta búsqueda
+  const { people, peopleAreLoading, fetchPeople } = usePeople();
   const [filteredPeople, setFilteredPeople] = useState(people); // Lista de personas filtradas
 
   const capitalizeWords = (text: string | null | undefined): string => {
@@ -51,7 +52,7 @@ export default function PeopleList() {
   }, [searchQuery, people]);
 
   if (peopleAreLoading) {
-    return <LoadingScreen caption="Cargando vehículos" />;
+    return <LoadingScreen caption="Cargando personas" />;
   }
 
   if (isProfileLoading) {
@@ -68,49 +69,50 @@ export default function PeopleList() {
     );
   }
 
-  if (people === null) {
+  if (!people) {
     return (
       <ErrorScreen
-        caption={`Ocurrió un error y no \npudimos cargar los vehículos`}
+        caption={`Ocurrió un error y no \npudimos cargar las personas`}
         buttonCaption="Reintentar"
         retryFunction={fetchPeople}
       />
     );
   }
 
-  if (profile?.role === "ADMIN" || profile?.role === "OWNER") {
+  if (filteredPeople?.length === 0) {
+    return <EmptyScreen caption="Ningún resultado" />;
+  }
+
+  const isAdminOrOwner = profile.role === "ADMIN" || profile.role === "OWNER";
+
+  if (isAdminOrOwner) {
     return (
-      <>
-        <FlatList
-          refreshing={peopleAreLoading}
-          onRefresh={fetchPeople}
-          contentInsetAdjustmentBehavior="automatic"
-          data={filteredPeople}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <Link href={{ pathname: `/people/${item.id}` }} asChild>
-              <Pressable>
-                <View style={styles.container}>
-                  <View style={styles.contentContainer}>
-                    <View style={styles.imageContainer}>
-                      <Image
-                        style={styles.image}
-                        source={{ uri: "https://placehold.co/128x128.png" }}
-                      />
-                    </View>
-                    <Text
-                      style={styles.itemText}
-                    >{`${capitalizeWords(item.name)} ${capitalizeWords(item.father_last_name)} ${capitalizeWords(item.mother_last_name)}`}</Text>
+      <FlatList
+        refreshing={peopleAreLoading}
+        onRefresh={fetchPeople}
+        contentInsetAdjustmentBehavior="automatic"
+        data={filteredPeople}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <Link href={{ pathname: `/people/${item.id}` }} asChild>
+            <Pressable>
+              <View style={styles.container}>
+                <View style={styles.contentContainer}>
+                  <View style={styles.imageContainer}>
+                    <PictureUpload size={60} />
                   </View>
-                  <View style={styles.chevronView}>
-                    <ChevronRight color={styles.chevron.color} />
-                  </View>
+                  <Text
+                    style={styles.itemText}
+                  >{`${capitalizeWords(item.name)} ${capitalizeWords(item.father_last_name)} ${capitalizeWords(item.mother_last_name)}`}</Text>
                 </View>
-              </Pressable>
-            </Link>
-          )}
-        />
-      </>
+                <View style={styles.chevronView}>
+                  <ChevronRight color={styles.chevron.color} />
+                </View>
+              </View>
+            </Pressable>
+          </Link>
+        )}
+      />
     );
   } else {
     return <Redirect href={"/vehicles"} />;
