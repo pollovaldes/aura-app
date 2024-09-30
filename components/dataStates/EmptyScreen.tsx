@@ -1,12 +1,19 @@
 import { Rabbit } from "lucide-react-native";
 import { Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { FormButton } from "../Form/FormButton";
 
 type EmptyScreenType = {
   caption: string;
+  buttonCaption?: string;
+  retryFunction?: () => void;
 };
 
-export default function EmptyScreen({ caption }: EmptyScreenType) {
+export default function EmptyScreen({
+  caption,
+  buttonCaption,
+  retryFunction,
+}: EmptyScreenType) {
   const { styles } = useStyles(stylesheet);
 
   return (
@@ -16,6 +23,9 @@ export default function EmptyScreen({ caption }: EmptyScreenType) {
           <Rabbit color={styles.icon.color} size={35} />
           <Text style={styles.text}>{caption}</Text>
         </View>
+        {buttonCaption && retryFunction && (
+          <FormButton title={buttonCaption} onPress={retryFunction} />
+        )}
       </View>
     </View>
   );

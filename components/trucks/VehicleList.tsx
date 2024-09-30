@@ -64,7 +64,13 @@ export default function VehicleList() {
   }
 
   if (vehicles.length === 0) {
-    return <EmptyScreen caption="Ningún vehículo por aquí" />;
+    return (
+      <EmptyScreen
+        caption="Ningún vehículo por aquí"
+        buttonCaption="Actualizar"
+        retryFunction={fetchVehicles}
+      />
+    );
   }
 
   if (filteredVehicles?.length === 0 && searchQuery) {
@@ -73,17 +79,18 @@ export default function VehicleList() {
 
   return (
     <>
-      {profile.role === "ADMIN" || profile.role === "OWNER" && (
-        <Stack.Screen
-          options={{
-            headerRight: () => (
-              <Pressable onPress={() => setIsModalVisible(true)}>
-                <Plus color={styles.plusIcon.color} />
-              </Pressable>
-            ),
-          }}
-        />
-      )}
+      {profile.role === "ADMIN" ||
+        (profile.role === "OWNER" && (
+          <Stack.Screen
+            options={{
+              headerRight: () => (
+                <Pressable onPress={() => setIsModalVisible(true)}>
+                  <Plus color={styles.plusIcon.color} />
+                </Pressable>
+              ),
+            }}
+          />
+        ))}
       <FlatList
         refreshing={vehiclesAreLoading}
         onRefresh={fetchVehicles}
