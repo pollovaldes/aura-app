@@ -36,7 +36,6 @@ export default function VehicleDetail() {
   const [activeModal, setActiveModal] = useState(false);
 
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
-  const vehicle = vehicles?.find((Vehicle) => Vehicle.id === vehicleId);
 
   const {
     addPhotoToGallery,
@@ -77,6 +76,8 @@ export default function VehicleDetail() {
       </>
     );
   }
+
+  const vehicle = vehicles.find((Vehicle) => Vehicle.id === vehicleId);
 
   if (!vehicle) {
     return (

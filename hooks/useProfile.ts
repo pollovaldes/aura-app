@@ -15,7 +15,6 @@ export interface Profile {
 
 export default function useProfile() {
   const { session, isLoading: isSessionLoading } = useSessionContext();
-
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isProfileLoading, setIsProfileLoading] = useState<boolean>(false);
 
@@ -56,7 +55,12 @@ export default function useProfile() {
         .channel("public:profiles")
         .on(
           "postgres_changes",
-          { event: "*", schema: "public", table: "profiles", filter: `id=eq.${session.user.id}` },
+          {
+            event: "*",
+            schema: "public",
+            table: "profiles",
+            filter: `id=eq.${session.user.id}`,
+          },
           (payload) => {
             console.log("Change received!", payload);
             router.replace("/");
@@ -68,7 +72,6 @@ export default function useProfile() {
       return () => {
         supabase.removeChannel(profileSubscription);
       };
-
     }
   }, [isSessionLoading, session]);
 

@@ -19,9 +19,9 @@ export default function HomeLayout() {
   const widthThreshold = 600; // TODO: Move dimensions to a theme file.
   const { isLoading: isSessionLoading, error, session } = useSessionContext();
   const { isProfileLoading, profile } = useProfile();
-
   const path = usePathname();
 
+  // Show loading screen while session or profile is loading
   if (isSessionLoading || isProfileLoading) {
     return (
       <View style={styles.fullscreenView}>
@@ -30,10 +30,12 @@ export default function HomeLayout() {
     );
   }
 
+  // Redirect to authentication if no session is present
   if (!session) {
     return <Redirect href="/auth" />;
   }
 
+  // Show error screen if there's an issue with the session or profile
   if (error || !profile) {
     return (
       <View style={styles.fullscreenView}>
@@ -46,27 +48,29 @@ export default function HomeLayout() {
     );
   }
 
-  //REFRESH APP IF BANNED FOR UPDATING UI
-  if (profile.role === "BANNED") {
-    <Redirect href="/" />;
-  }
-
-  if (
-    (!profile.is_fully_registered || profile.role === "BANNED") &&
-    path !== "/profile"
-  ) {
+  const requiresProfileCompletion =
+    !profile.is_fully_registered && path !== "/profile";
+  if (requiresProfileCompletion) {
     return <Redirect href="/profile" />;
   }
 
-  const showTabsAndListItems =
-    (profile.is_fully_registered && profile.role === "ADMIN") ||
-    profile.role === "OWNER";
-  const isBanned = profile.role === "BANNED";
+  // Determine tab visibility based on role and registration status
+  const isAdminOrOwner = profile.role === "ADMIN" || profile.role === "OWNER";
+  const isBannedOrNoRole =
+    profile.role === "BANNED" || profile.role === "NO_ROLE";
 
   const mayShowTab = {
-    vehicles: isBanned ? null : profile.is_fully_registered ? undefined : null,
-    people: isBanned ? null : showTabsAndListItems ? undefined : null,
-    notifications: isBanned
+    vehicles: isBannedOrNoRole
+      ? null
+      : profile.is_fully_registered
+        ? undefined
+        : null,
+    people: isBannedOrNoRole
+      ? null
+      : isAdminOrOwner && profile.is_fully_registered
+        ? undefined
+        : null,
+    notifications: isBannedOrNoRole
       ? null
       : profile.is_fully_registered
         ? undefined
@@ -74,37 +78,46 @@ export default function HomeLayout() {
   };
 
   const mayShowListItem = {
-    vehicles: isBanned ? null : profile.is_fully_registered ? "vehicles" : null,
-    people: isBanned ? null : showTabsAndListItems ? "people" : null,
-    notifications: isBanned
+    vehicles: isBannedOrNoRole
+      ? null
+      : profile.is_fully_registered
+        ? "vehicles"
+        : null,
+    people: isBannedOrNoRole
+      ? null
+      : isAdminOrOwner && profile.is_fully_registered
+        ? "people"
+        : null,
+    notifications: isBannedOrNoRole
       ? null
       : profile.is_fully_registered
         ? "notifications"
         : null,
   };
 
+  // Render UI based on the screen width (responsive design)
   return (
     <VehiclesContextProvider>
       <PeopleContextProvider>
         <ProfileImageProvider>
           {width > widthThreshold ? (
             <View style={styles.container}>
+              {/* Sidebar for larger screens */}
               <Sidebar>
                 <ListItem
                   href={mayShowListItem.vehicles}
                   title="Vehículos"
                   iconComponent={<Truck color={styles.icon.color} size={19} />}
                 />
-                {profile.role === "ADMIN" ||
-                  (profile.role === "OWNER" && (
-                    <ListItem
-                      href={mayShowListItem.people}
-                      title="Personas"
-                      iconComponent={
-                        <UsersRound color={styles.icon.color} size={19} />
-                      }
-                    />
-                  ))}
+                {isAdminOrOwner && (
+                  <ListItem
+                    href={mayShowListItem.people}
+                    title="Personas"
+                    iconComponent={
+                      <UsersRound color={styles.icon.color} size={19} />
+                    }
+                  />
+                )}
                 <ListItem
                   href={mayShowListItem.notifications}
                   title="Notificaciones"
@@ -121,6 +134,7 @@ export default function HomeLayout() {
               <Slot />
             </View>
           ) : (
+            // Tabs for smaller screens
             <Tabs screenOptions={{ headerShown: false }}>
               <Tabs.Screen
                 name="vehicles"

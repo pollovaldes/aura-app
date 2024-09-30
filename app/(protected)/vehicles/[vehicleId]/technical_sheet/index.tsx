@@ -12,6 +12,7 @@ import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import React from "react";
+import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
@@ -76,8 +77,12 @@ export default function Index() {
   if (!vehicle) {
     return (
       <>
-        <Stack.Screen options={{ title: "Error", headerLargeTitle: false }} />
-        <EmptyScreen caption="No se encuentra la ficha técnica de este vehículo" />
+        <Stack.Screen options={{ title: "Recurso inaccesible" }} />
+        <UnauthorizedScreen
+          caption="No tienes acceso a este recurso."
+          buttonCaption="Reintentar"
+          retryFunction={fetchVehicles}
+        />
       </>
     );
   }
@@ -97,7 +102,11 @@ export default function Index() {
         }
       >
         <ChangeDataModal
-          isOpen={profile.role === "ADMIN" || profile.role === "OWNER" ? numEco : false}
+          isOpen={
+            profile.role === "ADMIN" || profile.role === "OWNER"
+              ? numEco
+              : false
+          }
           currentDataType="Numero Economico"
           currentData={vehicle.economic_number}
           closeModal={() => setNumEco(false)}
@@ -105,7 +114,9 @@ export default function Index() {
           id={vehicle.id}
         />
         <ChangeDataModal
-          isOpen={profile.role === "ADMIN" || profile.role === "OWNER" ? marca : false}
+          isOpen={
+            profile.role === "ADMIN" || profile.role === "OWNER" ? marca : false
+          }
           currentDataType="Marca"
           currentData={vehicle.brand}
           closeModal={() => setMarca(false)}
@@ -113,7 +124,11 @@ export default function Index() {
           id={vehicle.id}
         />
         <ChangeDataModal
-          isOpen={profile.role === "ADMIN" || profile.role === "OWNER" ? subMarca : false}
+          isOpen={
+            profile.role === "ADMIN" || profile.role === "OWNER"
+              ? subMarca
+              : false
+          }
           currentDataType="Sub Marca"
           currentData={vehicle.sub_brand}
           closeModal={() => setSubMarca(false)}
@@ -121,7 +136,11 @@ export default function Index() {
           id={vehicle.id}
         />
         <ChangeDataModal
-          isOpen={profile.role === "ADMIN" || profile.role === "OWNER" ? modelo : false}
+          isOpen={
+            profile.role === "ADMIN" || profile.role === "OWNER"
+              ? modelo
+              : false
+          }
           currentDataType="Modelo"
           currentData={vehicle.year}
           closeModal={() => setModelo(false)}
@@ -129,7 +148,11 @@ export default function Index() {
           id={vehicle.id}
         />
         <ChangeDataModal
-          isOpen={profile.role === "ADMIN" || profile.role === "OWNER" ? noSerie : false}
+          isOpen={
+            profile.role === "ADMIN" || profile.role === "OWNER"
+              ? noSerie
+              : false
+          }
           currentDataType="No de Serie"
           currentData={vehicle.serial_number}
           closeModal={() => setNoSerie(false)}
@@ -137,7 +160,9 @@ export default function Index() {
           id={vehicle.id}
         />
         <ChangeDataModal
-          isOpen={profile.role === "ADMIN" || profile.role === "OWNER" ? placa : false}
+          isOpen={
+            profile.role === "ADMIN" || profile.role === "OWNER" ? placa : false
+          }
           currentDataType="Placa"
           currentData={vehicle.plate}
           closeModal={() => setPlaca(false)}
@@ -196,18 +221,19 @@ export default function Index() {
               showChevron={profile.role === "ADMIN" || profile.role === "OWNER"}
             />
           </GroupedList>
-          {profile.role === "ADMIN" || profile.role === "OWNER" && (
-            <GroupedList>
-              <FormButton
-                title="Borrar Camión"
-                onPress={() =>
-                  Alert.alert(
-                    "Se tiene que borrar de muchas tablas, ver al final"
-                  )
-                }
-              />
-            </GroupedList>
-          )}
+          {profile.role === "ADMIN" ||
+            (profile.role === "OWNER" && (
+              <GroupedList>
+                <FormButton
+                  title="Borrar Camión"
+                  onPress={() =>
+                    Alert.alert(
+                      "Se tiene que borrar de muchas tablas, ver al final"
+                    )
+                  }
+                />
+              </GroupedList>
+            ))}
         </View>
       </ScrollView>
     )
