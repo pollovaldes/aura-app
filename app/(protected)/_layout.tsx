@@ -59,7 +59,8 @@ export default function HomeLayout() {
   }
 
   const showTabsAndListItems =
-    profile.is_fully_registered && profile.role === "ADMIN" || profile.role === "OWNER";
+    (profile.is_fully_registered && profile.role === "ADMIN") ||
+    profile.role === "OWNER";
   const isBanned = profile.role === "BANNED";
 
   const mayShowTab = {
@@ -94,15 +95,16 @@ export default function HomeLayout() {
                   title="Vehículos"
                   iconComponent={<Truck color={styles.icon.color} size={19} />}
                 />
-                {profile.role === "ADMIN" || profile.role === "OWNER" && (
-                  <ListItem
-                    href={mayShowListItem.people}
-                    title="Personas"
-                    iconComponent={
-                      <UsersRound color={styles.icon.color} size={19} />
-                    }
-                  />
-                )}
+                {profile.role === "ADMIN" ||
+                  (profile.role === "OWNER" && (
+                    <ListItem
+                      href={mayShowListItem.people}
+                      title="Personas"
+                      iconComponent={
+                        <UsersRound color={styles.icon.color} size={19} />
+                      }
+                    />
+                  ))}
                 <ListItem
                   href={mayShowListItem.notifications}
                   title="Notificaciones"
