@@ -1,7 +1,6 @@
 import { View, Text, FlatList, Pressable } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link, Stack } from "expo-router";
-import AddTruckComponent from "./AddVehicleComponent";
 import { useEffect, useState } from "react";
 import { ChevronRight, Plus } from "lucide-react-native";
 import { useSearch } from "@/context/SearchContext";
@@ -12,6 +11,7 @@ import ErrorScreen from "../dataStates/ErrorScreen";
 import EmptyScreen from "../dataStates/EmptyScreen";
 import TruckThumbnail from "./TruckThumbnail";
 import React from "react";
+import AddVehicleComponent from "./AddVehicleComponent";
 
 export default function VehicleList() {
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
@@ -121,7 +121,7 @@ export default function VehicleList() {
           </Link>
         )}
       />
-      <AddTruckComponent
+      <AddVehicleComponent
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
       />

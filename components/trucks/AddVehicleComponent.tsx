@@ -1,50 +1,42 @@
-// AddTruckComponent.tsx
-
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-} from "react-native";
+import React, { useEffect } from "react";
+import { View, Text, TextInput } from "react-native";
 
 import Modal from "@/components/Modal/Modal";
-import { useAddTruck } from "@/hooks/truckHooks/useAddTruck";
+import { useAddVehicle } from "@/hooks/truckHooks/useAddVehicle";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "../Form/FormButton";
+import useVehicle from "@/hooks/truckHooks/useVehicle";
+import { router } from "expo-router";
 
-interface AddTruckComponentProps {
+interface AddVehicleComponentProps {
   visible: boolean;
   onClose: () => void;
 }
 
-function AddTruckComponent({ visible, onClose }: AddTruckComponentProps) {
-
+function AddVehicleComponent({ visible, onClose }: AddVehicleComponentProps) {
   const { styles } = useStyles(stylesheet);
+  const { fetchVehicles } = useVehicle();
 
   const {
-    numEco,
-    marca,
-    submarca,
-    modelo,
-    serie,
-    placa,
-    poliza,
+    setBrand,
+    setSubBrand,
+    setYear,
+    setPlate,
+    setSerialNumber,
+    setEconomicNumber,
+    createVehicle,
+    vehicle,
     loading,
-    setNumEco,
-    setMarca,
-    setSubmarca,
-    setModelo,
-    setSerie,
-    setPlaca,
-    setPoliza,
-    handleCreateTruck,
-    resetFields,
-  } = useAddTruck();
+  } = useAddVehicle();
+
+  useEffect(() => {
+    if (vehicle && !loading) {
+      onClose();
+      fetchVehicles();
+      router.navigate(`vehicles/${vehicle.id}`);
+    }
+  }, [vehicle, loading]);
 
   return (
     <Modal isOpen={visible}>
@@ -55,76 +47,66 @@ function AddTruckComponent({ visible, onClose }: AddTruckComponentProps) {
 
         <View style={styles.section}>
           <View style={styles.group}>
-            <FormTitle title="Finaliza tu registro" />
+            <FormTitle title="Registra un nuevo vehículo" />
             <Text style={styles.subtitle}>
-              Para poder continuar debes terminar de llenar tus datos personales.
+              Ingresa los datos del vehículo a continuación
             </Text>
-            <View style={styles.group}>
-              <TextInput
-                placeholder="Número económico"
-                inputMode="text"
-                style={styles.textInput}
-                placeholderTextColor={styles.textInput.placehoolderTextColor}
-                autoCorrect={false}
-                onChangeText={setNumEco}
-                />
-              <TextInput
-                placeholder="Marca"
-                inputMode="text"
-                style={styles.textInput}
-                placeholderTextColor={styles.textInput.placehoolderTextColor}
-                autoCorrect={false}
-                onChangeText={setMarca}
-                />
-              <TextInput
-                placeholder="Submarca"
-                inputMode="text"
-                style={styles.textInput}
-                placeholderTextColor={styles.textInput.placehoolderTextColor}
-                autoCorrect={false}
-                onChangeText={setSubmarca}
-                />
-              <TextInput
-                placeholder="Modelo"
-                inputMode="text"
-                style={styles.textInput}
-                placeholderTextColor={styles.textInput.placehoolderTextColor}
-                autoCorrect={false}
-                onChangeText={setModelo}
-                />
-              <TextInput
-                placeholder="Serie"
-                inputMode="text"
-                style={styles.textInput}
-                placeholderTextColor={styles.textInput.placehoolderTextColor}
-                autoCorrect={false}
-                onChangeText={setSerie}
-                />
-              <TextInput
-                placeholder="Placa"
-                inputMode="text"
-                style={styles.textInput}
-                placeholderTextColor={styles.textInput.placehoolderTextColor}
-                autoCorrect={false}
-                onChangeText={setPlaca}
-                />
-              <TextInput
-                placeholder="Póliza"
-                inputMode="text"
-                style={styles.textInput}
-                placeholderTextColor={styles.textInput.placehoolderTextColor}
-                autoCorrect={false}
-                onChangeText={setPoliza}
-                />
-              <FormButton
-                title="Continuar"
-                onPress={handleCreateTruck}
-                isLoading={loading}
-                />
-            </View>
+          </View>
+          <View style={styles.group}>
+            <TextInput
+              placeholder="Marca"
+              inputMode="text"
+              style={styles.textInput}
+              placeholderTextColor={styles.textInput.placehoolderTextColor}
+              onChangeText={setBrand}
+            />
+            <TextInput
+              placeholder="Submarca"
+              inputMode="text"
+              style={styles.textInput}
+              placeholderTextColor={styles.textInput.placehoolderTextColor}
+              onChangeText={setSubBrand}
+            />
+            <TextInput
+              placeholder="Año"
+              inputMode="numeric"
+              style={styles.textInput}
+              placeholderTextColor={styles.textInput.placehoolderTextColor}
+              onChangeText={setYear}
+            />
+            <TextInput
+              placeholder="Número de placa"
+              inputMode="text"
+              style={styles.textInput}
+              placeholderTextColor={styles.textInput.placehoolderTextColor}
+              autoCorrect={false}
+              onChangeText={setPlate}
+            />
+            <TextInput
+              placeholder="Número de serie"
+              inputMode="text"
+              style={styles.textInput}
+              placeholderTextColor={styles.textInput.placehoolderTextColor}
+              autoCorrect={false}
+              onChangeText={setSerialNumber}
+            />
+            <TextInput
+              placeholder="Número económico"
+              inputMode="text"
+              style={styles.textInput}
+              placeholderTextColor={styles.textInput.placehoolderTextColor}
+              autoCorrect={false}
+              onChangeText={setEconomicNumber}
+            />
+          </View>
+          <View style={styles.group}>
+            <FormButton
+              title="Registrar"
+              onPress={createVehicle}
+              isLoading={loading}
+            />
           </View>
         </View>
-
       </View>
     </Modal>
   );
@@ -169,4 +151,4 @@ const stylesheet = createStyleSheet((theme) => ({
   },
 }));
 
-export default AddTruckComponent;
+export default AddVehicleComponent;

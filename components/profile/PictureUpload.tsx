@@ -13,7 +13,6 @@ type PictureUploadProps = {
 export default function PictureUpload({ size }: PictureUploadProps) {
   const { styles } = useStyles(stylesheet);
   const session = useSession();
-  const [profileImage, setProfileImage] = useState<FileObject | null>(null);
   const { imageUri, loading } = useProfileImage();
 
   return (

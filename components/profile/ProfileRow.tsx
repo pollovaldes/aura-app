@@ -1,13 +1,13 @@
 import { Text, View } from "react-native";
 import PictureUpload from "./PictureUpload";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { Profile } from "@/hooks/useProfile";
+import { Person } from "@/types/Person";
 
 type ProfileRowProps = {
-  profile: Profile;
+  person: Person;
 };
 
-export default function ProfileRow({ profile }: ProfileRowProps) {
+export default function ProfileRow({ person: profile }: ProfileRowProps) {
   const { styles } = useStyles(stylesheet);
 
   return (
