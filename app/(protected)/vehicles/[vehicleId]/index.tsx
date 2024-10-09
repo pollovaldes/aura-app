@@ -16,6 +16,7 @@ import {
   Fuel,
   Images,
   RotateCw,
+  Trash,
   UsersRoundIcon,
   Waypoints,
   Wrench,
@@ -212,6 +213,15 @@ export default function VehicleDetail() {
               caption="Dev only"
             />
           </GroupedList>
+          <GroupedList header="Zona de peligro">
+            <Row
+              title="Borrar vehículo"
+              trailingType="chevron"
+              icon={<Trash size={24} color="white" />}
+              color={colorPalette.red[500]}
+              onPress={() => router.navigate(`/vehicles/${vehicleId}/people`)}
+            />
+          </GroupedList>  
           <View />
         </View>
       </ScrollView>
