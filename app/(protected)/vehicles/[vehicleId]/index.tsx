@@ -6,6 +6,7 @@ import {
   ScrollView,
   RefreshControl,
   Pressable,
+  Text,
 } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
@@ -27,14 +28,20 @@ import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
-import ChangeVehicleImageModal from "@/components/trucks/ChangeVehicleThumbnail";
-import { FormButton } from "@/components/Form/FormButton";
+import ChangeVehicleImageModal from "@/components/vehicles/ChangeVehicleThumbnail";
 import useVehicleThumbnail from "@/hooks/truckHooks/useVehicleThumbnail";
+import useProfile from "@/hooks/useProfile";
+import Modal from "@/components/Modal/Modal";
+import ChangeImageModal from "@/components/profile/ChangeImageModal";
+
+type ModalType = "change_cover_image" | null;
 
 export default function VehicleDetail() {
   const { styles } = useStyles(stylesheet);
   const { vehicles, fetchVehicles, vehiclesAreLoading } = useVehicle();
-  const [activeModal, setActiveModal] = useState(false);
+  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const closeModal = () => setActiveModal(null);
 
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
 
@@ -45,11 +52,51 @@ export default function VehicleDetail() {
     selectThumbnail,
   } = useVehicleThumbnail();
 
+  if (isProfileLoading) {
+    return (
+      <>
+        <Stack.Screen
+          options={{
+            title: "Cargando...",
+            headerLargeTitle: false,
+            headerRight: undefined,
+          }}
+        />
+        <LoadingScreen caption="Cargando perfil y permisos" />
+      </>
+    );
+  }
+
   if (vehiclesAreLoading) {
     return (
       <>
-        <Stack.Screen options={{ title: "Cargando..." }} />
+        <Stack.Screen
+          options={{
+            title: "Cargando...",
+            headerLargeTitle: false,
+            headerRight: undefined,
+          }}
+        />
         <LoadingScreen caption="Cargando vehículos" />
+      </>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <>
+        <Stack.Screen
+          options={{
+            title: "Error",
+            headerLargeTitle: false,
+            headerRight: undefined,
+          }}
+        />
+        <ErrorScreen
+          caption="Ocurrió un error al recuperar tu perfil"
+          buttonCaption="Reintentar"
+          retryFunction={fetchProfile}
+        />
       </>
     );
   }
@@ -58,7 +105,11 @@ export default function VehicleDetail() {
     return (
       <>
         <Stack.Screen
-          options={{ title: "Recurso inaccesible", headerLargeTitle: false }}
+          options={{
+            title: "Recurso inaccesible",
+            headerLargeTitle: false,
+            headerRight: undefined,
+          }}
         />
         <ErrorScreen
           caption={`Ocurrió un error y no \npudimos cargar los vehículos`}
@@ -72,7 +123,13 @@ export default function VehicleDetail() {
   if (vehicles.length === 0) {
     return (
       <>
-        <Stack.Screen options={{ title: "Recurso inaccesible" }} />
+        <Stack.Screen
+          options={{
+            title: "Recurso inaccesible",
+            headerRight: undefined,
+            headerLargeTitle: false,
+          }}
+        />
         <EmptyScreen caption="Ningún detalle por aquí" />;
       </>
     );
@@ -83,7 +140,13 @@ export default function VehicleDetail() {
   if (!vehicle) {
     return (
       <>
-        <Stack.Screen options={{ title: "Recurso inaccesible" }} />
+        <Stack.Screen
+          options={{
+            title: "Recurso inaccesible",
+            headerRight: undefined,
+            headerLargeTitle: false,
+          }}
+        />
         <UnauthorizedScreen
           caption="No tienes acceso a este recurso."
           buttonCaption="Reintentar"
@@ -97,51 +160,51 @@ export default function VehicleDetail() {
 
   return (
     <>
-      <Stack.Screen options={{ title: vehicleTitle }} />
-      <ChangeVehicleImageModal
-        visible={activeModal}
-        closeModal={() => setActiveModal(false)}
-        vehicle={vehicle}
-        selectThumbnail={() => selectThumbnail(vehicleId as string)}
-        addPhotoToGallery={() => addPhotoToGallery(vehicleId as string)}
-        deleteThumbnail={() => deleteThumbnail(vehicleId as string)}
-        deletePhotoFromGalley={() =>
-          deletePhotoFromGallery(
-            vehicleId as string,
-            vehicle.thumbnail as string
-          )
-        }
+      <Stack.Screen
+        options={{
+          title: "",
+          headerLargeTitle: false,
+          headerRight: () => (
+            <Pressable onPress={() => setActiveModal("change_cover_image")}>
+              <Text style={styles.rightPressText}>Cambiar portada</Text>
+            </Pressable>
+          ),
+        }}
       />
+      <Modal isOpen={activeModal === "change_cover_image"}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.closeButton} onPress={closeModal}>
+            Cerrar
+          </Text>
+          <ChangeImageModal closeModal={closeModal} />
+        </View>
+      </Modal>
 
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         refreshControl={
           <RefreshControl
-            refreshing={vehiclesAreLoading}
-            onRefresh={fetchVehicles}
+            refreshing={vehiclesAreLoading || isProfileLoading}
+            onRefresh={() => {
+              fetchVehicles();
+              fetchProfile();
+            }}
           />
         }
       >
         <View style={styles.container}>
-          <>
-            <Pressable onPress={() => setActiveModal(true)}>
-              {vehicle.thumbnail ? (
-                <Image
-                  style={styles.image}
-                  source={{ uri: vehicle.thumbnail }}
-                />
-              ) : (
-                <View style={styles.missingThumbanilContainer}>
-                  <View style={styles.missingThumbanilContent}>
-                    <FormButton
-                      title="Seleccionar imagen"
-                      onPress={() => setActiveModal(true)}
-                    />
-                  </View>
+          <View>
+            {vehicle.thumbnail ? (
+              <Image style={styles.image} source={{ uri: vehicle.thumbnail }} />
+            ) : (
+              <View style={styles.missingThumbanilContainer}>
+                <View style={styles.missingThumbanilContent}>
+                  <Text style={styles.noImageText}>Sin imagen</Text>
                 </View>
-              )}
-            </Pressable>
-          </>
+              </View>
+            )}
+            <Text style={styles.title}>{vehicleTitle}</Text>
+          </View>
           <GroupedList
             header="Consulta"
             footer="Ve distintos datos a lo largo del tiempo o actuales sobre este camión."
@@ -234,6 +297,15 @@ const stylesheet = createStyleSheet((theme) => ({
     fontSize: 16,
     color: theme.textPresets.subtitle,
   },
+  noImageText: {
+    fontSize: 16,
+    color: theme.textPresets.subtitle,
+    textAlign: "center",
+  },
+  rightPressText: {
+    color: theme.ui.colors.primary,
+    fontSize: 17,
+  },
   container: {
     flex: 1,
     gap: theme.marginsComponents.section,
@@ -283,10 +355,12 @@ const stylesheet = createStyleSheet((theme) => ({
     width: 200,
   },
   title: {
-    fontSize: 24,
+    marginTop: 6,
+    fontSize: 32,
     fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
+    marginLeft: 16,
+    marginRight: 100,
+    color: theme.textPresets.main,
   },
   image: {
     width: "100%",
@@ -307,5 +381,10 @@ const stylesheet = createStyleSheet((theme) => ({
     fontSize: 18,
     fontWeight: "bold",
     color: "#000", // Texto negro
+  },
+  closeButton: {
+    color: theme.ui.colors.primary,
+    fontSize: 18,
+    textAlign: "right",
   },
 }));

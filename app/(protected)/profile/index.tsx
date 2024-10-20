@@ -1,9 +1,3 @@
-/*
- * index.tsx - Created on Mon Jun 24 2024 by Luis Arturo Valdes Romero
- *
- * Copyright (c) 2024 Aura Residuos Sustentables
- */
-
 import TermsAndPrivacy from "@/app/auth/TermsAndPrivacy";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
@@ -33,7 +27,6 @@ export default function Index() {
   const { styles } = useStyles(stylesheet);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
-
   const signOut = async () => {
     let { error } = await supabase.auth.signOut();
   };
