@@ -56,7 +56,9 @@ const readImageAsDataURL = (file: Blob): Promise<string | null> => {
   });
 };
 
-const fetchThumbnail = async (vehicleId: string, fetchVehicles: () => void): Promise<string | null> => {
+const fetchThumbnail = async (
+  vehicleId: string,
+): Promise<string | null> => {
   try {
     const fileName = await listProfileImages(vehicleId);
     if (!fileName) return null;
@@ -71,11 +73,15 @@ const fetchThumbnail = async (vehicleId: string, fetchVehicles: () => void): Pro
   }
 };
 
-const selectThumbnail = async (vehicleId: string, fetchVehicles: () => void) => {
+const selectThumbnail = async (
+  vehicleId: string,
+  fetchVehicles: () => void
+) => {
   const options: ImagePickerOptions = {
+    aspect: [16, 9],
+    base64: true,
     mediaTypes: MediaTypeOptions.Images,
     allowsEditing: true,
-    base64: true,
   };
 
   const result = await launchImageLibraryAsync(options);
@@ -140,11 +146,15 @@ const selectThumbnail = async (vehicleId: string, fetchVehicles: () => void) => 
   }
 };
 
-const addPhotoToGallery = async (vehicleId: string, fetchVehicles: () => void) => {
+const addPhotoToGallery = async (
+  vehicleId: string,
+  fetchVehicles: () => void
+) => {
   const options: ImagePickerOptions = {
     mediaTypes: MediaTypeOptions.Images,
     allowsEditing: true,
     base64: true,
+    aspect: [16, 9],
   };
 
   const result = await launchImageLibraryAsync(options);
@@ -180,7 +190,10 @@ const addPhotoToGallery = async (vehicleId: string, fetchVehicles: () => void) =
   }
 };
 
-const deleteThumbnail = async (vehicleId: string, fetchVehicles: () => void) => {
+const deleteThumbnail = async (
+  vehicleId: string,
+  fetchVehicles: () => void
+) => {
   try {
     const { data: existingFiles, error: listError } = await supabase.storage
       .from("imagenes-camiones")
@@ -222,7 +235,11 @@ const deleteThumbnail = async (vehicleId: string, fetchVehicles: () => void) => 
   }
 };
 
-const deletePhotoFromGallery = async (vehicleId: string, fileName: string, fetchVehicles: () => void) => {
+const deletePhotoFromGallery = async (
+  vehicleId: string,
+  fileName: string,
+  fetchVehicles: () => void
+) => {
   try {
     const filePath = `${vehicleId}/galeria/${fileName}`;
     const { error: deleteError } = await supabase.storage
@@ -252,10 +269,14 @@ const useVehicleThumbnail = () => {
   const { fetchVehicles } = useVehicle();
 
   return {
-    fetchThumbnail: (vehicleId: string) => fetchThumbnail(vehicleId, fetchVehicles),
-    selectThumbnail: (vehicleId: string) => selectThumbnail(vehicleId, fetchVehicles),
-    addPhotoToGallery: (vehicleId: string) => addPhotoToGallery(vehicleId, fetchVehicles),
-    deleteThumbnail: (vehicleId: string) => deleteThumbnail(vehicleId, fetchVehicles),
+    fetchThumbnail: (vehicleId: string) =>
+      fetchThumbnail(vehicleId, fetchVehicles),
+    selectThumbnail: (vehicleId: string) =>
+      selectThumbnail(vehicleId, fetchVehicles),
+    addPhotoToGallery: (vehicleId: string) =>
+      addPhotoToGallery(vehicleId, fetchVehicles),
+    deleteThumbnail: (vehicleId: string) =>
+      deleteThumbnail(vehicleId, fetchVehicles),
     deletePhotoFromGallery: (vehicleId: string, fileName: string) =>
       deletePhotoFromGallery(vehicleId, fileName, fetchVehicles),
   };

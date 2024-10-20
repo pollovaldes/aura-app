@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import { FormButton } from "@/components/Form/FormButton"; // Asegúrate de que la ruta es correcta
 import { Vehicle } from "@/types/Vehicle";
-import useVehicle from "@/hooks/truckHooks/useVehicle";
 
 interface ChangeVehicleImageModalProps {
   visible: boolean;
@@ -77,8 +76,6 @@ export default function ChangeVehicleImageModal({
     );
   };
 
-  const { vehicles, setVehicles } = useVehicle();
-
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={closeModal}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -108,36 +105,6 @@ export default function ChangeVehicleImageModal({
             onPress={handleSelectImage}
           />
         </View>
-
-        {/* <View style={styles.section}>
-          <Text style={styles.subtitle}>Galería</Text>
-          {vehicle.galery.length > 0 ? (
-            vehicle.galery.map((image, index) => (
-              <View key={index} style={styles.galeriaItem}>
-                <Image
-                  source={{ uri: image.uri as string }}
-                  style={styles.galeriaImage}
-                />
-                <TouchableOpacity
-                  onPress={() =>
-                    handleDeleteGalleryImage(image.fileName as string)
-                  }
-                  style={styles.deleteButton}
-                >
-                  <Text style={{ color: "red" }}>Eliminar</Text>
-                </TouchableOpacity>
-              </View>
-            ))
-          ) : (
-            <Text>No hay imágenes en la galería.</Text>
-          )}
-          <FormButton
-            title="Agregar foto a la galería"
-            onPress={handleAddGalleryImage}
-          />
-        </View> */}
-
-        <FormButton title="Cerrar" onPress={closeModal} />
       </ScrollView>
     </Modal>
   );

@@ -28,11 +28,10 @@ import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
-import ChangeVehicleImageModal from "@/components/vehicles/ChangeVehicleThumbnail";
 import useVehicleThumbnail from "@/hooks/truckHooks/useVehicleThumbnail";
 import useProfile from "@/hooks/useProfile";
 import Modal from "@/components/Modal/Modal";
-import ChangeImageModal from "@/components/profile/ChangeImageModal";
+import ChangeCoverImage from "@/components/vehicles/modals/ChangeCoverImage";
 
 type ModalType = "change_cover_image" | null;
 
@@ -45,12 +44,7 @@ export default function VehicleDetail() {
 
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
 
-  const {
-    addPhotoToGallery,
-    deletePhotoFromGallery,
-    deleteThumbnail,
-    selectThumbnail,
-  } = useVehicleThumbnail();
+  const { deleteThumbnail, selectThumbnail } = useVehicleThumbnail();
 
   if (isProfileLoading) {
     return (
@@ -164,11 +158,13 @@ export default function VehicleDetail() {
         options={{
           title: "",
           headerLargeTitle: false,
-          headerRight: () => (
-            <Pressable onPress={() => setActiveModal("change_cover_image")}>
-              <Text style={styles.rightPressText}>Cambiar portada</Text>
-            </Pressable>
-          ),
+          headerRight: () =>
+            profile.role === "ADMIN" ||
+            (profile.role === "OWNER" && (
+              <Pressable onPress={() => setActiveModal("change_cover_image")}>
+                <Text style={styles.rightPressText}>Cambiar portada</Text>
+              </Pressable>
+            )),
         }}
       />
       <Modal isOpen={activeModal === "change_cover_image"}>
@@ -176,7 +172,12 @@ export default function VehicleDetail() {
           <Text style={styles.closeButton} onPress={closeModal}>
             Cerrar
           </Text>
-          <ChangeImageModal closeModal={closeModal} />
+          <ChangeCoverImage
+            closeModal={closeModal}
+            vehicle={vehicle}
+            selectThumbnail={selectThumbnail}
+            deleteThumbnail={deleteThumbnail}
+          />
         </View>
       </Modal>
 
@@ -364,7 +365,7 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   image: {
     width: "100%",
-    height: 250,
+    aspectRatio: 16 / 9,
   },
   button: {
     backgroundColor: "#add8e6", // Azul claro
