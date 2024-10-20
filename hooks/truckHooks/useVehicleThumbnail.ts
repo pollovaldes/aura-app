@@ -56,9 +56,7 @@ const readImageAsDataURL = (file: Blob): Promise<string | null> => {
   });
 };
 
-const fetchThumbnail = async (
-  vehicleId: string,
-): Promise<string | null> => {
+const fetchThumbnail = async (vehicleId: string): Promise<string | null> => {
   try {
     const fileName = await listProfileImages(vehicleId);
     if (!fileName) return null;
@@ -81,7 +79,7 @@ const selectThumbnail = async (
     aspect: [16, 9],
     base64: true,
     mediaTypes: MediaTypeOptions.Images,
-    allowsEditing: true,
+    allowsEditing: false,
   };
 
   const result = await launchImageLibraryAsync(options);
@@ -91,7 +89,6 @@ const selectThumbnail = async (
       const img = result.assets[0];
       const base64 = img.base64;
       if (!base64) throw new Error("No se pudo obtener datos base64");
-
       const filePath = `${vehicleId}/perfil/${new Date().getTime()}.png`;
 
       // Eliminar foto de perfil existente

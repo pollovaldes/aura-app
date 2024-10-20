@@ -151,6 +151,7 @@ export default function VehicleDetail() {
   }
 
   const vehicleTitle = `${vehicle.brand ?? ""} ${vehicle.sub_brand ?? ""} (${vehicle.year ?? ""})`;
+  const canEditVehicle = profile.role === "ADMIN" || profile.role === "OWNER";
 
   return (
     <>
@@ -159,14 +160,14 @@ export default function VehicleDetail() {
           title: "",
           headerLargeTitle: false,
           headerRight: () =>
-            profile.role === "ADMIN" ||
-            (profile.role === "OWNER" && (
+            canEditVehicle && (
               <Pressable onPress={() => setActiveModal("change_cover_image")}>
                 <Text style={styles.rightPressText}>Cambiar portada</Text>
               </Pressable>
-            )),
+            ),
         }}
       />
+
       <Modal isOpen={activeModal === "change_cover_image"}>
         <View style={styles.modalContainer}>
           <Text style={styles.closeButton} onPress={closeModal}>
@@ -223,7 +224,7 @@ export default function VehicleDetail() {
                 router.navigate(`/vehicles/${vehicleId}/technical_sheet`)
               }
               icon={<Clipboard size={24} color="white" />}
-              color={colorPalette.emerald[500]}
+              color={colorPalette.green[500]}
             />
             <Row
               title="Guantera digital"
@@ -235,27 +236,29 @@ export default function VehicleDetail() {
               }
             />
             <Row
-              title="Histórico de rutas"
-              trailingType="chevron"
-              icon={<Waypoints size={24} color="white" />}
-              color={colorPalette.lime[500]}
-            />
-            <Row
               title="Histórico de cargas de gasolina"
               trailingType="chevron"
               icon={<Fuel size={24} color="white" />}
               color={colorPalette.red[500]}
               onPress={() => router.navigate(`/vehicles/${vehicleId}/gasoline`)}
             />
+            <Row
+              title="Histórico de rutas"
+              trailingType="chevron"
+              icon={<Waypoints size={24} color="white" />}
+              color={colorPalette.sky[500]}
+            />
           </GroupedList>
           <GroupedList header="Acciones" footer="Alguna descripción.">
-            <Row
-              title="Administrar personas"
-              trailingType="chevron"
-              icon={<UsersRoundIcon size={24} color="white" />}
-              color={colorPalette.sky[500]}
-              onPress={() => router.navigate(`/vehicles/${vehicleId}/people`)}
-            />
+            {canEditVehicle && (
+              <Row
+                title="Administrar personas"
+                trailingType="chevron"
+                icon={<UsersRoundIcon size={24} color="white" />}
+                color={colorPalette.lime[500]}
+                onPress={() => router.navigate(`/vehicles/${vehicleId}/people`)}
+              />
+            )}
             <Row
               title="Registrar carga de gasolina"
               trailingType="chevron"

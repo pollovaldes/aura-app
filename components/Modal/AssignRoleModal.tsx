@@ -1,4 +1,3 @@
-// AssignRoleModal.js
 import React from "react";
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "@/components/Form/FormButton";
@@ -6,7 +5,11 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { useAssignRole } from "@/hooks/peopleHooks/useAssignRole";
 
-export default function AssignRoleModal({ closeModal }: { closeModal: () => void }) {
+export default function AssignRoleModal({
+  closeModal,
+}: {
+  closeModal: () => void;
+}) {
   const { styles } = useStyles(stylesheet);
   const { loading, assignUserRole } = useAssignRole();
 
@@ -24,9 +27,10 @@ export default function AssignRoleModal({ closeModal }: { closeModal: () => void
           <Text style={styles.optionText}>Denegar acceso</Text>
         </TouchableOpacity>
         <Text style={styles.subtitle}>
-          Al seleccionar una de estas opciones, los permisos de visualización del usuario se actualizarán en tiempo real.
+          Al seleccionar una de estas opciones, los permisos de visualización
+          del usuario se actualizarán en tiempo real.
         </Text>
-        <FormButton title="Aceptar" onPress={closeModal}/>
+        <FormButton title="Aceptar" onPress={closeModal} />
       </View>
     </View>
   );

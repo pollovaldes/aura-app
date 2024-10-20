@@ -172,7 +172,7 @@ export default function Index() {
 
         <View style={styles.container}>
           <Stack.Screen
-            options={{ title: "Ficha técnica", headerLargeTitle: false }}
+            options={{ title: "Ficha técnica", headerLargeTitle: true }}
           />
           <GroupedList
             header="Detalles"
