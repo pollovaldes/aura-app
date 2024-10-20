@@ -221,7 +221,7 @@ export default function VehicleDetail() {
               color={colorPalette.red[500]}
               onPress={() => router.navigate(`/vehicles/${vehicleId}/people`)}
             />
-          </GroupedList>  
+          </GroupedList>
           <View />
         </View>
       </ScrollView>
