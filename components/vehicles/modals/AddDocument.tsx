@@ -9,11 +9,13 @@ import { Vehicle } from "@/types/Vehicle";
 
 interface ChangeVehicleImageModalProps {
   closeModal: () => void;
+  refreshDocuments: () => void;
   vehicle: Vehicle;
 }
 
 export default function AddDocument({
   closeModal,
+  refreshDocuments,
   vehicle,
 }: ChangeVehicleImageModalProps) {
   const { styles } = useStyles(stylesheet);
@@ -35,10 +37,14 @@ export default function AddDocument({
       .select();
 
     if (error && !data) {
-      console.error(error.details);
+      alert(
+        `Ocurrió un error al agregar el documento: \n\nMensaje de error: ${error.message}\n\nCódigo de error: ${error.code}\n\nDetalles: ${error.details}\n\nSugerencia: ${error.hint}`
+      );
     }
 
     setIsUploading(false);
+    refreshDocuments();
+    closeModal();
   };
 
   return (
@@ -62,7 +68,7 @@ export default function AddDocument({
           inputMode="text"
           style={styles.textInput}
           placeholderTextColor={styles.textInput.placehoolderTextColor}
-          onChangeText={setDocumentTitle}
+          onChangeText={setDocumentDescription}
         />
         <FormButton title="Seleccionar archivo" onPress={() => {}} />
       </View>
