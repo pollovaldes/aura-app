@@ -159,7 +159,7 @@ export default function Index() {
     (doc) => doc.vehicle_id === vehicleId
   );
 
-  const canEditDocumentation =
+  const canEdit =
     profile.role === "ADMIN" || profile.role === "OWNER";
 
   return (
@@ -182,7 +182,7 @@ export default function Index() {
           title: "Guantera Digital",
           headerLargeTitle: true,
           headerRight: () =>
-            canEditDocumentation && (
+            canEdit && (
               <Pressable onPress={() => setActiveModal("add_document")}>
                 <Plus color={styles.plusIcon.color} />
               </Pressable>

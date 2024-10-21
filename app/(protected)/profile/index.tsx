@@ -6,7 +6,7 @@ import PersonalInfoModal from "@/components/profile/PersonalInfoModal";
 import RoleModal from "@/components/profile/RoleModal";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
-import { RefreshControl, ScrollView, Text, View } from "react-native";
+import { RefreshControl, ScrollView, Switch, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import ProfileRow from "@/components/profile/ProfileRow";
 import ChangeImageModal from "@/components/profile/ChangeImageModal";

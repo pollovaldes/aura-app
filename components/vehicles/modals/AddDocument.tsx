@@ -77,7 +77,6 @@ export default function AddDocument({
           title="Agregar documento"
           onPress={() => {
             handleAddDocument();
-            console.log("si");
           }}
           isLoading={isUploading}
         />
