@@ -135,8 +135,6 @@ export default function Index() {
   }
 
   const vehicle = vehicles.find((Vehicle) => Vehicle.id === vehicleId);
-  const canEditDocumentation =
-    profile.role === "ADMIN" || profile.role === "OWNER";
 
   if (!vehicle) {
     return (
@@ -156,6 +154,13 @@ export default function Index() {
       </>
     );
   }
+
+  const associatedDocuments = documents.filter(
+    (doc) => doc.vehicle_id === vehicleId
+  );
+
+  const canEditDocumentation =
+    profile.role === "ADMIN" || profile.role === "OWNER";
 
   return (
     <>
@@ -185,7 +190,7 @@ export default function Index() {
         }}
       />
 
-      {documents.length === 0 ? (
+      {associatedDocuments.length === 0 ? (
         <EmptyScreen
           caption={`No hay documentos para \neste vehículo`}
           buttonCaption="Reintentar"
@@ -210,7 +215,7 @@ export default function Index() {
               header="Documentos"
               footer="Solo los administradores pueden editar los documentos"
             >
-              {documents.map((doc) => (
+              {associatedDocuments.map((doc) => (
                 <Row
                   key={doc.document_id}
                   title={doc.title}
