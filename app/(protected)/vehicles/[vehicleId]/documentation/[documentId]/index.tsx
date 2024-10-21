@@ -1,6 +1,7 @@
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
+import FileViewer from "@/components/fileViewer/fileViewer";
 import useDocuments from "@/hooks/useDocuments";
 import useProfile from "@/hooks/useProfile";
 import { useHeaderHeight } from "@react-navigation/elements";
@@ -131,24 +132,7 @@ export default function Index() {
           //   ),
         }}
       />
-      {isWebViewLoading && (
-        <View style={styles.container}>
-          <LoadingScreen caption="Cargando documento" />
-        </View>
-      )}
-      <WebView
-        javaScriptEnabled={true}
-        source={{ uri: Platform.OS === "ios" ? fileUrl : embeddedUrl }}
-        onLoadStart={(syntheticEvent) => {
-          setIsWebViewLoading(true);
-        }}
-        onLoadEnd={(syntheticEvent) => {
-          setIsWebViewLoading(false);
-        }}
-        style={{
-          marginTop: Platform.OS === "ios" ? headerHeight : 0,
-        }}
-      />
+      <FileViewer url={Platform.OS === "ios" ? fileUrl : embeddedUrl} />
     </>
   );
 }
