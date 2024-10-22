@@ -102,36 +102,40 @@ export default function HomeLayout() {
         <ProfileImageProvider>
           {width > widthThreshold ? (
             <View style={styles.container}>
-              {/* Sidebar for larger screens */}
-              <Sidebar>
-                <ListItem
-                  href={mayShowListItem.vehicles}
-                  title="Vehículos"
-                  iconComponent={<Truck color={styles.icon.color} size={19} />}
-                />
-                {isAdminOrOwner && (
+              <View style={styles.innerContainer}>
+                {/* Sidebar for larger screens */}
+                <Sidebar>
                   <ListItem
-                    href={mayShowListItem.people}
-                    title="Personas"
+                    href={mayShowListItem.vehicles}
+                    title="Vehículos"
                     iconComponent={
-                      <UsersRound color={styles.icon.color} size={19} />
+                      <Truck color={styles.icon.color} size={19} />
                     }
                   />
-                )}
-                <ListItem
-                  href={mayShowListItem.notifications}
-                  title="Notificaciones"
-                  iconComponent={<Bell color={styles.icon.color} size={19} />}
-                />
-                <ListItem
-                  href="profile"
-                  title="Perfil"
-                  iconComponent={
-                    <CircleUserRound color={styles.icon.color} size={19} />
-                  }
-                />
-              </Sidebar>
-              <Slot />
+                  {isAdminOrOwner && (
+                    <ListItem
+                      href={mayShowListItem.people}
+                      title="Personas"
+                      iconComponent={
+                        <UsersRound color={styles.icon.color} size={19} />
+                      }
+                    />
+                  )}
+                  <ListItem
+                    href={mayShowListItem.notifications}
+                    title="Notificaciones"
+                    iconComponent={<Bell color={styles.icon.color} size={19} />}
+                  />
+                  <ListItem
+                    href="profile"
+                    title="Perfil"
+                    iconComponent={
+                      <CircleUserRound color={styles.icon.color} size={19} />
+                    }
+                  />
+                </Sidebar>
+                <Slot />
+              </View>
             </View>
           ) : (
             // Tabs for smaller screens
@@ -181,8 +185,14 @@ const stylesheet = createStyleSheet((theme) => ({
     backgroundColor: theme.ui.colors.card,
   },
   container: {
+    flex: 1,
     flexDirection: "row",
-    height: "100%",
+    justifyContent: "center",
+    backgroundColor: theme.ui.colors.border,
+  },
+  innerContainer: {
+    flexDirection: "row",
+    width: "60%",
   },
   icon: {
     color: theme.colors.inverted,
