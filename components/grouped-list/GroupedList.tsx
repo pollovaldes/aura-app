@@ -9,7 +9,12 @@ interface GroupedListProps {
   extraStyles?: ViewStyle;
 }
 
-const GroupedList = ({ children, header, footer, extraStyles }: GroupedListProps) => {
+const GroupedList = ({
+  children,
+  header,
+  footer,
+  extraStyles,
+}: GroupedListProps) => {
   const rows = Children.toArray(children);
   const rowsCount = rows.length;
 
@@ -59,8 +64,10 @@ const stylesheet = createStyleSheet((theme) => ({
     paddingHorizontal: 16,
     ...Platform.select({
       web: {
-        maxWidth: 400, // Restricts to max 400 points on web
+        maxWidth: 430, // Restricts to max 400 points on web
         minWidth: 250,
+        alignSelf: "center",
+        width: "100%",
       },
     }),
   },

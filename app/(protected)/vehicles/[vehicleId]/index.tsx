@@ -7,6 +7,7 @@ import {
   RefreshControl,
   Pressable,
   Text,
+  Platform,
 } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
@@ -167,7 +168,6 @@ export default function VehicleDetail() {
             ),
         }}
       />
-
       <Modal isOpen={activeModal === "change_cover_image"}>
         <View style={styles.modalContainer}>
           <Text style={styles.closeButton} onPress={closeModal}>
@@ -181,7 +181,6 @@ export default function VehicleDetail() {
           />
         </View>
       </Modal>
-
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         refreshControl={
@@ -195,7 +194,7 @@ export default function VehicleDetail() {
         }
       >
         <View style={styles.container}>
-          <View>
+          <View style={styles.imageContainer}>
             {vehicle.thumbnail ? (
               <Image style={styles.image} source={{ uri: vehicle.thumbnail }} />
             ) : (
@@ -207,88 +206,94 @@ export default function VehicleDetail() {
             )}
             <Text style={styles.title}>{vehicleTitle}</Text>
           </View>
-          <GroupedList
-            header="Consulta"
-            footer="Ve distintos datos a lo largo del tiempo o actuales sobre este camión."
-          >
-            <Row
-              title="Galeria"
-              trailingType="chevron"
-              icon={<Images size={24} color="white" />}
-              color={colorPalette.cyan[500]}
-            />
-            <Row
-              title="Ficha técnica"
-              trailingType="chevron"
-              onPress={() =>
-                router.navigate(`/vehicles/${vehicleId}/technical_sheet`)
-              }
-              icon={<Clipboard size={24} color="white" />}
-              color={colorPalette.green[500]}
-            />
-            <Row
-              title="Guantera digital"
-              trailingType="chevron"
-              icon={<BookOpen size={24} color="white" />}
-              color={colorPalette.orange[500]}
-              onPress={() =>
-                router.navigate(`/vehicles/${vehicleId}/documentation`)
-              }
-            />
-            <Row
-              title="Histórico de cargas de gasolina"
-              trailingType="chevron"
-              icon={<Fuel size={24} color="white" />}
-              color={colorPalette.red[500]}
-              onPress={() => router.navigate(`/vehicles/${vehicleId}/gasoline`)}
-            />
-            <Row
-              title="Histórico de rutas"
-              trailingType="chevron"
-              icon={<Waypoints size={24} color="white" />}
-              color={colorPalette.sky[500]}
-            />
-          </GroupedList>
-          <GroupedList header="Acciones" footer="Alguna descripción.">
-            {canEditVehicle && (
+          <View style={styles.groupedListsContainer}>
+            <GroupedList
+              header="Consulta"
+              footer="Ve distintos datos a lo largo del tiempo o actuales sobre este camión."
+            >
               <Row
-                title="Administrar personas"
+                title="Galeria"
                 trailingType="chevron"
-                icon={<UsersRoundIcon size={24} color="white" />}
-                color={colorPalette.lime[500]}
+                icon={<Images size={24} color="white" />}
+                color={colorPalette.cyan[500]}
+              />
+              <Row
+                title="Ficha técnica"
+                trailingType="chevron"
+                onPress={() =>
+                  router.navigate(`/vehicles/${vehicleId}/technical_sheet`)
+                }
+                icon={<Clipboard size={24} color="white" />}
+                color={colorPalette.green[500]}
+              />
+              <Row
+                title="Guantera digital"
+                trailingType="chevron"
+                icon={<BookOpen size={24} color="white" />}
+                color={colorPalette.orange[500]}
+                onPress={() =>
+                  router.navigate(`/vehicles/${vehicleId}/documentation`)
+                }
+              />
+              <Row
+                title="Histórico de cargas de gasolina"
+                trailingType="chevron"
+                icon={<Fuel size={24} color="white" />}
+                color={colorPalette.red[500]}
+                onPress={() =>
+                  router.navigate(`/vehicles/${vehicleId}/gasoline`)
+                }
+              />
+              <Row
+                title="Histórico de rutas"
+                trailingType="chevron"
+                icon={<Waypoints size={24} color="white" />}
+                color={colorPalette.sky[500]}
+              />
+            </GroupedList>
+            <GroupedList header="Acciones" footer="Alguna descripción.">
+              {canEditVehicle && (
+                <Row
+                  title="Administrar personas"
+                  trailingType="chevron"
+                  icon={<UsersRoundIcon size={24} color="white" />}
+                  color={colorPalette.lime[500]}
+                  onPress={() =>
+                    router.navigate(`/vehicles/${vehicleId}/people`)
+                  }
+                />
+              )}
+              <Row
+                title="Registrar carga de gasolina"
+                trailingType="chevron"
+                icon={<Fuel size={24} color="white" />}
+                color={colorPalette.red[500]}
+              />
+              <Row
+                title="Solicitar mantenimiento"
+                trailingType="chevron"
+                icon={<Wrench size={24} color="white" />}
+                color={colorPalette.green[500]}
+              />
+              <Row
+                title="Actualizar datos"
+                trailingType="chevron"
+                icon={<RotateCw size={24} color="white" />}
+                color={colorPalette.orange[500]}
+                onPress={fetchVehicles}
+                caption="Dev only"
+              />
+            </GroupedList>
+            <GroupedList header="Zona de peligro">
+              <Row
+                title="Borrar vehículo"
+                trailingType="chevron"
+                icon={<Trash size={24} color="white" />}
+                color={colorPalette.red[500]}
                 onPress={() => router.navigate(`/vehicles/${vehicleId}/people`)}
               />
-            )}
-            <Row
-              title="Registrar carga de gasolina"
-              trailingType="chevron"
-              icon={<Fuel size={24} color="white" />}
-              color={colorPalette.red[500]}
-            />
-            <Row
-              title="Solicitar mantenimiento"
-              trailingType="chevron"
-              icon={<Wrench size={24} color="white" />}
-              color={colorPalette.green[500]}
-            />
-            <Row
-              title="Actualizar datos"
-              trailingType="chevron"
-              icon={<RotateCw size={24} color="white" />}
-              color={colorPalette.orange[500]}
-              onPress={fetchVehicles}
-              caption="Dev only"
-            />
-          </GroupedList>
-          <GroupedList header="Zona de peligro">
-            <Row
-              title="Borrar vehículo"
-              trailingType="chevron"
-              icon={<Trash size={24} color="white" />}
-              color={colorPalette.red[500]}
-              onPress={() => router.navigate(`/vehicles/${vehicleId}/people`)}
-            />
-          </GroupedList>
+            </GroupedList>
+          </View>
           <View />
         </View>
       </ScrollView>
@@ -313,6 +318,16 @@ const stylesheet = createStyleSheet((theme) => ({
   container: {
     flex: 1,
     gap: theme.marginsComponents.section,
+    flexDirection: Platform.OS === "web" ? "row" : undefined,
+    marginTop: Platform.OS === "web" ? 16 : undefined,
+  },
+  groupedListsContainer: {
+    flex: 2,
+    gap: theme.marginsComponents.section,
+  },
+  imageContainer: {
+    flex: 1,
+    aspectRatio: 16 / 9,
   },
   loadingContainer: {
     gap: 6,

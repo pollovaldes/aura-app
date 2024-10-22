@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Platform } from "react-native";
 import React, { ReactNode } from "react";
 
 interface RowIconProps {
@@ -22,5 +22,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginRight: 17,
+    ...Platform.select({
+      web: {
+        width: 25,
+        height: 25,
+        borderRadius: 5,
+        marginRight: 12,
+      },
+    }),
   },
 });

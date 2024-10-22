@@ -1,4 +1,10 @@
-import { View, Text, Pressable, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  ActivityIndicator,
+  Platform,
+} from "react-native";
 import React, { ReactNode } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import RowIcon from "./RowIcon";
@@ -76,11 +82,16 @@ const stylesheet = createStyleSheet((theme) => ({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    ...Platform.select({
+      web: {
+        minHeight: 38,
+      },
+    }),
   },
   childrenContainer: {
     width: "80%",
     marginVertical: 12,
-    height: 80,
+    height: 70,
   },
   trailingContainer: {
     flexDirection: "row",
@@ -93,9 +104,19 @@ const stylesheet = createStyleSheet((theme) => ({
   title: {
     fontSize: 17.5,
     color: theme.textPresets.main,
+    ...Platform.select({
+      web: {
+        fontSize: 15.5,
+      },
+    }),
   },
   caption: {
     fontSize: 16.5,
     color: theme.textPresets.subtitle,
+    ...Platform.select({
+      web: {
+        fontSize: 15.5,
+      },
+    }),
   },
 }));
