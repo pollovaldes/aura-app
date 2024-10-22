@@ -115,8 +115,10 @@ export default function Index() {
 
   const canEdit = profile.role === "ADMIN" || profile.role === "OWNER";
 
-  const fileUrl =
-    "https://www.medicinaconductual-unam-fesi.org/uploads/1/0/3/4/103420148/elaboraci%C3%B3n_de_nota_soap_y_examen_mental.pdf";
+  const fileUrl = `https://wkkfbhlvghhrscihbdev.supabase.co/storage/v1/object/public/documents/${document.vehicle_id}/${document.document_id}`;
+
+  console.log(fileUrl);
+
   const embeddedUrl = `http://docs.google.com/gview?embedded=true&url=${fileUrl}`;
 
   console.log("embeddedUrl", embeddedUrl);

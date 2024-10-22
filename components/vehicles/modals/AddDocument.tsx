@@ -19,7 +19,7 @@ import * as FileSystem from "expo-file-system";
 import { decode } from "base64-arraybuffer";
 import * as DocumentPicker from "expo-document-picker";
 
-interface ChangeVehicleImageModalProps {
+interface AddDocumentModalProps {
   closeModal: () => void;
   refreshDocuments: () => void;
   vehicle: Vehicle;
@@ -29,7 +29,7 @@ export default function AddDocument({
   closeModal,
   refreshDocuments,
   vehicle,
-}: ChangeVehicleImageModalProps) {
+}: AddDocumentModalProps) {
   const { styles } = useStyles(stylesheet);
   const [documentTitle, setDocumentTitle] = useState("");
   const [documentDescription, setDocumentDescription] = useState("");
@@ -54,7 +54,7 @@ export default function AddDocument({
     }
   };
 
-  const uploadDocument = async () => {
+  const uploadDocument = async (documentId: string) => {
     if (!document) {
       alert(
         "No se puede subir el archivo porque no se ha seleccionado ninguno"
@@ -81,7 +81,7 @@ export default function AddDocument({
 
     const { data, error } = await supabase.storage
       .from("documents")
-      .upload(`${vehicle.id}/${Date.now()}`, fileData);
+      .upload(`${vehicle.id}/${documentId}`, fileData);
 
     if (error) {
       alert(
@@ -92,9 +92,6 @@ export default function AddDocument({
 
   const handleAddDocument = async () => {
     setIsUploading(true);
-
-    await uploadDocument();
-
     const { data, error } = await supabase
       .from("vehicle_documentation_sheet")
       .insert([
@@ -110,7 +107,10 @@ export default function AddDocument({
       alert(
         `Ocurrió un error al agregar el documento \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}\n\nCódigo de error: ${error.code}\n\nDetalles: ${error.details}\n\nSugerencia: ${error.hint}`
       );
+      return;
     }
+
+    await uploadDocument(data[0].document_id);
 
     setIsUploading(false);
     refreshDocuments();
