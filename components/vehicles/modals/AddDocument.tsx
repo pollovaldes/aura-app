@@ -54,20 +54,18 @@ export default function AddDocument({
     }
   };
 
-  const uploadDocument = async (documentId: string) => {
+  const uploadDocument = async (documentId: string): Promise<boolean> => {
     if (!document) {
       alert(
         "No se puede subir el archivo porque no se ha seleccionado ninguno"
       );
-      return;
+      return false;
     }
 
     let fileData;
     if (Platform.OS === "web") {
-      // On the web, use the file directly without decoding
       fileData = document.file;
     } else {
-      // On mobile, read the file as a base64 string and decode it
       fileData = await FileSystem.readAsStringAsync(document.uri, {
         encoding: FileSystem.EncodingType.Base64,
       });
@@ -76,18 +74,23 @@ export default function AddDocument({
 
     if (!fileData) {
       alert("No se pudo procesar el archivo para la carga");
-      return;
+      return false;
     }
 
     const { data, error } = await supabase.storage
       .from("documents")
-      .upload(`${vehicle.id}/${documentId}`, fileData);
+      .upload(`${vehicle.id}/${documentId}`, fileData, {
+        contentType: document.mimeType,
+      });
 
     if (error) {
       alert(
         `Ocurrió un error al subir el archivo \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}\n\nCausa del error: ${error.cause}\n\nNombre: ${error.name}\n\nStack: ${error.stack}`
       );
+      return false;
     }
+
+    return true;
   };
 
   const handleAddDocument = async () => {
@@ -110,7 +113,16 @@ export default function AddDocument({
       return;
     }
 
-    await uploadDocument(data[0].document_id);
+    const uploadSuccess = await uploadDocument(data[0].document_id);
+
+    console.log(uploadSuccess);
+
+    if (!uploadSuccess) {
+      const { error } = await supabase
+        .from("vehicle_documentation_sheet")
+        .delete()
+        .eq("document_id", data[0].document_id);
+    }
 
     setIsUploading(false);
     refreshDocuments();
@@ -189,6 +201,9 @@ export default function AddDocument({
           isLoading={isUploading}
           isDisabled={!document || documentTitle === ""}
         />
+        <Text style={styles.subtitle}>
+          {isUploading && "Subiendo archivo, no cierres la app"}
+        </Text>
       </View>
     </View>
   );
