@@ -4,6 +4,7 @@ import {
   ActivityIndicator,
   ViewStyle,
   View,
+  TouchableOpacity,
 } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
@@ -44,7 +45,7 @@ export function FormButton({
           }}
         />
       )}
-      <Pressable
+      <TouchableOpacity
         style={[
           styles.button,
           buttonType === "danger" && styles.redButton,
@@ -64,7 +65,7 @@ export function FormButton({
           {isDisabled && disabledText ? disabledText : text}
         </Text>
         {icon && !isLoading && icon()}
-      </Pressable>
+      </TouchableOpacity>
     </View>
   );
 }

@@ -159,8 +159,7 @@ export default function Index() {
     (doc) => doc.vehicle_id === vehicleId
   );
 
-  const canEdit =
-    profile.role === "ADMIN" || profile.role === "OWNER";
+  const canEdit = profile.role === "ADMIN" || profile.role === "OWNER";
 
   return (
     <>

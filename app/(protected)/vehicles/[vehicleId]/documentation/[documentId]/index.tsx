@@ -7,7 +7,7 @@ import EditDocument from "@/components/vehicles/modals/EditDocument";
 import useDocuments from "@/hooks/useDocuments";
 import useProfile from "@/hooks/useProfile";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { Share } from "lucide-react-native";
+import { RotateCw, Share } from "lucide-react-native";
 import { useState } from "react";
 import { View, Text, Platform, Pressable } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -136,6 +136,9 @@ export default function Index() {
               )}
               <Pressable onPress={() => setActiveModal("edit_document")}>
                 <Share color={styles.Icon.color} />
+              </Pressable>
+              <Pressable onPress={() => setActiveModal("edit_document")}>
+                <RotateCw color={styles.Icon.color} />
               </Pressable>
             </View>
           ),

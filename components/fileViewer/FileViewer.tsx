@@ -1,5 +1,5 @@
 import { useHeaderHeight } from "@react-navigation/elements";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Platform, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import WebView from "react-native-webview";
@@ -13,6 +13,7 @@ export default function FileViewer({ url }: FileViewerProps) {
   const { styles } = useStyles(stylesheet);
   const [isWebViewLoading, setIsWebViewLoading] = useState(false);
   const headerHeight = useHeaderHeight();
+  const webViewRef = useRef();
 
   return (
     <>
@@ -22,6 +23,7 @@ export default function FileViewer({ url }: FileViewerProps) {
         </View>
       )}
       <WebView
+        ref={webViewRef.current}
         javaScriptEnabled={true}
         source={{ uri: url }}
         onLoadStart={(syntheticEvent) => {
