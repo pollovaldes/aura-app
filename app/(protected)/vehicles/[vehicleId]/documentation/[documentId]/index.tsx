@@ -117,12 +117,6 @@ export default function Index() {
 
   const fileUrl = `https://wkkfbhlvghhrscihbdev.supabase.co/storage/v1/object/public/documents/${document.vehicle_id}/${document.document_id}`;
 
-  console.log(fileUrl);
-
-  const embeddedUrl = `http://docs.google.com/gview?embedded=true&url=${fileUrl}`;
-
-  console.log("embeddedUrl", embeddedUrl);
-
   return (
     <>
       <Stack.Screen
@@ -159,7 +153,7 @@ export default function Index() {
           />
         </View>
       </Modal>
-      <FileViewer url={Platform.OS === "ios" ? fileUrl : embeddedUrl} />
+      <FileViewer fileUrl={fileUrl} />
     </>
   );
 }
