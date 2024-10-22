@@ -8,6 +8,7 @@ import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "../Form/FormButton";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
 import { router } from "expo-router";
+import FormInput from "../Form/FormInput";
 
 interface AddVehicleComponentProps {
   visible: boolean;
@@ -53,50 +54,56 @@ function AddVehicleComponent({ visible, onClose }: AddVehicleComponentProps) {
             </Text>
           </View>
           <View style={styles.group}>
-            <TextInput
-              placeholder="Marca"
+            <FormInput
+              placeholder="Ej. Mack"
               inputMode="text"
               style={styles.textInput}
               placeholderTextColor={styles.textInput.placehoolderTextColor}
               onChangeText={setBrand}
+              description={"Marca del vehículo"}
             />
-            <TextInput
-              placeholder="Submarca"
+            <FormInput
+              placeholder="Ej. Anthem"
               inputMode="text"
               style={styles.textInput}
               placeholderTextColor={styles.textInput.placehoolderTextColor}
               onChangeText={setSubBrand}
+              description={"Submarca del vehículo"}
             />
-            <TextInput
-              placeholder="Año"
+            <FormInput
+              placeholder="Ej. 2022"
               inputMode="numeric"
               style={styles.textInput}
               placeholderTextColor={styles.textInput.placehoolderTextColor}
               onChangeText={setYear}
+              description={"Año del vehículo"}
             />
-            <TextInput
-              placeholder="Número de placa"
+            <FormInput
+              placeholder="Ej. QRS-3456"
               inputMode="text"
               style={styles.textInput}
               placeholderTextColor={styles.textInput.placehoolderTextColor}
               autoCorrect={false}
               onChangeText={setPlate}
+              description={"Placa del vehículo"}
             />
-            <TextInput
-              placeholder="Número de serie"
+            <FormInput
+              placeholder="Ej. 1M1AN07Y4KM123456"
               inputMode="text"
               style={styles.textInput}
               placeholderTextColor={styles.textInput.placehoolderTextColor}
               autoCorrect={false}
               onChangeText={setSerialNumber}
+              description={"Número de serie del vehículo"}
             />
-            <TextInput
-              placeholder="Número económico"
+            <FormInput
+              placeholder="Ej. ECO-6784"
               inputMode="text"
               style={styles.textInput}
               placeholderTextColor={styles.textInput.placehoolderTextColor}
               autoCorrect={false}
               onChangeText={setEconomicNumber}
+              description={"Número económico del vehículo"}
             />
           </View>
           <View style={styles.group}>
