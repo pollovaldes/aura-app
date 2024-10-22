@@ -1,23 +1,25 @@
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
-import FileViewer from "@/components/fileViewer/fileViewer";
+import FileViewer from "@/components/fileViewer/FileViewer";
+import Modal from "@/components/Modal/Modal";
+import EditDocument from "@/components/vehicles/modals/EditDocument";
 import useDocuments from "@/hooks/useDocuments";
 import useProfile from "@/hooks/useProfile";
-import { useHeaderHeight } from "@react-navigation/elements";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { View, Text, SafeAreaView, Platform } from "react-native";
+import { View, Text, Platform, Pressable } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import WebView from "react-native-webview";
+
+type ModalType = "edit_document" | null;
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
   const { documentId } = useLocalSearchParams<{ documentId: string }>();
   const { profile, isProfileLoading, fetchProfile } = useProfile();
   const { documents, areDocumentsLoading, fetchDocuments } = useDocuments();
-  const [isWebViewLoading, setIsWebViewLoading] = useState(false);
-  const headerHeight = useHeaderHeight();
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const closeModal = () => setActiveModal(null);
 
   if (isProfileLoading) {
     return (
@@ -124,14 +126,22 @@ export default function Index() {
         options={{
           title: document.title,
           headerLargeTitle: false,
-          // headerRight: () =>
-          //   canEdit && (
-          //     <Pressable onPress={() => setActiveModal("add_document")}>
-          //       <Plus color={styles.plusIcon.color} />
-          //     </Pressable>
-          //   ),
+          headerRight: () =>
+            canEdit && (
+              <Pressable onPress={() => setActiveModal("edit_document")}>
+                <Text style={styles.rightPressText}>Editar</Text>
+              </Pressable>
+            ),
         }}
       />
+      <Modal isOpen={activeModal === "edit_document"}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.closeButton} onPress={closeModal}>
+            Cerrar
+          </Text>
+          <EditDocument closeModal={closeModal} document={document} />
+        </View>
+      </Modal>
       <FileViewer url={Platform.OS === "ios" ? fileUrl : embeddedUrl} />
     </>
   );
@@ -145,5 +155,22 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   text: {
     color: theme.textPresets.main,
+  },
+  rightPressText: {
+    color: theme.ui.colors.primary,
+    fontSize: 17,
+  },
+  modalContainer: {
+    width: "100%",
+    alignSelf: "center",
+    maxWidth: 500,
+    backgroundColor: theme.ui.colors.card,
+    borderRadius: 10,
+    padding: 24,
+  },
+  closeButton: {
+    color: theme.ui.colors.primary,
+    fontSize: 18,
+    textAlign: "right",
   },
 }));
