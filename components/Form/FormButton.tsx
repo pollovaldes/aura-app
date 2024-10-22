@@ -14,6 +14,8 @@ type FormButtonProps = {
   style?: ViewStyle;
   isDisabled?: boolean;
   disabledText?: string;
+  buttonType?: "normal" | "danger";
+  icon?: () => JSX.Element;
 };
 
 export function FormButton({
@@ -23,6 +25,8 @@ export function FormButton({
   style,
   disabledText,
   isDisabled,
+  buttonType = "normal",
+  icon,
 }: FormButtonProps) {
   const { styles } = useStyles(stylesheet);
 
@@ -43,6 +47,7 @@ export function FormButton({
       <Pressable
         style={[
           styles.button,
+          buttonType === "danger" && styles.redButton,
           style,
           { opacity: isLoading || isDisabled ? 0.3 : 1 },
         ]}
@@ -52,11 +57,13 @@ export function FormButton({
         <Text
           style={[
             styles.buttonText,
+            icon ? { marginRight: 12 } : {}, // Apply marginLeft if icon is present
             { opacity: isLoading ? 0 : isLoading && isDisabled ? 0 : 1 },
           ]}
         >
           {isDisabled && disabledText ? disabledText : text}
         </Text>
+        {icon && !isLoading && icon()}
       </Pressable>
     </View>
   );
@@ -72,6 +79,8 @@ const stylesheet = createStyleSheet((theme) => ({
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
+    flexDirection: "row",
+    paddingHorizontal: 10,
   },
   buttonText: {
     color: theme.textPresets.inverted,

@@ -6,18 +6,34 @@ import FormTitle from "@/app/auth/FormTitle";
 import { Document } from "@/hooks/useDocuments";
 import { FormButton } from "@/components/Form/FormButton";
 import FormInput from "@/components/Form/FormInput";
+import { supabase } from "@/lib/supabase";
+import { Replace, Trash, Trash2 } from "lucide-react-native";
 
 interface ChangeVehicleImageModalProps {
   closeModal: () => void;
+  fetchDocuments: () => void;
   document: Document;
 }
 
 export default function EditDocument({
   closeModal,
+  fetchDocuments,
   document,
 }: ChangeVehicleImageModalProps) {
   const { styles } = useStyles(stylesheet);
   const [documentNewName, setDocumentNewName] = React.useState("");
+  const [documentNewDescription, setDocumentNewDescription] =
+    React.useState("");
+  const [isDocumentUpdating, setIsDocumentUpdating] = React.useState(false);
+
+  const updateDocument = async () => {
+    setIsDocumentUpdating(true);
+    const { data, error } = await supabase
+      .from("vehicle_documentation_sheet")
+      .update({ other_column: "otherValue" })
+      .eq("some_column", "someValue")
+      .select();
+  };
 
   return (
     <View style={styles.section}>
@@ -33,12 +49,20 @@ export default function EditDocument({
           placeholder="Nombre"
           description="Nuevo nombre"
         />
+        <FormInput
+          onChangeText={setDocumentNewDescription}
+          placeholder="Descripción"
+          description="Nueva descripción"
+        />
         <FormButton
-          title="Renombrar"
+          title="Actualizar"
           onPress={() => {
             closeModal();
           }}
         />
+      </View>
+      <View style={styles.group}>
+        <Text style={styles.subtitle}>O</Text>
       </View>
       <View style={styles.group}>
         <FormButton
@@ -46,12 +70,15 @@ export default function EditDocument({
           onPress={() => {
             closeModal();
           }}
+          icon={() => <Replace color={styles.iconColor.color} />}
         />
         <FormButton
           title="Eliminar"
           onPress={() => {
             closeModal();
           }}
+          buttonType="danger"
+          icon={() => <Trash2 color={styles.iconColor.color} />}
         />
       </View>
     </View>
@@ -90,5 +117,8 @@ const stylesheet = createStyleSheet((theme) => ({
     width: "100%",
     aspectRatio: 16 / 9,
     borderRadius: 10,
+  },
+  iconColor: {
+    color: theme.textPresets.inverted,
   },
 }));

@@ -30,6 +30,8 @@ export default function Modal({ isOpen, children, ...rest }: ModalProps) {
           contentContainerStyle={{
             flexGrow: 1,
             justifyContent: "center",
+            paddingTop: 80,
+            paddingBottom: 80,
           }}
           keyboardShouldPersistTaps="always"
         >

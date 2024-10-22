@@ -1,16 +1,15 @@
-import { Text, TextInput, View } from "react-native";
+import { Text, TextInput, View, TextInputProps } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
-interface FormInputProps {
-  onChangeText: (text: string) => void;
-  placeholder: string;
+interface FormInputProps extends TextInputProps {
   description: string;
 }
 
 export default function FormInput({
-  onChangeText,
   description,
   placeholder,
+  onChangeText,
+  ...props
 }: FormInputProps) {
   const { styles } = useStyles(stylesheet);
   return (
@@ -20,9 +19,9 @@ export default function FormInput({
         placeholder={placeholder}
         inputMode="text"
         style={styles.textInput}
-        placeholderTextColor={styles.textInput.placehoolderTextColor}
-        autoCorrect={false}
+        placeholderTextColor={styles.textInput.placeholderTextColor}
         onChangeText={onChangeText}
+        {...props}
       />
     </View>
   );
@@ -35,7 +34,7 @@ const stylesheet = createStyleSheet((theme) => ({
     paddingHorizontal: 12,
     fontSize: 18,
     color: theme.textPresets.main,
-    placehoolderTextColor: theme.textPresets.subtitle,
+    placeholderTextColor: theme.textPresets.subtitle,
     backgroundColor: theme.textInput.backgroundColor,
   },
   text: {
@@ -43,5 +42,6 @@ const stylesheet = createStyleSheet((theme) => ({
     fontSize: 14,
     paddingBottom: 6,
     paddingLeft: 12,
+    paddingTop: 6,
   },
 }));

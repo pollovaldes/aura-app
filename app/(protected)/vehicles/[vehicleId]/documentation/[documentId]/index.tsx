@@ -7,6 +7,7 @@ import EditDocument from "@/components/vehicles/modals/EditDocument";
 import useDocuments from "@/hooks/useDocuments";
 import useProfile from "@/hooks/useProfile";
 import { Stack, useLocalSearchParams } from "expo-router";
+import { Share } from "lucide-react-native";
 import { useState } from "react";
 import { View, Text, Platform, Pressable } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -126,20 +127,31 @@ export default function Index() {
         options={{
           title: document.title,
           headerLargeTitle: false,
-          headerRight: () =>
-            canEdit && (
+          headerRight: () => (
+            <View style={styles.rightContainer}>
+              {canEdit && (
+                <Pressable onPress={() => setActiveModal("edit_document")}>
+                  <Text style={styles.rightPressText}>Editar</Text>
+                </Pressable>
+              )}
               <Pressable onPress={() => setActiveModal("edit_document")}>
-                <Text style={styles.rightPressText}>Editar</Text>
+                <Share color={styles.Icon.color} />
               </Pressable>
-            ),
+            </View>
+          ),
         }}
       />
+
       <Modal isOpen={activeModal === "edit_document"}>
         <View style={styles.modalContainer}>
           <Text style={styles.closeButton} onPress={closeModal}>
             Cerrar
           </Text>
-          <EditDocument closeModal={closeModal} document={document} />
+          <EditDocument
+            closeModal={closeModal}
+            document={document}
+            fetchDocuments={fetchDocuments}
+          />
         </View>
       </Modal>
       <FileViewer url={Platform.OS === "ios" ? fileUrl : embeddedUrl} />
@@ -152,6 +164,12 @@ const stylesheet = createStyleSheet((theme) => ({
     flex: 10000, // This is a hack to make the LoadingScreen fill the screen
     justifyContent: "center",
     alignItems: "center",
+  },
+  rightContainer: {
+    flexDirection: "row-reverse",
+    gap: 16,
+    alignItems: "center",
+    justifyContent: "center",
   },
   text: {
     color: theme.textPresets.main,
@@ -172,5 +190,9 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.ui.colors.primary,
     fontSize: 18,
     textAlign: "right",
+  },
+  Icon: {
+    fontSize: 16,
+    color: theme.ui.colors.primary,
   },
 }));
