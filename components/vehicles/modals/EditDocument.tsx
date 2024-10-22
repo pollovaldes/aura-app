@@ -21,9 +21,10 @@ export default function EditDocument({
   document,
 }: ChangeVehicleImageModalProps) {
   const { styles } = useStyles(stylesheet);
-  const [documentNewName, setDocumentNewName] = React.useState("");
-  const [documentNewDescription, setDocumentNewDescription] =
-    React.useState("");
+  const [documentNewName, setDocumentNewName] = React.useState(document.title);
+  const [documentNewDescription, setDocumentNewDescription] = React.useState(
+    document.description
+  );
   const [isDocumentUpdating, setIsDocumentUpdating] = React.useState(false);
 
   const updateDocument = async () => {
@@ -46,13 +47,14 @@ export default function EditDocument({
       <View style={styles.group}>
         <FormInput
           onChangeText={setDocumentNewName}
-          placeholder="Nombre"
-          description="Nuevo nombre"
+          description="Nombre"
+          value={documentNewName}
         />
         <FormInput
           onChangeText={setDocumentNewDescription}
-          placeholder="Descripción"
-          description="Nueva descripción"
+          description="Descripción"
+          placeholder="Sin descripción"
+          value={documentNewDescription}
         />
         <FormButton
           title="Actualizar"
