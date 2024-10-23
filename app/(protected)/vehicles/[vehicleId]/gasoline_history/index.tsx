@@ -1,7 +1,6 @@
-// index.tsx
 import React, { useState } from "react";
 import { View, Text, Pressable, Alert } from "react-native";
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { supabase } from "@/lib/supabase";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { GasolineLoad } from "@/types/GasolineLoad";
@@ -11,15 +10,84 @@ import Modal from "@/components/Modal/Modal";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import FormTitle from "@/app/auth/FormTitle";
+import useProfile from "@/hooks/useProfile";
+import useVehicle from "@/hooks/truckHooks/useVehicle";
+import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 
 export default function GasolineHistory() {
   const { styles } = useStyles(stylesheet);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     amount: "",
+    status: "pending",
   });
   const [isLoading, setIsLoading] = useState(false);
+  
+  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
+  const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
 
+  if (vehiclesAreLoading) {
+    return (
+      <>
+        <LoadingScreen caption="Cargando vehículos" />
+        <Stack.Screen
+          options={{ title: "Cargando...", headerLargeTitle: false }}
+        />
+      </>
+    );
+  }
+
+  if (isProfileLoading) {
+    return (
+      <>
+        <Stack.Screen options={{ title: "Cargando..." }} />
+        <LoadingScreen caption="Cargando perfil y permisos" />
+      </>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <>
+        <Stack.Screen options={{ title: "Error", headerLargeTitle: false }} />
+        <ErrorScreen
+          caption="Ocurrió un error al cargar tu perfil"
+          buttonCaption="Reintentar"
+          retryFunction={fetchProfile}
+        />
+      </>
+    );
+  }
+
+  if (!vehicles) {
+    return (
+      <>
+        <Stack.Screen options={{ title: "Error", headerLargeTitle: false }} />
+        <ErrorScreen
+          caption="Ocurrió un error al cargar los vehículos"
+          buttonCaption="Reintentar"
+          retryFunction={fetchVehicles}
+        />
+      </>
+    );
+  }
+
+  const vehicle = vehicles.find((Vehicle) => Vehicle.id === vehicleId);
+
+  if (!vehicle) {
+    return (
+      <>
+        <Stack.Screen options={{ title: "Recurso inaccesible" }} />
+        <UnauthorizedScreen
+          caption="No tienes acceso a este recurso."
+          buttonCaption="Reintentar"
+          retryFunction={fetchVehicles}
+        />
+      </>
+    );
+  }
+  
   const handleChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value });
   };
@@ -29,7 +97,12 @@ export default function GasolineHistory() {
     const { data, error } = await supabase
       .from("gasoline_loads")
       .insert({
+        vehicle_id: vehicle.id,
+        user_id: profile.id,
         amount: Number(formData.amount),
+        status: profile.role === "OWNER" ? "approved" : "pending",
+        approved_by: profile.role === "OWNER" ? profile.id : null,
+        approved_at: profile.role === "OWNER" ? new Date() : null,
       });
 
     if (error) {
@@ -70,7 +143,7 @@ export default function GasolineHistory() {
               <FormInput
                 placeholder="Monto"
                 value={formData.amount}
-                onChangeText={(value) => handleChange("vehicle_id", value)}
+                onChangeText={(value) => handleChange("amount", value)}
                 description=""
               />
               <FormButton
