@@ -1,4 +1,5 @@
 import { FormButton } from "@/components/Form/FormButton";
+import FormInput from "@/components/Form/FormInput";
 import { supabase } from "@/lib/supabase";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -29,8 +30,8 @@ export default function SignIn() {
 
   return (
     <>
-      <TextInput
-        placeholder="Email"
+      <FormInput
+        placeholder="xyz@mail.com"
         inputMode="email"
         autoComplete="username"
         autoCapitalize="none"
@@ -38,9 +39,11 @@ export default function SignIn() {
         placeholderTextColor={styles.textInput.placehoolderTextColor}
         autoCorrect={false}
         onChangeText={setEmail}
+        description="Correo electrónico"
       />
-      <TextInput
-        placeholder="Contraseña"
+      <FormInput
+        description="Contraseña"
+        placeholder="supersecretpassword"
         enterKeyHint="done"
         autoComplete="current-password"
         style={styles.textInput}

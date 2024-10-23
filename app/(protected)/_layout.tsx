@@ -188,11 +188,11 @@ const stylesheet = createStyleSheet((theme) => ({
     flex: 1,
     flexDirection: "row",
     justifyContent: "center",
-    backgroundColor: theme.ui.colors.border,
+    backgroundColor: theme.ui.colors.card,
   },
   innerContainer: {
     flexDirection: "row",
-    width: "60%",
+    width: "85%",
   },
   icon: {
     color: theme.colors.inverted,

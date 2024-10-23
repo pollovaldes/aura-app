@@ -1,4 +1,5 @@
 import { FormButton } from "@/components/Form/FormButton";
+import FormInput from "@/components/Form/FormInput";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
 import { TextInput } from "react-native";
@@ -28,24 +29,27 @@ export default function SignUp() {
 
   return (
     <>
-      <TextInput
-        placeholder="Correo electrónico"
+      <FormInput
+        description="Correo electrónico"
+        placeholder="xyz@mail.com"
         inputMode="email"
         autoComplete="username"
         style={styles.textInput}
         placeholderTextColor={styles.textInput.placehoolderTextColor}
         onChangeText={setEmail}
       />
-      <TextInput
-        placeholder="Contraseña"
+      <FormInput
+        description="Contraseña"
+        placeholder="supersecretpassword"
         autoComplete="new-password"
         secureTextEntry={true}
         style={styles.textInput}
         placeholderTextColor={styles.textInput.placehoolderTextColor}
         onChangeText={setPassword}
       />
-      <TextInput
-        placeholder="Repite la contraseña"
+      <FormInput
+        description="Repite la contraseña"
+        placeholder="supersecretpassword"
         autoComplete="new-password"
         enterKeyHint="done"
         secureTextEntry={true}

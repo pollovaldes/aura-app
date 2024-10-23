@@ -196,15 +196,22 @@ export default function VehicleDetail() {
         <View style={styles.container}>
           <View style={styles.imageContainer}>
             {vehicle.thumbnail ? (
-              <Image style={styles.image} source={{ uri: vehicle.thumbnail }} />
+              <>
+                <Image
+                  style={styles.image}
+                  source={{ uri: vehicle.thumbnail }}
+                />
+                <View style={styles.fullOverlay}>
+                  <Text style={styles.titleText}>{vehicleTitle}</Text>
+                </View>
+              </>
             ) : (
-              <View style={styles.missingThumbanilContainer}>
-                <View style={styles.missingThumbanilContent}>
-                  <Text style={styles.noImageText}>Sin imagen</Text>
+              <View style={styles.missingThumbnailContainer}>
+                <View style={styles.missingThumbnailContent}>
+                  <Text style={styles.noVehiclesText}>{vehicleTitle}</Text>
                 </View>
               </View>
             )}
-            <Text style={styles.title}>{vehicleTitle}</Text>
           </View>
           <View style={styles.groupedListsContainer}>
             <GroupedList
@@ -214,7 +221,7 @@ export default function VehicleDetail() {
               <Row
                 title="Galeria"
                 trailingType="chevron"
-                icon={<Images size={24} color="white" />}
+                icon={<Images size={styles.iconSize.gap} color="white" />}
                 color={colorPalette.cyan[500]}
               />
               <Row
@@ -223,13 +230,13 @@ export default function VehicleDetail() {
                 onPress={() =>
                   router.navigate(`/vehicles/${vehicleId}/technical_sheet`)
                 }
-                icon={<Clipboard size={24} color="white" />}
+                icon={<Clipboard size={styles.iconSize.gap} color="white" />}
                 color={colorPalette.green[500]}
               />
               <Row
                 title="Guantera digital"
                 trailingType="chevron"
-                icon={<BookOpen size={24} color="white" />}
+                icon={<BookOpen size={styles.iconSize.gap} color="white" />}
                 color={colorPalette.orange[500]}
                 onPress={() =>
                   router.navigate(`/vehicles/${vehicleId}/documentation`)
@@ -238,7 +245,7 @@ export default function VehicleDetail() {
               <Row
                 title="Histórico de cargas de gasolina"
                 trailingType="chevron"
-                icon={<Fuel size={24} color="white" />}
+                icon={<Fuel size={styles.iconSize.gap} color="white" />}
                 color={colorPalette.red[500]}
                 onPress={() =>
                   router.navigate(`/vehicles/${vehicleId}/gasoline`)
@@ -247,7 +254,7 @@ export default function VehicleDetail() {
               <Row
                 title="Histórico de rutas"
                 trailingType="chevron"
-                icon={<Waypoints size={24} color="white" />}
+                icon={<Waypoints size={styles.iconSize.gap} color="white" />}
                 color={colorPalette.sky[500]}
               />
             </GroupedList>
@@ -256,7 +263,9 @@ export default function VehicleDetail() {
                 <Row
                   title="Administrar personas"
                   trailingType="chevron"
-                  icon={<UsersRoundIcon size={24} color="white" />}
+                  icon={
+                    <UsersRoundIcon size={styles.iconSize.gap} color="white" />
+                  }
                   color={colorPalette.lime[500]}
                   onPress={() =>
                     router.navigate(`/vehicles/${vehicleId}/people`)
@@ -266,19 +275,19 @@ export default function VehicleDetail() {
               <Row
                 title="Registrar carga de gasolina"
                 trailingType="chevron"
-                icon={<Fuel size={24} color="white" />}
+                icon={<Fuel size={styles.iconSize.gap} color="white" />}
                 color={colorPalette.red[500]}
               />
               <Row
                 title="Solicitar mantenimiento"
                 trailingType="chevron"
-                icon={<Wrench size={24} color="white" />}
+                icon={<Wrench size={styles.iconSize.gap} color="white" />}
                 color={colorPalette.green[500]}
               />
               <Row
                 title="Actualizar datos"
                 trailingType="chevron"
-                icon={<RotateCw size={24} color="white" />}
+                icon={<RotateCw size={styles.iconSize.gap} color="white" />}
                 color={colorPalette.orange[500]}
                 onPress={fetchVehicles}
                 caption="Dev only"
@@ -288,7 +297,7 @@ export default function VehicleDetail() {
               <Row
                 title="Borrar vehículo"
                 trailingType="chevron"
-                icon={<Trash size={24} color="white" />}
+                icon={<Trash size={styles.iconSize.gap} color="white" />}
                 color={colorPalette.red[500]}
                 onPress={() => router.navigate(`/vehicles/${vehicleId}/people`)}
               />
@@ -306,11 +315,6 @@ const stylesheet = createStyleSheet((theme) => ({
     fontSize: 16,
     color: theme.textPresets.subtitle,
   },
-  noImageText: {
-    fontSize: 16,
-    color: theme.textPresets.subtitle,
-    textAlign: "center",
-  },
   rightPressText: {
     color: theme.ui.colors.primary,
     fontSize: 17,
@@ -318,16 +322,16 @@ const stylesheet = createStyleSheet((theme) => ({
   container: {
     flex: 1,
     gap: theme.marginsComponents.section,
-    flexDirection: Platform.OS === "web" ? "row" : undefined,
-    marginTop: Platform.OS === "web" ? 16 : undefined,
+    ...Platform.select({
+      web: {
+        marginTop: 16,
+        margin: "auto",
+      },
+    }),
   },
   groupedListsContainer: {
-    flex: 2,
+    flex: 1.5,
     gap: theme.marginsComponents.section,
-  },
-  imageContainer: {
-    flex: 1,
-    aspectRatio: 16 / 9,
   },
   loadingContainer: {
     gap: 6,
@@ -358,10 +362,6 @@ const stylesheet = createStyleSheet((theme) => ({
     justifyContent: "center",
     alignItems: "center",
   },
-  noVehiclesText: {
-    fontSize: 18,
-    color: theme.textPresets.main,
-  },
   missingThumbanilContainer: {
     width: "100%",
     height: 250,
@@ -375,15 +375,11 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   title: {
     marginTop: 6,
-    fontSize: 32,
+    fontSize: 25,
     fontWeight: "bold",
     marginLeft: 16,
-    marginRight: 100,
+    marginRight: 16,
     color: theme.textPresets.main,
-  },
-  image: {
-    width: "100%",
-    aspectRatio: 16 / 9,
   },
   button: {
     backgroundColor: "#add8e6", // Azul claro
@@ -405,5 +401,60 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.ui.colors.primary,
     fontSize: 18,
     textAlign: "right",
+  },
+  iconSize: {
+    gap: Platform.OS === "web" ? 18 : 24,
+  },
+  imageContainer: {
+    aspectRatio: 16 / 9,
+    position: "relative", // Added for overlay positioning,
+    minWidth: "120%",
+    alignSelf: "center",
+  },
+  missingThumbnailContainer: {
+    aspectRatio: 16 / 9,
+    backgroundColor: theme.ui.colors.border,
+    justifyContent: "center",
+    alignItems: "center",
+    ...Platform.select({
+      web: {
+        borderRadius: 12,
+      },
+    }),
+  },
+  missingThumbnailContent: {
+    flexDirection: "column",
+  },
+  image: {
+    aspectRatio: 16 / 9,
+    ...Platform.select({
+      web: {
+        borderRadius: 12,
+      },
+    }),
+  },
+  fullOverlay: {
+    position: "absolute",
+    borderRadius: 12,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.25)", // Semi-transparent dark overlay
+    justifyContent: "flex-end",
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+  titleText: {
+    fontSize: 28,
+    color: "white",
+    fontWeight: "bold",
+  },
+  noVehiclesText: {
+    fontSize: 28,
+    color: theme.textPresets.main,
+    fontWeight: "bold",
+    textAlign: "center",
+    paddingHorizontal: 16,
   },
 }));

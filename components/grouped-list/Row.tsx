@@ -54,14 +54,22 @@ const Row = ({
         {children && <View style={styles.childrenContainer}>{children}</View>}
         <View style={styles.leadingContainer}>
           {icon && color && <RowIcon icon={icon} backgroundColor={color} />}
-          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.title} ellipsizeMode="head" numberOfLines={1}>
+            {title}
+          </Text>
         </View>
         <View style={styles.trailingContainer}>
           {isLoading ? (
             <ActivityIndicator />
           ) : (
             <>
-              <Text style={styles.caption}>{caption}</Text>
+              <Text
+                style={styles.caption}
+                ellipsizeMode="head"
+                numberOfLines={1}
+              >
+                {caption}
+              </Text>
               {showChevron ? (
                 <MaterialIcons name="chevron-right" size={25} color="#c4c4c7" />
               ) : null}
@@ -84,7 +92,7 @@ const stylesheet = createStyleSheet((theme) => ({
     alignItems: "center",
     ...Platform.select({
       web: {
-        minHeight: 38,
+        minHeight: 45,
       },
     }),
   },

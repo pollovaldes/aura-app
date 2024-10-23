@@ -122,6 +122,7 @@ export default function AddDocument({
         .from("vehicle_documentation_sheet")
         .delete()
         .eq("document_id", data[0].document_id);
+    } else {
     }
 
     setIsUploading(false);

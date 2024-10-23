@@ -59,6 +59,25 @@ export default function EditDocument({
     );
   };
 
+  const updateDocumentName = async () => {
+    setIsDocumentUpdating(true);
+    const { data, error } = await supabase
+      .from("vehicle_documentation_sheet")
+      .update({ title: documentNewName, description: documentNewDescription })
+      .eq("document_id", document.document_id)
+      .select();
+
+    if (error) {
+      alert(
+        `Ocurrió un error al actualizar el nombre o descripción del archivo \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}`
+      );
+    }
+
+    setIsDocumentUpdating(false);
+    fetchDocuments();
+    closeModal();
+  };
+
   return (
     <View style={styles.section}>
       <View style={styles.group}>
@@ -83,9 +102,7 @@ export default function EditDocument({
         />
         <FormButton
           title="Actualizar"
-          onPress={() => {
-            closeModal();
-          }}
+          onPress={updateDocumentName}
           isDisabled={isDocumentUpdating}
         />
       </View>
