@@ -25,6 +25,7 @@ import Modal from "@/components/Modal/Modal";
 import { useCallback, useState } from "react";
 import AddDocument from "@/components/vehicles/modals/AddDocument";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
+import React from "react";
 
 type ModalType = "add_document" | null;
 

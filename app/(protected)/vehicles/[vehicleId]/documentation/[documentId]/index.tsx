@@ -8,6 +8,7 @@ import useDocuments from "@/hooks/useDocuments";
 import useProfile from "@/hooks/useProfile";
 import { Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { RotateCw, Share } from "lucide-react-native";
+import React from "react";
 import { useCallback, useState } from "react";
 import { View, Text, Platform, Pressable } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";

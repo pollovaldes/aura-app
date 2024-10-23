@@ -56,7 +56,6 @@ export default function ChangeDataModal({
         <Text style={styles.closeButton} onPress={closeModal}>
           Cerrar
         </Text>
-        {/* Form goes here */}
         <View style={styles.section}>
           <View style={styles.group}>
             <FormTitle title={`Cambiar ${currentDataType}`} />
