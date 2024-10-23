@@ -1,6 +1,6 @@
 // ChangeImageModal.tsx
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, Alert } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import FormTitle from "@/app/auth/FormTitle";
 import { Document } from "@/hooks/useDocuments";
@@ -29,16 +29,34 @@ export default function EditDocument({
   const [isDocumentUpdating, setIsDocumentUpdating] = React.useState(false);
 
   const deleteDocument = async () => {
-    await supabase.storage
-      .from("documents")
-      .remove([`${document.vehicle_id}/${document.document_id}`]);
+    Alert.alert(
+      "Confirmación",
+      `¿Estás seguro de que quieres eliminar el archivo "${document.title}"? Esta acción no se puede deshacer.`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: async () => {
+            setIsDocumentUpdating(true);
+            // Delete the document from the storage
+            await supabase.storage
+              .from("documents")
+              .remove([`${document.vehicle_id}/${document.document_id}`]);
 
-    await supabase
-      .from("vehicle_documentation_sheet")
-      .delete()
-      .eq("document_id", document.document_id);
+            // Delete the document reference from the database table
+            await supabase
+              .from("vehicle_documentation_sheet")
+              .delete()
+              .eq("document_id", document.document_id);
 
-    router.back();
+            fetchDocuments();
+            setIsDocumentUpdating(false);
+            router.back();
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -54,18 +72,21 @@ export default function EditDocument({
           onChangeText={setDocumentNewName}
           description="Nombre"
           value={documentNewName}
+          editable={!isDocumentUpdating}
         />
         <FormInput
           onChangeText={setDocumentNewDescription}
           description="Descripción"
           placeholder="Sin descripción"
           value={documentNewDescription}
+          editable={!isDocumentUpdating}
         />
         <FormButton
           title="Actualizar"
           onPress={() => {
             closeModal();
           }}
+          isDisabled={isDocumentUpdating}
         />
       </View>
       <View style={styles.group}>
@@ -78,6 +99,7 @@ export default function EditDocument({
             closeModal();
           }}
           icon={() => <Replace color={styles.iconColor.color} />}
+          isDisabled={isDocumentUpdating}
         />
         <FormButton
           title="Eliminar"
@@ -86,6 +108,7 @@ export default function EditDocument({
           }}
           buttonType="danger"
           icon={() => <Trash2 color={styles.iconColor.color} />}
+          isDisabled={isDocumentUpdating}
         />
       </View>
     </View>
