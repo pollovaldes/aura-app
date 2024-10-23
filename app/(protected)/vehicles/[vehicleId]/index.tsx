@@ -405,11 +405,16 @@ const stylesheet = createStyleSheet((theme) => ({
   iconSize: {
     gap: Platform.OS === "web" ? 18 : 24,
   },
+
   imageContainer: {
     aspectRatio: 16 / 9,
     position: "relative", // Added for overlay positioning,
-    minWidth: "120%",
-    alignSelf: "center",
+    ...Platform.select({
+      web: {
+        minWidth: "125%",
+        alignSelf: "center",
+      },
+    }),
   },
   missingThumbnailContainer: {
     aspectRatio: 16 / 9,
