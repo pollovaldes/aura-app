@@ -5,7 +5,12 @@ import {
   Pressable,
   Text,
 } from "react-native";
-import { router, Stack, useLocalSearchParams } from "expo-router";
+import {
+  router,
+  Stack,
+  useFocusEffect,
+  useLocalSearchParams,
+} from "expo-router";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
@@ -17,7 +22,7 @@ import useVehicle from "@/hooks/truckHooks/useVehicle";
 import useDocuments from "@/hooks/useDocuments";
 import { Plus } from "lucide-react-native";
 import Modal from "@/components/Modal/Modal";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import AddDocument from "@/components/vehicles/modals/AddDocument";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 
@@ -31,6 +36,12 @@ export default function Index() {
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchDocuments();
+    }, [])
+  );
 
   if (isProfileLoading) {
     return (

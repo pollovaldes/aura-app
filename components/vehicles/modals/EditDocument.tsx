@@ -8,8 +8,9 @@ import { FormButton } from "@/components/Form/FormButton";
 import FormInput from "@/components/Form/FormInput";
 import { supabase } from "@/lib/supabase";
 import { Replace, Trash, Trash2 } from "lucide-react-native";
+import { router } from "expo-router";
 
-interface ChangeVehicleImageModalProps {
+interface editDocumentModalProps {
   closeModal: () => void;
   fetchDocuments: () => void;
   document: Document;
@@ -19,7 +20,7 @@ export default function EditDocument({
   closeModal,
   fetchDocuments,
   document,
-}: ChangeVehicleImageModalProps) {
+}: editDocumentModalProps) {
   const { styles } = useStyles(stylesheet);
   const [documentNewName, setDocumentNewName] = React.useState(document.title);
   const [documentNewDescription, setDocumentNewDescription] = React.useState(
@@ -27,13 +28,17 @@ export default function EditDocument({
   );
   const [isDocumentUpdating, setIsDocumentUpdating] = React.useState(false);
 
-  const updateDocument = async () => {
-    setIsDocumentUpdating(true);
-    const { data, error } = await supabase
+  const deleteDocument = async () => {
+    await supabase.storage
+      .from("documents")
+      .remove([`${document.vehicle_id}/${document.document_id}`]);
+
+    await supabase
       .from("vehicle_documentation_sheet")
-      .update({ other_column: "otherValue" })
-      .eq("some_column", "someValue")
-      .select();
+      .delete()
+      .eq("document_id", document.document_id);
+
+    router.back();
   };
 
   return (
@@ -77,7 +82,7 @@ export default function EditDocument({
         <FormButton
           title="Eliminar"
           onPress={() => {
-            closeModal();
+            deleteDocument();
           }}
           buttonType="danger"
           icon={() => <Trash2 color={styles.iconColor.color} />}

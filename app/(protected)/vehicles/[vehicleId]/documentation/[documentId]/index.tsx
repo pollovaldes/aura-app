@@ -6,9 +6,9 @@ import Modal from "@/components/Modal/Modal";
 import EditDocument from "@/components/vehicles/modals/EditDocument";
 import useDocuments from "@/hooks/useDocuments";
 import useProfile from "@/hooks/useProfile";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { RotateCw, Share } from "lucide-react-native";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { View, Text, Platform, Pressable } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
