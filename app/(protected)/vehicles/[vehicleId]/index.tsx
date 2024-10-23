@@ -248,7 +248,7 @@ export default function VehicleDetail() {
                 icon={<Fuel size={styles.iconSize.gap} color="white" />}
                 color={colorPalette.red[500]}
                 onPress={() =>
-                  router.navigate(`/vehicles/${vehicleId}/gasoline`)
+                  router.navigate(`/vehicles/${vehicleId}/gasoline_history`)
                 }
               />
               <Row
