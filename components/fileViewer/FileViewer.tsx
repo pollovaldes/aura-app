@@ -13,7 +13,6 @@ export default function FileViewer({ fileUrl }: FileViewerProps) {
   const { styles } = useStyles(stylesheet);
   const [isWebViewLoading, setIsWebViewLoading] = useState(false);
   const headerHeight = useHeaderHeight();
-  const webViewRef = useRef();
 
   const embeddedUrl = `http://docs.google.com/gview?embedded=true&url=${fileUrl}`;
 
@@ -28,7 +27,7 @@ export default function FileViewer({ fileUrl }: FileViewerProps) {
           </View>
         )}
         <WebView
-          ref={webViewRef.current}
+          incognito={true}
           javaScriptEnabled={true}
           source={{ uri: Platform.OS === "ios" ? fileUrl : embeddedUrl }}
           onLoadStart={(syntheticEvent) => {
