@@ -85,7 +85,7 @@ export default function AddDocument({
 
     if (error) {
       alert(
-        `Ocurrió un error al subir el archivo \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}\n\nCausa del error: ${error.cause}\n\nNombre: ${error.name}\n\nStack: ${error.stack}`
+        `Ocurrió un error al subir el archivo \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}`
       );
       return false;
     }
