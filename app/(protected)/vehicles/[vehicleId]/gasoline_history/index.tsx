@@ -22,7 +22,7 @@ export default function GasolineHistory() {
     status: "pending",
   });
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { profile, isProfileLoading, fetchProfile } = useProfile();
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
@@ -87,23 +87,21 @@ export default function GasolineHistory() {
       </>
     );
   }
-  
+
   const handleChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value });
   };
 
   const submitGasolineLoad = async () => {
     setIsLoading(true);
-    const { data, error } = await supabase
-      .from("gasoline_loads")
-      .insert({
-        vehicle_id: vehicle.id,
-        user_id: profile.id,
-        amount: Number(formData.amount),
-        status: profile.role === "OWNER" ? "approved" : "pending",
-        approved_by: profile.role === "OWNER" ? profile.id : null,
-        approved_at: profile.role === "OWNER" ? new Date() : null,
-      });
+    const { data, error } = await supabase.from("gasoline_loads").insert({
+      vehicle_id: vehicle.id,
+      user_id: profile.id,
+      amount: Number(formData.amount),
+      status: profile.role === "OWNER" ? "approved" : "pending",
+      approved_by: profile.role === "OWNER" ? profile.id : null,
+      approved_at: profile.role === "OWNER" ? new Date() : null,
+    });
 
     if (error) {
       Alert.alert("Error", error.message);
@@ -129,7 +127,10 @@ export default function GasolineHistory() {
       />
       <Modal isOpen={isModalOpen}>
         <View style={styles.modalContainer}>
-          <Text style={styles.closeButton} onPress={() => setIsModalOpen(false)}>
+          <Text
+            style={styles.closeButton}
+            onPress={() => setIsModalOpen(false)}
+          >
             Cerrar
           </Text>
           <View style={styles.section}>

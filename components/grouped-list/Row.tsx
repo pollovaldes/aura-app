@@ -5,7 +5,7 @@ import {
   ActivityIndicator,
   Platform,
 } from "react-native";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import RowIcon from "./RowIcon";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -40,14 +40,18 @@ const Row = ({
   children,
 }: DefaultProps) => {
   const { styles } = useStyles(stylesheet);
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <Pressable
+      onHoverIn={() => !isLoading && !disabled && setIsHovered(true)}
+      onHoverOut={() => setIsHovered(false)}
       disabled={isLoading || disabled}
       onPress={onPress}
       style={({ pressed }) => [
         { opacity: disabled ? 0.75 : 1 },
         pressed && { opacity: 0.45 },
+        isHovered && styles.containerHovered,
       ]}
     >
       <View style={styles.container}>
@@ -95,6 +99,9 @@ const stylesheet = createStyleSheet((theme) => ({
         minHeight: 45,
       },
     }),
+  },
+  containerHovered: {
+    backgroundColor: theme.components.navBarListItem.hoveredBG,
   },
   childrenContainer: {
     width: "80%",
