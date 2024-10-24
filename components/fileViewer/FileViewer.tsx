@@ -7,9 +7,10 @@ import LoadingScreen from "../dataStates/LoadingScreen";
 
 interface FileViewerProps {
   fileUrl: string;
+  randomKey: number;
 }
 
-export default function FileViewer({ fileUrl }: FileViewerProps) {
+export default function FileViewer({ fileUrl, randomKey }: FileViewerProps) {
   const { styles } = useStyles(stylesheet);
   const [isWebViewLoading, setIsWebViewLoading] = useState(false);
   const headerHeight = useHeaderHeight();
@@ -17,7 +18,9 @@ export default function FileViewer({ fileUrl }: FileViewerProps) {
   const embeddedUrl = `http://docs.google.com/gview?embedded=true&url=${fileUrl}`;
 
   if (Platform.OS === "web") {
-    return <iframe src={fileUrl} height={"100%"} width={"100%"} />;
+    return (
+      <iframe src={fileUrl} height={"100%"} width={"100%"} key={randomKey} />
+    );
   } else {
     return (
       <>
@@ -39,6 +42,7 @@ export default function FileViewer({ fileUrl }: FileViewerProps) {
           style={{
             marginTop: Platform.OS === "ios" ? headerHeight : 0,
           }}
+          key={randomKey}
         />
       </>
     );

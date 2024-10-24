@@ -21,6 +21,7 @@ export default function Index() {
   const { profile, isProfileLoading, fetchProfile } = useProfile();
   const { documents, areDocumentsLoading, fetchDocuments } = useDocuments();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const [randomKey, setRandomKey] = useState(0); // This is a hack to force the FileViewer to re-render
   const closeModal = () => setActiveModal(null);
 
   if (isProfileLoading) {
@@ -134,7 +135,7 @@ export default function Index() {
               <Pressable onPress={() => setActiveModal("edit_document")}>
                 <Share color={styles.Icon.color} />
               </Pressable>
-              <Pressable onPress={() => setActiveModal("edit_document")}>
+              <Pressable onPress={() => setRandomKey(Math.random())}>
                 <RotateCw color={styles.Icon.color} />
               </Pressable>
             </View>
@@ -154,7 +155,7 @@ export default function Index() {
           />
         </View>
       </Modal>
-      <FileViewer fileUrl={fileUrl} />
+      <FileViewer fileUrl={fileUrl} randomKey={randomKey} />
     </>
   );
 }
