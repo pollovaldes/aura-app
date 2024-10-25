@@ -6,12 +6,15 @@ import Modal from "@/components/Modal/Modal";
 import EditDocument from "@/components/vehicles/modals/EditDocument";
 import useDocuments from "@/hooks/useDocuments";
 import useProfile from "@/hooks/useProfile";
-import { Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { supabase } from "@/lib/supabase";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { RotateCw, Share } from "lucide-react-native";
 import React from "react";
-import { useCallback, useState } from "react";
-import { View, Text, Platform, Pressable } from "react-native";
+import { useState } from "react";
+import { View, Text, Pressable, ActivityIndicator } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
+import * as Sharing from "expo-sharing";
+import * as FileSystem from "expo-file-system";
 
 type ModalType = "edit_document" | null;
 
@@ -22,6 +25,7 @@ export default function Index() {
   const { documents, areDocumentsLoading, fetchDocuments } = useDocuments();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [randomKey, setRandomKey] = useState(0); // This is a hack to force the FileViewer to re-render
+  const [isDownloadingDocument, setIsDownloadingDocument] = useState(false);
   const closeModal = () => setActiveModal(null);
 
   if (isProfileLoading) {
@@ -116,8 +120,54 @@ export default function Index() {
   }
 
   const canEdit = profile.role === "ADMIN" || profile.role === "OWNER";
-
   const fileUrl = `https://wkkfbhlvghhrscihbdev.supabase.co/storage/v1/object/public/documents/${document.vehicle_id}/${document.document_id}`;
+
+  const shareDocument = async () => {
+    const getFileExtensionFromMimeType = (mimeType: string): string => {
+      const mimeToExtensionMap: Record<string, string> = {
+        "image/jpeg": "jpg",
+        "image/png": "png",
+        "image/gif": "gif",
+        "video/mp4": "mp4",
+        "video/quicktime": "mov",
+        "application/msword": "doc",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+          "docx",
+        "application/vnd.ms-excel": "xls",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+          "xlsx",
+        "application/vnd.ms-powerpoint": "ppt",
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+          "pptx",
+        "application/pdf": "pdf",
+        "text/plain": "txt",
+        // Add more mappings as needed
+      };
+
+      return mimeToExtensionMap[mimeType] || "bin"; // Default to 'bin' if unknown MIME type
+    };
+
+    setIsDownloadingDocument(true);
+    const { data, error } = await supabase.storage
+      .from("documents")
+      .download(`${document.vehicle_id}/${document.document_id}`);
+
+    if (error) {
+      alert(
+        `Ocurrió un error al descargar el archivo \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}`
+      );
+      setIsDownloadingDocument(false);
+      return;
+    }
+
+    if (!data) {
+      alert("No se pudo descargar el archivo.");
+      setIsDownloadingDocument(false);
+      return;
+    }
+
+    
+  };
 
   return (
     <>
@@ -132,9 +182,13 @@ export default function Index() {
                   <Text style={styles.rightPressText}>Editar</Text>
                 </Pressable>
               )}
-              <Pressable onPress={() => setActiveModal("edit_document")}>
-                <Share color={styles.Icon.color} />
-              </Pressable>
+              {isDownloadingDocument ? (
+                <ActivityIndicator />
+              ) : (
+                <Pressable onPress={() => shareDocument()}>
+                  <Share color={styles.Icon.color} />
+                </Pressable>
+              )}
               <Pressable onPress={() => setRandomKey(Math.random())}>
                 <RotateCw color={styles.Icon.color} />
               </Pressable>
