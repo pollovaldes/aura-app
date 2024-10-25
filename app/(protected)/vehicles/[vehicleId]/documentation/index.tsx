@@ -267,7 +267,7 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.textPresets.main,
   },
   plusIcon: {
-    color: theme.ui.colors.primary,
+    color: theme.headerButtons.color,
   },
   modalContainer: {
     width: "100%",
@@ -278,7 +278,7 @@ const stylesheet = createStyleSheet((theme) => ({
     padding: 24,
   },
   closeButton: {
-    color: theme.ui.colors.primary,
+    color: theme.headerButtons.color,
     fontSize: 18,
     textAlign: "right",
   },

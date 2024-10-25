@@ -83,7 +83,7 @@ function SearchConsumer() {
 
 const stylesheet = createStyleSheet((theme) => ({
   closeButton: {
-    color: theme.ui.colors.primary,
+    color: theme.headerButtons.color,
     fontSize: 18,
     textAlign: "left",
   },

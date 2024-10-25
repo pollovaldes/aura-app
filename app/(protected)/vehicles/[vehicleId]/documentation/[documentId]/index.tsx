@@ -6,7 +6,6 @@ import Modal from "@/components/Modal/Modal";
 import EditDocument from "@/components/vehicles/modals/EditDocument";
 import useDocuments from "@/hooks/useDocuments";
 import useProfile from "@/hooks/useProfile";
-import { supabase } from "@/lib/supabase";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { RotateCw, Share } from "lucide-react-native";
 import React from "react";
@@ -15,6 +14,7 @@ import { View, Text, Pressable, ActivityIndicator } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
+import { supabase } from "@/lib/supabase";
 
 type ModalType = "edit_document" | null;
 
@@ -25,7 +25,7 @@ export default function Index() {
   const { documents, areDocumentsLoading, fetchDocuments } = useDocuments();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [randomKey, setRandomKey] = useState(0); // This is a hack to force the FileViewer to re-render
-  const [isDownloadingDocument, setIsDownloadingDocument] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
   const closeModal = () => setActiveModal(null);
 
   if (isProfileLoading) {
@@ -122,51 +122,86 @@ export default function Index() {
   const canEdit = profile.role === "ADMIN" || profile.role === "OWNER";
   const fileUrl = `https://wkkfbhlvghhrscihbdev.supabase.co/storage/v1/object/public/documents/${document.vehicle_id}/${document.document_id}`;
 
-  const shareDocument = async () => {
-    const getFileExtensionFromMimeType = (mimeType: string): string => {
-      const mimeToExtensionMap: Record<string, string> = {
-        "image/jpeg": "jpg",
-        "image/png": "png",
-        "image/gif": "gif",
-        "video/mp4": "mp4",
-        "video/quicktime": "mov",
-        "application/msword": "doc",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-          "docx",
-        "application/vnd.ms-excel": "xls",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-          "xlsx",
-        "application/vnd.ms-powerpoint": "ppt",
-        "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-          "pptx",
-        "application/pdf": "pdf",
-        "text/plain": "txt",
-        // Add more mappings as needed
-      };
-
-      return mimeToExtensionMap[mimeType] || "bin"; // Default to 'bin' if unknown MIME type
+  const getFileExtensionFromMimeType = (mimeType: string) => {
+    const mimeToExtensionMap: Record<string, string> = {
+      "image/jpeg": "jpg",
+      "image/png": "png",
+      "image/gif": "gif",
+      "video/mp4": "mp4",
+      "video/quicktime": "mov",
+      "application/msword": "doc",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+        "docx",
+      "application/vnd.ms-excel": "xls",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+        "xlsx",
+      "application/vnd.ms-powerpoint": "ppt",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+        "pptx",
+      "application/pdf": "pdf",
+      "text/plain": "txt",
+      // Add more mappings as needed
     };
+    return mimeToExtensionMap[mimeType] || "bin"; // Default to 'bin' if unknown MIME type
+  };
 
-    setIsDownloadingDocument(true);
-    const { data, error } = await supabase.storage
-      .from("documents")
-      .download(`${document.vehicle_id}/${document.document_id}`);
+  const shareDocument = async () => {
+    try {
+      // Set isSharing to true to indicate loading
+      setIsSharing(true);
 
-    if (error) {
-      alert(
-        `Ocurrió un error al descargar el archivo \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}`
-      );
-      setIsDownloadingDocument(false);
-      return;
+      // Fetch the document from Supabase
+      const { data: blob, error } = await supabase.storage
+        .from("documents")
+        .download(`${document.vehicle_id}/${document.document_id}`);
+
+      if (error) {
+        console.error("Error downloading the document:", error.message);
+        setIsSharing(false);
+        return;
+      }
+
+      // Get the MIME type from the blob
+      const mimeType = blob.type;
+
+      // Use FileReader to convert the Blob to a Base64 string
+      const fileData = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (reader.result) {
+            // Get Base64 content after "data:*/*;base64,"
+            resolve(reader.result.toString().split(",")[1]);
+          } else {
+            reject(new Error("Failed to read file as Base64."));
+          }
+        };
+        reader.onerror = () => reject(new Error("File reading error"));
+        reader.readAsDataURL(blob); // Read as a Data URL to get Base64 content
+      });
+
+      // Make sure fileData is a string before writing
+      if (typeof fileData !== "string") {
+        throw new Error("File data is not a valid string.");
+      }
+
+      // Create a local file path to save the Blob
+      const fileUri = `${FileSystem.documentDirectory}${document.document_id}.${getFileExtensionFromMimeType(mimeType)}`;
+
+      // Write the Base64 string to the file system
+      await FileSystem.writeAsStringAsync(fileUri, fileData, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      // Share the file using Expo Sharing
+      await Sharing.shareAsync(fileUri, {
+        mimeType,
+      });
+    } catch (err) {
+      console.error("An error occurred while sharing the document:", err);
+    } finally {
+      // Set isSharing to false to indicate completion
+      setIsSharing(false);
     }
-
-    if (!data) {
-      alert("No se pudo descargar el archivo.");
-      setIsDownloadingDocument(false);
-      return;
-    }
-
-    
   };
 
   return (
@@ -182,7 +217,7 @@ export default function Index() {
                   <Text style={styles.rightPressText}>Editar</Text>
                 </Pressable>
               )}
-              {isDownloadingDocument ? (
+              {isSharing ? (
                 <ActivityIndicator />
               ) : (
                 <Pressable onPress={() => shareDocument()}>
@@ -230,7 +265,7 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.textPresets.main,
   },
   rightPressText: {
-    color: theme.ui.colors.primary,
+    color: theme.headerButtons.color,
     fontSize: 17,
   },
   modalContainer: {
@@ -242,12 +277,12 @@ const stylesheet = createStyleSheet((theme) => ({
     padding: 24,
   },
   closeButton: {
-    color: theme.ui.colors.primary,
+    color: theme.headerButtons.color,
     fontSize: 18,
     textAlign: "right",
   },
   Icon: {
     fontSize: 16,
-    color: theme.ui.colors.primary,
+    color: theme.headerButtons.color,
   },
 }));

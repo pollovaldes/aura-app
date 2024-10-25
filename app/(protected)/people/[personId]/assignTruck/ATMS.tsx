@@ -189,7 +189,7 @@ const stylesheet = createStyleSheet((theme) => ({
     flex: 1,
   },
   closeButton: {
-    color: theme.ui.colors.primary,
+    color: theme.headerButtons.color,
     fontSize: 18,
     textAlign: "right",
   },

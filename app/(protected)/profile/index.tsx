@@ -279,7 +279,7 @@ const stylesheet = createStyleSheet((theme) => ({
     backgroundColor: theme.textInput.backgroundColor,
   },
   closeButton: {
-    color: theme.ui.colors.primary,
+    color: theme.headerButtons.color,
     fontSize: 18,
     textAlign: "right",
   },

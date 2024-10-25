@@ -26,6 +26,8 @@
 //   },
 // } as const;
 
+import { Platform } from "react-native";
+
 // export const darkTheme = {
 //   colors: {
 //     text: {
@@ -201,11 +203,20 @@ export const lightTheme = {
       bad: colorPalette.red[500],
       good: colorPalette.lime[600],
       message: colorPalette.neutral[600],
-    }
+    },
   },
   textInput: {
     backgroundColor: colorPalette.neutral[200],
   },
+  headerButtons: {
+    color:
+      Platform.OS === "ios"
+        ? "rgb(0, 122, 255)"
+        : Platform.OS === "web"
+          ? "#000000"
+          : "#666666",
+  },
+
   margins: {
     sm: 2,
     md: 4,
@@ -258,10 +269,13 @@ export const darkTheme = {
       bad: colorPalette.red[200],
       good: colorPalette.lime[300],
       message: colorPalette.neutral[300],
-    }
+    },
   },
   textInput: {
     backgroundColor: colorPalette.neutral[800],
+  },
+  headerButtons: {
+    color: Platform.OS === "ios" ? "rgb(10, 132, 255)" : "#ffffff",
   },
   margins: {
     sm: 2,

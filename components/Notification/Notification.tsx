@@ -40,7 +40,7 @@ export default function Notification({
   creator,
   target,
   status = "unread",
-  simple
+  simple,
 }: DefaultProps) {
   const { styles } = useStyles(stylesheet);
   const [isOpen, setIsOpen] = useState(false);
@@ -67,7 +67,10 @@ export default function Notification({
                 caption={caption}
                 simple={false}
                 childrenRight={
-                  <Text style={styles.closeButton} onPress={() => setIsOpen(false)}>
+                  <Text
+                    style={styles.closeButton}
+                    onPress={() => setIsOpen(false)}
+                  >
                     Cerrar
                   </Text>
                 }
@@ -75,8 +78,7 @@ export default function Notification({
                 <Text>{description}</Text>
               </NotificationCard>
             </View>
-            <View style={styles.group}>
-            </View>
+            <View style={styles.group}></View>
           </View>
         </View>
       </Modal>
@@ -102,7 +104,7 @@ const stylesheet = createStyleSheet((theme) => ({
     padding: 24,
   },
   closeButton: {
-    color: theme.ui.colors.primary,
+    color: theme.headerButtons.color,
     fontSize: 18,
     textAlign: "right",
   },

@@ -316,7 +316,7 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.textPresets.subtitle,
   },
   rightPressText: {
-    color: theme.ui.colors.primary,
+    color: theme.headerButtons.color,
     fontSize: 17,
   },
   container: {
@@ -398,7 +398,7 @@ const stylesheet = createStyleSheet((theme) => ({
     color: "#000", // Texto negro
   },
   closeButton: {
-    color: theme.ui.colors.primary,
+    color: theme.headerButtons.color,
     fontSize: 18,
     textAlign: "right",
   },

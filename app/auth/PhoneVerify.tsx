@@ -101,7 +101,7 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.textPresets.subtitle,
   },
   numberSubtitle: {
-    color: theme.ui.colors.primary,
+    color: theme.headerButtons.color,
     fontWeight: "bold",
   },
   textInput: {

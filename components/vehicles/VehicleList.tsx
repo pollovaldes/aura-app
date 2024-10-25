@@ -190,7 +190,7 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   plusIcon: {
     fontSize: 16,
-    color: theme.ui.colors.primary,
+    color: theme.headerButtons.color,
   },
   chevron: {
     color: theme.textPresets.subtitle,

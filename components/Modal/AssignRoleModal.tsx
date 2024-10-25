@@ -51,7 +51,7 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   optionText: {
     padding: 10,
-    color: theme.ui.colors.primary,
+    color: theme.headerButtons.color,
     textAlign: "center",
     fontSize: 15,
   },

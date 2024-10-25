@@ -163,7 +163,7 @@ export default function GasolineHistory() {
 
 const stylesheet = createStyleSheet((theme) => ({
   addButton: {
-    color: theme.ui.colors.primary,
+    color: theme.headerButtons.color,
     fontSize: 16,
   },
   modalContainer: {
@@ -177,7 +177,7 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.textPresets.main,
   },
   closeButton: {
-    color: theme.ui.colors.primary,
+    color: theme.headerButtons.color,
     fontSize: 18,
     textAlign: "right",
   },

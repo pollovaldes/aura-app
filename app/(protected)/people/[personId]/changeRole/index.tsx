@@ -78,7 +78,7 @@ const stylesheet = createStyleSheet((theme) => ({
     color: '#007BFF',
   },
   closeButton: {
-    color: theme.ui.colors.primary,
+    color: theme.headerButtons.color,
     fontSize: 18,
   },
   textStyle: {
