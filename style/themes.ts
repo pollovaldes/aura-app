@@ -209,12 +209,7 @@ export const lightTheme = {
     backgroundColor: colorPalette.neutral[200],
   },
   headerButtons: {
-    color:
-      Platform.OS === "ios"
-        ? "rgb(0, 122, 255)"
-        : Platform.OS === "web"
-          ? "#000000"
-          : "#666666",
+    color: Platform.OS === "ios" ? "rgb(0, 122, 255)" : "#000000",
   },
 
   margins: {

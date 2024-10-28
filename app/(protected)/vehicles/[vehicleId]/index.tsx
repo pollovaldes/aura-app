@@ -154,6 +154,8 @@ export default function VehicleDetail() {
   const vehicleTitle = `${vehicle.brand ?? ""} ${vehicle.sub_brand ?? ""} (${vehicle.year ?? ""})`;
   const canEditVehicle = profile.role === "ADMIN" || profile.role === "OWNER";
 
+  const deleteVehicle = () => {};
+
   return (
     <>
       <Stack.Screen
@@ -282,15 +284,7 @@ export default function VehicleDetail() {
                 title="Solicitar mantenimiento"
                 trailingType="chevron"
                 icon={<Wrench size={styles.iconSize.gap} color="white" />}
-                color={colorPalette.green[500]}
-              />
-              <Row
-                title="Actualizar datos"
-                trailingType="chevron"
-                icon={<RotateCw size={styles.iconSize.gap} color="white" />}
-                color={colorPalette.orange[500]}
-                onPress={fetchVehicles}
-                caption="Dev only"
+                color={colorPalette.cyan[500]}
               />
             </GroupedList>
             <GroupedList header="Zona de peligro">
