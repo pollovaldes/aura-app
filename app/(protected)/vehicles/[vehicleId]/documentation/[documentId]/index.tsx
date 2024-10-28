@@ -7,14 +7,21 @@ import EditDocument from "@/components/vehicles/modals/EditDocument";
 import useDocuments from "@/hooks/useDocuments";
 import useProfile from "@/hooks/useProfile";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { RotateCw, Share } from "lucide-react-native";
+import { RotateCw, Share as ShareIcon } from "lucide-react-native";
 import React from "react";
 import { useState } from "react";
-import { View, Text, Pressable, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  ActivityIndicator,
+  Platform,
+} from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
 import { supabase } from "@/lib/supabase";
+import { Share } from "react-native";
 
 type ModalType = "edit_document" | null;
 
@@ -192,10 +199,26 @@ export default function Index() {
         encoding: FileSystem.EncodingType.Base64,
       });
 
-      // Share the file using Expo Sharing
-      await Sharing.shareAsync(fileUri, {
-        mimeType,
+      // On Android, prepend the URI with "file://"
+      const androidUri =
+        Platform.OS === "android" ? `file://${fileUri}` : fileUri;
+
+      // Share the file using React Native's Share API
+      const result = await Share.share({
+        title: document.title,
+        url: androidUri,
+        message: `Check out this document: ${document.title}`,
       });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log("Shared with activity type: ", result.activityType);
+        } else {
+          console.log("Document shared successfully.");
+        }
+      } else if (result.action === Share.dismissedAction) {
+        console.log("Document sharing was dismissed.");
+      }
     } catch (err) {
       console.error("An error occurred while sharing the document:", err);
     } finally {
@@ -221,7 +244,7 @@ export default function Index() {
                 <ActivityIndicator />
               ) : (
                 <Pressable onPress={() => shareDocument()}>
-                  <Share color={styles.Icon.color} />
+                  <ShareIcon color={styles.Icon.color} />
                 </Pressable>
               )}
               <Pressable onPress={() => setRandomKey(Math.random())}>
