@@ -10,11 +10,29 @@ const useGasolineLoads = () => {
 
     useEffect(() => {
         console.log('Role:', role);
+
+        const insertGasolineLoad = async () => {
+            const { data, error } = await supabase
+                .from('notifications')
+                .insert([
+                    {
+                        user_id: profile?.id,
+                        content: 'New gasoline load inserted',
+                    }]);
+
+            if (error) {
+                console.error('Error inserting gasoline load:', error);
+                Alert.alert('Error', 'Failed to insert gasoline load');
+            } else {
+                console.log('Gasoline load inserted:', data);
+            }
+        };
+
         const channel = supabase.channel('gasoline_loads')
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'gasoline_loads' }, (payload) => {
-                if (role !== 'DRIVER'){
-                    Alert.alert('Nueva carga de gasolina', 'Se ha registrado una nueva carga de gasolina');
-                }
+                // Create supabase notification:
+                insertGasolineLoad();
+
                 // Expo Notifications
             })
             .subscribe();
