@@ -17,7 +17,6 @@ import {
   Clipboard,
   Fuel,
   Images,
-  RotateCw,
   Trash,
   UsersRoundIcon,
   Waypoints,
