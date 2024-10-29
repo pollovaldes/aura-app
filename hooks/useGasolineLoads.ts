@@ -1,11 +1,7 @@
 import { useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { GasolineLoad } from '@/types/GasolineLoad';
-import { Alert } from 'react-native';
 import useProfile from './useProfile';
-import profile from '@/app/(protected)/profile';
-import ErrorScreen from '@/components/dataStates/ErrorScreen';
-import LoadingScreen from '@/components/dataStates/LoadingScreen';
+import { Alert } from 'react-native';
 
 
 const useGasolineLoads = () => {
@@ -14,23 +10,20 @@ const useGasolineLoads = () => {
 
     useEffect(() => {
         console.log('Role:', role);
-        if (role !== 'ADMIN' && role !== 'OWNER') return;
-
         const channel = supabase.channel('gasoline_loads')
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'gasoline_loads' }, (payload) => {
-                console.log(
-                    'Nueva Carga de Gasolina',
-                    `Se ha registrado una nueva carga de gasolina con un total de ${payload.new.amount} litros.`,
-                    [{ text: 'Aceptar' }]
-                );
+                if (role !== 'DRIVER'){
+                    Alert.alert('Nueva carga de gasolina', 'Se ha registrado una nueva carga de gasolina');
+                }
                 // Expo Notifications
             })
             .subscribe();
 
+
         return () => {
             supabase.removeChannel(channel);
         };
-    }, [role]);
+    },[role]);
 };
 
 export default useGasolineLoads;

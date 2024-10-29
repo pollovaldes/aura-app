@@ -13,6 +13,7 @@ import FormTitle from "@/app/auth/FormTitle";
 import useProfile from "@/hooks/useProfile";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
+import useGasolineLoads from "@/hooks/useGasolineLoads";
 
 export default function GasolineHistory() {
   const { styles } = useStyles(stylesheet);
@@ -26,6 +27,8 @@ export default function GasolineHistory() {
   const { profile, isProfileLoading, fetchProfile } = useProfile();
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
+
+  useGasolineLoads();
 
   if (vehiclesAreLoading) {
     return (
@@ -137,7 +140,7 @@ export default function GasolineHistory() {
             <View style={styles.group}>
               <FormTitle title="Add Gasoline Load" />
               <Text style={styles.subtitle}>
-                Escribe cuato dinero cargaste de gasolina en MXN.
+                Escribe cuanto dinero cargaste de gasolina en MXN.
               </Text>
             </View>
             <View style={styles.group}>
