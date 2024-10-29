@@ -14,6 +14,9 @@ const Notifications = () => {
 
   useEffect(() => {
     const fetchNotifications = async () => {
+      if (!profile) {
+        return;
+      }
       const { data, error } = await supabase
         .from('notifications')
         .select('*')
