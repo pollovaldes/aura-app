@@ -15,7 +15,10 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.aurasustentable.aura-app",
-      "userInterfaceStyle": "automatic"
+      "userInterfaceStyle": "automatic",
+      "entitlements": {
+        "aps-environment": "development"
+      }
     },
     "android": {
       "adaptiveIcon": {
