@@ -12,6 +12,7 @@ import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { supabase } from "@/lib/supabase";
 import { ProfileImageProvider } from "@/context/ProfileImageContext";
 import { PeopleContextProvider } from "@/context/PeopleContext";
+import NotificationProvider from "@/context/NotificationContext";
 
 export default function HomeLayout() {
   const { styles } = useStyles(stylesheet);
@@ -99,81 +100,83 @@ export default function HomeLayout() {
   return (
     <VehiclesContextProvider>
       <PeopleContextProvider>
-        <ProfileImageProvider>
-          {width > widthThreshold ? (
-            <View style={styles.container}>
-              <View style={styles.innerContainer}>
-                {/* Sidebar for larger screens */}
-                <Sidebar>
-                  <ListItem
-                    href={mayShowListItem.vehicles}
-                    title="Vehículos"
-                    iconComponent={
-                      <Truck color={styles.icon.color} size={19} />
-                    }
-                  />
-                  {isAdminOrOwner && (
+        <NotificationProvider>
+          <ProfileImageProvider>
+            {width > widthThreshold ? (
+              <View style={styles.container}>
+                <View style={styles.innerContainer}>
+                  {/* Sidebar for larger screens */}
+                  <Sidebar>
                     <ListItem
-                      href={mayShowListItem.people}
-                      title="Personas"
+                      href={mayShowListItem.vehicles}
+                      title="Vehículos"
                       iconComponent={
-                        <UsersRound color={styles.icon.color} size={19} />
+                        <Truck color={styles.icon.color} size={19} />
                       }
                     />
-                  )}
-                  <ListItem
-                    href={mayShowListItem.notifications}
-                    title="Notificaciones"
-                    iconComponent={<Bell color={styles.icon.color} size={19} />}
-                  />
-                  <ListItem
-                    href="profile"
-                    title="Perfil"
-                    iconComponent={
-                      <CircleUserRound color={styles.icon.color} size={19} />
-                    }
-                  />
-                </Sidebar>
-                <Slot />
+                    {isAdminOrOwner && (
+                      <ListItem
+                        href={mayShowListItem.people}
+                        title="Personas"
+                        iconComponent={
+                          <UsersRound color={styles.icon.color} size={19} />
+                        }
+                      />
+                    )}
+                    <ListItem
+                      href={mayShowListItem.notifications}
+                      title="Notificaciones"
+                      iconComponent={<Bell color={styles.icon.color} size={19} />}
+                    />
+                    <ListItem
+                      href="profile"
+                      title="Perfil"
+                      iconComponent={
+                        <CircleUserRound color={styles.icon.color} size={19} />
+                      }
+                    />
+                  </Sidebar>
+                  <Slot />
+                </View>
               </View>
-            </View>
-          ) : (
-            // Tabs for smaller screens
-            <Tabs screenOptions={{ headerShown: false }}>
-              <Tabs.Screen
-                name="vehicles"
-                options={{
-                  href: mayShowTab.vehicles,
-                  title: "Vehículos",
-                  tabBarIcon: ({ color }) => <Truck color={color} />,
-                }}
-              />
-              <Tabs.Screen
-                name="people"
-                options={{
-                  href: mayShowTab.people,
-                  title: "Personas",
-                  tabBarIcon: ({ color }) => <UsersRound color={color} />,
-                }}
-              />
-              <Tabs.Screen
-                name="notifications"
-                options={{
-                  href: mayShowTab.notifications,
-                  title: "Notificaciones",
-                  tabBarIcon: ({ color }) => <Bell color={color} />,
-                }}
-              />
-              <Tabs.Screen
-                name="profile"
-                options={{
-                  title: "Perfil",
-                  tabBarIcon: ({ color }) => <CircleUserRound color={color} />,
-                }}
-              />
-            </Tabs>
-          )}
-        </ProfileImageProvider>
+            ) : (
+              // Tabs for smaller screens
+              <Tabs screenOptions={{ headerShown: false }}>
+                <Tabs.Screen
+                  name="vehicles"
+                  options={{
+                    href: mayShowTab.vehicles,
+                    title: "Vehículos",
+                    tabBarIcon: ({ color }) => <Truck color={color} />,
+                  }}
+                />
+                <Tabs.Screen
+                  name="people"
+                  options={{
+                    href: mayShowTab.people,
+                    title: "Personas",
+                    tabBarIcon: ({ color }) => <UsersRound color={color} />,
+                  }}
+                />
+                <Tabs.Screen
+                  name="notifications"
+                  options={{
+                    href: mayShowTab.notifications,
+                    title: "Notificaciones",
+                    tabBarIcon: ({ color }) => <Bell color={color} />,
+                  }}
+                />
+                <Tabs.Screen
+                  name="profile"
+                  options={{
+                    title: "Perfil",
+                    tabBarIcon: ({ color }) => <CircleUserRound color={color} />,
+                  }}
+                />
+              </Tabs>
+            )}
+          </ProfileImageProvider>
+        </NotificationProvider>
       </PeopleContextProvider>
     </VehiclesContextProvider>
   );
