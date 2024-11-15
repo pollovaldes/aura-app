@@ -12,11 +12,10 @@ const Notifications = () => {
   const { isProfileLoading, profile } = useProfile();
   const { styles } = useStyles(stylesheet);
 
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      if (!profile) {
-        return;
-      }
+  const fetchNotifications = async () => {
+    if (!profile) return;
+
+    try {
       const { data, error } = await supabase
         .from('notifications')
         .select('*')
@@ -24,32 +23,40 @@ const Notifications = () => {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.log('Error fetching notifications:', error)
-      } else {
-        setNotifications(data);
+        console.error('Error fetching notifications:', error);
+        return;
       }
-    };
-
-    const channel = supabase.channel('AllChanges')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'notifications' },
-        (payload) => {
-          fetchNotifications();
-          console.log('Notification payload:', payload);
-        }
-      )
-      .subscribe()
-
-
-    if (profile) {
-      fetchNotifications();
+      setNotifications(data);
+    } catch (err) {
+      console.error('Unexpected error:', err);
     }
-    console.log("data", notifications, "profile", profile);
+  };
+
+  useEffect(() => {
+    let channel: any;
+
+    const initialize = async () => {
+      if (!profile) return;
+      await fetchNotifications();
+
+      channel = supabase.channel('AllChanges')
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'notifications' },
+          (payload) => {
+            fetchNotifications();
+            console.log('Notification payload:', payload);
+          }
+        )
+        .subscribe()
+
+    }
+
+    initialize();
 
     return () => {
       supabase.removeChannel(channel);
-  };
+    };
   }, []);
 
   if (isProfileLoading) {
@@ -72,20 +79,6 @@ const Notifications = () => {
       </View>
     );
   }
-
-  const fetchNotifications = async () => {
-    const { data, error } = await supabase
-      .from('notifications')
-      .select('*')
-      .eq('user_id', profile?.id)
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.log('Error fetching notifications:', error)
-    } else {
-      setNotifications(data);
-    }
-  };
 
   const handleDeleteNotification = async (notificationId: string) => {
     const { error } = await supabase
