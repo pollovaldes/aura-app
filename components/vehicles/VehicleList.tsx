@@ -1,8 +1,8 @@
-import { View, Text, FlatList, Pressable } from "react-native";
+import { View, Text, FlatList, Pressable, Platform } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link, Stack } from "expo-router";
 import { useEffect, useState } from "react";
-import { ChevronRight, Plus } from "lucide-react-native";
+import { ChevronRight, Download, Plus } from "lucide-react-native";
 import { useSearch } from "@/context/SearchContext";
 import useProfile from "@/hooks/useProfile";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
@@ -12,6 +12,10 @@ import EmptyScreen from "../dataStates/EmptyScreen";
 import TruckThumbnail from "./TruckThumbnail";
 import React from "react";
 import AddVehicleComponent from "./AddVehicleComponent";
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+import { supabase } from "@/lib/supabase";
+import * as Permissions from 'expo-permissions';
 
 export default function VehicleList() {
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
@@ -25,7 +29,7 @@ export default function VehicleList() {
   useEffect(() => {
     if (searchQuery && vehicles) {
       const filtered = vehicles.filter((truck) =>
-        `${truck.economic_number} ${truck.brand} ${truck.sub_brand} (${truck.year})`
+        `${truck.economic_number} ${truck.brand} ${truck.sub_brand} (${truck.year}) ${truck.plate}`
           .toLowerCase()
           .includes(searchQuery.toLowerCase())
       );
@@ -77,6 +81,86 @@ export default function VehicleList() {
     return <EmptyScreen caption="Ningún resultado" />;
   }
 
+  const getStoragePermission = async () => {
+    const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+    if (status !== 'granted') {
+      alert('Sorry, we need storage permissions to make this work!');
+      return false;
+    }
+    return true;
+  };
+
+  const handleDownloadCsv = async () => {
+    try {
+      // Fetch data from Supabase table
+      console.log('Starting to fetch data...');
+      const { data, error } = await supabase.from('vehicles').select('*');
+  
+      if (error) {
+        console.error('Error fetching data:', error);
+        return;
+      }
+  
+      if (!data || data.length === 0) {
+        console.log('No data available to download');
+        return;
+      }
+  
+      // Convert data to CSV format
+      const filteredKeys = Object.keys(data[0]).filter(key => key !== 'id');
+      const csvHeader = filteredKeys.join(',');
+      const csvRows = data.map(row => {
+        return filteredKeys.map(key => {
+          const value = row[key];
+          return `"${value}"`; // Wrap each value in double quotes to handle commas within values
+        }).join(',');
+      });
+      
+      const csvContent = [csvHeader, ...csvRows].join('\n');
+      console.log('CSV content prepared:', csvContent);
+  
+      if (Platform.OS === 'ios' || Platform.OS === 'android') {
+        // For iOS and Android
+        const filePath = FileSystem.cacheDirectory + 'data.csv';
+        await FileSystem.writeAsStringAsync(filePath, csvContent, {
+          encoding: FileSystem.EncodingType.UTF8,
+        });
+  
+        console.log('File written successfully at:', filePath);
+  
+        if (Platform.OS === 'ios') {
+          // Share the file with the user for iOS
+          if (!(await Sharing.isAvailableAsync())) {
+            console.error("Sharing isn't available on this device");
+            return;
+          }
+          await Sharing.shareAsync(filePath);
+          console.log('Sharing triggered successfully');
+        } else if (Platform.OS === 'android') {
+          // For Android, use FileSystem download option
+          console.log('Attempting to share on Android...');
+          await Sharing.shareAsync(filePath);
+          console.log('Sharing triggered successfully on Android');
+        }
+      } else if (Platform.OS === 'web') {
+        // For Web: use Blob and create a link
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.setAttribute('download', 'data.csv');
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        console.log('Download triggered successfully for Web');
+      }
+    } catch (error) {
+      console.error('Error downloading CSV:', error);
+    }
+  };
+
   return (
     <>
       {profile.role === "ADMIN" ||
@@ -84,9 +168,14 @@ export default function VehicleList() {
           <Stack.Screen
             options={{
               headerRight: () => (
-                <Pressable onPress={() => setIsModalVisible(true)}>
-                  <Plus color={styles.plusIcon.color} />
-                </Pressable>
+                <View style={{ flexDirection: 'row' }}>
+                  <Pressable onPress={() => {console.log("Button clicked"); handleDownloadCsv(); }} style={{ marginRight: 10 }}>
+                    <Download color={styles.plusIcon.color} />
+                  </Pressable>
+                  <Pressable onPress={() => setIsModalVisible(true)}>
+                    <Plus color={styles.plusIcon.color} />
+                  </Pressable>
+                </View>
               ),
             }}
           />
@@ -109,7 +198,7 @@ export default function VehicleList() {
                     <Text
                       style={{ fontWeight: "bold" }}
                     >{`${item.brand} ${item.sub_brand} (${item.year})\n`}</Text>
-                    {`Placas: ${item.plate}\n`}
+                    {`Placa: ${item.plate}\n`}
                     {`Número económico: ${item.economic_number}\n`}
                   </Text>
                 </View>

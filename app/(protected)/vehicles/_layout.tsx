@@ -33,7 +33,7 @@ function SearchConsumer() {
         options={{
           title: "Vehículos",
           headerSearchBarOptions: {
-            placeholder: "Buscar por nombre o número económico",
+            placeholder: "Buscar por nombre, placa o num. económico",
             hideWhenScrolling: false,
             onChangeText: (event) =>
               setSearchQuery("trucks", event.nativeEvent.text), // Actualiza la búsqueda en el contexto
