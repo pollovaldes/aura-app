@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Pressable, Alert, ScrollView } from "react-native";
+import { View, Text, Pressable, Alert, FlatList } from "react-native";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { supabase } from "@/lib/supabase";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -13,9 +13,13 @@ import useProfile from "@/hooks/useProfile";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import useGasolineLoads from "@/hooks/useGasolineLoads";
+import WeeklyGasolineChart from "@/components/GasolineDataComponentsTest/WeeklyGasolineChart";
+import RecentGasolineLoads from "@/components/GasolineDataComponentsTest/RecentGasolineLoads";
+import { useRouter } from "expo-router";
 
 export default function GasolineHistory() {
   const { styles } = useStyles(stylesheet);
+  const router = useRouter();
 
   // State Hooks
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -155,6 +159,9 @@ export default function GasolineHistory() {
     );
   }
 
+  // Main content data (for FlatList)
+  const mainContent: never[] = [];
+
   return (
     <>
       <Stack.Screen
@@ -167,28 +174,52 @@ export default function GasolineHistory() {
           ),
         }}
       />
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View style={styles.thresholdContainer}>
-          <Text style={styles.thresholdTitle}>Gasolina Restante</Text>
-          {isGasolineStatusLoading ? (
-            <Text>Cargando datos de gasolina...</Text>
-          ) : gasolineStatus ? (
-            <>
-              <Text style={styles.thresholdValue}>
-                ${gasolineStatus.remaining_gasoline.toFixed(2)} MXN
+      <FlatList
+        contentInsetAdjustmentBehavior="automatic"
+        data={mainContent}
+        keyExtractor={(_, index) => index.toString()}
+        renderItem={null}
+        ListHeaderComponent={
+          <>
+            <View style={styles.thresholdContainer}>
+              <Text style={styles.thresholdTitle}>Gasolina Restante</Text>
+              {isGasolineStatusLoading ? (
+                <Text>Cargando datos de gasolina...</Text>
+              ) : gasolineStatus ? (
+                <>
+                  <Text style={styles.thresholdValue}>
+                    ${gasolineStatus.remaining_gasoline.toFixed(2)} MXN
+                  </Text>
+                  <Text style={styles.infoText}>
+                    Límite: ${gasolineStatus.gasoline_threshold.toFixed(2)} MXN
+                  </Text>
+                  <Text style={styles.infoText}>
+                    Gastado: ${gasolineStatus.spent_gasoline.toFixed(2)} MXN
+                  </Text>
+                </>
+              ) : (
+                <Text>No hay datos de gasolina disponibles.</Text>
+              )}
+            </View>
+
+            <WeeklyGasolineChart vehicleId={vehicle.id} />
+
+            <RecentGasolineLoads vehicleId={vehicle.id} />
+
+            <Pressable
+              onPress={() =>
+                router.push(
+                  `/vehicles/${vehicleId}/gasoline_history/GasolineLoadHistory`
+                )
+              }
+            >
+              <Text style={styles.viewHistoryButton}>
+                Ver Historial Completo
               </Text>
-              <Text style={styles.infoText}>
-                Límite: ${gasolineStatus.gasoline_threshold.toFixed(2)} MXN
-              </Text>
-              <Text style={styles.infoText}>
-                Gastado: ${gasolineStatus.spent_gasoline.toFixed(2)} MXN
-              </Text>
-            </>
-          ) : (
-            <Text>No hay datos de gasolina disponibles.</Text>
-          )}
-        </View>
-      </ScrollView>
+            </Pressable>
+          </>
+        }
+      />
       <Modal isOpen={isModalOpen}>
         <View style={styles.modalContainer}>
           <Text
@@ -221,7 +252,6 @@ export default function GasolineHistory() {
           </View>
         </View>
       </Modal>
-      {/* Add your table component here */}
     </>
   );
 }
@@ -278,5 +308,12 @@ const stylesheet = createStyleSheet((theme) => ({
   subtitle: {
     color: theme.textPresets.main,
     textAlign: "center",
+  },
+  viewHistoryButton: {
+    color: theme.headerButtons.color,
+    fontSize: 16,
+    textAlign: "center",
+    padding: 10,
+    margin: 20,
   },
 }));
