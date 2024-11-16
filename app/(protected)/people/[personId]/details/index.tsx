@@ -44,7 +44,7 @@ export default function TruckPeopleAdminComponent() {
         />
         <GroupedList
           header="Detalles"
-          footer="Si necesitas más información, contacta a tu administrador y si vez algun error contacta a tu supervisor."
+          footer="Para obtener más información o reportar errores, por favor comuníquese con su supervisor."
         >
           <Row
             title="Nombre"

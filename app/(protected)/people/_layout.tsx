@@ -35,7 +35,7 @@ function SearchConsumer() {
           headerShown: true,
           title: "Personas",
           headerSearchBarOptions: {
-            placeholder: "Search name or number",
+            placeholder: "Buscar por nombre o apellido",
             hideWhenScrolling: false,
             onChangeText: (event) =>
               setSearchQuery("people", event.nativeEvent.text), // Use the context to update the search query for "personas"

@@ -32,9 +32,9 @@ function SearchConsumer() {
         options={{
           presentation: "modal",
           headerShown: true,
-          headerTitle: "Seleccionar Camiones",
+          headerTitle: "Seleccionar camiones",
           headerSearchBarOptions: {
-            placeholder: 'Search name or number',
+            placeholder: 'Buscar por nombre o número económico',
             hideWhenScrolling: false,
             onChangeText: (event) =>
               setSearchQuery("ATMS", event.nativeEvent.text),
@@ -46,9 +46,9 @@ function SearchConsumer() {
         options={{
           presentation: "modal",
           headerShown: true,
-          headerTitle: "Seleccionar Camiones",
+          headerTitle: "Seleccionar camiones",
           headerSearchBarOptions: {
-            placeholder: 'Search name or number',
+            placeholder: 'Buscar por nombre o número económico',
             hideWhenScrolling: false,
             onChangeText: (event) =>
               setSearchQuery("STMS", event.nativeEvent.text),
