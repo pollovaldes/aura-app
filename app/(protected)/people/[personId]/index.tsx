@@ -58,7 +58,7 @@ export default function PeopleDetail() {
           </View>
           <GroupedList
             header="Datos"
-            footer="Asigna roles a los conductores o pide que te asignen un rol"
+            footer="Asigne roles a los usuarios o solicite que le sea asignado un rol."
           >
             <Row
               title="Información del conductor"
@@ -77,7 +77,7 @@ export default function PeopleDetail() {
           </GroupedList>
           <GroupedList
             header="Asignaciones"
-            footer="Asigna un camion a su conductor"
+            footer="Asigne un camión a su respectivo conductor."
           >
             <Row
               title="Asignar camión"

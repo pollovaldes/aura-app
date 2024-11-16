@@ -17,7 +17,7 @@ export default function Index() {
       <View style={styles.container}>
         <GroupedList
           header="Asignaciones"
-          footer="Asigna un camión a su conductor"
+          footer="Consulte los camiones asignados al conductor."
         >
           <Row
             title="Ver camiones asignados"
@@ -29,7 +29,7 @@ export default function Index() {
         </GroupedList>
         <GroupedList
           header=""
-          footer="Asigna un camión a su conductor"
+          footer="Asigne un vehículo al conductor."
         >
           <Row
             title="Asignar camión"

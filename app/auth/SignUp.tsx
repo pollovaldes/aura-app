@@ -32,7 +32,7 @@ export default function SignUp() {
     <>
       <FormInput
         description="Correo electrónico"
-        placeholder="ejemplo@mail.com"
+        placeholder="xyz@mail.com"
         inputMode="email"
         autoComplete="username"
         style={styles.textInput}
