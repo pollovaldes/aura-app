@@ -8,6 +8,7 @@ import {
   Pressable,
   Text,
   Platform,
+  Alert,
 } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
@@ -153,7 +154,23 @@ export default function VehicleDetail() {
   const vehicleTitle = `${vehicle.brand ?? ""} ${vehicle.sub_brand ?? ""} (${vehicle.year ?? ""})`;
   const canEditVehicle = profile.role === "ADMIN" || profile.role === "OWNER";
 
-  const deleteVehicle = () => {};
+  const deleteVehicle = () => {
+    //TODO: Implement delete vehicle alert on web
+    Alert.alert(
+      "Confirmación",
+      `¿Estás seguro de eliminar el vehículo "${vehicleTitle}"?\nEsta acción borrará permanentemente sus rutas, historiales, documentos, etc.`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: async () => {
+            console.log("Delete vehicle");
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <>
@@ -292,7 +309,7 @@ export default function VehicleDetail() {
                 trailingType="chevron"
                 icon={<Trash size={styles.iconSize.gap} color="white" />}
                 color={colorPalette.red[500]}
-                onPress={() => router.navigate(`/vehicles/${vehicleId}/people`)}
+                onPress={() => deleteVehicle()}
               />
             </GroupedList>
           </View>
