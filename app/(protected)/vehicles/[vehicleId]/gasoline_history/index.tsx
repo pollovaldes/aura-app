@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Pressable, Alert, FlatList, ActivityIndicator } from "react-native";
+import { View, Text, Pressable, Alert, FlatList, ActivityIndicator, RefreshControl } from "react-native";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { supabase } from "@/lib/supabase";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -36,6 +36,7 @@ export default function GasolineHistory() {
   }
   const [gasolineStatus, setGasolineStatus] = useState<GasolineStatus | null>(null);
   const [isGasolineStatusLoading, setIsGasolineStatusLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   // Custom Hooks
   const { profile, isProfileLoading, fetchProfile } = useProfile();
@@ -98,6 +99,22 @@ export default function GasolineHistory() {
     }
     setIsLoading(false);
   };
+
+  // Add refresh function
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await Promise.all([
+        fetchGasolineStatus(),
+        fetchProfile(),
+        fetchVehicles(),
+      ]);
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [vehicleId]);
 
   // Conditional Returns
   if (vehiclesAreLoading) {
@@ -179,6 +196,14 @@ export default function GasolineHistory() {
         data={mainContent}
         keyExtractor={(_, index) => index.toString()}
         renderItem={null}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={['#1976d2']}
+            tintColor="#1976d2"
+          />
+        }
         ListHeaderComponent={
           <>
             <View style={styles.contentContainer}>
