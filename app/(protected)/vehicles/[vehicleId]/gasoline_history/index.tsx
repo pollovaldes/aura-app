@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Pressable, Alert, FlatList } from "react-native";
+import { View, Text, Pressable, Alert, FlatList, ActivityIndicator } from "react-native";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { supabase } from "@/lib/supabase";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -185,21 +185,43 @@ export default function GasolineHistory() {
               <View style={styles.thresholdContainer}>
                 <Text style={styles.thresholdTitle}>Gasolina Restante</Text>
                 {isGasolineStatusLoading ? (
-                  <Text>Cargando datos de gasolina...</Text>
+                  <ActivityIndicator size="large" color="#1e88e5" />
                 ) : gasolineStatus ? (
                   <>
                     <Text style={styles.thresholdValue}>
-                      ${gasolineStatus.remaining_gasoline.toFixed(2)} MXN
+                      ${gasolineStatus.remaining_gasoline.toFixed(2)} <Text style={styles.currency}>MXN</Text>
                     </Text>
-                    <Text style={styles.infoText}>
-                      Límite: ${gasolineStatus.gasoline_threshold.toFixed(2)} MXN
-                    </Text>
-                    <Text style={styles.infoText}>
-                      Gastado: ${gasolineStatus.spent_gasoline.toFixed(2)} MXN
-                    </Text>
+                    <View style={styles.progressContainer}>
+                      <View style={styles.progressBar}>
+                        <View 
+                          style={[
+                            styles.progressFill, 
+                            { 
+                              width: `${(gasolineStatus.spent_gasoline / gasolineStatus.gasoline_threshold) * 100}%`,
+                              backgroundColor: gasolineStatus.remaining_gasoline < gasolineStatus.gasoline_threshold * 0.2 ? '#f44336' : '#4caf50'
+                            }
+                          ]} 
+                        />
+                      </View>
+                    </View>
+                    <View style={styles.statsContainer}>
+                      <View style={styles.statItem}>
+                        <Text style={styles.statLabel}>Límite</Text>
+                        <Text style={styles.statValue}>
+                          ${gasolineStatus.gasoline_threshold.toFixed(2)}
+                        </Text>
+                      </View>
+                      <View style={styles.statDivider} />
+                      <View style={styles.statItem}>
+                        <Text style={styles.statLabel}>Gastado</Text>
+                        <Text style={[styles.statValue, {color: '#f44336'}]}>
+                          ${gasolineStatus.spent_gasoline.toFixed(2)}
+                        </Text>
+                      </View>
+                    </View>
                   </>
                 ) : (
-                  <Text>No hay datos de gasolina disponibles.</Text>
+                  <Text style={styles.errorText}>No hay datos disponibles</Text>
                 )}
               </View>
 
@@ -284,26 +306,80 @@ const stylesheet = createStyleSheet((theme) => ({
     width: '100%',
   },
   thresholdContainer: {
-    padding: 20,
+    padding: 25,
     backgroundColor: theme.ui.colors.card,
-    borderRadius: 10,
+    borderRadius: 16,
     alignItems: "center",
     marginVertical: 20,
-    width: '90%',
+    width: '95%',
     marginHorizontal: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   thresholdTitle: {
-    fontSize: 20,
+    fontSize: 18,
     color: theme.textPresets.main,
+    fontWeight: '600',
+    marginBottom: 10,
   },
   thresholdValue: {
-    fontSize: 32,
+    fontSize: 42,
     color: theme.textPresets.main,
     fontWeight: "bold",
+    marginVertical: 15,
   },
-  infoText: {
+  currency: {
+    fontSize: 20,
+    color: theme.textPresets.subtitle,
+    fontWeight: "normal",
+  },
+  progressContainer: {
+    width: '100%',
+    marginVertical: 15,
+  },
+  progressBar: {
+    height: 8,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginTop: 15,
+    paddingHorizontal: 10,
+  },
+  statItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  statLabel: {
+    fontSize: 14,
+    color: theme.textPresets.subtitle,
+    marginBottom: 4,
+  },
+  statValue: {
     fontSize: 16,
+    fontWeight: '600',
     color: theme.textPresets.main,
+  },
+  statDivider: {
+    width: 1,
+    backgroundColor: '#e0e0e0',
+    marginHorizontal: 15,
+  },
+  errorText: {
+    color: '#f44336',
+    fontSize: 16,
+    textAlign: 'center',
     marginTop: 10,
   },
   section: {
@@ -322,14 +398,12 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.headerButtons.color,
     fontSize: 16,
     textAlign: "center",
-    padding: 10,
-    margin: 20,
   },
   historyButton: {
     backgroundColor: theme.ui.colors.card,
-    borderRadius: 10,
-    padding: 15,
-    width: '90%',
+    borderRadius: 16,
+    padding: 25,
+    width: '95%',
     marginVertical: 10,
   },
 }));

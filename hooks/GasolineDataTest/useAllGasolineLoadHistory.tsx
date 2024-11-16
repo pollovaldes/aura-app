@@ -5,7 +5,7 @@ interface AllGasolineLoads {
   id: string;
   vehicle_id: string;
   status: string;
-  approved_at: string;
+  requested_at: string;
   [key: string]: any;
 }
 
@@ -27,7 +27,7 @@ const useAllGasolineLoads = (vehicleId: string) => {
         .select("*")
         .eq("vehicle_id", vehicleId)
         .eq("status", "approved")
-        .order("approved_at", { ascending: false })
+        .order("requested_at", { ascending: false })
 
       if (error) {
         console.error("Error fetching all gasoline loads:", error);
