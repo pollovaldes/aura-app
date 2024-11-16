@@ -221,19 +221,6 @@ export default function Index() {
               showChevron={profile.role === "ADMIN" || profile.role === "OWNER"}
             />
           </GroupedList>
-          {profile.role === "ADMIN" ||
-            (profile.role === "OWNER" && (
-              <GroupedList>
-                <FormButton
-                  title="Borrar Camión"
-                  onPress={() =>
-                    Alert.alert(
-                      "Se tiene que borrar de muchas tablas, ver al final"
-                    )
-                  }
-                />
-              </GroupedList>
-            ))}
         </View>
       </ScrollView>
     )
