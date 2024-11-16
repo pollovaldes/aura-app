@@ -68,14 +68,15 @@ export default function WeeklyGasolineChart({ vehicleId }: { vehicleId: string }
 const stylesheet = createStyleSheet((theme) => ({
   container: {
     alignItems: 'center',
-    padding: 20,
+    width: '95%',
+    padding: 25,
     backgroundColor: '#fff',
     borderRadius: 16,
-    margin: 20,
+    marginVertical: 10,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 5,
+      height: 0,
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
