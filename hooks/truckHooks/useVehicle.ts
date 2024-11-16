@@ -14,7 +14,7 @@ export default function useVehicle() {
       const { data, error } = await supabase
         .from("vehicles")
         .select(
-          "id, brand, sub_brand, year, plate, serial_number, economic_number"
+          "id, brand, sub_brand, year, plate, serial_number, economic_number, gasoline_threshold"
         );
 
       if (!error) {

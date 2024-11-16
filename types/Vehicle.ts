@@ -13,4 +13,5 @@ export type Vehicle = {
   economic_number: string;
   thumbnail: string | null;
   galery: GaleryImage[];
+  gasoline_threshold: number;
 };
