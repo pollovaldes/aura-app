@@ -314,10 +314,13 @@ export default function VehicleDetail() {
                 color={colorPalette.red[500]}
               />
               <Row
-                title="Solicitar mantenimiento"
+                title="Mantenimiento"
                 trailingType="chevron"
                 icon={<Wrench size={styles.iconSize.gap} color="white" />}
                 color={colorPalette.cyan[500]}
+                onPress={() =>
+                  router.navigate(`/vehicles/${vehicleId}/maintenance`)
+                }
               />
             </GroupedList>
             <GroupedList header="Zona de peligro">
