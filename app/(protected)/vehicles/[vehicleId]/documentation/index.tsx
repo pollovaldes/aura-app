@@ -224,20 +224,20 @@ export default function Index() {
           <View style={styles.container}>
             <GroupedList
               header="Documentos"
-              footer="Solo los administradores pueden editar los documentos"
+              footer="Solo los administradores tienen permiso para modificar los documentos."
             >
               {associatedDocuments.map((doc) => (
                 <Row
                   key={doc.document_id}
                   title={doc.title}
-                  caption={doc.description}
+                  caption={doc.title.length > 30 ? "" : (doc.description.length > 5 ? `${doc.description.substring(0, 5)}...` : doc.description)}
                   trailingType="chevron"
                   onPress={() =>
                     router.navigate(
                       `/vehicles/[vehicleId]/documentation/${doc.document_id}`
                     )
-                  }
-                />
+                }
+              />
               ))}
             </GroupedList>
           </View>

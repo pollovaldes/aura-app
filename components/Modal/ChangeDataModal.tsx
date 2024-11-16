@@ -65,7 +65,7 @@ export default function ChangeDataModal({
           </View>
           <View style={styles.group}>
             <TextInput
-              placeholder={`Nuevo ${currentDataType}`}
+              placeholder={`${currentDataType}`}
               inputMode="text"
               style={styles.textInput}
               placeholderTextColor={styles.textInput.placehoolderTextColor}

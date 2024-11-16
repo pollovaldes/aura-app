@@ -1,6 +1,7 @@
 import { FormButton } from "@/components/Form/FormButton";
 import FormInput from "@/components/Form/FormInput";
 import { supabase } from "@/lib/supabase";
+import React from "react";
 import { useState } from "react";
 import { TextInput } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -31,7 +32,7 @@ export default function SignUp() {
     <>
       <FormInput
         description="Correo electrónico"
-        placeholder="xyz@mail.com"
+        placeholder="ejemplo@mail.com"
         inputMode="email"
         autoComplete="username"
         style={styles.textInput}

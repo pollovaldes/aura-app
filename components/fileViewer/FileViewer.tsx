@@ -4,6 +4,7 @@ import { Platform, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import WebView from "react-native-webview";
 import LoadingScreen from "../dataStates/LoadingScreen";
+import React from "react";
 
 interface FileViewerProps {
   fileUrl: string;

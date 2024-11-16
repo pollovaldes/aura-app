@@ -17,10 +17,10 @@ export default function Index() {
       <View style={styles.container}>
         <GroupedList
           header="Asignaciones"
-          footer="Asigna un camion a su conductor"
+          footer="Asigna un camión a su conductor"
         >
           <Row
-            title="Ver Camiones Asignados"
+            title="Ver camiones asignados"
             trailingType="chevron"
             onPress={() => {router.navigate(`/people/${personId}/assignTruck/STMS`)}}
             icon={<BookUser size={24} color="white" />}
@@ -29,7 +29,7 @@ export default function Index() {
         </GroupedList>
         <GroupedList
           header=""
-          footer="Asigna un camion a su conductor"
+          footer="Asigna un camión a su conductor"
         >
           <Row
             title="Asignar camión"

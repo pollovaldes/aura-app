@@ -5,6 +5,7 @@ import useVehicle from "@/hooks/truckHooks/useVehicle";
 import { useEffect, useState } from "react";
 import { Vehicle } from "@/types/Vehicle";
 import useVehicleThumbnail from "@/hooks/truckHooks/useVehicleThumbnail";
+import React from "react";
 
 type VehicleThumbnailProps = {
   vehicleId: string;

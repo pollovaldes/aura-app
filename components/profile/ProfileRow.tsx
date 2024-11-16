@@ -2,6 +2,7 @@ import { Text, View } from "react-native";
 import PictureUpload from "./PictureUpload";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Person } from "@/types/Person";
+import React from "react";
 
 type ProfileRowProps = {
   person: Person;

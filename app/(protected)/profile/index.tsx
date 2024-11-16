@@ -119,7 +119,7 @@ export default function Index() {
           </GroupedList>
         )}
         <GroupedList
-          footer="Para obtener acceso completo a la aplicación, asegúrate de completar estos puntos necesarios. Aunque ya tengas una cuenta, esta información es crucial para ofrecerte acceso completo."
+          footer="Para garantizar el acceso completo a la aplicación, le solicitamos  completar los pasos requeridos. Aunque ya disponga de una cuenta, esta información es indispensable para brindarle una experiencia completa y personalizada."
           header="Acceso a la App"
         >
           <Row
@@ -154,7 +154,7 @@ export default function Index() {
         </GroupedList>
         <GroupedList
           header="Seguridad y acceso"
-          footer="Explora las opciones disponibles para proteger tu cuenta. Considera que las opciones de correo electrónico y contraseña solo estarán activas si la identidad de correo electrónico está vinculada."
+          footer="Le invitamos a explorar las opciones disponibles para proteger su cuenta. Tenga en cuenta que las configuraciones de correo electrónico y contraseña estarán habilitadas únicamente si la dirección de correo electrónico se encuentra correctamente vinculada."
         >
           <Row
             title="Correo electrónico"
@@ -166,7 +166,7 @@ export default function Index() {
         </GroupedList>
         <GroupedList
           header="Identidades"
-          footer="Vincula tus cuentas de diferentes servicios a un único perfil para centralizar tu información y acceso."
+          footer="Centralice su información y acceso unificando sus cuentas de distintos servicios en un solo perfil."
         >
           <Row
             title="Correo electrónico"

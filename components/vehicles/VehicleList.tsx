@@ -56,7 +56,7 @@ export default function VehicleList() {
   if (vehicles === null) {
     return (
       <ErrorScreen
-        caption={`Ocurrió un error y no \npudimos cargar los vehículos`}
+        caption={`Tuvimos un problema al cargar los vehículos. \n Intenta nuevamente en unos momentos.`}
         buttonCaption="Reintentar"
         retryFunction={fetchVehicles}
       />

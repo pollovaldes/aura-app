@@ -107,7 +107,7 @@ export default function Index() {
               ? numEco
               : false
           }
-          currentDataType="Numero Economico"
+          currentDataType="Numero Económico"
           currentData={vehicle.economic_number}
           closeModal={() => setNumEco(false)}
           dataChange="numero_economico"
@@ -129,7 +129,7 @@ export default function Index() {
               ? subMarca
               : false
           }
-          currentDataType="Sub Marca"
+          currentDataType="Submarca"
           currentData={vehicle.sub_brand}
           closeModal={() => setSubMarca(false)}
           dataChange="sub_marca"
@@ -153,7 +153,7 @@ export default function Index() {
               ? noSerie
               : false
           }
-          currentDataType="No de Serie"
+          currentDataType="No. de serie"
           currentData={vehicle.serial_number}
           closeModal={() => setNoSerie(false)}
           dataChange="no_serie"
@@ -163,7 +163,7 @@ export default function Index() {
           isOpen={
             profile.role === "ADMIN" || profile.role === "OWNER" ? placa : false
           }
-          currentDataType="Placa"
+          currentDataType="No. de placa"
           currentData={vehicle.plate}
           closeModal={() => setPlaca(false)}
           dataChange="placa"
@@ -176,10 +176,10 @@ export default function Index() {
           />
           <GroupedList
             header="Detalles"
-            footer="Si necesitas más información, contacta a tu administrador y si ves algún error contacta a tu supervisor, solo los administradores pueden editar la información del camión."
+            footer="Contacta a tu administrador para más información o a tu supervisor para reportar errores. Solo los administradores pueden editar la información del camión."
           >
             <Row
-              title="Numero Economico"
+              title="Numero Económico"
               onPress={() => setNumEco(true)}
               trailingType="chevron"
               caption={`${vehicle.economic_number}`}
@@ -193,7 +193,7 @@ export default function Index() {
               showChevron={profile.role === "ADMIN" || profile.role === "OWNER"}
             />
             <Row
-              title="Sub Marca"
+              title="Submarca"
               onPress={() => setSubMarca(true)}
               trailingType="chevron"
               caption={`${vehicle.sub_brand}`}
@@ -207,14 +207,14 @@ export default function Index() {
               showChevron={profile.role === "ADMIN" || profile.role === "OWNER"}
             />
             <Row
-              title="No de Serie"
+              title="No. de serie"
               onPress={() => setNoSerie(true)}
               trailingType="chevron"
               caption={`${vehicle.serial_number?.substring(0, 8) ?? "No disponible"}${vehicle.serial_number && vehicle.serial_number.length > 8 ? "..." : ""}`}
               showChevron={profile.role === "ADMIN" || profile.role === "OWNER"}
             />
             <Row
-              title="Placa"
+              title="No. de placa"
               onPress={() => setPlaca(true)}
               trailingType="chevron"
               caption={`${vehicle.plate}`}

@@ -217,10 +217,10 @@ export default function VehicleDetail() {
           <View style={styles.groupedListsContainer}>
             <GroupedList
               header="Consulta"
-              footer="Ve distintos datos a lo largo del tiempo o actuales sobre este camión."
+              footer="Accede a información detallada y actualizada sobre este camión."
             >
               <Row
-                title="Galeria"
+                title="Galería"
                 trailingType="chevron"
                 icon={<Images size={styles.iconSize.gap} color="white" />}
                 color={colorPalette.cyan[500]}
@@ -259,7 +259,7 @@ export default function VehicleDetail() {
                 color={colorPalette.sky[500]}
               />
             </GroupedList>
-            <GroupedList header="Acciones" footer="Alguna descripción.">
+            <GroupedList header="Acciones" footer="Opciones disponibles para este camión.">
               {canEditVehicle && (
                 <Row
                   title="Administrar personas"
