@@ -33,6 +33,7 @@ import useVehicleThumbnail from "@/hooks/truckHooks/useVehicleThumbnail";
 import useProfile from "@/hooks/useProfile";
 import Modal from "@/components/Modal/Modal";
 import ChangeCoverImage from "@/components/vehicles/modals/ChangeCoverImage";
+import { supabase } from "@/lib/supabase";
 
 type ModalType = "change_cover_image" | null;
 
@@ -165,7 +166,20 @@ export default function VehicleDetail() {
           text: "Eliminar",
           style: "destructive",
           onPress: async () => {
-            console.log("Delete vehicle");
+            const { error } = await supabase
+              .from("vehicles")
+              .delete()
+              .eq("id", vehicleId);
+
+            if (error) {
+              alert(
+                "Ocurrió un error al eliminar el vehículo\n" + error.message
+              );
+              return;
+            }
+
+            fetchVehicles();
+            router.back();
           },
         },
       ]
@@ -276,7 +290,10 @@ export default function VehicleDetail() {
                 color={colorPalette.sky[500]}
               />
             </GroupedList>
-            <GroupedList header="Acciones" footer="Opciones disponibles para este camión.">
+            <GroupedList
+              header="Acciones"
+              footer="Opciones disponibles para este camión."
+            >
               {canEditVehicle && (
                 <Row
                   title="Administrar personas"

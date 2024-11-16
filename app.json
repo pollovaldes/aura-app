@@ -2,7 +2,7 @@
   "expo": {
     "name": "Aura",
     "slug": "aura-app",
-    "scheme": "com.aurasustentable.aura-app",
+    "scheme": "com.aurasustentable.auraapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
