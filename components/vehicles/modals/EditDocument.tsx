@@ -82,9 +82,7 @@ export default function EditDocument({
     <View style={styles.section}>
       <View style={styles.group}>
         <FormTitle title={"Opciones del documento"} />
-        <Text style={styles.subtitle}>
-          Reemplaza, elimina o renombra el documento: {"\n"}"{document.title}"
-        </Text>
+        <Text style={styles.subtitle}>"{document.title}"</Text>
       </View>
       <View style={styles.group}>
         <FormInput
@@ -107,17 +105,6 @@ export default function EditDocument({
         />
       </View>
       <View style={styles.group}>
-        <Text style={styles.subtitle}>O</Text>
-      </View>
-      <View style={styles.group}>
-        <FormButton
-          title="Reemplazar archivo"
-          onPress={() => {
-            closeModal();
-          }}
-          icon={() => <Replace color={styles.iconColor.color} />}
-          isDisabled={isDocumentUpdating}
-        />
         <FormButton
           title="Eliminar"
           onPress={() => {
