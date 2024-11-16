@@ -181,42 +181,45 @@ export default function GasolineHistory() {
         renderItem={null}
         ListHeaderComponent={
           <>
-            <View style={styles.thresholdContainer}>
-              <Text style={styles.thresholdTitle}>Gasolina Restante</Text>
-              {isGasolineStatusLoading ? (
-                <Text>Cargando datos de gasolina...</Text>
-              ) : gasolineStatus ? (
-                <>
-                  <Text style={styles.thresholdValue}>
-                    ${gasolineStatus.remaining_gasoline.toFixed(2)} MXN
-                  </Text>
-                  <Text style={styles.infoText}>
-                    Límite: ${gasolineStatus.gasoline_threshold.toFixed(2)} MXN
-                  </Text>
-                  <Text style={styles.infoText}>
-                    Gastado: ${gasolineStatus.spent_gasoline.toFixed(2)} MXN
-                  </Text>
-                </>
-              ) : (
-                <Text>No hay datos de gasolina disponibles.</Text>
-              )}
+            <View style={styles.contentContainer}>
+              <View style={styles.thresholdContainer}>
+                <Text style={styles.thresholdTitle}>Gasolina Restante</Text>
+                {isGasolineStatusLoading ? (
+                  <Text>Cargando datos de gasolina...</Text>
+                ) : gasolineStatus ? (
+                  <>
+                    <Text style={styles.thresholdValue}>
+                      ${gasolineStatus.remaining_gasoline.toFixed(2)} MXN
+                    </Text>
+                    <Text style={styles.infoText}>
+                      Límite: ${gasolineStatus.gasoline_threshold.toFixed(2)} MXN
+                    </Text>
+                    <Text style={styles.infoText}>
+                      Gastado: ${gasolineStatus.spent_gasoline.toFixed(2)} MXN
+                    </Text>
+                  </>
+                ) : (
+                  <Text>No hay datos de gasolina disponibles.</Text>
+                )}
+              </View>
+
+              <WeeklyGasolineChart vehicleId={vehicle.id} />
+
+              <RecentGasolineLoads vehicleId={vehicle.id} />
+
+              <Pressable
+                style={styles.historyButton}
+                onPress={() =>
+                  router.push(
+                    `/vehicles/${vehicleId}/gasoline_history/GasolineLoadHistory`
+                  )
+                }
+              >
+                <Text style={styles.viewHistoryButton}>
+                  Ver Historial Completo
+                </Text>
+              </Pressable>
             </View>
-
-            <WeeklyGasolineChart vehicleId={vehicle.id} />
-
-            <RecentGasolineLoads vehicleId={vehicle.id} />
-
-            <Pressable
-              onPress={() =>
-                router.push(
-                  `/vehicles/${vehicleId}/gasoline_history/GasolineLoadHistory`
-                )
-              }
-            >
-              <Text style={styles.viewHistoryButton}>
-                Ver Historial Completo
-              </Text>
-            </Pressable>
           </>
         }
       />
@@ -276,12 +279,18 @@ const stylesheet = createStyleSheet((theme) => ({
     fontSize: 18,
     textAlign: "right",
   },
+  contentContainer: {
+    alignItems: 'center',
+    width: '100%',
+  },
   thresholdContainer: {
     padding: 20,
     backgroundColor: theme.ui.colors.card,
     borderRadius: 10,
     alignItems: "center",
     marginVertical: 20,
+    width: '90%',
+    marginHorizontal: 20,
   },
   thresholdTitle: {
     fontSize: 20,
@@ -315,5 +324,12 @@ const stylesheet = createStyleSheet((theme) => ({
     textAlign: "center",
     padding: 10,
     margin: 20,
+  },
+  historyButton: {
+    backgroundColor: theme.ui.colors.card,
+    borderRadius: 10,
+    padding: 15,
+    width: '90%',
+    marginVertical: 10,
   },
 }));
