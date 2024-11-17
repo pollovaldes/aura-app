@@ -2,15 +2,19 @@ import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
+import Modal from "@/components/Modal/Modal";
+import AddMaintenance from "@/components/vehicles/modals/AddMaintenance";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
 import useMaintenance from "@/hooks/useMaintenance";
 import useProfile from "@/hooks/useProfile";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
-import { ChevronRight } from "lucide-react-native";
+import { ChevronRight, Plus } from "lucide-react-native";
 import { useState } from "react";
 import { FlatList, Pressable, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
+
+type ModalType = "create_maintenance_record" | null;
 
 export default function Index() {
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
@@ -20,6 +24,8 @@ export default function Index() {
   const { maintenanceRecords, areMaintenanceRecordsLoading, fetchMaintenance } =
     useMaintenance();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const closeModal = () => setActiveModal(null);
 
   if (isProfileLoading) {
     return (
@@ -136,8 +142,8 @@ export default function Index() {
             headerRight: undefined,
           }}
         />
-        <ErrorScreen
-          caption={`Ocurrió un error y no \npudimos cargar las solicitudes de mantenimiento`}
+        <UnauthorizedScreen
+          caption={`Ocurrió un error y no pudimos \ncargar las solicitudes de mantenimiento`}
           buttonCaption="Reintentar"
           retryFunction={fetchMaintenance}
         />
@@ -145,55 +151,111 @@ export default function Index() {
     );
   }
 
+  const canEdit =
+    profile.role === "ADMIN" ||
+    profile.role === "OWNER" ||
+    profile.role === "DRIVER";
+
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: "Solicitudes de mantenimiento",
-          headerRight: undefined,
-          headerLargeTitle: false,
-          headerTitle: () => (
-            <View>
-              <SegmentedControl
-                values={["Pendientes", "En revisión", "Resuletas"]}
-                selectedIndex={currentTabIndex}
-                onChange={(event) => {
-                  setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex);
-                }}
-                style={styles.segmentedControl}
-              />
-            </View>
-          ),
-        }}
-      />
+      <Modal isOpen={activeModal === "create_maintenance_record"}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.closeButton} onPress={closeModal}>
+            Cerrar
+          </Text>
+          <AddMaintenance
+            closeModal={closeModal}
+            fetchMaintenance={fetchMaintenance}
+            vehicle={vehicle}
+            profile={profile}
+          />
+        </View>
+      </Modal>
+      {maintenanceRecords.length === 0 ? (
+        <>
+          <Stack.Screen
+            options={{
+              title: "Solicitudes de mantenimiento",
+              headerLargeTitle: false,
+              headerTitle: undefined,
+              headerRight: () =>
+                canEdit && (
+                  <Pressable
+                    onPress={() => setActiveModal("create_maintenance_record")}
+                  >
+                    <Plus color={styles.plusIcon.color} />
+                  </Pressable>
+                ),
+            }}
+          />
+          <EmptyScreen
+            caption={"No hay solicitudes de mantenimiento\npara este vehículo"}
+            retryFunction={fetchMaintenance}
+            buttonCaption="Reintentar"
+          />
+        </>
+      ) : (
+        <>
+          <Stack.Screen
+            options={{
+              title: "Solicitudes de mantenimiento",
+              headerLargeTitle: false,
+              headerRight: () =>
+                canEdit && (
+                  <Pressable
+                    onPress={() => setActiveModal("create_maintenance_record")}
+                  >
+                    <Plus color={styles.plusIcon.color} />
+                  </Pressable>
+                ),
+              headerTitle: () => (
+                <View>
+                  <SegmentedControl
+                    values={["Pendientes", "En revisión", "Resuletas"]}
+                    selectedIndex={currentTabIndex}
+                    onChange={(event) => {
+                      setCurrentTabIndex(
+                        event.nativeEvent.selectedSegmentIndex
+                      );
+                    }}
+                    style={styles.segmentedControl}
+                  />
+                </View>
+              ),
+            }}
+          />
 
-      <FlatList
-        refreshing={
-          vehiclesAreLoading || areMaintenanceRecordsLoading || isProfileLoading
-        }
-        onRefresh={() => {
-          fetchVehicles();
-          fetchProfile();
-          fetchMaintenance();
-        }}
-        contentInsetAdjustmentBehavior="automatic"
-        data={maintenanceRecords}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <Link href={{ pathname: `/vehicles/${item.id}` }} asChild>
-            <Pressable>
-              <View style={styles.container}>
-                <View style={styles.contentContainer}>
-                  <Text>{item.description}</Text>
-                </View>
-                <View style={styles.chevronView}>
-                  <ChevronRight color={styles.chevron.color} />
-                </View>
-              </View>
-            </Pressable>
-          </Link>
-        )}
-      />
+          <FlatList
+            refreshing={
+              vehiclesAreLoading ||
+              areMaintenanceRecordsLoading ||
+              isProfileLoading
+            }
+            onRefresh={() => {
+              fetchVehicles();
+              fetchProfile();
+              fetchMaintenance();
+            }}
+            contentInsetAdjustmentBehavior="automatic"
+            data={maintenanceRecords}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <Link href={{ pathname: `/vehicles/${item.id}` }} asChild>
+                <Pressable>
+                  <View style={styles.container}>
+                    <View style={styles.contentContainer}>
+                      <Text>{item.description}</Text>
+                    </View>
+                    <View style={styles.chevronView}>
+                      <ChevronRight color={styles.chevron.color} />
+                    </View>
+                  </View>
+                </Pressable>
+              </Link>
+            )}
+          />
+        </>
+      )}
     </>
   );
 }
@@ -241,5 +303,18 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   chevronView: {
     paddingRight: 12,
+  },
+  modalContainer: {
+    width: "100%",
+    alignSelf: "center",
+    maxWidth: 500,
+    backgroundColor: theme.ui.colors.card,
+    borderRadius: 10,
+    padding: 24,
+  },
+  closeButton: {
+    color: theme.headerButtons.color,
+    fontSize: 18,
+    textAlign: "right",
   },
 }));
