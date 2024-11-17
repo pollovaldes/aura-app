@@ -17,12 +17,44 @@ export const exportVehiclesToCsv = async () => {
       throw new Error('No data available to download');
     }
 
-    const filteredKeys = Object.keys(data[0]).filter(key => key !== 'id');
-    const csvHeader = filteredKeys.join(',');
+    type DataType = {
+      id: number,
+      brand: string;
+      sub_brand: string;
+      year: number;
+      plate: string;
+      serial_number: string;
+      economic_number: string;
+      gasoline_threshold: number;
+      // Add more fields if needed
+    };
+    
+    // Create a mapping of original keys to custom header names
+    const headerMapping: { [key in keyof DataType]?: string } = {
+      brand: 'Marca',
+      sub_brand: 'Submarca',
+      year: "Año",
+      plate: "Placa",
+      serial_number: "Número de serie",
+      economic_number: "Número económico",
+      gasoline_threshold: "Límite mensual de gasolina"
+    };
+    
+    // Convert data to CSV format, excluding the 'id' column and renaming headers
+    const filteredKeys = (Object.keys(data[0]) as (keyof DataType)[]).filter(key => key !== 'id');
+    
+    // Create CSV Header using the custom mapping, excluding 'id'
+    const csvHeader = filteredKeys.map(key => headerMapping[key] || key).join(',');
+    
+    // Create CSV Rows, excluding 'id'
     const csvRows = data.map(row => {
-      return filteredKeys.map(key => `"${row[key]}"`).join(',');
+      return filteredKeys.map(key => {
+        const value = row[key];
+        return `"${value}"`; // Wrap each value in double quotes to handle commas within values
+      }).join(',');
     });
     
+    // Combine the header and rows to form the complete CSV content
     const csvContent = [csvHeader, ...csvRows].join('\n');
 
     if (Platform.OS === 'ios' || Platform.OS === 'android') {
