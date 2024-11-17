@@ -1,10 +1,10 @@
 import { Stack } from "expo-router";
 import React, { useState } from "react";
-import { View, Text, FlatList, TouchableOpacity, Modal } from "react-native";
-import { Filter, Truck } from "lucide-react-native";
+import { View, Text, FlatList } from "react-native";
 import useAllGasolineLoads from "@/hooks/GasolineDataTest/useAllGasolineLoadHistory";
 import { useLocalSearchParams } from "expo-router";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
+import SegmentedControl from "@react-native-segmented-control/segmented-control";
 
 interface GasolineLoad {
   id: string;
@@ -17,8 +17,7 @@ interface GasolineLoad {
 export default function GasolineLoadHistory() {
   const { styles } = useStyles(stylesheet);
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
-  const [filterVisible, setFilterVisible] = useState(false);
-  const [activeFilter, setActiveFilter] = useState('all');
+  const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
   if (!vehicleId) return <Text style={styles.errorText}>ID de vehículo no encontrado</Text>;
   
@@ -26,18 +25,14 @@ export default function GasolineLoadHistory() {
 
   const filterData = (data: GasolineLoad[]) => {
     const now = new Date();
-    switch (activeFilter) {
-      case 'week':
+    switch (currentTabIndex) {
+      case 1: // Last week
         const weekAgo = new Date(now.setDate(now.getDate() - 7));
         return data.filter(item => new Date(item.requested_at) > weekAgo);
-      case 'month':
+      case 2: // Last month
         const monthAgo = new Date(now.setMonth(now.getMonth() - 1));
         return data.filter(item => new Date(item.requested_at) > monthAgo);
-      case 'amount_asc':
-        return [...data].sort((a, b) => a.amount - b.amount);
-      case 'amount_desc':
-        return [...data].sort((a, b) => b.amount - a.amount);
-      default:
+      default: // All
         return data;
     }
   };
@@ -48,46 +43,24 @@ export default function GasolineLoadHistory() {
     return <Text style={styles.loadingText}>Cargando historial completo...</Text>;
   }
 
-  const FilterMenu = () => (
-    <Modal
-      visible={filterVisible}
-      transparent
-      animationType="fade"
-      onRequestClose={() => setFilterVisible(false)}
-    >
-      <TouchableOpacity 
-        style={styles.modalOverlay} 
-        onPress={() => setFilterVisible(false)}
-      >
-        <View style={styles.modalContent}>
-          <FilterOption title="Todos" onPress={() => { setActiveFilter('all'); setFilterVisible(false); }} />
-          <FilterOption title="Última semana" onPress={() => { setActiveFilter('week'); setFilterVisible(false); }} />
-          <FilterOption title="Último mes" onPress={() => { setActiveFilter('month'); setFilterVisible(false); }} />
-          <FilterOption title="Monto ↑" onPress={() => { setActiveFilter('amount_asc'); setFilterVisible(false); }} />
-          <FilterOption title="Monto ↓" onPress={() => { setActiveFilter('amount_desc'); setFilterVisible(false); }} />
-        </View>
-      </TouchableOpacity>
-    </Modal>
-  );
-
-  const FilterOption = ({ title, onPress }: { title: string; onPress: () => void }) => (
-    <TouchableOpacity style={styles.filterOption} onPress={onPress}>
-      <Text style={styles.filterOptionText}>{title}</Text>
-    </TouchableOpacity>
-  );
-
   return (
     <>
       <Stack.Screen 
         options={{
           title: "Historial de Cargas",
-          headerRight: () => (
-            <TouchableOpacity 
-              style={styles.filterButton}
-              onPress={() => setFilterVisible(true)}
-            >
-              <Filter size={20} color="white" />
-            </TouchableOpacity>
+          headerRight: undefined,
+          headerLargeTitle: false,
+          headerTitle: () => (
+            <View>
+              <SegmentedControl
+                values={["Todos", "Última semana", "Último mes"]}
+                selectedIndex={currentTabIndex}
+                onChange={(event) => {
+                  setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex);
+                }}
+                style={styles.segmentedControl}
+              />
+            </View>
           ),
         }} 
       />
@@ -100,6 +73,7 @@ export default function GasolineLoadHistory() {
             <View style={styles.card}>
               <View>
                 <Text style={styles.amount}>${item.amount.toFixed(2)} MXN</Text>
+                <Text style={styles.liters}>{item.liters.toFixed(2)} L</Text>
                 <Text style={styles.date}>
                   {new Date(item.requested_at || new Date()).toLocaleDateString('es-MX', {
                     weekday: 'long',
@@ -117,7 +91,6 @@ export default function GasolineLoadHistory() {
             </View>
           )}
         />
-        <FilterMenu />
       </View>
     </>
   );
@@ -207,30 +180,12 @@ const stylesheet = createStyleSheet((theme) => ({
     alignItems: 'center',
     gap: 8,
   },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+  segmentedControl: {
+    width: 350,
   },
-  modalContent: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 16,
-    width: '80%',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-  },
-  filterOption: {
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  filterOptionText: {
-    fontSize: 16,
-    color: '#333',
+  liters: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 4,
   },
 }));

@@ -70,9 +70,14 @@ export default function GasolineThreshold({
         <View style={styles.statDivider} />
         <View style={styles.statItem}>
           <Text style={styles.statLabel}>Gastado</Text>
-          <Text style={[styles.statValue, { color: "#f44336" }]}>
-            ${gasolineStatus.spent_gasoline.toFixed(2)}
-          </Text>
+          <View>
+            <Text style={[styles.statValue, { color: "#f44336" }]}>
+              ${gasolineStatus.spent_gasoline.toFixed(2)}
+            </Text>
+            <Text style={styles.litersValue}>
+              {gasolineStatus.spent_liters.toFixed(2)} L
+            </Text>
+          </View>
         </View>
       </View>
     </View>
@@ -156,5 +161,11 @@ const stylesheet = createStyleSheet((theme) => ({
     fontSize: 16,
     textAlign: "center",
     marginTop: 10,
+  },
+  litersValue: {
+    fontSize: 14,
+    color: theme.textPresets.subtitle,
+    textAlign: 'center',
+    marginTop: 2,
   },
 }));

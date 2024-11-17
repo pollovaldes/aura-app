@@ -1,3 +1,4 @@
+/*
 import React, { createContext, useEffect, ReactNode } from 'react';
 import * as Notifications from 'expo-notifications';
 //import { registerForPushNotificationsAsync } from '@/Services/notifications';
@@ -41,3 +42,4 @@ const NotificationProvider: React.FC<NotificationProviderProps> = ({ children })
 };
 
 export default NotificationProvider;
+*/

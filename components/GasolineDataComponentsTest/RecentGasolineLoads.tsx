@@ -19,7 +19,10 @@ export default function RecentGasolineLoads({ vehicleId }: { vehicleId: string }
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <Text style={styles.amount}>${item.amount.toFixed(2)} MXN</Text>
+            <View>
+              <Text style={styles.amount}>${item.amount.toFixed(2)} MXN</Text>
+              <Text style={styles.liters}>{item.liters.toFixed(2)} L</Text>
+            </View>
             <Text style={styles.date}>
               {new Date(item.approved_at).toLocaleDateString('es-MX', {
                 weekday: 'short',
@@ -71,5 +74,10 @@ const stylesheet = createStyleSheet((theme) => ({
     color: '#666',
     textAlign: 'center',
     padding: 20,
+  },
+  liters: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 4,
   },
 }));

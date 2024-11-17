@@ -5,6 +5,8 @@ export interface GasolineStatus {
   remaining_gasoline: number;
   gasoline_threshold: number;
   spent_gasoline: number;
+  spent_liters: number;
+  liters_threshold: number;
   last_reset_date: string;
 }
 
@@ -37,6 +39,7 @@ export default function useGasolineStatus(vehicleId: string | undefined) {
       .from("vehicle_gasoline_status")
       .update({
         spent_gasoline: 0,
+        spent_liters: 0,
       })
       .eq("vehicle_id", vehicleId);
 

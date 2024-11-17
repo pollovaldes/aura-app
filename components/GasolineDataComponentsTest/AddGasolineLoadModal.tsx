@@ -26,6 +26,7 @@ export default function AddGasolineLoadModal({
   const { styles } = useStyles(stylesheet);
   const [formData, setFormData] = useState({
     amount: "",
+    liters: "",
     status: "pending",
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -40,6 +41,7 @@ export default function AddGasolineLoadModal({
       vehicle_id: vehicleId,
       user_id: profile?.id,
       amount: Number(formData.amount),
+      liters: Number(formData.liters),
       status: profile?.role === "OWNER" ? "approved" : "pending",
       approved_by: profile?.role === "OWNER" ? profile.id : null,
       approved_at: profile?.role === "OWNER" ? new Date() : null,
@@ -50,7 +52,7 @@ export default function AddGasolineLoadModal({
     } else {
       Alert.alert("Éxito", "Carga de gasolina agregada exitosamente.");
       onClose();
-      setFormData({ amount: "", status: "pending" });
+      setFormData({ amount: "", liters: "", status: "pending" });
       onSuccess();
     }
     setIsLoading(false);
@@ -71,9 +73,16 @@ export default function AddGasolineLoadModal({
           </View>
           <View style={styles.group}>
             <FormInput
-              placeholder="Monto"
+              placeholder="Monto (MXN)"
               value={formData.amount}
               onChangeText={(value) => handleChange("amount", value)}
+              description=""
+              keyboardType="numeric"
+            />
+            <FormInput
+              placeholder="Litros"
+              value={formData.liters}
+              onChangeText={(value) => handleChange("liters", value)}
               description=""
               keyboardType="numeric"
             />

@@ -21,6 +21,7 @@ const useGasolineLoads = () => {
                         content: 'New gasoline load inserted',
                     }]);
 
+                    /*
             if (error) {
                 console.error('Error inserting gasoline load:', error);
                 Alert.alert('Error', 'Failed to insert gasoline load');
@@ -35,12 +36,13 @@ const useGasolineLoads = () => {
                     trigger: { seconds: 1 },
                 });
             }
+            */
         };
 
         const channel = supabase.channel('gasoline_loads')
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'gasoline_loads' }, (payload) => {
                 // Create supabase notification:
-                insertGasolineLoad();
+                //insertGasolineLoad();
 
                 // Expo Notifications
             })
