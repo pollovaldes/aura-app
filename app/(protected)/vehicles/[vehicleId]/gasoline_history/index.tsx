@@ -85,6 +85,15 @@ export default function GasolineHistory() {
     );
   }
 
+  if (isGasolineStatusLoading) {
+    return (
+      <>
+        <Stack.Screen options={{ title: "Cargando..." }} />
+        <LoadingScreen caption="Cargando datos de gasolina" />
+      </>
+    );
+  }
+
   if (!profile) {
     return (
       <>
@@ -124,6 +133,15 @@ export default function GasolineHistory() {
     );
   }
 
+  const screenOptions = {
+    title: "Historial de Gasolina",
+    headerRight: () => (
+      <Pressable onPress={() => setIsModalOpen(true)}>
+        <Text style={styles.addButton}>Agregar</Text>
+      </Pressable>
+    ),
+  };
+
   const renderContent = () => (
     <View style={styles.contentContainer}>
       <GasolineThreshold
@@ -147,19 +165,10 @@ export default function GasolineHistory() {
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: "Historiall de Gasolina",
-          headerRight: () => (
-            <Pressable onPress={() => setIsModalOpen(true)}>
-              <Text style={styles.addButton}>Agregar</Text>
-            </Pressable>
-          ),
-        }}
-      />
+      <Stack.Screen options={screenOptions} />
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
-        data={[]} // Empty array since we're using header for content
+        data={[null]} // Changed to [null] for better type safety
         renderItem={() => null}
         ListHeaderComponent={renderContent}
         refreshControl={
@@ -178,6 +187,7 @@ export default function GasolineHistory() {
         profile={profile}
         onSuccess={() => {
           fetchGasolineStatus();
+          setIsModalOpen(false); // Add this to close modal after success
         }}
       />
     </>

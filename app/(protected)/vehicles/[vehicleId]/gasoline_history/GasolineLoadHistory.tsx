@@ -1,84 +1,91 @@
-import { Stack } from "expo-router";
-import React, { useState } from "react";
+import { Stack, useLocalSearchParams } from "expo-router";
+import React, { useState, useMemo } from "react";
 import { View, Text, FlatList } from "react-native";
 import useAllGasolineLoads from "@/hooks/GasolineDataTest/useAllGasolineLoadHistory";
-import { useLocalSearchParams } from "expo-router";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 
-interface GasolineLoad {
+// Move to types/gasoline.ts
+type GasolineLoad = {
   id: string;
   vehicle_id: string;
   status: string;
   requested_at: string;
   amount: number;
   liters: number;
-}
+};
+
+// Memoized card component
+const GasolineCard = React.memo(({ item }: { item: GasolineLoad }) => {
+  const { styles } = useStyles(stylesheet);
+  const formattedDate = useMemo(() => 
+    new Date(item.requested_at || new Date()).toLocaleDateString('es-MX', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }).replace(/^\w/, (c) => c.toUpperCase()),
+    [item.requested_at]
+  );
+
+  return (
+    <View style={styles.card}>
+      <View>
+        <Text style={styles.amount}>${item.amount.toFixed(2)} MXN</Text>
+        <Text style={styles.liters}>{item.liters.toFixed(2)} L</Text>
+        <Text style={styles.date}>{formattedDate}</Text>
+      </View>
+      <View style={[styles.status, { backgroundColor: item.status === 'approved' ? '#e8f5e9' : '#fff3e0' }]}>
+        <Text style={[styles.statusText, { color: item.status === 'approved' ? '#2e7d32' : '#ef6c00' }]}>
+          {item.status === 'approved' ? 'Aprobado' : 'Pendiente'}
+        </Text>
+      </View>
+    </View>
+  );
+});
 
 export default function GasolineLoadHistory() {
   const { styles } = useStyles(stylesheet);
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
-
-  if (!vehicleId) return <Text style={styles.errorText}>ID de vehículo no encontrado</Text>;
   
   const { allGasolineLoads, loading } = useAllGasolineLoads(vehicleId);
 
-  const filterData = (data: GasolineLoad[]) => {
-    if (!data) return [];
+  const filteredData = useMemo(() => {
+    if (!allGasolineLoads) return [];
     
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
     switch (currentTabIndex) {
-      case 1: { // Last week
-        const weekAgo = new Date(today);
-        weekAgo.setDate(weekAgo.getDate() - 7);
-        return data.filter(item => {
-          const itemDate = new Date(item.requested_at);
-          return itemDate >= weekAgo;
-        });
-      }
-      case 2: { // Last month
-        const monthAgo = new Date(today);
+      case 1:
+        const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+        return allGasolineLoads.filter(item => new Date(item.requested_at) >= weekAgo);
+      case 2:
+        const monthAgo = new Date(today.getTime());
         monthAgo.setMonth(monthAgo.getMonth() - 1);
-        return data.filter(item => {
-          const itemDate = new Date(item.requested_at);
-          return itemDate >= monthAgo;
-        });
-      }
-      default: // All
-        return data;
+        return allGasolineLoads.filter(item => new Date(item.requested_at) >= monthAgo);
+      default:
+        return allGasolineLoads;
     }
-  };
+  }, [allGasolineLoads, currentTabIndex]);
 
-  const filteredData = React.useMemo(() => 
-    filterData(allGasolineLoads || []),
-    [allGasolineLoads, currentTabIndex]
-  );
-
-  if (loading) {
-    return <Text style={styles.loadingText}>Cargando historial completo...</Text>;
-  }
+  if (!vehicleId) return <Text style={styles.errorText}>ID de vehículo no encontrado</Text>;
+  if (loading) return <Text style={styles.loadingText}>Cargando historial completo...</Text>;
 
   return (
     <>
       <Stack.Screen 
         options={{
           title: "Historial de Cargas",
-          headerRight: undefined,
           headerLargeTitle: false,
           headerTitle: () => (
-            <View>
-              <SegmentedControl
-                values={["Todos", "Última semana", "Último mes"]}
-                selectedIndex={currentTabIndex}
-                onChange={(event) => {
-                  setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex);
-                }}
-                style={styles.segmentedControl}
-              />
-            </View>
+            <SegmentedControl
+              values={["Todos", "Última semana", "Último mes"]}
+              selectedIndex={currentTabIndex}
+              onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
+              style={styles.segmentedControl}
+            />
           ),
         }} 
       />
@@ -87,27 +94,7 @@ export default function GasolineLoadHistory() {
           contentInsetAdjustmentBehavior="automatic"
           data={filteredData}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.card}>
-              <View>
-                <Text style={styles.amount}>${item.amount.toFixed(2)} MXN</Text>
-                <Text style={styles.liters}>{item.liters.toFixed(2)} L</Text>
-                <Text style={styles.date}>
-                  {new Date(item.requested_at || new Date()).toLocaleDateString('es-MX', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  }).replace(/^\w/, (c) => c.toUpperCase())}
-                </Text>
-              </View>
-              <View style={[styles.status, { backgroundColor: item.status === 'approved' ? '#e8f5e9' : '#fff3e0' }]}>
-                <Text style={[styles.statusText, { color: item.status === 'approved' ? '#2e7d32' : '#ef6c00' }]}>
-                  {item.status === 'approved' ? 'Aprobado' : 'Pendiente'}
-                </Text>
-              </View>
-            </View>
-          )}
+          renderItem={({ item }) => <GasolineCard item={item} />}
         />
       </View>
     </>
