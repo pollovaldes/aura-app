@@ -1,5 +1,5 @@
 // components/GasolineThreshold.tsx
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { View, Text, ActivityIndicator, Pressable, Modal, TextInput } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { GasolineStatus } from "@/hooks/GasolineDataTest/useGasolineStatus";
@@ -11,6 +11,78 @@ interface GasolineThresholdProps {
   onUpdateThreshold: (newThreshold: number) => Promise<void>;
 }
 
+const ThresholdEditModal = React.memo(({ 
+  isVisible, 
+  onClose, 
+  onSave, 
+  initialValue 
+}: {
+  isVisible: boolean;
+  onClose: () => void;
+  onSave: (value: number) => Promise<void>;
+  initialValue: string;
+}) => {
+  const { styles } = useStyles(stylesheet);
+  const [value, setValue] = useState(initialValue);
+  const [error, setError] = useState('');
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const handleSave = async () => {
+    const threshold = parseFloat(value);
+    if (!isNaN(threshold) && threshold > 0) {
+      setIsUpdating(true);
+      try {
+        await onSave(threshold);
+        onClose();
+      } catch (err) {
+        setError('Error al actualizar el límite');
+      } finally {
+        setIsUpdating(false);
+      }
+    } else {
+      setError('Ingrese un valor válido mayor a 0');
+    }
+  };
+
+  return (
+    <Modal
+      visible={isVisible}
+      transparent
+      animationType="slide"
+      onRequestClose={onClose}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Editar Límite de Gasolina</Text>
+          <TextInput
+            style={styles.input}
+            keyboardType="decimal-pad"
+            value={value}
+            onChangeText={setValue}
+            placeholder="Nuevo límite"
+          />
+          {error && <Text style={styles.errorText}>{error}</Text>}
+          {isUpdating && <ActivityIndicator />}
+          <View style={styles.modalButtons}>
+            <Pressable 
+              style={[styles.button, styles.cancelButton]} 
+              onPress={onClose}
+            >
+              <Text style={styles.buttonText}>Cancelar</Text>
+            </Pressable>
+            <Pressable 
+              style={[styles.button, styles.saveButton]} 
+              onPress={handleSave}
+            >
+              <Text style={styles.buttonText}>Guardar</Text>
+            </Pressable>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+});
+
 export default function GasolineThreshold({
   gasolineStatus,
   isLoading,
@@ -19,22 +91,38 @@ export default function GasolineThreshold({
 }: GasolineThresholdProps) {
   const { styles } = useStyles(stylesheet);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [newThreshold, setNewThreshold] = useState('');
 
-  const handlePress = () => {
-    if (canEdit) {
-      setNewThreshold(gasolineStatus?.gasoline_threshold.toString() || '');
-      setIsEditModalVisible(true);
-    }
-  };
+  const {
+    progressPercentage,
+    progressBarColor,
+    formattedRemaining,
+    formattedThreshold,
+    formattedSpent,
+    formattedLiters
+  } = useMemo(() => {
+    if (!gasolineStatus) return {
+      progressPercentage: 0,
+      progressBarColor: "#4caf50",
+      formattedRemaining: "0.00",
+      formattedThreshold: "0.00",
+      formattedSpent: "0.00",
+      formattedLiters: "0.00"
+    };
 
-  const handleSave = async () => {
-    const threshold = parseFloat(newThreshold);
-    if (!isNaN(threshold) && threshold > 0) {
-      await onUpdateThreshold(threshold);
-      setIsEditModalVisible(false);
-    }
-  };
+    const percentage = (gasolineStatus.spent_gasoline / gasolineStatus.gasoline_threshold) * 100;
+    const color = gasolineStatus.remaining_gasoline < gasolineStatus.gasoline_threshold * 0.2
+      ? "#f44336"
+      : "#4caf50";
+
+    return {
+      progressPercentage: percentage,
+      progressBarColor: color,
+      formattedRemaining: gasolineStatus.remaining_gasoline.toFixed(2),
+      formattedThreshold: gasolineStatus.gasoline_threshold.toFixed(2),
+      formattedSpent: gasolineStatus.spent_gasoline.toFixed(2),
+      formattedLiters: gasolineStatus.spent_liters.toFixed(2)
+    };
+  }, [gasolineStatus]);
 
   if (isLoading) {
     return (
@@ -52,24 +140,15 @@ export default function GasolineThreshold({
     );
   }
 
-  const progressPercentage =
-    (gasolineStatus.spent_gasoline / gasolineStatus.gasoline_threshold) * 100;
-
-  const progressBarColor =
-    gasolineStatus.remaining_gasoline <
-    gasolineStatus.gasoline_threshold * 0.2
-      ? "#f44336"
-      : "#4caf50";
-
   return (
     <>
       <Pressable 
-        onPress={handlePress}
+        onPress={canEdit ? () => setIsEditModalVisible(true) : undefined}
         style={[styles.thresholdContainer, canEdit && styles.editableBorder]}
       >
         <Text style={styles.thresholdTitle}>Gasolina Restante</Text>
         <Text style={styles.thresholdValue}>
-          ${gasolineStatus.remaining_gasoline.toFixed(2)}{" "}
+          ${formattedRemaining}{" "}
           <Text style={styles.currency}>MXN</Text>
         </Text>
         <View style={styles.progressContainer}>
@@ -89,7 +168,7 @@ export default function GasolineThreshold({
           <View style={styles.statItem}>
             <Text style={styles.statLabel}>Límite</Text>
             <Text style={styles.statValue}>
-              ${gasolineStatus.gasoline_threshold.toFixed(2)}
+              ${formattedThreshold}
             </Text>
           </View>
           <View style={styles.statDivider} />
@@ -97,49 +176,22 @@ export default function GasolineThreshold({
             <Text style={styles.statLabel}>Gastado</Text>
             <View>
               <Text style={[styles.statValue, { color: "#f44336" }]}>
-                ${gasolineStatus.spent_gasoline.toFixed(2)}
+                ${formattedSpent}
               </Text>
               <Text style={styles.litersValue}>
-                {gasolineStatus.spent_liters.toFixed(2)} L
+                {formattedLiters} L
               </Text>
             </View>
           </View>
         </View>
       </Pressable>
 
-      <Modal
-        visible={isEditModalVisible}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setIsEditModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Editar Límite de Gasolina</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="decimal-pad"
-              value={newThreshold}
-              onChangeText={setNewThreshold}
-              placeholder="Nuevo límite"
-            />
-            <View style={styles.modalButtons}>
-              <Pressable 
-                style={[styles.button, styles.cancelButton]} 
-                onPress={() => setIsEditModalVisible(false)}
-              >
-                <Text style={styles.buttonText}>Cancelar</Text>
-              </Pressable>
-              <Pressable 
-                style={[styles.button, styles.saveButton]} 
-                onPress={handleSave}
-              >
-                <Text style={styles.buttonText}>Guardar</Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <ThresholdEditModal
+        isVisible={isEditModalVisible}
+        onClose={() => setIsEditModalVisible(false)}
+        onSave={onUpdateThreshold}
+        initialValue={gasolineStatus?.gasoline_threshold.toString() || ''}
+      />
     </>
   );
 }
