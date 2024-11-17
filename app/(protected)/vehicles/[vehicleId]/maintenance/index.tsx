@@ -3,6 +3,7 @@ import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
+import useMaintenance from "@/hooks/useMaintenance";
 import useProfile from "@/hooks/useProfile";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
@@ -15,8 +16,9 @@ export default function Index() {
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
   const { styles } = useStyles(stylesheet);
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
-  const [filteredVehicles, setFilteredVehicles] = useState(vehicles);
   const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { maintenanceRecords, areMaintenanceRecordsLoading, fetchMaintenance } =
+    useMaintenance();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
 
   if (isProfileLoading) {
@@ -30,6 +32,21 @@ export default function Index() {
           }}
         />
         <LoadingScreen caption="Cargando perfil y permisos" />
+      </>
+    );
+  }
+
+  if (areMaintenanceRecordsLoading) {
+    return (
+      <>
+        <Stack.Screen
+          options={{
+            title: "Cargando...",
+            headerLargeTitle: false,
+            headerRight: undefined,
+          }}
+        />
+        <LoadingScreen caption="Cargando solicitudes de mantenimiento" />
       </>
     );
   }
@@ -109,6 +126,25 @@ export default function Index() {
     );
   }
 
+  if (!maintenanceRecords) {
+    return (
+      <>
+        <Stack.Screen
+          options={{
+            title: "Error",
+            headerLargeTitle: false,
+            headerRight: undefined,
+          }}
+        />
+        <ErrorScreen
+          caption={`Ocurrió un error y no \npudimos cargar las solicitudes de mantenimiento`}
+          buttonCaption="Reintentar"
+          retryFunction={fetchMaintenance}
+        />
+      </>
+    );
+  }
+
   return (
     <>
       <Stack.Screen
@@ -132,17 +168,23 @@ export default function Index() {
       />
 
       <FlatList
-        refreshing={vehiclesAreLoading}
-        onRefresh={fetchVehicles}
+        refreshing={
+          vehiclesAreLoading || areMaintenanceRecordsLoading || isProfileLoading
+        }
+        onRefresh={() => {
+          fetchVehicles();
+          fetchProfile();
+          fetchMaintenance();
+        }}
         contentInsetAdjustmentBehavior="automatic"
-        data={filteredVehicles}
+        data={maintenanceRecords}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Link href={{ pathname: `/vehicles/${item.id}` }} asChild>
             <Pressable>
               <View style={styles.container}>
                 <View style={styles.contentContainer}>
-                  <Text>Qué rollo</Text>
+                  <Text>{item.description}</Text>
                 </View>
                 <View style={styles.chevronView}>
                   <ChevronRight color={styles.chevron.color} />
