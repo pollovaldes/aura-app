@@ -82,7 +82,7 @@ export default function VehicleList() {
     try {
       await exportVehiclesToCsv();
     } catch (error) {
-      console.error('Error downloading CSV:', error);
+      console.error("Error downloading CSV:", error);
       // You might want to show an error message to the user here
     }
   };
@@ -94,8 +94,11 @@ export default function VehicleList() {
           <Stack.Screen
             options={{
               headerRight: () => (
-                <View style={{ flexDirection: 'row' }}>
-                  <Pressable onPress={handleDownloadCsv} style={{ marginRight: 10 }}>
+                <View style={{ flexDirection: "row" }}>
+                  <Pressable
+                    onPress={handleDownloadCsv}
+                    style={{ marginRight: 10 }}
+                  >
                     <Download color={styles.plusIcon.color} />
                   </Pressable>
                   <Pressable onPress={() => setIsModalVisible(true)}>
@@ -152,26 +155,6 @@ const stylesheet = createStyleSheet((theme) => ({
     borderBottomWidth: 1,
     borderBottomColor: theme.ui.colors.border,
   },
-  loadingContainer: {
-    gap: 6,
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  loadingText: {
-    fontSize: 16,
-    color: theme.textPresets.subtitle,
-  },
-  errorText: {
-    color: "red",
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  lackText: {
-    fontSize: 16,
-    color: theme.textPresets.main,
-  },
   contentContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -184,14 +167,6 @@ const stylesheet = createStyleSheet((theme) => ({
     borderRadius: 6,
     width: 100,
     height: 100,
-  },
-  emptyImageContainer: {
-    borderRadius: 6,
-    backgroundColor: theme.ui.colors.border,
-    width: 100,
-    height: 100,
-    justifyContent: "center",
-    alignItems: "center",
   },
   noImageIcon: {
     color: theme.textPresets.main,
