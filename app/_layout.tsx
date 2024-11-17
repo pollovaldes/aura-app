@@ -1,13 +1,13 @@
 import { SessionContextProvider } from "@/context/SessionContext";
 import { supabase } from "@/lib/supabase";
 import { Redirect, Slot } from "expo-router";
-import {
-  DarkTheme,
-  ThemeProvider,
-  DefaultTheme,
-} from "@react-navigation/native";
 import { useColorScheme } from "react-native";
 import { usePathname } from "expo-router/build/hooks";
+import {
+  ThemeProvider,
+  DarkTheme,
+  DefaultTheme,
+} from "@react-navigation/native";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -16,11 +16,11 @@ export default function RootLayout() {
   const currentTheme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
 
   return (
-    <SessionContextProvider supabaseClient={supabase}>
-      <ThemeProvider value={currentTheme}>
+    <ThemeProvider value={currentTheme}>
+      <SessionContextProvider supabaseClient={supabase}>
         {path === "/" && <Redirect href="/auth" />}
         <Slot />
-      </ThemeProvider>
-    </SessionContextProvider>
+      </SessionContextProvider>
+    </ThemeProvider>
   );
 }
