@@ -1,10 +1,5 @@
 PODS:
   - boost (1.84.0)
-  - ComputableLayout (0.7.0):
-    - DGSwiftUtilities (~> 0.11)
-  - ContextMenuAuxiliaryPreview (0.5.2):
-    - DGSwiftUtilities (~> 0.29)
-  - DGSwiftUtilities (0.29.0)
   - DoubleConversion (1.1.6)
   - EXApplication (6.0.1):
     - ExpoModulesCore
@@ -1828,15 +1823,6 @@ PODS:
     - React-logger (= 0.76.2)
     - React-perflogger (= 0.76.2)
     - React-utils (= 0.76.2)
-  - ReactNativeIosContextMenu (2.5.2):
-    - ContextMenuAuxiliaryPreview (~> 0.3)
-    - DGSwiftUtilities
-    - ExpoModulesCore
-    - ReactNativeIosUtilities
-  - ReactNativeIosUtilities (4.5.1):
-    - ComputableLayout (~> 0.7)
-    - DGSwiftUtilities (~> 0.27)
-    - ExpoModulesCore
   - RNCAsyncStorage (1.23.1):
     - React-Core
   - RNCPicker (2.9.0):
@@ -1961,8 +1947,6 @@ DEPENDENCIES:
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCodegen (from `build/generated/ios`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
-  - ReactNativeIosContextMenu (from `../node_modules/react-native-ios-context-menu`)
-  - ReactNativeIosUtilities (from `../node_modules/react-native-ios-utilities`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -1971,9 +1955,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - ComputableLayout
-    - ContextMenuAuxiliaryPreview
-    - DGSwiftUtilities
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -2158,10 +2139,6 @@ EXTERNAL SOURCES:
     :path: build/generated/ios
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
-  ReactNativeIosContextMenu:
-    :path: "../node_modules/react-native-ios-context-menu"
-  ReactNativeIosUtilities:
-    :path: "../node_modules/react-native-ios-utilities"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCPicker:
@@ -2175,9 +2152,6 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   boost: 1dca942403ed9342f98334bf4c3621f011aa7946
-  ComputableLayout: c50faffac4ed9f8f05b0ce5e6f3a60df1f6042c8
-  ContextMenuAuxiliaryPreview: 20be0be795b783b68f8792732eed4bed9f202c1c
-  DGSwiftUtilities: 626565e1ee90ddacebd8520ea1ce730110ad13e4
   DoubleConversion: f16ae600a246532c4020132d54af21d0ddb2a385
   EXApplication: e1ad9c950c98b2b134578092c948b10b403f3ea7
   EXConstants: dd2fe64c6cdb1383b694c309a63028a8e9f2be6d
@@ -2267,8 +2241,6 @@ SPEC CHECKSUMS:
   React-utils: ed6cb7ba089ac0856aa104df12691e99abbf14e1
   ReactCodegen: 93b271af49774429f34d7fd561197020d86436e2
   ReactCommon: 208cb02e3c0bb8a727b3e1a1782202bcfa5d9631
-  ReactNativeIosContextMenu: 3e0880f9bd20af2905b57ace99b69a36be125d1a
-  ReactNativeIosUtilities: 4980803356bff7906929d5d034da58bfc9bb824a
   RNCAsyncStorage: 826b603ae9c0f88b5ac4e956801f755109fa4d5c
   RNCPicker: f963e01f78e546a93b98aa201501713dbda14e94
   RNScreens: e6f9bc3a41be76af2ba0a815ea299a0000b1c838
@@ -2278,4 +2250,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 1e5c24049c4a24e6907e50155373d786364a9c98
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2
