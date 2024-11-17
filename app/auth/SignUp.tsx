@@ -32,7 +32,6 @@ export default function SignUp() {
     <>
       <FormInput
         description="Correo electrónico"
-        placeholder="xyz@mail.com"
         inputMode="email"
         autoComplete="username"
         style={styles.textInput}
@@ -41,7 +40,6 @@ export default function SignUp() {
       />
       <FormInput
         description="Contraseña"
-        placeholder="supersecretpassword"
         autoComplete="new-password"
         secureTextEntry={true}
         style={styles.textInput}

@@ -31,7 +31,6 @@ export default function SignIn() {
   return (
     <>
       <FormInput
-        placeholder="xyz@mail.com"
         inputMode="email"
         autoComplete="username"
         autoCapitalize="none"
@@ -43,7 +42,6 @@ export default function SignIn() {
       />
       <FormInput
         description="Contraseña"
-        placeholder="supersecretpassword"
         enterKeyHint="done"
         autoComplete="current-password"
         style={styles.textInput}
