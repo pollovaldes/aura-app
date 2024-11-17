@@ -1,19 +1,16 @@
-import { useSession } from "@/context/SessionContext";
-import { useState } from "react";
 import { View, ActivityIndicator, Image } from "react-native";
-import { FileObject } from "@supabase/storage-js";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { UserRound } from "lucide-react-native";
-import { useProfileImage } from "@/context/ProfileImageContext";
+import { useUserImage } from "@/hooks/useUserImage";
 
 type PictureUploadProps = {
-  size: number; // Prop to accept image resolution
+  size: number;
+  userId: string;
 };
 
-export default function PictureUpload({ size }: PictureUploadProps) {
+export default function PictureUpload({ size, userId }: PictureUploadProps) {
   const { styles } = useStyles(stylesheet);
-  const session = useSession();
-  const { imageUri, loading } = useProfileImage();
+  const { imageUri, loading } = useUserImage(userId);
 
   return (
     <View style={[styles.container, { width: size, height: size }]}>
