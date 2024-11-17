@@ -14,40 +14,41 @@ export default function useGasolineStatus(vehicleId: string | undefined) {
   const [gasolineStatus, setGasolineStatus] = useState<GasolineStatus | null>(null);
   const [isGasolineStatusLoading, setIsGasolineStatusLoading] = useState(true);
 
-  const shouldReset = () => {
+  const shouldReset = (lastResetDate: string) => {
     const now = new Date();
-    // Get the previous Saturday midnight
-    const lastSaturday = new Date();
-    lastSaturday.setDate(now.getDate() - ((now.getDay() + 1) % 7));
-    lastSaturday.setHours(0, 0, 0, 0);
+    const lastReset = new Date(lastResetDate);
     
-    // Get current week's Saturday midnight
-    const thisSaturday = new Date(lastSaturday);
-    thisSaturday.setDate(lastSaturday.getDate() + 7);
-    console.log("lastSaturday", lastSaturday);
-    console.log("thisSaturday", thisSaturday);
-    console.log("now", now);
-    
-    // Check if we're in a new week (past Saturday midnight)
-    return now >= thisSaturday;
+    // Find the next Saturday midnight after the last reset
+    const nextResetDate = new Date(lastReset);
+    nextResetDate.setDate(lastReset.getDate() + ((6 - lastReset.getDay() + 7) % 7));
+    nextResetDate.setHours(0, 0, 0, 0);
+
+    // If we've passed the next reset date, we should reset
+    return now >= nextResetDate;
   };
 
-  const resetGasolineIfNeeded = async () => {
-    if (!vehicleId || !shouldReset()) return;
+  const resetGasolineIfNeeded = async (currentStatus: GasolineStatus) => {
+    if (!vehicleId) return;
 
-    const { error } = await supabase
-      .from("vehicle_gasoline_status")
-      .update({
-        spent_gasoline: 0,
-        spent_liters: 0,
-      })
-      .eq("vehicle_id", vehicleId);
+    if (shouldReset(currentStatus.last_reset_date)) {
+      console.log("Resetting gasoline status...");
+      const now = new Date();
+      
+      const { error } = await supabase
+        .from("vehicle_gasoline_status")
+        .update({
+          spent_gasoline: 0,
+          spent_liters: 0,
+          last_reset_date: now.toISOString()
+        })
+        .eq("vehicle_id", vehicleId);
 
-    if (error) {
-      console.error("Error resetting gasoline:", error);
-    } else {
-      // Fetch updated data
-      fetchGasolineStatus();
+      if (error) {
+        console.error("Error resetting gasoline:", error);
+      } else {
+        // Fetch updated data after reset
+        fetchGasolineStatus();
+      }
     }
   };
 
@@ -55,23 +56,40 @@ export default function useGasolineStatus(vehicleId: string | undefined) {
     if (!vehicleId) return;
 
     setIsGasolineStatusLoading(true);
-    const { data, error } = await supabase
-      .from("vehicle_gasoline_status")
-      .select("*")
-      .eq("vehicle_id", vehicleId)
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from("vehicle_gasoline_status")
+        .select("*")
+        .eq("vehicle_id", vehicleId)
+        .single();
 
-    if (error) {
-      console.error("Error fetching gasoline status:", error);
-    } else {
-      await resetGasolineIfNeeded();
-      setGasolineStatus(data);
+      if (error) {
+        console.error("Error fetching gasoline status:", error);
+        return;
+      }
+
+      if (data) {
+        await resetGasolineIfNeeded(data);
+        setGasolineStatus(data);
+      }
+    } catch (error) {
+      console.error("Error in gasoline status operation:", error);
+    } finally {
+      setIsGasolineStatusLoading(false);
     }
-    setIsGasolineStatusLoading(false);
   };
 
   useEffect(() => {
     fetchGasolineStatus();
+    
+    // Set up an interval to check for reset every minute
+    const interval = setInterval(() => {
+      if (gasolineStatus) {
+        resetGasolineIfNeeded(gasolineStatus);
+      }
+    }, 60000); // Check every minute
+
+    return () => clearInterval(interval);
   }, [vehicleId]);
 
   return { gasolineStatus, isGasolineStatusLoading, fetchGasolineStatus };
