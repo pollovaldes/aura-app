@@ -12,7 +12,7 @@ import EmptyScreen from "../dataStates/EmptyScreen";
 import TruckThumbnail from "./TruckThumbnail";
 import React from "react";
 import AddVehicleComponent from "./AddVehicleComponent";
-import { exportVehiclesToCsv } from "@/hooks/csvExport";
+import { exportVehiclesToCsv } from "@/hooks/csvExportVehicles";
 
 export default function VehicleList() {
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
