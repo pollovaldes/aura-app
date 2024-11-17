@@ -191,7 +191,7 @@ export default function Index() {
       <Stack.Screen
         options={{
           title: "Guantera Digital",
-          headerLargeTitle: true,
+          headerLargeTitle: false,
           headerRight: () =>
             canEdit && (
               <Pressable onPress={() => setActiveModal("add_document")}>
@@ -230,14 +230,20 @@ export default function Index() {
                 <Row
                   key={doc.document_id}
                   title={doc.title}
-                  caption={doc.title.length > 30 ? "" : (doc.description.length > 5 ? `${doc.description.substring(0, 5)}...` : doc.description)}
+                  caption={
+                    doc.title.length > 30
+                      ? ""
+                      : doc.description.length > 5
+                        ? `${doc.description.substring(0, 5)}...`
+                        : doc.description
+                  }
                   trailingType="chevron"
                   onPress={() =>
                     router.navigate(
                       `/vehicles/[vehicleId]/documentation/${doc.document_id}`
                     )
-                }
-              />
+                  }
+                />
               ))}
             </GroupedList>
           </View>
