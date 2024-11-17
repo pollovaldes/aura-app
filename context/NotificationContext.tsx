@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, ReactNode } from 'react';
 import * as Notifications from 'expo-notifications';
-import { registerForPushNotificationsAsync } from '@/Services/notifications';
+//import { registerForPushNotificationsAsync } from '@/Services/notifications';
 
 // Define the type for the context value
 interface NotificationContextType {
@@ -19,7 +19,7 @@ interface NotificationProviderProps {
 const NotificationProvider: React.FC<NotificationProviderProps> = ({ children }) => {
   useEffect(() => {
     const setupNotifications = async () => {
-      await registerForPushNotificationsAsync();
+      //await registerForPushNotificationsAsync();
 
       // Set a listener for incoming notifications
       const subscription = Notifications.addNotificationReceivedListener(notification => {

@@ -12,7 +12,6 @@ import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { supabase } from "@/lib/supabase";
 import { ProfileImageProvider } from "@/context/ProfileImageContext";
 import { PeopleContextProvider } from "@/context/PeopleContext";
-import NotificationProvider from "@/context/NotificationContext";
 
 export default function HomeLayout() {
   const { styles } = useStyles(stylesheet);
@@ -100,7 +99,6 @@ export default function HomeLayout() {
   return (
     <VehiclesContextProvider>
       <PeopleContextProvider>
-        <NotificationProvider>
           <ProfileImageProvider>
             {width > widthThreshold ? (
               <View style={styles.container}>
@@ -180,7 +178,6 @@ export default function HomeLayout() {
               </Tabs>
             )}
           </ProfileImageProvider>
-        </NotificationProvider>
       </PeopleContextProvider>
     </VehiclesContextProvider>
   );

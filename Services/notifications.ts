@@ -1,3 +1,4 @@
+/*
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 
@@ -25,3 +26,4 @@ export const registerForPushNotificationsAsync = async () => {
   token = (await Notifications.getExpoPushTokenAsync()).data;
   return token;
 };
+*/

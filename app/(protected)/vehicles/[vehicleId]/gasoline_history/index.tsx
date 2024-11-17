@@ -144,7 +144,7 @@ export default function GasolineHistory() {
     <>
       <Stack.Screen
         options={{
-          title: "Historial de Gasolina",
+          title: "Historiall de Gasolina",
           headerRight: () => (
             <Pressable onPress={() => setIsModalOpen(true)}>
               <Text style={styles.addButton}>Agregar</Text>
