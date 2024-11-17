@@ -99,6 +99,7 @@ export default function PeopleList() {
               <View style={styles.container}>
                 <View style={styles.contentContainer}>
                   <View style={styles.imageContainer}>
+                    <Text style={styles.itemText}>{item.id}</Text>
                     <PictureUpload size={60} userId={item.id.toString()} />
                   </View>
                   <Text

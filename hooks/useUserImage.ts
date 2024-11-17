@@ -8,36 +8,76 @@ export const useUserImage = (userId: string) => {
   useEffect(() => {
     let isMounted = true;
 
+    if (!userId) {
+      setImageUri(null);
+      setLoading(false);
+      return;
+    }
+
+    setImageUri(null); // Restablece la imagen al cambiar el usuario
+
     async function getImage() {
-      if (!userId) return;
-      
       try {
         setLoading(true);
+        console.log(`Obteniendo imagen para userId: ${userId}`);
         const { data: files, error: listError } = await supabase.storage
           .from('avatars')
           .list(`${userId}`);
 
-        if (listError || !files || files.length === 0) {
-          setImageUri(null);
+        if (listError) {
+          console.error('Error al listar los archivos:', listError);
+          if (isMounted) {
+            setImageUri(null);
+            setLoading(false);
+          }
+          return;
+        }
+
+        console.log(`Archivos encontrados para ${userId}:`, files);
+
+        if (!files || files.length === 0) {
+          console.warn(`No se encontraron archivos para el userId: ${userId}`);
+          if (isMounted) {
+            setImageUri(null);
+            setLoading(false);
+          }
           return;
         }
 
         const fileName = files[0].name;
-        const { data, error } = await supabase.storage
-          .from('avatars')
-          .download(`${userId}/${fileName}`);
+        console.log(`Nombre del archivo: ${fileName}`);
 
-        if (error || !data) {
-          setImageUri(null);
+        // Generar una URL firmada para acceder a la imagen
+        const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+          .from('avatars')
+          .createSignedUrl(`${userId}/${fileName}`, 60); // URL válida por 60 segundos
+
+        if (signedUrlError) {
+          console.error('Error al obtener la URL firmada:', signedUrlError);
+          if (isMounted) {
+            setImageUri(null);
+            setLoading(false);
+          }
           return;
         }
 
-        if (isMounted) {
-          const uri = URL.createObjectURL(data);
-          setImageUri(uri);
+        const signedUrl = signedUrlData?.signedUrl;
+
+        if (isMounted && signedUrl) {
+          setImageUri(signedUrl);
+          console.log(`Imagen URI actualizada para ${userId}: ${signedUrl}`);
+        } else {
+          if (isMounted) {
+            setImageUri(null);
+            setLoading(false);
+          }
         }
       } catch (error) {
-        setImageUri(null);
+        console.error('Error en getImage:', error);
+        if (isMounted) {
+          setImageUri(null);
+          setLoading(false);
+        }
       } finally {
         if (isMounted) {
           setLoading(false);

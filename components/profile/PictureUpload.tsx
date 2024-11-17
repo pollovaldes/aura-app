@@ -11,6 +11,7 @@ type PictureUploadProps = {
 export default function PictureUpload({ size, userId }: PictureUploadProps) {
   const { styles } = useStyles(stylesheet);
   const { imageUri, loading } = useUserImage(userId);
+  console.log(imageUri);
 
   return (
     <View style={[styles.container, { width: size, height: size }]}>

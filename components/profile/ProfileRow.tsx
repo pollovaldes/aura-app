@@ -14,7 +14,7 @@ export default function ProfileRow({ person: profile }: ProfileRowProps) {
   return (
     <View style={styles.container}>
       <View>
-        <PictureUpload size={80} />
+        <PictureUpload size={80} userId={profile.id.toString()} />
       </View>
       <View style={styles.descriptioonContainer}>
         <>
