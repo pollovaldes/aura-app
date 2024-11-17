@@ -6,6 +6,8 @@ interface AllGasolineLoads {
   vehicle_id: string;
   status: string;
   requested_at: string;
+  amount: number;
+  liters: number;
   [key: string]: any;
 }
 

@@ -11,7 +11,8 @@ interface GasolineLoad {
   vehicle_id: string;
   status: string;
   requested_at: string;
-  [key: string]: any;
+  amount: number;
+  liters: number;
 }
 
 export default function GasolineLoadHistory() {
@@ -24,20 +25,37 @@ export default function GasolineLoadHistory() {
   const { allGasolineLoads, loading } = useAllGasolineLoads(vehicleId);
 
   const filterData = (data: GasolineLoad[]) => {
+    if (!data) return [];
+    
     const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
     switch (currentTabIndex) {
-      case 1: // Last week
-        const weekAgo = new Date(now.setDate(now.getDate() - 7));
-        return data.filter(item => new Date(item.requested_at) > weekAgo);
-      case 2: // Last month
-        const monthAgo = new Date(now.setMonth(now.getMonth() - 1));
-        return data.filter(item => new Date(item.requested_at) > monthAgo);
+      case 1: { // Last week
+        const weekAgo = new Date(today);
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        return data.filter(item => {
+          const itemDate = new Date(item.requested_at);
+          return itemDate >= weekAgo;
+        });
+      }
+      case 2: { // Last month
+        const monthAgo = new Date(today);
+        monthAgo.setMonth(monthAgo.getMonth() - 1);
+        return data.filter(item => {
+          const itemDate = new Date(item.requested_at);
+          return itemDate >= monthAgo;
+        });
+      }
       default: // All
         return data;
     }
   };
 
-  const filteredData = filterData(allGasolineLoads || []);
+  const filteredData = React.useMemo(() => 
+    filterData(allGasolineLoads || []),
+    [allGasolineLoads, currentTabIndex]
+  );
 
   if (loading) {
     return <Text style={styles.loadingText}>Cargando historial completo...</Text>;
