@@ -1,19 +1,40 @@
 // components/GasolineThreshold.tsx
-import React from "react";
-import { View, Text, ActivityIndicator } from "react-native";
+import React, { useState } from "react";
+import { View, Text, ActivityIndicator, Pressable, Modal, TextInput } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { GasolineStatus } from "@/hooks/GasolineDataTest/useGasolineStatus";
 
 interface GasolineThresholdProps {
   gasolineStatus: GasolineStatus | null;
   isLoading: boolean;
+  canEdit: boolean;
+  onUpdateThreshold: (newThreshold: number) => Promise<void>;
 }
 
 export default function GasolineThreshold({
   gasolineStatus,
   isLoading,
+  canEdit,
+  onUpdateThreshold,
 }: GasolineThresholdProps) {
   const { styles } = useStyles(stylesheet);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [newThreshold, setNewThreshold] = useState('');
+
+  const handlePress = () => {
+    if (canEdit) {
+      setNewThreshold(gasolineStatus?.gasoline_threshold.toString() || '');
+      setIsEditModalVisible(true);
+    }
+  };
+
+  const handleSave = async () => {
+    const threshold = parseFloat(newThreshold);
+    if (!isNaN(threshold) && threshold > 0) {
+      await onUpdateThreshold(threshold);
+      setIsEditModalVisible(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -41,46 +62,85 @@ export default function GasolineThreshold({
       : "#4caf50";
 
   return (
-    <View style={styles.thresholdContainer}>
-      <Text style={styles.thresholdTitle}>Gasolina Restante</Text>
-      <Text style={styles.thresholdValue}>
-        ${gasolineStatus.remaining_gasoline.toFixed(2)}{" "}
-        <Text style={styles.currency}>MXN</Text>
-      </Text>
-      <View style={styles.progressContainer}>
-        <View style={styles.progressBar}>
-          <View
-            style={[
-              styles.progressFill,
-              {
-                width: `${progressPercentage}%`,
-                backgroundColor: progressBarColor,
-              },
-            ]}
-          />
-        </View>
-      </View>
-      <View style={styles.statsContainer}>
-        <View style={styles.statItem}>
-          <Text style={styles.statLabel}>Límite</Text>
-          <Text style={styles.statValue}>
-            ${gasolineStatus.gasoline_threshold.toFixed(2)}
-          </Text>
-        </View>
-        <View style={styles.statDivider} />
-        <View style={styles.statItem}>
-          <Text style={styles.statLabel}>Gastado</Text>
-          <View>
-            <Text style={[styles.statValue, { color: "#f44336" }]}>
-              ${gasolineStatus.spent_gasoline.toFixed(2)}
-            </Text>
-            <Text style={styles.litersValue}>
-              {gasolineStatus.spent_liters.toFixed(2)} L
-            </Text>
+    <>
+      <Pressable 
+        onPress={handlePress}
+        style={[styles.thresholdContainer, canEdit && styles.editableBorder]}
+      >
+        <Text style={styles.thresholdTitle}>Gasolina Restante</Text>
+        <Text style={styles.thresholdValue}>
+          ${gasolineStatus.remaining_gasoline.toFixed(2)}{" "}
+          <Text style={styles.currency}>MXN</Text>
+        </Text>
+        <View style={styles.progressContainer}>
+          <View style={styles.progressBar}>
+            <View
+              style={[
+                styles.progressFill,
+                {
+                  width: `${progressPercentage}%`,
+                  backgroundColor: progressBarColor,
+                },
+              ]}
+            />
           </View>
         </View>
-      </View>
-    </View>
+        <View style={styles.statsContainer}>
+          <View style={styles.statItem}>
+            <Text style={styles.statLabel}>Límite</Text>
+            <Text style={styles.statValue}>
+              ${gasolineStatus.gasoline_threshold.toFixed(2)}
+            </Text>
+          </View>
+          <View style={styles.statDivider} />
+          <View style={styles.statItem}>
+            <Text style={styles.statLabel}>Gastado</Text>
+            <View>
+              <Text style={[styles.statValue, { color: "#f44336" }]}>
+                ${gasolineStatus.spent_gasoline.toFixed(2)}
+              </Text>
+              <Text style={styles.litersValue}>
+                {gasolineStatus.spent_liters.toFixed(2)} L
+              </Text>
+            </View>
+          </View>
+        </View>
+      </Pressable>
+
+      <Modal
+        visible={isEditModalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setIsEditModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Editar Límite de Gasolina</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="decimal-pad"
+              value={newThreshold}
+              onChangeText={setNewThreshold}
+              placeholder="Nuevo límite"
+            />
+            <View style={styles.modalButtons}>
+              <Pressable 
+                style={[styles.button, styles.cancelButton]} 
+                onPress={() => setIsEditModalVisible(false)}
+              >
+                <Text style={styles.buttonText}>Cancelar</Text>
+              </Pressable>
+              <Pressable 
+                style={[styles.button, styles.saveButton]} 
+                onPress={handleSave}
+              >
+                <Text style={styles.buttonText}>Guardar</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </>
   );
 }
 
@@ -167,5 +227,57 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.textPresets.subtitle,
     textAlign: 'center',
     marginTop: 2,
+  },
+  editableBorder: {
+    borderWidth: 1,
+    borderColor: theme.headerButtons.color,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: theme.ui.colors.card,
+    padding: 20,
+    borderRadius: 16,
+    width: '90%',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: theme.textPresets.main,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 20,
+    color: theme.textPresets.main,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  button: {
+    flex: 1,
+    padding: 15,
+    borderRadius: 8,
+    marginHorizontal: 5,
+  },
+  cancelButton: {
+    backgroundColor: '#e0e0e0',
+  },
+  saveButton: {
+    backgroundColor: theme.headerButtons.color,
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: '600',
   },
 }));

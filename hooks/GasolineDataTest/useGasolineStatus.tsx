@@ -79,6 +79,27 @@ export default function useGasolineStatus(vehicleId: string | undefined) {
     }
   };
 
+  const updateGasolineThreshold = async (newThreshold: number) => {
+    if (!vehicleId) return;
+
+    try {
+      const { error } = await supabase
+        .from("vehicles")  // Update the vehicles table directly
+        .update({ gasoline_threshold: newThreshold })
+        .eq("id", vehicleId);
+
+      if (error) {
+        console.error("Error updating threshold:", error);
+        throw error;
+      }
+
+      await fetchGasolineStatus();
+    } catch (error) {
+      console.error("Error in update threshold operation:", error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     fetchGasolineStatus();
     
@@ -92,5 +113,10 @@ export default function useGasolineStatus(vehicleId: string | undefined) {
     return () => clearInterval(interval);
   }, [vehicleId]);
 
-  return { gasolineStatus, isGasolineStatusLoading, fetchGasolineStatus };
+  return { 
+    gasolineStatus, 
+    isGasolineStatusLoading, 
+    fetchGasolineStatus,
+    updateGasolineThreshold 
+  };
 }

@@ -43,7 +43,10 @@ export default function GasolineHistory() {
     gasolineStatus,
     isGasolineStatusLoading,
     fetchGasolineStatus,
+    updateGasolineThreshold
   } = useGasolineStatus(vehicle?.id);
+
+  const canEditThreshold = profile?.role === 'ADMIN' || profile?.role === 'OWNER';
 
   // Add refresh function
   const onRefresh = React.useCallback(async () => {
@@ -126,6 +129,8 @@ export default function GasolineHistory() {
       <GasolineThreshold
         gasolineStatus={gasolineStatus}
         isLoading={isGasolineStatusLoading}
+        canEdit={canEditThreshold}
+        onUpdateThreshold={updateGasolineThreshold}
       />
       <WeeklyGasolineChart vehicleId={vehicle.id} />
       <RecentGasolineLoads vehicleId={vehicle.id} />
