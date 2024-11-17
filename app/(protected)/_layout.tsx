@@ -126,7 +126,9 @@ export default function HomeLayout() {
                     <ListItem
                       href={mayShowListItem.notifications}
                       title="Notificaciones"
-                      iconComponent={<Bell color={styles.icon.color} size={19} />}
+                      iconComponent={
+                        <Bell color={styles.icon.color} size={19} />
+                      }
                     />
                     <ListItem
                       href="profile"
@@ -170,7 +172,9 @@ export default function HomeLayout() {
                   name="profile"
                   options={{
                     title: "Perfil",
-                    tabBarIcon: ({ color }) => <CircleUserRound color={color} />,
+                    tabBarIcon: ({ color }) => (
+                      <CircleUserRound color={color} />
+                    ),
                   }}
                 />
               </Tabs>
