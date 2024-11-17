@@ -11,7 +11,7 @@ import { useState } from "react";
 import { FlatList, Pressable, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
-export default function index() {
+export default function Index() {
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
   const { styles } = useStyles(stylesheet);
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
