@@ -419,7 +419,7 @@ const stylesheet = createStyleSheet((theme) => ({
     alignItems: "center",
     borderBottomWidth: 1,
     borderBottomColor: theme.ui.colors.border,
-    minHeight: 100,
+    padding: 12,
   },
   contentContainer: {
     gap: 6,
@@ -432,6 +432,7 @@ const stylesheet = createStyleSheet((theme) => ({
     fontWeight: "bold",
     paddingLeft: 10,
     color: theme.textPresets.main,
+    marginRight: 120,
   },
   subtitle: {
     color: theme.textPresets.subtitle,

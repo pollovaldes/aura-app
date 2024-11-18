@@ -30,7 +30,8 @@ export default function useMaintenance() {
       .from("maintenance") // Type the table response
       .select(
         "id, vehicle_id, issued_by, issued_datetime, resolved_by, resolved_datetime, title, description, status"
-      );
+      )
+      .order("issued_datetime", { ascending: false });
 
     if (error) {
       alert(
