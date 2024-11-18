@@ -2,10 +2,12 @@ import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "@/components/Form/FormButton";
 import FormInput from "@/components/Form/FormInput";
 import useMaintenance from "@/hooks/useMaintenance";
+import { supabase } from "@/lib/supabase";
 import { Person } from "@/types/Person";
 import { Vehicle } from "@/types/Vehicle";
-import { Plus } from "lucide-react-native";
-import { Text, View } from "react-native";
+import { File, ImagePlus, Plus, Trash2 } from "lucide-react-native";
+import { useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 interface addMaintenanceModalProps {
@@ -24,6 +26,51 @@ export default function AddMaintenance({
   const { styles } = useStyles(stylesheet);
   const vehicleTitle = `${vehicle.brand ?? ""} ${vehicle.sub_brand ?? ""} (${vehicle.year ?? ""})`;
   const fullName = `${profile.name} ${profile.father_last_name} ${profile.mother_last_name}`;
+
+  const [requestTitle, setRequestTitle] = useState("");
+  const [requestDescription, setRequestDescription] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+
+  const uploadRequest = async (
+    vehicle_id: string,
+    issued_by: string,
+    issued_datetime: string,
+    title: string,
+    description: string
+  ) => {
+    try {
+      setIsUploading(true);
+
+      const { data, error } = await supabase
+        .from("maintenance")
+        .insert([
+          {
+            vehicle_id,
+            issued_by,
+            issued_datetime,
+            title,
+            description,
+            status: "PENDING_REVISION", // Default status
+          },
+        ])
+        .select();
+
+      if (error) {
+        alert(`¡Ocurrió un error!\n${error.message}`);
+        setIsUploading(false);
+        return;
+      }
+
+      return data;
+    } catch (error) {
+      alert(`¡Ocurrió un error en la función uploadRequest!\n${error}`);
+      throw error;
+    } finally {
+      closeModal();
+      fetchMaintenance();
+      setIsUploading(false);
+    }
+  };
 
   return (
     <View style={styles.section}>
@@ -48,11 +95,15 @@ export default function AddMaintenance({
         <FormInput
           description="Título de la solicitud"
           placeholder="Ej. Cambio de aceite"
+          onChangeText={setRequestTitle}
+          editable={!isUploading}
         />
         <FormInput
           description="Descripción detallada"
           placeholder="Incluye detalles como el problema, la solución esperada, fechas, etc."
+          onChangeText={setRequestDescription}
           multiline
+          editable={!isUploading}
         />
       </View>
       <View style={styles.group}>
@@ -61,14 +112,33 @@ export default function AddMaintenance({
           Adjunta imágenes o videos que respalden tu solicitud de ser necesario
         </Text>
         <View style={styles.fileContainer}>
-          <View style={styles.fileOutiline}>
-            <Text style={styles.text}>Arrastra y suelta tus archivos aquí</Text>
-          </View>
-          <View style={styles.fileOutiline}>
+          <View style={styles.twoPaneContainer}>
+            <TouchableOpacity disabled={isUploading}>
+              <View style={styles.selectFileContainer}>
+                <ImagePlus color={styles.fileIcon.color} size={50} />
+                <Text
+                  style={styles.fileText}
+                  ellipsizeMode="middle"
+                  numberOfLines={2}
+                >
+                  {"Seleccionar\narchivo"}
+                </Text>
+              </View>
+            </TouchableOpacity>
             <FormInput
-              description="Descripción"
-              placeholder="Incluye detalles como el problema, la solución esperada, fechas, etc."
+              description="Descripción del archivo"
+              placeholder="Aquí puedes describir brevemente lo que sucede en la imagen o video."
               multiline
+              editable={!isUploading}
+            />
+          </View>
+          <View style={styles.deleteButtonContainer}>
+            <FormButton
+              title="Eliminar"
+              onPress={() => {}}
+              buttonType="danger"
+              icon={() => <Trash2 color={styles.iconColor.color} />}
+              isDisabled={isUploading}
             />
           </View>
         </View>
@@ -77,10 +147,23 @@ export default function AddMaintenance({
           onPress={() => {}}
           buttonType="normal"
           icon={() => <Plus color={styles.iconColor.color} />}
+          isDisabled={isUploading}
         />
       </View>
       <View style={styles.group}>
-        <FormButton title="Enviar solicitud" onPress={() => {}} />
+        <FormButton
+          title="Enviar solicitud"
+          onPress={() =>
+            uploadRequest(
+              vehicle.id,
+              profile.id,
+              new Date().toISOString(),
+              requestTitle,
+              requestDescription
+            )
+          }
+          isDisabled={isUploading}
+        />
       </View>
     </View>
   );
@@ -122,17 +205,40 @@ const stylesheet = createStyleSheet((theme) => ({
   iconColor: {
     color: theme.textPresets.inverted,
   },
+  selectFileContainer: {
+    aspectRatio: 16 / 9,
+    justifyContent: "center",
+    borderRadius: 5,
+    gap: 6,
+    alignItems: "center",
+    padding: 12,
+    backgroundColor: theme.ui.colors.border,
+  },
   fileContainer: {
+    width: "100%",
     borderStyle: "dashed",
+    borderColor: theme.ui.colors.border,
     borderWidth: 3,
     borderRadius: 5,
-    padding: 12,
-    borderColor: theme.ui.colors.primary,
-    flexDirection: "row",
+  },
+  twoPaneContainer: {
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    flexDirection: "column",
     gap: 6,
     justifyContent: "center",
   },
-  fileOutiline: {
+  deleteButtonContainer: {
     width: "50%",
+    alignSelf: "center",
+    padding: 12,
+  },
+  fileIcon: {
+    color: theme.ui.colors.primary,
+  },
+  fileText: {
+    color: theme.textPresets.main,
+    fontSize: 16,
+    textAlign: "center",
   },
 }));
