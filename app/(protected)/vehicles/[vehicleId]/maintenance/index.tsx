@@ -191,6 +191,19 @@ export default function Index() {
     },
   };
 
+  const filteredMaintenanceRecords = maintenanceRecords.filter((record) => {
+    switch (currentTabIndex) {
+      case 1:
+        return record.status === "PENDING_REVISION";
+      case 2:
+        return record.status === "IN_REVISION";
+      case 3:
+        return record.status === "SOLVED";
+      default:
+        return true;
+    }
+  });
+
   return (
     <>
       <Modal isOpen={activeModal === "create_maintenance_record"}>
@@ -268,7 +281,7 @@ export default function Index() {
               fetchMaintenance();
             }}
             contentInsetAdjustmentBehavior="automatic"
-            data={maintenanceRecords}
+            data={filteredMaintenanceRecords}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <Link href={{ pathname: `/vehicles/${item.id}` }} asChild>
