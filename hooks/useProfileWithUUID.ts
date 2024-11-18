@@ -1,53 +1,69 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useSessionContext } from "@/context/SessionContext";
-import { router } from "expo-router";
 import { Person } from "@/types/Person";
 
-export default function useProfileWithUUID(UUID: string) {
+export default function useProfilesWithUUIDs(uuids: string[]) {
   const { session, isLoading: isSessionLoading } = useSessionContext();
-  const [profileWithUUID, setProfileWithUUID] = useState<Person | null>(null);
-  const [isProfileWithUUIDLoading, setIsProfileWithUUIDLoading] =
-    useState<boolean>(false);
+  const [profiles, setProfiles] = useState<Person[]>([]);
+  const [isProfilesLoading, setIsProfilesLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const fetchProfileWithUUID = async () => {
-    setIsProfileWithUUIDLoading(true);
+  const fetchProfilesWithUUIDs = async () => {
+    setIsProfilesLoading(true);
+    setError(null); // Clear previous errors
 
     try {
-      const { data: profileData, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", UUID)
-        .single();
+      const fetchedProfiles = await Promise.all(
+        uuids.map(async (uuid) => {
+          const { data: profileData, error } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", uuid)
+            .single();
 
-      if (profileData) {
-        setProfileWithUUID({
-          id: profileData.id,
-          name: profileData.name,
-          father_last_name: profileData.father_last_name,
-          mother_last_name: profileData.mother_last_name,
-          position: profileData.position,
-          role: profileData.role,
-          is_fully_registered: profileData.is_fully_registered,
-        });
-      }
-      if (error) throw error;
+          if (profileData) {
+            return {
+              id: profileData.id,
+              name: profileData.name,
+              father_last_name: profileData.father_last_name,
+              mother_last_name: profileData.mother_last_name,
+              position: profileData.position,
+              role: profileData.role,
+              is_fully_registered: profileData.is_fully_registered,
+            };
+          }
+          if (error) {
+            setError(
+              `Error fetching profile with UUID ${uuid}: ${error.message}`
+            );
+            return null;
+          }
+          return null;
+        })
+      );
+
+      // Filter out any null values (failed fetches)
+      setProfiles(
+        fetchedProfiles.filter((profile): profile is Person => profile !== null)
+      );
     } catch (error) {
-      console.error("Error fetching profile:", error);
+      setError(`Error fetching profiles: ${error}`);
     } finally {
-      setIsProfileWithUUIDLoading(false);
+      setIsProfilesLoading(false);
     }
   };
 
   useEffect(() => {
-    if (!isSessionLoading && session?.user?.id) {
-      fetchProfileWithUUID();
+    if (!isSessionLoading && session?.user?.id && uuids.length > 0) {
+      fetchProfilesWithUUIDs();
     }
-  }, []);
+  }, [uuids, isSessionLoading, session?.user?.id]);
 
   return {
-    isProfileWithUUIDLoading,
-    profileWithUUID,
-    fetchProfileWithUUID,
+    isProfilesLoading,
+    profiles,
+    error,
+    fetchProfilesWithUUIDs,
   };
 }
