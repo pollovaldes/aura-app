@@ -21,6 +21,8 @@ import GasolineThreshold from "@/components/GasolineDataComponentsTest/GasolineT
 import AddGasolineLoadModal from "@/components/GasolineDataComponentsTest/AddGasolineLoadModal";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import PendingGasolineLoads from "@/components/GasolineDataComponentsTest/PendingGasolineLoads";
+import MonthlyGasolineChart from "@/components/GasolineDataComponentsTest/MonthlyGasolineChart";
+import SegmentedControl from "@react-native-segmented-control/segmented-control";
 
 interface GasolineHistoryContentProps {
   vehicle: {
@@ -43,6 +45,7 @@ const GasolineHistoryContent = React.memo(({
 }: GasolineHistoryContentProps) => {
   const { styles } = useStyles(stylesheet);
   const router = useRouter();
+  const [selectedView, setSelectedView] = useState(0); // 0 for weekly, 1 for monthly
   
   const handleHistoryPress = useCallback(() => {
     router.push(`/vehicles/${vehicleId}/gasoline_history/GasolineLoadHistory`);
@@ -57,7 +60,20 @@ const GasolineHistoryContent = React.memo(({
         canEdit={isAdmin}
         onUpdateThreshold={updateGasolineThreshold}
       />
-      <WeeklyGasolineChart vehicleId={vehicle.id} />
+      
+      <SegmentedControl
+        values={["Semanal", "Mensual"]}
+        selectedIndex={selectedView}
+        onChange={(event) => setSelectedView(event.nativeEvent.selectedSegmentIndex)}
+        style={styles.segmentedControl}
+      />
+
+      {selectedView === 0 ? (
+        <WeeklyGasolineChart vehicleId={vehicle.id} />
+      ) : (
+        <MonthlyGasolineChart vehicleId={vehicle.id} />
+      )}
+      
       <RecentGasolineLoads vehicleId={vehicle.id} />
       <Pressable
         style={styles.historyButton}
@@ -241,5 +257,9 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.headerButtons.color,
     fontSize: 16,
     textAlign: "center",
+  },
+  segmentedControl: {
+    width: '95%',
+    marginVertical: 10,
   },
 }));

@@ -8,10 +8,10 @@ const useMonthlyGasolineData = (vehicleId: string) => {
   useEffect(() => {
     const fetchMonthlyData = async () => {
       const { data, error } = await supabase
-        .from("gasoline_spent_per_month")
+        .from("gasoline_spent_per_week")
         .select("*")
         .eq("vehicle_id", vehicleId)
-        .order("month_start_date", { ascending: true });
+        .order("week_start_date", { ascending: true });
 
       if (error) {
         console.error("Error fetching monthly data:", error);
