@@ -22,8 +22,6 @@ export default function useMaintenance() {
   const [areMaintenanceRecordsLoading, setAreMaintenanceRecordsLoading] =
     useState<boolean>(false);
 
-  const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
-
   // Fetch maintenance records from the Supabase table
   const fetchMaintenance = async (): Promise<void> => {
     setAreMaintenanceRecordsLoading(true);
@@ -32,8 +30,7 @@ export default function useMaintenance() {
       .from("maintenance") // Type the table response
       .select(
         "id, vehicle_id, issued_by, issued_datetime, resolved_by, resolved_datetime, title, description, status"
-      )
-      .eq("vehicle_id", vehicleId);
+      );
 
     if (error) {
       alert(

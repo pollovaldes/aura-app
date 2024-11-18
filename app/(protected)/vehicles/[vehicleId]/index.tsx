@@ -323,15 +323,17 @@ export default function VehicleDetail() {
                 }
               />
             </GroupedList>
-            <GroupedList header="Zona de peligro">
-              <Row
-                title="Borrar vehículo"
-                trailingType="chevron"
-                icon={<Trash size={styles.iconSize.gap} color="white" />}
-                color={colorPalette.red[500]}
-                onPress={() => deleteVehicle()}
-              />
-            </GroupedList>
+            {canEditVehicle && (
+              <GroupedList header="Zona de peligro">
+                <Row
+                  title="Borrar vehículo"
+                  trailingType="chevron"
+                  icon={<Trash size={styles.iconSize.gap} color="white" />}
+                  color={colorPalette.red[500]}
+                  onPress={() => deleteVehicle()}
+                />
+              </GroupedList>
+            )}
           </View>
           <View />
         </View>
