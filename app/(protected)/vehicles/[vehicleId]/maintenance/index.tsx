@@ -2,16 +2,18 @@ import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
+import StatusChip from "@/components/General/StatusChip";
 import Modal from "@/components/Modal/Modal";
 import AddMaintenance from "@/components/vehicles/modals/AddMaintenance";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
 import useMaintenance from "@/hooks/useMaintenance";
 import useProfile from "@/hooks/useProfile";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
+import { useHeaderHeight } from "@react-navigation/elements";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { ChevronRight, Plus } from "lucide-react-native";
 import { useState } from "react";
-import { FlatList, Pressable, Text, View } from "react-native";
+import { FlatList, Platform, Pressable, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 type ModalType = "create_maintenance_record" | null;
@@ -26,6 +28,8 @@ export default function Index() {
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
+
+  const headerHeight = useHeaderHeight();
 
   if (isProfileLoading) {
     return (
@@ -151,10 +155,41 @@ export default function Index() {
     );
   }
 
+  function formatCustomDate(dateString: string) {
+    const date = new Date(dateString);
+
+    const day = date.getDate();
+    const month = date.toLocaleString("es", { month: "long" }); // Get month in Spanish
+    const year = date.getFullYear();
+
+    const hours = date.getHours().toString().padStart(2, "0"); // Add leading zero
+    const minutes = date.getMinutes().toString().padStart(2, "0"); // Add leading zero
+
+    return `Solicitud creada el ${day} de ${month} del ${year} a las ${hours}:${minutes} horas.`;
+  }
+
   const canEdit =
     profile.role === "ADMIN" ||
     profile.role === "OWNER" ||
     profile.role === "DRIVER";
+
+  const statesConfig = {
+    IN_REVISION: {
+      text: "En revisión",
+      backgroundColor: "#e3f2fd", // Azul claro
+      textColor: "#1e88e5", // Azul
+    },
+    PENDING_REVISION: {
+      text: "Pendiente",
+      backgroundColor: "#fff3e0", // Naranja claro
+      textColor: "#ef6c00", // Naranja
+    },
+    SOLVED: {
+      text: "Solucionado",
+      backgroundColor: "#e8f5e9", // Verde claro
+      textColor: "#2e7d32", // Verde
+    },
+  };
 
   return (
     <>
@@ -208,23 +243,19 @@ export default function Index() {
                     <Plus color={styles.plusIcon.color} />
                   </Pressable>
                 ),
-              headerTitle: () => (
-                <View>
-                  <SegmentedControl
-                    values={["Pendientes", "En revisión", "Resuletas"]}
-                    selectedIndex={currentTabIndex}
-                    onChange={(event) => {
-                      setCurrentTabIndex(
-                        event.nativeEvent.selectedSegmentIndex
-                      );
-                    }}
-                    style={styles.segmentedControl}
-                  />
-                </View>
-              ),
             }}
           />
-
+          <SegmentedControl
+            values={["Todo", "Pendientes", "En revisión", "Resuletas"]}
+            selectedIndex={currentTabIndex}
+            onChange={(event) =>
+              setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)
+            }
+            style={[
+              styles.segmentedControl,
+              { marginTop: Platform.OS === "ios" ? headerHeight + 6 : 6 },
+            ]}
+          />
           <FlatList
             refreshing={
               vehiclesAreLoading ||
@@ -244,7 +275,20 @@ export default function Index() {
                 <Pressable>
                   <View style={styles.container}>
                     <View style={styles.contentContainer}>
-                      <Text>{item.description}</Text>
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        <StatusChip
+                          status={item.status}
+                          statesConfig={statesConfig}
+                        />
+                        <Text style={styles.title}>{item.title}</Text>
+                      </View>
+                      <View>
+                        <Text style={styles.subtitle}>
+                          {formatCustomDate(item.issued_datetime)}
+                        </Text>
+                      </View>
                     </View>
                     <View style={styles.chevronView}>
                       <ChevronRight color={styles.chevron.color} />
@@ -262,37 +306,32 @@ export default function Index() {
 
 const stylesheet = createStyleSheet((theme) => ({
   segmentedControl: {
-    width: 350,
+    width: "97%",
+    margin: "auto",
+    marginBottom: 6,
   },
   container: {
-    justifyContent: "space-between",
     flexDirection: "row",
     alignItems: "center",
     borderBottomWidth: 1,
     borderBottomColor: theme.ui.colors.border,
+    minHeight: 100,
   },
   contentContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    gap: 6,
+    flexDirection: "column",
     flex: 1,
+    marginHorizontal: 12,
   },
-  imageContainer: {
-    padding: 12,
-  },
-  image: {
-    borderRadius: 6,
-    width: 100,
-    height: 100,
-  },
-  noImageIcon: {
-    color: theme.textPresets.main,
-  },
-  itemText: {
-    fontSize: 18,
+  title: {
+    fontSize: 17,
+    fontWeight: "bold",
     paddingLeft: 10,
     color: theme.textPresets.main,
-    flexShrink: 1,
-    marginRight: 18,
+  },
+  subtitle: {
+    color: theme.textPresets.subtitle,
+    fontSize: 15,
   },
   plusIcon: {
     fontSize: 16,
@@ -316,5 +355,16 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.headerButtons.color,
     fontSize: 18,
     textAlign: "right",
+  },
+  status: {
+    marginRight: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: "600",
+    textAlign: "center",
   },
 }));
