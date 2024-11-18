@@ -1,5 +1,4 @@
-// index.tsx
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -22,6 +21,53 @@ import GasolineThreshold from "@/components/GasolineDataComponentsTest/GasolineT
 import AddGasolineLoadModal from "@/components/GasolineDataComponentsTest/AddGasolineLoadModal";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import PendingGasolineLoads from "@/components/GasolineDataComponentsTest/PendingGasolineLoads";
+
+interface GasolineHistoryContentProps {
+  vehicle: {
+    id: string;
+  };
+  isAdmin: boolean;
+  gasolineStatus: any; // Replace 'any' with your actual GasolineStatus type
+  isGasolineStatusLoading: boolean;
+  updateGasolineThreshold: (threshold: number) => Promise<void>;
+  vehicleId: string;
+}
+
+const GasolineHistoryContent = React.memo(({ 
+  vehicle, 
+  isAdmin, 
+  gasolineStatus, 
+  isGasolineStatusLoading, 
+  updateGasolineThreshold,
+  vehicleId
+}: GasolineHistoryContentProps) => {
+  const { styles } = useStyles(stylesheet);
+  const router = useRouter();
+  
+  const handleHistoryPress = useCallback(() => {
+    router.push(`/vehicles/${vehicleId}/gasoline_history/GasolineLoadHistory`);
+  }, [vehicleId, router]);
+
+  return (
+    <View style={styles.contentContainer}>
+      {isAdmin && <PendingGasolineLoads vehicleId={vehicle.id} />}
+      <GasolineThreshold
+        gasolineStatus={gasolineStatus}
+        isLoading={isGasolineStatusLoading}
+        canEdit={isAdmin}
+        onUpdateThreshold={updateGasolineThreshold}
+      />
+      <WeeklyGasolineChart vehicleId={vehicle.id} />
+      <RecentGasolineLoads vehicleId={vehicle.id} />
+      <Pressable
+        style={styles.historyButton}
+        onPress={handleHistoryPress}
+      >
+        <Text style={styles.viewHistoryButton}>Ver Historial Completo</Text>
+      </Pressable>
+    </View>
+  );
+});
 
 export default function GasolineHistory() {
   const { styles } = useStyles(stylesheet);
@@ -51,7 +97,7 @@ export default function GasolineHistory() {
   const isAdmin = profile?.role === 'ADMIN' || profile?.role === 'OWNER';
 
   // Add refresh function
-  const onRefresh = React.useCallback(async () => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
       await Promise.all([
@@ -64,7 +110,12 @@ export default function GasolineHistory() {
     } finally {
       setRefreshing(false);
     }
-  }, [vehicleId]);
+  }, [fetchGasolineStatus, fetchProfile, fetchVehicles]);
+
+  const handleModalSuccess = useCallback(() => {
+    fetchGasolineStatus();
+    setIsModalOpen(false);
+  }, [fetchGasolineStatus]);
 
   // Combined loading state check
   if (vehiclesAreLoading || isProfileLoading || isGasolineStatusLoading) {
@@ -123,28 +174,6 @@ export default function GasolineHistory() {
     ),
   };
 
-  const renderContent = () => (
-    <View style={styles.contentContainer}>
-      {isAdmin && <PendingGasolineLoads vehicleId={vehicle.id} />}
-      <GasolineThreshold
-        gasolineStatus={gasolineStatus}
-        isLoading={isGasolineStatusLoading}
-        canEdit={isAdmin}
-        onUpdateThreshold={updateGasolineThreshold}
-      />
-      <WeeklyGasolineChart vehicleId={vehicle.id} />
-      <RecentGasolineLoads vehicleId={vehicle.id} />
-      <Pressable
-        style={styles.historyButton}
-        onPress={() =>
-          router.push(`/vehicles/${vehicleId}/gasoline_history/GasolineLoadHistory`)
-        }
-      >
-        <Text style={styles.viewHistoryButton}>Ver Historial Completo</Text>
-      </Pressable>
-    </View>
-  );
-
   return (
     <>
       <Stack.Screen options={screenOptions} />
@@ -159,7 +188,16 @@ export default function GasolineHistory() {
           contentInsetAdjustmentBehavior="automatic"
           data={[null]} // Changed to [null] for better type safety
           renderItem={() => null}
-          ListHeaderComponent={renderContent}
+          ListHeaderComponent={
+            <GasolineHistoryContent 
+              vehicle={vehicle}
+              isAdmin={isAdmin}
+              gasolineStatus={gasolineStatus}
+              isGasolineStatusLoading={isGasolineStatusLoading}
+              updateGasolineThreshold={updateGasolineThreshold}
+              vehicleId={vehicleId}
+            />
+          }
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -170,16 +208,15 @@ export default function GasolineHistory() {
           }
         />
       )}
-      <AddGasolineLoadModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        vehicleId={vehicle.id}
-        profile={profile}
-        onSuccess={() => {
-          fetchGasolineStatus();
-          setIsModalOpen(false); // Add this to close modal after success
-        }}
-      />
+      {vehicle && (
+        <AddGasolineLoadModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          vehicleId={vehicle.id}
+          profile={profile}
+          onSuccess={handleModalSuccess}
+        />
+      )}
     </>
   );
 }

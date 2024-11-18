@@ -52,21 +52,20 @@ export default function GasolineLoadHistory() {
   const { styles } = useStyles(stylesheet);
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
-  const headerHeight = useHeaderHeight();
   const [refreshing, setRefreshing] = useState(false);
   
-  const { allGasolineLoads, loading } = useAllGasolineLoads(vehicleId);
+  const { allGasolineLoads, loading, error, refetch } = useAllGasolineLoads(vehicleId);
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
     try {
-      // Add your refetch logic here
-      // await refetchGasolineLoads();
-      Alert.alert("Refreshed!");
+      await refetch();
+    } catch (error) {
+      Alert.alert("Error", "No se pudo actualizar el historial");
     } finally {
       setRefreshing(false);
     }
-  }, []);
+  }, [refetch]);
 
   const filteredData = useMemo(() => {
     if (!allGasolineLoads) return [];
@@ -94,6 +93,19 @@ export default function GasolineLoadHistory() {
         <ErrorScreen
           caption="ID de vehículo no encontrado"
           buttonCaption="Regresar"
+          retryFunction={onRefresh}
+        />
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Stack.Screen options={{ title: "Error" }} />
+        <ErrorScreen
+          caption="Error al cargar el historial de gasolina"
+          buttonCaption="Reintentar"
           retryFunction={onRefresh}
         />
       </>
