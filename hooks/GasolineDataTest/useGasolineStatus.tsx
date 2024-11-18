@@ -35,7 +35,7 @@ export default function useGasolineStatus(vehicleId: string | undefined) {
       const now = new Date();
       
       const { error } = await supabase
-        .from("vehicle_gasoline_status")
+        .from("vehicle_gasoline_status_two")
         .update({
           spent_gasoline: 0,
           spent_liters: 0,
@@ -58,7 +58,7 @@ export default function useGasolineStatus(vehicleId: string | undefined) {
     setIsGasolineStatusLoading(true);
     try {
       const { data, error } = await supabase
-        .from("vehicle_gasoline_status")
+        .from("vehicle_gasoline_status_two")
         .select("*")
         .eq("vehicle_id", vehicleId)
         .single();
@@ -84,9 +84,9 @@ export default function useGasolineStatus(vehicleId: string | undefined) {
 
     try {
       const { error } = await supabase
-        .from("vehicles")  // Update the vehicles table directly
+        .from("vehicle_gasoline_status_two")
         .update({ gasoline_threshold: newThreshold })
-        .eq("id", vehicleId);
+        .eq("vehicle_id", vehicleId);
 
       if (error) {
         console.error("Error updating threshold:", error);
