@@ -3,12 +3,14 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 interface FormInputProps extends TextInputProps {
   description: string;
+  multiline?: boolean;
 }
 
 export default function FormInput({
   description,
   placeholder,
   onChangeText,
+  multiline,
   ...props
 }: FormInputProps) {
   const { styles } = useStyles(stylesheet);
