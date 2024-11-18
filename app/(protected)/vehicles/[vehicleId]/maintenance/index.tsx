@@ -204,6 +204,9 @@ export default function Index() {
     }
   });
 
+  const solvedButNoDate =
+    "La solicitud está marcada como resuelta pero no tiene fecha de resolución.";
+
   return (
     <>
       <Modal isOpen={activeModal === "create_maintenance_record"}>
@@ -300,10 +303,12 @@ export default function Index() {
                       <View>
                         <Text style={styles.subtitle}>
                           {item.status === "SOLVED"
-                            ? formatDate(
-                                item.resolved_datetime, //TODO: resoved_datetime is not defined
-                                "Solicitud resuelta el "
-                              )
+                            ? item.resolved_datetime
+                              ? formatDate(
+                                  item.resolved_datetime,
+                                  "Solicitud resuelta el "
+                                )
+                              : solvedButNoDate
                             : formatDate(
                                 item.issued_datetime,
                                 "Solicitado el "
