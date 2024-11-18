@@ -20,6 +20,7 @@ import WeeklyGasolineChart from "@/components/GasolineDataComponentsTest/WeeklyG
 import RecentGasolineLoads from "@/components/GasolineDataComponentsTest/RecentGasolineLoads";
 import GasolineThreshold from "@/components/GasolineDataComponentsTest/GasolineThreshold";
 import AddGasolineLoadModal from "@/components/GasolineDataComponentsTest/AddGasolineLoadModal";
+import EmptyScreen from "@/components/dataStates/EmptyScreen";
 
 export default function GasolineHistory() {
   const { styles } = useStyles(stylesheet);
@@ -64,57 +65,36 @@ export default function GasolineHistory() {
     }
   }, [vehicleId]);
 
-  // Conditional Returns
-  if (vehiclesAreLoading) {
+  // Combined loading state check
+  if (vehiclesAreLoading || isProfileLoading || isGasolineStatusLoading) {
     return (
       <>
-        <LoadingScreen caption="Cargando vehículos" />
         <Stack.Screen
-          options={{ title: "Cargando...", headerLargeTitle: false }}
+          options={{
+            title: "Cargando...",
+            headerLargeTitle: false,
+            headerRight: undefined,
+          }}
         />
-      </>
-    );
-  }
-
-  if (isProfileLoading) {
-    return (
-      <>
-        <Stack.Screen options={{ title: "Cargando..." }} />
-        <LoadingScreen caption="Cargando perfil y permisos" />
-      </>
-    );
-  }
-
-  if (isGasolineStatusLoading) {
-    return (
-      <>
-        <Stack.Screen options={{ title: "Cargando..." }} />
         <LoadingScreen caption="Cargando datos de gasolina" />
       </>
     );
   }
 
-  if (!profile) {
+  if (!profile || !vehicles || !gasolineStatus) {
     return (
       <>
-        <Stack.Screen options={{ title: "Error", headerLargeTitle: false }} />
-        <ErrorScreen
-          caption="Ocurrió un error al cargar tu perfil"
-          buttonCaption="Reintentar"
-          retryFunction={fetchProfile}
+        <Stack.Screen
+          options={{
+            title: "Error",
+            headerLargeTitle: false,
+            headerRight: undefined,
+          }}
         />
-      </>
-    );
-  }
-
-  if (!vehicles) {
-    return (
-      <>
-        <Stack.Screen options={{ title: "Error", headerLargeTitle: false }} />
         <ErrorScreen
-          caption="Ocurrió un error al cargar los vehículos"
+          caption="Ocurrió un error al cargar los datos"
           buttonCaption="Reintentar"
-          retryFunction={fetchVehicles}
+          retryFunction={onRefresh}
         />
       </>
     );
@@ -166,20 +146,28 @@ export default function GasolineHistory() {
   return (
     <>
       <Stack.Screen options={screenOptions} />
-      <FlatList
-        contentInsetAdjustmentBehavior="automatic"
-        data={[null]} // Changed to [null] for better type safety
-        renderItem={() => null}
-        ListHeaderComponent={renderContent}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={["#1976d2"]}
-            tintColor="#1976d2"
-          />
-        }
-      />
+      {!gasolineStatus ? (
+        <EmptyScreen
+          caption="No hay datos de gasolina disponibles"
+          buttonCaption="Reintentar"
+          retryFunction={onRefresh}
+        />
+      ) : (
+        <FlatList
+          contentInsetAdjustmentBehavior="automatic"
+          data={[null]} // Changed to [null] for better type safety
+          renderItem={() => null}
+          ListHeaderComponent={renderContent}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={["#1976d2"]}
+              tintColor="#1976d2"
+            />
+          }
+        />
+      )}
       <AddGasolineLoadModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

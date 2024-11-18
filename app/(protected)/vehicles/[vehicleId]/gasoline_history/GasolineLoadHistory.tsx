@@ -1,9 +1,13 @@
 import { Stack, useLocalSearchParams } from "expo-router";
 import React, { useState, useMemo } from "react";
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, RefreshControl, Alert, Platform } from "react-native";
 import useAllGasolineLoads from "@/hooks/GasolineDataTest/useAllGasolineLoadHistory";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
+import LoadingScreen from "@/components/dataStates/LoadingScreen";
+import ErrorScreen from "@/components/dataStates/ErrorScreen";
+import EmptyScreen from "@/components/dataStates/EmptyScreen";
+import { useHeaderHeight } from "@react-navigation/elements";
 
 // Move to types/gasoline.ts
 type GasolineLoad = {
@@ -48,8 +52,21 @@ export default function GasolineLoadHistory() {
   const { styles } = useStyles(stylesheet);
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
+  const headerHeight = useHeaderHeight();
+  const [refreshing, setRefreshing] = useState(false);
   
   const { allGasolineLoads, loading } = useAllGasolineLoads(vehicleId);
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    try {
+      // Add your refetch logic here
+      // await refetchGasolineLoads();
+      Alert.alert("Refreshed!");
+    } finally {
+      setRefreshing(false);
+    }
+  }, []);
 
   const filteredData = useMemo(() => {
     if (!allGasolineLoads) return [];
@@ -70,8 +87,27 @@ export default function GasolineLoadHistory() {
     }
   }, [allGasolineLoads, currentTabIndex]);
 
-  if (!vehicleId) return <Text style={styles.errorText}>ID de vehículo no encontrado</Text>;
-  if (loading) return <Text style={styles.loadingText}>Cargando historial completo...</Text>;
+  if (!vehicleId) {
+    return (
+      <>
+        <Stack.Screen options={{ title: "Error" }} />
+        <ErrorScreen
+          caption="ID de vehículo no encontrado"
+          buttonCaption="Regresar"
+          retryFunction={onRefresh}
+        />
+      </>
+    );
+  }
+
+  if (loading) {
+    return (
+      <>
+        <Stack.Screen options={{ title: "Cargando..." }} />
+        <LoadingScreen caption="Cargando historial de gasolina" />
+      </>
+    );
+  }
 
   return (
     <>
@@ -95,6 +131,19 @@ export default function GasolineLoadHistory() {
           data={filteredData}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => <GasolineCard item={item} />}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={["#1976d2"]}
+              tintColor="#1976d2"
+            />
+          }
+          ListEmptyComponent={() => (
+            <View style={{ height: 250 }}>
+              <EmptyScreen caption="No hay registros de gasolina con este filtro" />
+            </View>
+          )}
         />
       </View>
     </>
