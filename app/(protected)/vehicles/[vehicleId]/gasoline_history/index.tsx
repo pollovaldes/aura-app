@@ -21,6 +21,7 @@ import RecentGasolineLoads from "@/components/GasolineDataComponentsTest/RecentG
 import GasolineThreshold from "@/components/GasolineDataComponentsTest/GasolineThreshold";
 import AddGasolineLoadModal from "@/components/GasolineDataComponentsTest/AddGasolineLoadModal";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
+import PendingGasolineLoads from "@/components/GasolineDataComponentsTest/PendingGasolineLoads";
 
 export default function GasolineHistory() {
   const { styles } = useStyles(stylesheet);
@@ -48,6 +49,7 @@ export default function GasolineHistory() {
   } = useGasolineStatus(vehicle?.id);
 
   const canEditThreshold = profile?.role === 'ADMIN' || profile?.role === 'OWNER';
+  const isAdmin = profile?.role === 'ADMIN' || profile?.role === 'OWNER';
 
   // Add refresh function
   const onRefresh = React.useCallback(async () => {
@@ -124,6 +126,7 @@ export default function GasolineHistory() {
 
   const renderContent = () => (
     <View style={styles.contentContainer}>
+      {isAdmin && <PendingGasolineLoads vehicleId={vehicle.id} />}
       <GasolineThreshold
         gasolineStatus={gasolineStatus}
         isLoading={isGasolineStatusLoading}
