@@ -74,7 +74,7 @@ const Notifications = () => {
         <ErrorScreen
           caption="Ocurrió un error al recuperar tu sesión o tu perfil"
           buttonCaption="Intentar cerrar sesión"
-          retryFunction={() => supabase.auth.signOut()}
+          retryFunction={() => supabase.auth.signOut({scope: 'local'})}
         />
       </View>
     );

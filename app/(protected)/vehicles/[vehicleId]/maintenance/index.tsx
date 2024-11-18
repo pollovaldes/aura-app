@@ -8,11 +8,13 @@ import AddMaintenance from "@/components/vehicles/modals/AddMaintenance";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
 import useMaintenance from "@/hooks/useMaintenance";
 import useProfile from "@/hooks/useProfile";
+import { supabase } from "@/lib/supabase";
+import { Person } from "@/types/Person";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { ChevronRight, Plus } from "lucide-react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FlatList, Platform, Pressable, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
@@ -27,9 +29,37 @@ export default function Index() {
     useMaintenance();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const [allProfiles, setAllProfiles] = useState<Person[] | null>(null);
   const closeModal = () => setActiveModal(null);
-
   const headerHeight = useHeaderHeight();
+
+  const getALLProfiles = async (uuids: string[]) => {
+    try {
+      const profiles = await Promise.all(
+        uuids.map(async (uuid) => {
+          const { data: profile, error } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", uuid)
+            .single();
+
+          if (error) {
+            alert(
+              `Error fetching profile with UUID ${uuid}:\n${error.message}`
+            );
+            return null;
+          }
+
+          return profile;
+        })
+      );
+
+      // Filter out any null values (failed fetches) and update state
+      setAllProfiles(profiles.filter((profile) => profile !== null));
+    } catch (error) {
+      console.error("Error fetching profiles:", error);
+    }
+  };
 
   if (isProfileLoading) {
     return (
@@ -159,6 +189,16 @@ export default function Index() {
     (record) => record.vehicle_id === vehicle.id
   );
 
+  if (currentVechicleMaintenanceRecords.length != 0) {
+    const uuids = currentVechicleMaintenanceRecords.map(
+      (record) => record.issued_by
+    );
+
+    if (allProfiles === null) {
+      getALLProfiles(uuids);
+    }
+  }
+
   function formatDate(dateString: string, prefix: string) {
     const date = new Date(dateString);
 
@@ -169,7 +209,7 @@ export default function Index() {
     const hours = date.getHours().toString().padStart(2, "0"); // Add leading zero
     const minutes = date.getMinutes().toString().padStart(2, "0"); // Add leading zero
 
-    return `${prefix}${day} de ${month} del ${year} a las ${hours}:${minutes} horas.`;
+    return `${prefix}${day} de ${month} del ${year} a las ${hours}:${minutes} horas`;
   }
 
   const canEdit =
@@ -210,8 +250,29 @@ export default function Index() {
     }
   );
 
-  const solvedButNoDate =
-    "La solicitud fue marcada como resuelta pero no tiene fecha de resolución.";
+  const getProfileName = (id: string | null | undefined) => {
+    const profile = allProfiles?.find((profile) => profile.id === id);
+    if (!profile) return "un usuario desconocido";
+
+    return `${profile.name ?? ""} ${profile.father_last_name ?? ""} ${
+      profile.mother_last_name ?? ""
+    }.`.trim();
+  };
+
+  const renderSolvedText = (
+    resolvedDatetime: string | null | undefined,
+    resolvedBy: string | null | undefined
+  ) => {
+    const resolverName = getProfileName(resolvedBy);
+    return resolvedDatetime
+      ? `${formatDate(resolvedDatetime, "Solicitud resuelta el ")} por ${resolverName}.`
+      : `No se pudo obtener la fecha de resolución. Esta solicitud fue resuelta por ${resolverName}.`;
+  };
+
+  const renderIssuedText = (issuedDatetime: string, issuedBy: string) => {
+    const issuerName = getProfileName(issuedBy);
+    return `${formatDate(issuedDatetime, "Solicitado el ")} por ${issuerName}`;
+  };
 
   return (
     <>
@@ -309,15 +370,13 @@ export default function Index() {
                       <View>
                         <Text style={styles.subtitle}>
                           {item.status === "SOLVED"
-                            ? item.resolved_datetime
-                              ? formatDate(
-                                  item.resolved_datetime,
-                                  "Solicitud resuelta el "
-                                )
-                              : solvedButNoDate
-                            : formatDate(
+                            ? renderSolvedText(
+                                item.resolved_datetime,
+                                item.resolved_by
+                              )
+                            : renderIssuedText(
                                 item.issued_datetime,
-                                "Solicitado el "
+                                item.issued_by
                               )}
                         </Text>
                       </View>

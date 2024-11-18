@@ -28,7 +28,7 @@ export default function Index() {
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
   const signOut = async () => {
-    let { error } = await supabase.auth.signOut();
+    let { error } = await supabase.auth.signOut({ scope: "local" });
   };
 
   const { session, isLoading: isSessionLoading } = useSessionContext();
@@ -57,7 +57,7 @@ export default function Index() {
       <ErrorScreen
         caption="Ocurrió un error al recuperar tu sesión"
         buttonCaption="Intentar cerrar sesión"
-        retryFunction={() => supabase.auth.signOut()}
+        retryFunction={() => supabase.auth.signOut({ scope: "local" })}
       />
     );
   }
@@ -67,7 +67,7 @@ export default function Index() {
       <ErrorScreen
         caption="Ocurrió un error al recuperar tus identidades"
         buttonCaption="Intentar cerrar sesión"
-        retryFunction={() => supabase.auth.signOut()}
+        retryFunction={() => supabase.auth.signOut({ scope: "local" })}
       />
     );
   }
