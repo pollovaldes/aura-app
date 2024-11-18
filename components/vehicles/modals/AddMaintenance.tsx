@@ -1,11 +1,10 @@
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "@/components/Form/FormButton";
 import FormInput from "@/components/Form/FormInput";
-import useMaintenance from "@/hooks/useMaintenance";
 import { supabase } from "@/lib/supabase";
 import { Person } from "@/types/Person";
 import { Vehicle } from "@/types/Vehicle";
-import { File, ImagePlus, Plus, Trash2 } from "lucide-react-native";
+import { ImagePlus, Plus, Trash2 } from "lucide-react-native";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
