@@ -20,9 +20,10 @@ export default function FormInput({
       <TextInput
         placeholder={placeholder}
         inputMode="text"
-        style={styles.textInput}
+        style={[styles.textInput, multiline && styles.multilineInput]}
         placeholderTextColor={styles.textInput.placeholderTextColor}
         onChangeText={onChangeText}
+        multiline={multiline}
         {...props}
       />
     </View>
@@ -45,5 +46,8 @@ const stylesheet = createStyleSheet((theme) => ({
     paddingBottom: 6,
     paddingLeft: 12,
     paddingTop: 6,
+  },
+  multilineInput: {
+    height: 250,
   },
 }));

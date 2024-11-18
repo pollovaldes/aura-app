@@ -1,8 +1,10 @@
 import FormTitle from "@/app/auth/FormTitle";
+import { FormButton } from "@/components/Form/FormButton";
 import FormInput from "@/components/Form/FormInput";
 import useMaintenance from "@/hooks/useMaintenance";
 import { Person } from "@/types/Person";
 import { Vehicle } from "@/types/Vehicle";
+import { Plus } from "lucide-react-native";
 import { Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
@@ -49,9 +51,36 @@ export default function AddMaintenance({
         />
         <FormInput
           description="Descripción detallada"
-          placeholder="Ej. El vehículo necesita un cambio de aceite urgente."
+          placeholder="Incluye detalles como el problema, la solución esperada, fechas, etc."
           multiline
         />
+      </View>
+      <View style={styles.group}>
+        <FormTitle title={"Agregar archivos"} />
+        <Text style={styles.subtitle}>
+          Adjunta imágenes o videos que respalden tu solicitud de ser necesario
+        </Text>
+        <View style={styles.fileContainer}>
+          <View style={styles.fileOutiline}>
+            <Text style={styles.text}>Arrastra y suelta tus archivos aquí</Text>
+          </View>
+          <View style={styles.fileOutiline}>
+            <FormInput
+              description="Descripción"
+              placeholder="Incluye detalles como el problema, la solución esperada, fechas, etc."
+              multiline
+            />
+          </View>
+        </View>
+        <FormButton
+          title="Agregar"
+          onPress={() => {}}
+          buttonType="normal"
+          icon={() => <Plus color={styles.iconColor.color} />}
+        />
+      </View>
+      <View style={styles.group}>
+        <FormButton title="Enviar solicitud" onPress={() => {}} />
       </View>
     </View>
   );
@@ -92,5 +121,18 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   iconColor: {
     color: theme.textPresets.inverted,
+  },
+  fileContainer: {
+    borderStyle: "dashed",
+    borderWidth: 3,
+    borderRadius: 5,
+    padding: 12,
+    borderColor: theme.ui.colors.primary,
+    flexDirection: "row",
+    gap: 6,
+    justifyContent: "center",
+  },
+  fileOutiline: {
+    width: "50%",
   },
 }));
