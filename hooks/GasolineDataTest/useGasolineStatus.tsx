@@ -84,7 +84,7 @@ export default function useGasolineStatus(vehicleId: string | undefined) {
 
     try {
       const { error } = await supabase
-        .from("vehicle_gasoline_status_two")
+        .from("vehicle_thresholds")
         .update({ gasoline_threshold: newThreshold })
         .eq("vehicle_id", vehicleId);
 
