@@ -155,6 +155,10 @@ export default function Index() {
     );
   }
 
+  const currentVechicleMaintenanceRecords = maintenanceRecords.filter(
+    (record) => record.vehicle_id === vehicle.id
+  );
+
   function formatDate(dateString: string, prefix: string) {
     const date = new Date(dateString);
 
@@ -191,21 +195,23 @@ export default function Index() {
     },
   };
 
-  const filteredMaintenanceRecords = maintenanceRecords.filter((record) => {
-    switch (currentTabIndex) {
-      case 1:
-        return record.status === "PENDING_REVISION";
-      case 2:
-        return record.status === "IN_REVISION";
-      case 3:
-        return record.status === "SOLVED";
-      default:
-        return true;
+  const filteredMaintenanceRecords = currentVechicleMaintenanceRecords.filter(
+    (record) => {
+      switch (currentTabIndex) {
+        case 1:
+          return record.status === "PENDING_REVISION";
+        case 2:
+          return record.status === "IN_REVISION";
+        case 3:
+          return record.status === "SOLVED";
+        default:
+          return true;
+      }
     }
-  });
+  );
 
   const solvedButNoDate =
-    "La solicitud está marcada como resuelta pero no tiene fecha de resolución.";
+    "La solicitud fue marcada como resuelta pero no tiene fecha de resolución.";
 
   return (
     <>
@@ -222,7 +228,7 @@ export default function Index() {
           />
         </View>
       </Modal>
-      {maintenanceRecords.length === 0 ? (
+      {currentVechicleMaintenanceRecords.length === 0 ? (
         <>
           <Stack.Screen
             options={{

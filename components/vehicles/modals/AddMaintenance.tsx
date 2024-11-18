@@ -55,20 +55,18 @@ export default function AddMaintenance({
         ])
         .select();
 
-      if (error) {
+      if (!error && data) {
+        setIsUploading(false);
+        fetchMaintenance();
+        closeModal();
+        return data;
+      } else {
         alert(`¡Ocurrió un error!\n${error.message}`);
         setIsUploading(false);
-        return;
       }
-
-      return data;
     } catch (error) {
       alert(`¡Ocurrió un error en la función uploadRequest!\n${error}`);
       throw error;
-    } finally {
-      closeModal();
-      fetchMaintenance();
-      setIsUploading(false);
     }
   };
 
