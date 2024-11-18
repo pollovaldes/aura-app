@@ -153,16 +153,15 @@ export default function GasolineLoadHistory() {
 const stylesheet = createStyleSheet((theme) => ({
   safeContainer: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: theme.ui.colors.background,
   },
   container: {
     flex: 1,
     padding: 15,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: theme.ui.colors.background,
   },
   card: {
-    
-    backgroundColor: '#fff',
+    backgroundColor: theme.ui.colors.card,
     padding: 15,
     borderRadius: 12,
     marginBottom: 10,
@@ -170,7 +169,7 @@ const stylesheet = createStyleSheet((theme) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -178,11 +177,11 @@ const stylesheet = createStyleSheet((theme) => ({
   amount: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1976d2',
+    color: theme.headerButtons.color,
   },
   date: {
     fontSize: 14,
-    color: '#666',
+    color: theme.textPresets.subtitle,
     marginTop: 4,
   },
   status: {
@@ -196,7 +195,7 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   loadingText: {
     fontSize: 16,
-    color: '#666',
+    color: theme.textPresets.subtitle,
     textAlign: 'center',
     padding: 20,
   },
@@ -216,17 +215,17 @@ const stylesheet = createStyleSheet((theme) => ({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1976d2',
+    color: theme.headerButtons.color,
   },
   filterButton: {
-    backgroundColor: '#1976d2',
+    backgroundColor: theme.headerButtons.color,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
     marginRight: -8,
   },
   filterButtonText: {
-    color: 'white',
+    color: theme.textPresets.main,
     fontWeight: '600',
   },
   titleContainer: {
@@ -239,7 +238,7 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   liters: {
     fontSize: 14,
-    color: '#666',
+    color: theme.textPresets.subtitle,
     marginTop: 4,
   },
 }));

@@ -8,8 +8,8 @@ const screenWidth = Dimensions.get("window").width;
 const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 
 const chartConfig = {
-  backgroundColor: "#1e88e5",
-  backgroundGradientFrom: "#1e88e5",
+  backgroundColor: "#1e88e5", // Changed from "#1e88e5"
+  backgroundGradientFrom: "#1e88e5", // Changed from "#1e88e5"
   backgroundGradientTo: "#64b5f6",
   decimalPlaces: 0,
   color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
@@ -70,7 +70,7 @@ const stylesheet = createStyleSheet((theme) => ({
     alignItems: 'center',
     width: '95%',
     padding: 25,
-    backgroundColor: '#fff',
+    backgroundColor: theme.ui.colors.card,
     borderRadius: 16,
     marginVertical: 10,
     shadowColor: "#000",
@@ -86,14 +86,17 @@ const stylesheet = createStyleSheet((theme) => ({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 15,
-    color: '#1e88e5',
+    color: theme.headerButtons.color,
   },
   loadingText: {
     fontSize: 16,
-    color: '#666',
+    color: theme.textPresets.subtitle,
   },
   chart: {
     marginVertical: 8,
     borderRadius: 16,
-  }
+  },
+  backgroundColors: {
+    backgroundColor: theme.headerButtons.color,
+  },
 }));

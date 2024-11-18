@@ -41,7 +41,7 @@ const stylesheet = createStyleSheet((theme) => ({
   container: {
     width: '95%',
     padding: 25,
-    backgroundColor: '#fff',
+    backgroundColor: theme.ui.colors.card,
     borderRadius: 16,
     marginVertical: 10,
   },
@@ -49,13 +49,13 @@ const stylesheet = createStyleSheet((theme) => ({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 15,
-    color: '#1e88e5',
+    color: theme.headerButtons.color,
   },
   card: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: theme.ui.colors.background,
     padding: 15,
     borderRadius: 12,
     marginBottom: 8,
@@ -63,21 +63,21 @@ const stylesheet = createStyleSheet((theme) => ({
   amount: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2196f3',
+    color: theme.headerButtons.color,
   },
   date: {
     fontSize: 14,
-    color: '#666',
+    color: theme.textPresets.subtitle,
   },
   loadingText: {
     fontSize: 16,
-    color: '#666',
+    color: theme.textPresets.subtitle,
     textAlign: 'center',
     padding: 20,
   },
   liters: {
     fontSize: 14,
-    color: '#666',
+    color: theme.textPresets.subtitle,
     marginTop: 4,
   },
 }));
