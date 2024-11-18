@@ -155,7 +155,7 @@ export default function Index() {
     );
   }
 
-  function formatCustomDate(dateString: string) {
+  function formatDate(dateString: string, prefix: string) {
     const date = new Date(dateString);
 
     const day = date.getDate();
@@ -165,7 +165,7 @@ export default function Index() {
     const hours = date.getHours().toString().padStart(2, "0"); // Add leading zero
     const minutes = date.getMinutes().toString().padStart(2, "0"); // Add leading zero
 
-    return `Solicitud creada el ${day} de ${month} del ${year} a las ${hours}:${minutes} horas.`;
+    return `${prefix}${day} de ${month} del ${year} a las ${hours}:${minutes} horas.`;
   }
 
   const canEdit =
@@ -180,12 +180,12 @@ export default function Index() {
       textColor: "#1e88e5", // Azul
     },
     PENDING_REVISION: {
-      text: "Pendiente",
+      text: "Recibido",
       backgroundColor: "#fff3e0", // Naranja claro
       textColor: "#ef6c00", // Naranja
     },
     SOLVED: {
-      text: "Solucionado",
+      text: "Resuelto",
       backgroundColor: "#e8f5e9", // Verde claro
       textColor: "#2e7d32", // Verde
     },
@@ -259,7 +259,7 @@ export default function Index() {
             }}
           />
           <SegmentedControl
-            values={["Todo", "Pendientes", "En revisión", "Resuletas"]}
+            values={["Todo", "Recibidos", "En revisión", "Resuletas"]}
             selectedIndex={currentTabIndex}
             onChange={(event) =>
               setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)
@@ -299,7 +299,15 @@ export default function Index() {
                       </View>
                       <View>
                         <Text style={styles.subtitle}>
-                          {formatCustomDate(item.issued_datetime)}
+                          {item.status === "SOLVED"
+                            ? formatDate(
+                                item.resolved_datetime, //TODO: resoved_datetime is not defined
+                                "Solicitud resuelta el "
+                              )
+                            : formatDate(
+                                item.issued_datetime,
+                                "Solicitado el "
+                              )}
                         </Text>
                       </View>
                     </View>
@@ -309,6 +317,19 @@ export default function Index() {
                   </View>
                 </Pressable>
               </Link>
+            )}
+            ListEmptyComponent={() => (
+              <View
+                style={{
+                  height: 250,
+                }}
+              >
+                <EmptyScreen
+                  caption={
+                    "No hay solicitudes de mantenimiento\ncon este filtro"
+                  }
+                />
+              </View>
             )}
           />
         </>
