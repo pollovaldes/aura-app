@@ -48,7 +48,6 @@ export default function GasolineHistory() {
     updateGasolineThreshold
   } = useGasolineStatus(vehicle?.id);
 
-  const canEditThreshold = profile?.role === 'ADMIN' || profile?.role === 'OWNER';
   const isAdmin = profile?.role === 'ADMIN' || profile?.role === 'OWNER';
 
   // Add refresh function
@@ -130,7 +129,7 @@ export default function GasolineHistory() {
       <GasolineThreshold
         gasolineStatus={gasolineStatus}
         isLoading={isGasolineStatusLoading}
-        canEdit={canEditThreshold}
+        canEdit={isAdmin}
         onUpdateThreshold={updateGasolineThreshold}
       />
       <WeeklyGasolineChart vehicleId={vehicle.id} />

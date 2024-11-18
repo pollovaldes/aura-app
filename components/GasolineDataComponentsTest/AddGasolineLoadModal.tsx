@@ -76,14 +76,14 @@ export default function AddGasolineLoadModal({
               placeholder="Monto (MXN)"
               value={formData.amount}
               onChangeText={(value) => handleChange("amount", value)}
-              description=""
+              description="Monto en MXN"
               keyboardType="numeric"
             />
             <FormInput
               placeholder="Litros"
               value={formData.liters}
               onChangeText={(value) => handleChange("liters", value)}
-              description=""
+              description="Cantidad de litros"
               keyboardType="numeric"
             />
             <FormButton
@@ -100,9 +100,12 @@ export default function AddGasolineLoadModal({
 
 const stylesheet = createStyleSheet((theme) => ({
   modalContainer: {
-    padding: 20,
+    width: "100%",
+    alignSelf: "center",
+    maxWidth: 500,
     backgroundColor: theme.ui.colors.card,
     borderRadius: 10,
+    padding: 24,
   },
   closeButton: {
     color: theme.headerButtons.color,

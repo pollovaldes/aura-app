@@ -1,8 +1,12 @@
 // components/GasolineThreshold.tsx
 import React, { useState, useMemo } from "react";
-import { View, Text, ActivityIndicator, Pressable, Modal, TextInput } from "react-native";
+import { View, Text, ActivityIndicator, Pressable } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { GasolineStatus } from "@/hooks/GasolineDataTest/useGasolineStatus";
+import Modal from "@/components/Modal/Modal";
+import FormInput from "@/components/Form/FormInput";
+import { FormButton } from "@/components/Form/FormButton";
+import FormTitle from "@/app/auth/FormTitle";
 
 interface GasolineThresholdProps {
   gasolineStatus: GasolineStatus | null;
@@ -45,37 +49,31 @@ const ThresholdEditModal = React.memo(({
   };
 
   return (
-    <Modal
-      visible={isVisible}
-      transparent
-      animationType="slide"
-      onRequestClose={onClose}
-    >
+    <Modal isOpen={isVisible}>
       <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Editar Límite de Gasolina</Text>
-          <TextInput
-            style={styles.input}
-            keyboardType="decimal-pad"
-            value={value}
-            onChangeText={setValue}
-            placeholder="Nuevo límite"
-          />
-          {error && <Text style={styles.errorText}>{error}</Text>}
-          {isUpdating && <ActivityIndicator />}
-          <View style={styles.modalButtons}>
-            <Pressable 
-              style={[styles.button, styles.cancelButton]} 
-              onPress={onClose}
-            >
-              <Text style={styles.buttonText}>Cancelar</Text>
-            </Pressable>
-            <Pressable 
-              style={[styles.button, styles.saveButton]} 
+        <Text style={styles.closeButton} onPress={onClose}>
+          Cerrar
+        </Text>
+        <View style={styles.section}>
+          <View style={styles.group}>
+            <FormTitle title="Editar Límite de Gasolina" />
+            <Text style={styles.subtitle}>
+              Ingresa el nuevo límite de gasolina en MXN.
+            </Text>
+          </View>
+          <View style={styles.group}>
+            <FormInput
+              placeholder="Nuevo límite"
+              value={value}
+              onChangeText={setValue}
+              description="Monto en MXN"
+              keyboardType="decimal-pad"
+            />
+            <FormButton
+              title="Guardar"
               onPress={handleSave}
-            >
-              <Text style={styles.buttonText}>Guardar</Text>
-            </Pressable>
+              isLoading={isUpdating}
+            />
           </View>
         </View>
       </View>
@@ -285,51 +283,28 @@ const stylesheet = createStyleSheet((theme) => ({
     borderColor: theme.headerButtons.color,
   },
   modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
+    width: "100%",
+    alignSelf: "center",
+    maxWidth: 500,
     backgroundColor: theme.ui.colors.card,
-    padding: 20,
-    borderRadius: 16,
-    width: '90%',
+    borderRadius: 10,
+    padding: 24,
   },
-  modalTitle: {
+  closeButton: {
+    color: theme.headerButtons.color,
     fontSize: 18,
-    fontWeight: '600',
+    textAlign: "right",
+  },
+  section: {
+    gap: theme.marginsComponents.section,
+    alignItems: "center",
+  },
+  group: {
+    gap: theme.marginsComponents.group,
+    width: "100%",
+  },
+  subtitle: {
     color: theme.textPresets.main,
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 20,
-    color: theme.textPresets.main,
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  button: {
-    flex: 1,
-    padding: 15,
-    borderRadius: 8,
-    marginHorizontal: 5,
-  },
-  cancelButton: {
-    backgroundColor: '#e0e0e0',
-  },
-  saveButton: {
-    backgroundColor: theme.headerButtons.color,
-  },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-    fontWeight: '600',
+    textAlign: "center",
   },
 }));
