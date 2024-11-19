@@ -19,6 +19,7 @@ import LoadingScreen from "../dataStates/LoadingScreen";
 import ErrorScreen from "../dataStates/ErrorScreen";
 import PictureUpload from "../profile/PictureUpload";
 import EmptyScreen from "../dataStates/EmptyScreen";
+import PersonThumbnail from "./PersonThumbnail";
 
 export default function PeopleList() {
   const { profile, isProfileLoading, fetchProfile } = useProfile();
@@ -99,8 +100,7 @@ export default function PeopleList() {
               <View style={styles.container}>
                 <View style={styles.contentContainer}>
                   <View style={styles.imageContainer}>
-                    <Text style={styles.itemText}>{item.id}</Text>
-                    <PictureUpload size={60} userId={item.id.toString()} />
+                    <PersonThumbnail personId={item.id.toString()} size={60} />
                   </View>
                   <Text
                     style={styles.itemText}

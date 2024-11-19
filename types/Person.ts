@@ -6,4 +6,5 @@ export type Person = {
   position: string;
   role: string;
   is_fully_registered: boolean;
+  thumbnail?: string | null;
 };
