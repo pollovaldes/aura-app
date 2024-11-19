@@ -9,7 +9,7 @@ import useVehicle from "@/hooks/truckHooks/useVehicle";
 import useMaintenance from "@/hooks/useMaintenance";
 import useProfile from "@/hooks/useProfile";
 import { supabase } from "@/lib/supabase";
-import { Person } from "@/types/Person";
+import { User } from "@/types/User";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
@@ -29,7 +29,7 @@ export default function Index() {
     useMaintenance();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
-  const [allProfiles, setAllProfiles] = useState<Person[] | null>(null);
+  const [allProfiles, setAllProfiles] = useState<User[] | null>(null);
   const closeModal = () => setActiveModal(null);
   const headerHeight = useHeaderHeight();
 

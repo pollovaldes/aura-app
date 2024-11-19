@@ -6,7 +6,7 @@ import {
   Pressable,
   Image,
 } from "react-native";
-import usePeople from "@/hooks/peopleHooks/usePeople";
+import useUsers from "@/hooks/peopleHooks/useUsers";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link, Redirect } from "expo-router";
 import { useEffect, useState } from "react";
@@ -19,18 +19,18 @@ import LoadingScreen from "../dataStates/LoadingScreen";
 import ErrorScreen from "../dataStates/ErrorScreen";
 import PictureUpload from "../profile/PictureUpload";
 import EmptyScreen from "../dataStates/EmptyScreen";
-import PersonThumbnail from "./PersonThumbnail";
+import UserThumbnail from "./UserThumbnail";
 
-export default function PeopleList() {
+export default function UsersList() {
   const { profile, isProfileLoading, fetchProfile } = useProfile();
   const { styles } = useStyles(stylesheet);
   const { searchState, setSearchQuery } = useSearch();
-  const searchQuery = searchState["people"] || ""; // Usa un identificador único "people" para esta búsqueda
-  const { people, peopleAreLoading, fetchPeople } = usePeople();
-  const [filteredPeople, setFilteredPeople] = useState(people); // Lista de personas filtradas
+  const searchQuery = searchState["users"] || "";
+  const { users, usersAreLoading, fetchUsers } = useUsers();
+  const [filteredUsers, setFilteredUsers] = useState(users);
 
   const capitalizeWords = (text: string | null | undefined): string => {
-    if (!text) return ""; // Verifica si el texto es nulo, indefinido o vacío
+    if (!text) return "";
     return text
       .toLowerCase()
       .split(" ")
@@ -39,21 +39,20 @@ export default function PeopleList() {
   };
 
   useEffect(() => {
-    // Filtrar personas basadas en la consulta de búsqueda
-    if (searchQuery && people) {
-      const filtered = people.filter((person) =>
-        `${person.name} ${person.father_last_name} ${person.mother_last_name}`
+    if (searchQuery && users) {
+      const filtered = users.filter((user) =>
+        `${user.name} ${user.father_last_name} ${user.mother_last_name}`
           .toLowerCase()
           .includes(searchQuery.toLowerCase())
       );
-      setFilteredPeople(filtered);
+      setFilteredUsers(filtered);
     } else {
-      setFilteredPeople(people); // Si no hay búsqueda, mostrar todas las personas
+      setFilteredUsers(users);
     }
-  }, [searchQuery, people]);
+  }, [searchQuery, users]);
 
-  if (peopleAreLoading) {
-    return <LoadingScreen caption="Cargando personas" />;
+  if (usersAreLoading) {
+    return <LoadingScreen caption="Cargando usuarios" />;
   }
 
   if (isProfileLoading) {
@@ -70,17 +69,17 @@ export default function PeopleList() {
     );
   }
 
-  if (!people) {
+  if (!users) {
     return (
       <ErrorScreen
-        caption={`Ocurrió un error y no \npudimos cargar las personas`}
+        caption={`Ocurrió un error y no \npudimos cargar los usuarios`}
         buttonCaption="Reintentar"
-        retryFunction={fetchPeople}
+        retryFunction={fetchUsers}
       />
     );
   }
 
-  if (filteredPeople?.length === 0) {
+  if (filteredUsers?.length === 0) {
     return <EmptyScreen caption="Ningún resultado" />;
   }
 
@@ -89,18 +88,18 @@ export default function PeopleList() {
   if (isAdminOrOwner) {
     return (
       <FlatList
-        refreshing={peopleAreLoading}
-        onRefresh={fetchPeople}
+        refreshing={usersAreLoading}
+        onRefresh={fetchUsers}
         contentInsetAdjustmentBehavior="automatic"
-        data={filteredPeople}
+        data={filteredUsers}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <Link href={{ pathname: `/people/${item.id}` }} asChild>
+          <Link href={{ pathname: `/users/${item.id}` }} asChild>
             <Pressable>
               <View style={styles.container}>
                 <View style={styles.contentContainer}>
                   <View style={styles.imageContainer}>
-                    <PersonThumbnail personId={item.id.toString()} size={60} />
+                    <UserThumbnail userId={item.id.toString()} size={60} />
                   </View>
                   <Text
                     style={styles.itemText}

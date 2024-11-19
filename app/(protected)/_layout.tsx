@@ -11,7 +11,7 @@ import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { supabase } from "@/lib/supabase";
 import { ProfileImageProvider } from "@/context/ProfileImageContext";
-import { PeopleContextProvider } from "@/context/PeopleContext";
+import { UsersContextProvider } from "@/context/UsersContext";
 
 export default function HomeLayout() {
   const { styles } = useStyles(stylesheet);
@@ -65,7 +65,7 @@ export default function HomeLayout() {
       : profile.is_fully_registered
         ? undefined
         : null,
-    people: isBannedOrNoRole
+    users: isBannedOrNoRole
       ? null
       : isAdminOrOwner && profile.is_fully_registered
         ? undefined
@@ -83,10 +83,10 @@ export default function HomeLayout() {
       : profile.is_fully_registered
         ? "vehicles"
         : null,
-    people: isBannedOrNoRole
+    users: isBannedOrNoRole
       ? null
       : isAdminOrOwner && profile.is_fully_registered
-        ? "people"
+        ? "users"
         : null,
     notifications: isBannedOrNoRole
       ? null
@@ -98,7 +98,7 @@ export default function HomeLayout() {
   // Render UI based on the screen width (responsive design)
   return (
     <VehiclesContextProvider>
-      <PeopleContextProvider>
+      <UsersContextProvider>
           <ProfileImageProvider>
             {width > widthThreshold ? (
               <View style={styles.container}>
@@ -114,7 +114,7 @@ export default function HomeLayout() {
                     />
                     {isAdminOrOwner && (
                       <ListItem
-                        href={mayShowListItem.people}
+                        href={mayShowListItem.users}
                         title="Personas"
                         iconComponent={
                           <UsersRound color={styles.icon.color} size={19} />
@@ -151,9 +151,9 @@ export default function HomeLayout() {
                   }}
                 />
                 <Tabs.Screen
-                  name="people"
+                  name="users"
                   options={{
-                    href: mayShowTab.people,
+                    href: mayShowTab.users,
                     title: "Personas",
                     tabBarIcon: ({ color }) => <UsersRound color={color} />,
                   }}
@@ -178,7 +178,7 @@ export default function HomeLayout() {
               </Tabs>
             )}
           </ProfileImageProvider>
-      </PeopleContextProvider>
+      </UsersContextProvider>
     </VehiclesContextProvider>
   );
 }

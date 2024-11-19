@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useSessionContext } from "@/context/SessionContext";
-import { Person } from "@/types/Person";
+import { User } from "@/types/User";
 
 export default function useProfilesWithUUIDs(uuids: string[]) {
   const { session, isLoading: isSessionLoading } = useSessionContext();
-  const [profiles, setProfiles] = useState<Person[]>([]);
+  const [profiles, setProfiles] = useState<User[]>([]);
   const [isProfilesLoading, setIsProfilesLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,7 +45,7 @@ export default function useProfilesWithUUIDs(uuids: string[]) {
 
       // Filter out any null values (failed fetches)
       setProfiles(
-        fetchedProfiles.filter((profile): profile is Person => profile !== null)
+        fetchedProfiles.filter((profile): profile is User => profile !== null)
       );
     } catch (error) {
       setError(`Error fetching profiles: ${error}`);

@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useSessionContext } from "@/context/SessionContext";
 import { router } from "expo-router";
-import { Person } from "@/types/Person";
+import { User } from "@/types/User";
 
 export default function useProfile() {
   const { session, isLoading: isSessionLoading } = useSessionContext();
-  const [profile, setProfile] = useState<Person | null>(null);
+  const [profile, setProfile] = useState<User | null>(null);
   const [isProfileLoading, setIsProfileLoading] = useState<boolean>(false);
 
   const fetchProfile = async () => {

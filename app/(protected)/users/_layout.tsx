@@ -38,7 +38,7 @@ function SearchConsumer() {
             placeholder: "Buscar por nombre o apellido",
             hideWhenScrolling: false,
             onChangeText: (event) =>
-              setSearchQuery("people", event.nativeEvent.text), // Use the context to update the search query for "personas"
+              setSearchQuery("users", event.nativeEvent.text), // Use the context to update the search query for "personas"
           },
         }}
       />

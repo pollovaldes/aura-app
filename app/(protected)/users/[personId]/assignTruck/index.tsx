@@ -22,7 +22,7 @@ export default function Index() {
           <Row
             title="Ver camiones asignados"
             trailingType="chevron"
-            onPress={() => {router.navigate(`/people/${personId}/assignTruck/STMS`)}}
+            onPress={() => {router.navigate(`/users/${personId}/assignTruck/STMS`)}}
             icon={<BookUser size={24} color="white" />}
             color={colorPalette.neutral[500]}
           />
@@ -34,7 +34,7 @@ export default function Index() {
           <Row
             title="Asignar camión"
             trailingType="chevron"
-            onPress={() => router.navigate(`/people/${personId}/assignTruck/ATMS`)}
+            onPress={() => router.navigate(`/users/${personId}/assignTruck/ATMS`)}
             icon={<NotebookPen size={24} color="white" />}
             color={colorPalette.orange[500]}
           />

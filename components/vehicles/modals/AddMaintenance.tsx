@@ -2,7 +2,7 @@ import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "@/components/Form/FormButton";
 import FormInput from "@/components/Form/FormInput";
 import { supabase } from "@/lib/supabase";
-import { Person } from "@/types/Person";
+import { User } from "@/types/User";
 import { Vehicle } from "@/types/Vehicle";
 import { ImagePlus, Plus, Trash2 } from "lucide-react-native";
 import { useState } from "react";
@@ -13,7 +13,7 @@ interface addMaintenanceModalProps {
   closeModal: () => void;
   fetchMaintenance: () => void;
   vehicle: Vehicle;
-  profile: Person;
+  profile: User;
 }
 
 export default function AddMaintenance({

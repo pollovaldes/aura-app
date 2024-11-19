@@ -1,26 +1,25 @@
-
 import { UserRound } from "lucide-react-native";
 import { ActivityIndicator, Image, View } from "react-native";
 import { useStyles, createStyleSheet } from "react-native-unistyles";
 import { useEffect, useState } from "react";
-import { Person } from "@/types/Person";
-import usePeople from "@/hooks/peopleHooks/usePeople";
-import usePeopleThumbnail from "@/hooks/peopleHooks/usePeopleThumbnail";
+import { User } from "@/types/User";
+import useUsers from "@/hooks/peopleHooks/useUsers";
+import useUserThumbnail from "@/hooks/peopleHooks/useUserThumbnail";
 import React from "react";
 
-type PersonThumbnailProps = {
-  personId: string;
+type UserThumbnailProps = {
+  userId: string;
   size?: number;
 };
 
-export default function PersonThumbnail({ personId, size = 60 }: PersonThumbnailProps) {
+export default function UserThumbnail({ userId, size = 60 }: UserThumbnailProps) {
   const { styles } = useStyles(stylesheet);
-  const { people, setPeople } = usePeople();
-  const { fetchThumbnail } = usePeopleThumbnail();
+  const { users, setUsers } = useUsers();
+  const { fetchThumbnail } = useUserThumbnail();
   const [thumbnailIsLoading, setThumbnailIsLoading] = useState(false);
 
-  if (!people) return null;
-  const item = people.find((person) => person.id === personId);
+  if (!users) return null;
+  const item = users.find((user) => user.id === userId);
 
   useEffect(() => {
     if (!item) {
@@ -36,12 +35,12 @@ export default function PersonThumbnail({ personId, size = 60 }: PersonThumbnail
         return;
       }
 
-      const thumbnail = await fetchThumbnail(personId);
+      const thumbnail = await fetchThumbnail(userId);
       if (thumbnail) {
-        setPeople(
-          (prevPeople: Person[] | null) =>
-            prevPeople?.map((person) =>
-              person.id === personId ? { ...person, thumbnail } : person
+        setUsers(
+          (prevUsers: User[] | null) =>
+            prevUsers?.map((user) =>
+              user.id === userId ? { ...user, thumbnail } : user
             ) || null
         );
       }

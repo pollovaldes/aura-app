@@ -9,29 +9,29 @@ import { colorPalette } from "@/style/themes";
 import ProfileColumn from "@/components/people/ProfileColumn";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import usePeople from "@/hooks/peopleHooks/usePeople";
+import useUsers from "@/hooks/peopleHooks/useUsers";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 
-export default function PeopleDetail() {
+export default function UserDetail() {
   const { personId } = useLocalSearchParams<{ personId: string }>();
   const { styles } = useStyles(stylesheet);
-  const { people, fetchPeople, peopleAreLoading } = usePeople();
+  const { users, usersAreLoading, fetchUsers } = useUsers();
 
-  if (peopleAreLoading) {
+  if (usersAreLoading) {
     return <LoadingScreen caption="Cargando perfil" />;
   }
 
-  if (!people) {
+  if (!users) {
     return (
       <ErrorScreen
         caption="Ocurrió un error al recuperar tu perfil"
         buttonCaption="Reintentar"
-        retryFunction={fetchPeople}
+        retryFunction={fetchUsers}
       />
     );
   }
 
-  const user = people.find((People) => People.id === personId);
+  const user = users.find((user) => user.id === personId);
 
   if (!user) {
     return (
@@ -40,7 +40,7 @@ export default function PeopleDetail() {
         <UnauthorizedScreen
           caption="No tienes acceso a este recurso."
           buttonCaption="Reintentar"
-          retryFunction={fetchPeople}
+          retryFunction={fetchUsers}
         />
       </>
     );
@@ -63,14 +63,14 @@ export default function PeopleDetail() {
             <Row
               title="Información del conductor"
               trailingType="chevron"
-              onPress={() => router.navigate(`/people/${personId}/details`)}
+              onPress={() => router.navigate(`/users/${personId}/details`)}
               icon={<Info size={24} color="white" />}
               color={colorPalette.cyan[500]}
             />
             <Row
               title="Cambiar Rol"
               trailingType="chevron"
-              onPress={() => router.navigate(`/people/${personId}/changeRole`)}
+              onPress={() => router.navigate(`/users/${personId}/changeRole`)}
               icon={<SquarePen size={24} color="white" />}
               color={colorPalette.orange[500]}
             />
@@ -82,7 +82,7 @@ export default function PeopleDetail() {
             <Row
               title="Asignar camión"
               trailingType="chevron"
-              onPress={() => router.navigate(`/people/${personId}/assignTruck`)}
+              onPress={() => router.navigate(`/users/${personId}/assignTruck`)}
               icon={<Truck size={24} color="white" />}
               color={colorPalette.emerald[500]}
             />
