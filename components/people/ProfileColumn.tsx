@@ -1,8 +1,8 @@
 import { Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { User } from "@/types/User";
-import PictureUpload from "../profile/PictureUpload";
 import UserThumbnail from "./UserThumbnail";
+import React from "react";
 
 type ProfileRowProps = {
   profile: User;

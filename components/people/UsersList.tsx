@@ -17,7 +17,6 @@ import React from "react";
 import useProfile from "@/hooks/useProfile";
 import LoadingScreen from "../dataStates/LoadingScreen";
 import ErrorScreen from "../dataStates/ErrorScreen";
-import PictureUpload from "../profile/PictureUpload";
 import EmptyScreen from "../dataStates/EmptyScreen";
 import UserThumbnail from "./UserThumbnail";
 

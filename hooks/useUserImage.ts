@@ -1,3 +1,6 @@
+//Creo que tambien se puede ir alv
+
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 

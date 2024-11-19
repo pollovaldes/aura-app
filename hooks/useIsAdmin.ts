@@ -1,3 +1,7 @@
+//Este tambien a chingar a su madre
+//Borrar
+
+
 import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 import { useSession, useSessionContext } from "@/context/SessionContext";

@@ -1,4 +1,7 @@
-// UploadGasolinePhotoModal.tsx
+//Borrar alv
+
+
+
 import React from "react";
 import { View, Text, Alert, ActivityIndicator } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";

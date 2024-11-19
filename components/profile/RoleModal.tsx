@@ -1,12 +1,12 @@
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "@/components/Form/FormButton";
-import { Profile } from "@/hooks/useProfile";
+import { User } from "@/types/User";
 import { Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 type RoleModalProps = {
   closeModal: () => void;
-  profile: Profile;
+  profile: User;
 };
 
 const roleDescriptions = {

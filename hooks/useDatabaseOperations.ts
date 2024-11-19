@@ -1,3 +1,7 @@
+//Borrar
+//Este a chingar a su madre
+
+
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 
