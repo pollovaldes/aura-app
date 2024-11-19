@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { User } from "@/types/User";
 import useUsers from "@/hooks/peopleHooks/useUsers";
 import useUserThumbnail from "@/hooks/peopleHooks/useUserThumbnail";
+import LoadingScreen from "@/components/dataStates/LoadingScreen";
+import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import React from "react";
 
 type UserThumbnailProps = {
@@ -14,12 +16,12 @@ type UserThumbnailProps = {
 
 export default function UserThumbnail({ userId, size = 60 }: UserThumbnailProps) {
   const { styles } = useStyles(stylesheet);
-  const { users, setUsers } = useUsers();
+  const { users, setUsers, usersAreLoading, fetchUsers } = useUsers();
   const { fetchThumbnail } = useUserThumbnail();
   const [thumbnailIsLoading, setThumbnailIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
-  if (!users) return null;
-  const item = users.find((user) => user.id === userId);
+  const item = users?.find((user) => user.id === userId);
 
   useEffect(() => {
     if (!item) {
@@ -35,20 +37,39 @@ export default function UserThumbnail({ userId, size = 60 }: UserThumbnailProps)
         return;
       }
 
-      const thumbnail = await fetchThumbnail(userId);
-      if (thumbnail) {
-        setUsers(
-          (prevUsers: User[] | null) =>
-            prevUsers?.map((user) =>
-              user.id === userId ? { ...user, thumbnail } : user
-            ) || null
-        );
+      try {
+        const thumbnail = await fetchThumbnail(userId);
+        if (thumbnail) {
+          setUsers(
+            (prevUsers: User[] | null) =>
+              prevUsers?.map((user) =>
+                user.id === userId ? { ...user, thumbnail } : user
+              ) || null
+          );
+        }
+      } catch (e) {
+        setError(e as Error);
+      } finally {
+        setThumbnailIsLoading(false);
       }
-      setThumbnailIsLoading(false);
     };
 
     loadThumbnail();
-  }, []);
+  }, [item]);
+
+  if (usersAreLoading) {
+    return <LoadingScreen caption="Cargando usuario" />;
+  }
+
+  if (!users || error) {
+    return (
+      <ErrorScreen
+        caption="Error al cargar la imagen"
+        buttonCaption="Reintentar"
+        retryFunction={fetchUsers}
+      />
+    );
+  }
 
   return (
     <>

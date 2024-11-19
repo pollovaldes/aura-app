@@ -114,7 +114,7 @@ export default function Index() {
               title=""
               onPress={() => setActiveModal("change_image")}
             >
-              <ProfileRow person={profile} />
+              <ProfileRow profile={profile} />
             </Row>
           </GroupedList>
         )}
