@@ -2,6 +2,7 @@ import { Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { User } from "@/types/User";
 import PictureUpload from "../profile/PictureUpload";
+import UserThumbnail from "./UserThumbnail";
 
 type ProfileRowProps = {
   profile: User;
@@ -13,7 +14,7 @@ export default function ProfileColumn({ profile }: ProfileRowProps) {
   return (
     <View style={styles.container}>
       <View>
-        <PictureUpload size={120} userId={profile.id} />
+        <UserThumbnail userId={profile.id} size={120} />
       </View>
       <View style={styles.descriptioonContainer}>
         <>
