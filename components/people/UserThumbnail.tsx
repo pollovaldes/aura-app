@@ -58,7 +58,7 @@ export default function UserThumbnail({ userId, size = 60 }: UserThumbnailProps)
   }, [item]);
 
   if (usersAreLoading) {
-    return <LoadingScreen caption="Cargando usuario" />;
+    return <ActivityIndicator />;
   }
 
   if (!users || error) {
