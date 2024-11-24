@@ -10,7 +10,6 @@ const useGasolineLoads = () => {
     const role = profile?.role;
 
     useEffect(() => {
-        console.log('Role:', role);
 
         const insertGasolineLoad = async () => {
             const { data, error } = await supabase

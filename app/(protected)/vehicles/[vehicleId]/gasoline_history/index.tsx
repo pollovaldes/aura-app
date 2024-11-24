@@ -25,6 +25,10 @@ import MonthlyGasolineChart from "@/components/GasolineDataComponentsTest/Monthl
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 
 interface GasolineHistoryContentProps {
+  profile: {
+    id: string;
+    role: string;
+  };
   vehicle: {
     id: string;
   };
@@ -36,6 +40,7 @@ interface GasolineHistoryContentProps {
 }
 
 const GasolineHistoryContent = React.memo(({ 
+  profile,
   vehicle, 
   isAdmin, 
   gasolineStatus, 
@@ -53,7 +58,7 @@ const GasolineHistoryContent = React.memo(({
 
   return (
     <View style={styles.contentContainer}>
-      {isAdmin && <PendingGasolineLoads vehicleId={vehicle.id} />}
+      {<PendingGasolineLoads vehicleId={vehicle.id} profile={profile}/>}
       <GasolineThreshold
         gasolineStatus={gasolineStatus}
         isLoading={isGasolineStatusLoading}
@@ -206,6 +211,7 @@ export default function GasolineHistory() {
           renderItem={() => null}
           ListHeaderComponent={
             <GasolineHistoryContent 
+              profile={profile}
               vehicle={vehicle}
               isAdmin={isAdmin}
               gasolineStatus={gasolineStatus}

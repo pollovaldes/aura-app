@@ -4,17 +4,26 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { supabase } from "@/lib/supabase";
 import { FormButton } from '../Form/FormButton';
 import FormInput from '../Form/FormInput';
+import GasolineLoadStatus from './GasolineLoadStatus';
 
 interface PendingLoad {
   id: string;
   amount: number;
   liters: number;
-  created_at: string;
+  requested_at: string;
   user_id: string;
   vehicle_id: string;
 }
 
-export default function PendingGasolineLoads({ vehicleId }: { vehicleId: string }) {
+interface PendingGasolineLoadsProps {
+  vehicleId: string;
+  profile: {
+    id: string;
+    role: string;
+  };
+}
+
+export default function PendingGasolineLoads({ vehicleId, profile }: PendingGasolineLoadsProps) {
   const { styles } = useStyles(stylesheet);
   const [pendingLoads, setPendingLoads] = useState<PendingLoad[]>([]);
   const [rejectReason, setRejectReason] = useState('');
@@ -77,6 +86,10 @@ export default function PendingGasolineLoads({ vehicleId }: { vehicleId: string 
     fetchPendingLoads();
   }, [vehicleId]);
 
+  if (profile.role !== 'OWNER' && profile.role !== 'ADMIN') {
+    return <GasolineLoadStatus vehicleId={vehicleId} userId={profile.id} />;
+  }
+
   if (pendingLoads.length === 0) {
     return null;
   }
@@ -89,7 +102,7 @@ export default function PendingGasolineLoads({ vehicleId }: { vehicleId: string 
           <Text style={styles.loadInfo}>Monto: ${load.amount}</Text>
           <Text style={styles.loadInfo}>Litros: {load.liters}L</Text>
           <Text style={styles.loadInfo}>
-            Fecha: {new Date(load.created_at).toLocaleDateString()}
+            Fecha: {new Date(load.requested_at).toLocaleDateString()}
           </Text>
           
           <View style={styles.buttonContainer}>
