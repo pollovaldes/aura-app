@@ -1,6 +1,6 @@
 import { Stack, useLocalSearchParams } from "expo-router";
 import React, { useState, useMemo } from "react";
-import { View, Text, FlatList, RefreshControl, Alert, Platform } from "react-native";
+import { View, Text, FlatList, RefreshControl, Alert, Platform, Pressable } from "react-native";
 import useAllGasolineLoads from "@/hooks/GasolineDataTest/useAllGasolineLoadHistory";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
@@ -8,6 +8,8 @@ import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import { useHeaderHeight } from "@react-navigation/elements";
+import { Filter } from "lucide-react-native";
+import Modal from "@/components/Modal/Modal";
 
 // Move to types/gasoline.ts
 type GasolineLoad = {
@@ -32,6 +34,37 @@ const GasolineCard = React.memo(({ item }: { item: GasolineLoad }) => {
     [item.requested_at]
   );
 
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case 'approved':
+        return {
+          backgroundColor: '#e8f5e9',
+          textColor: '#2e7d32',
+          text: 'Aprobado'
+        };
+      case 'pending':
+        return {
+          backgroundColor: '#fff3e0',
+          textColor: '#ef6c00',
+          text: 'Pendiente'
+        };
+      case 'rejected':
+        return {
+          backgroundColor: '#ffebee',
+          textColor: '#c62828',
+          text: 'Rechazado'
+        };
+      default:
+        return {
+          backgroundColor: '#f5f5f5',
+          textColor: '#757575',
+          text: 'Desconocido'
+        };
+    }
+  };
+
+  const statusStyle = getStatusStyle(item.status);
+
   return (
     <View style={styles.card}>
       <View>
@@ -39,22 +72,20 @@ const GasolineCard = React.memo(({ item }: { item: GasolineLoad }) => {
         <Text style={styles.liters}>{item.liters.toFixed(2)} L</Text>
         <Text style={styles.date}>{formattedDate}</Text>
       </View>
-      <View style={[styles.status, { backgroundColor: item.status === 'approved' ? '#e8f5e9' : '#fff3e0' }]}>
-        <Text style={[styles.statusText, { color: item.status === 'approved' ? '#2e7d32' : '#ef6c00' }]}>
-          {item.status === 'approved' ? 'Aprobado' : 'Pendiente'}
+      <View style={[styles.status, { backgroundColor: statusStyle.backgroundColor }]}>
+        <Text style={[styles.statusText, { color: statusStyle.textColor }]}>
+          {statusStyle.text}
         </Text>
       </View>
     </View>
   );
 });
 
+type DateFilter = "all" | "week" | "month";
+type ModalType = "date_filter" | null;
+
 export default function GasolineLoadHistory() {
   const { styles } = useStyles(stylesheet);
-  const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
-  const [currentTabIndex, setCurrentTabIndex] = useState(0);
-  const [refreshing, setRefreshing] = useState(false);
-  
-  const { allGasolineLoads, loading, error, refetch } = useAllGasolineLoads(vehicleId);
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);

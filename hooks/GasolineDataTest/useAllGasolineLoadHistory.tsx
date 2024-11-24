@@ -27,7 +27,6 @@ const useAllGasolineLoads = (vehicleId: string) => {
       .from("gasoline_loads")
       .select("*")
       .eq("vehicle_id", vehicleId)
-      .eq("status", "approved")
       .order("requested_at", { ascending: false });
 
     if (error) {
