@@ -47,6 +47,7 @@ export default function ChangeImageModal({
         <View style={styles.loadingContainer}>
           <ActivityIndicator />
           <Text>Subiendo imagen...</Text>
+          <Text>Los cambios pueden tardar en reflejarse</Text>
         </View>
       ) : (
         <View style={styles.group}>

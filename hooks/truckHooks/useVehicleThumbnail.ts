@@ -267,7 +267,7 @@ const useVehicleThumbnail = () => {
 
   return {
     fetchThumbnail: (vehicleId: string) =>
-      fetchThumbnail(vehicleId, fetchVehicles),
+      fetchThumbnail(vehicleId),
     selectThumbnail: (vehicleId: string) =>
       selectThumbnail(vehicleId, fetchVehicles),
     addPhotoToGallery: (vehicleId: string) =>

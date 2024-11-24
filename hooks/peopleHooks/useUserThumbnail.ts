@@ -1,6 +1,4 @@
 import { supabase } from "@/lib/supabase";
-import { decode } from "base64-arraybuffer";
-import { ImagePickerOptions, launchImageLibraryAsync, MediaTypeOptions } from "expo-image-picker";
 import useUsers from "./useUsers";
 
 const listProfileImages = async (userId: string) => {
@@ -17,16 +15,36 @@ const listProfileImages = async (userId: string) => {
 };
 
 const downloadImage = async (userId: string, fileName: string) => {
-  const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+  const { data: downloadData, error: downloadError } = await supabase.storage
     .from("avatars")
-    .createSignedUrl(`${userId}/${fileName}`, 60);
+    .download(`${userId}/${fileName}`);
 
-  if (signedUrlError) {
-    console.error(`Error getting signed URL for ${userId}: `, signedUrlError);
+  if (downloadError) {
+    console.error(`Error downloading thumbnail for ${userId}: `, downloadError);
     return null;
   }
 
-  return signedUrlData?.signedUrl || null;
+  return downloadData;
+};
+
+const readImageAsDataURL = (file: Blob): Promise<string | null> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      if (result && result.length >= 150) {
+        resolve(result);
+      } else {
+        console.log("Invalid image data, too short or undefined.");
+        resolve(null);
+      }
+    };
+    reader.onerror = () => {
+      console.error("Error reading profile image");
+      reject(null);
+    };
+    reader.readAsDataURL(file);
+  });
 };
 
 const fetchThumbnail = async (userId: string): Promise<string | null> => {
@@ -34,7 +52,10 @@ const fetchThumbnail = async (userId: string): Promise<string | null> => {
     const fileName = await listProfileImages(userId);
     if (!fileName) return null;
 
-    return await downloadImage(userId, fileName);
+    const file = await downloadImage(userId, fileName);
+    if (!file) return null;
+
+    return await readImageAsDataURL(file);
   } catch (error) {
     console.error(`Error fetching profile image for ${userId}: `, error);
     return null;
@@ -42,8 +63,6 @@ const fetchThumbnail = async (userId: string): Promise<string | null> => {
 };
 
 const useUserThumbnail = () => {
-  const { fetchUsers } = useUsers();
-
   return {
     fetchThumbnail,
   };
