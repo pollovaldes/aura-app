@@ -8,8 +8,11 @@ import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import { useHeaderHeight } from "@react-navigation/elements";
-import { Filter } from "lucide-react-native";
+import { ChevronRight, Filter } from "lucide-react-native";
 import Modal from "@/components/Modal/Modal";
+import FormTitle from "@/app/auth/FormTitle";
+import { FormButton } from "@/components/Form/FormButton";
+import StatusChip from "@/components/General/StatusChip";
 
 // Move to types/gasoline.ts
 type GasolineLoad = {
@@ -21,71 +24,49 @@ type GasolineLoad = {
   liters: number;
 };
 
-// Memoized card component
-const GasolineCard = React.memo(({ item }: { item: GasolineLoad }) => {
-  const { styles } = useStyles(stylesheet);
-  const formattedDate = useMemo(() => 
-    new Date(item.requested_at || new Date()).toLocaleDateString('es-MX', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    }).replace(/^\w/, (c) => c.toUpperCase()),
-    [item.requested_at]
-  );
-
-  const getStatusStyle = (status: string) => {
-    switch (status) {
-      case 'approved':
-        return {
-          backgroundColor: '#e8f5e9',
-          textColor: '#2e7d32',
-          text: 'Aprobado'
-        };
-      case 'pending':
-        return {
-          backgroundColor: '#fff3e0',
-          textColor: '#ef6c00',
-          text: 'Pendiente'
-        };
-      case 'rejected':
-        return {
-          backgroundColor: '#ffebee',
-          textColor: '#c62828',
-          text: 'Rechazado'
-        };
-      default:
-        return {
-          backgroundColor: '#f5f5f5',
-          textColor: '#757575',
-          text: 'Desconocido'
-        };
-    }
-  };
-
-  const statusStyle = getStatusStyle(item.status);
-
-  return (
-    <View style={styles.card}>
-      <View>
-        <Text style={styles.amount}>${item.amount.toFixed(2)} MXN</Text>
-        <Text style={styles.liters}>{item.liters.toFixed(2)} L</Text>
-        <Text style={styles.date}>{formattedDate}</Text>
-      </View>
-      <View style={[styles.status, { backgroundColor: statusStyle.backgroundColor }]}>
-        <Text style={[styles.statusText, { color: statusStyle.textColor }]}>
-          {statusStyle.text}
-        </Text>
-      </View>
-    </View>
-  );
-});
-
 type DateFilter = "all" | "week" | "month";
 type ModalType = "date_filter" | null;
 
+const statesConfig = {
+  approved: {
+    text: "Aprobado",
+    backgroundColor: "#e8f5e9", // Verde claro
+    textColor: "#2e7d32", // Verde
+  },
+  pending: {
+    text: "Pendiente",
+    backgroundColor: "#fff3e0", // Naranja claro
+    textColor: "#ef6c00", // Naranja
+  },
+  rejected: {
+    text: "Rechazado",
+    backgroundColor: "#ffebee", // Rojo claro
+    textColor: "#c62828", // Rojo
+  },
+};
+
+function formatDate(dateString: string) {
+  const date = new Date(dateString);
+  const day = date.getDate();
+  const month = date.toLocaleString("es", { month: "long" });
+  const year = date.getFullYear();
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  return `${day} de ${month} del ${year} a las ${hours}:${minutes} horas`;
+}
+
 export default function GasolineLoadHistory() {
   const { styles } = useStyles(stylesheet);
+  const headerHeight = useHeaderHeight();
+  const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
+  const [currentTabIndex, setCurrentTabIndex] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const [dateFilter, setDateFilter] = useState<DateFilter>("all");
+  
+  const { allGasolineLoads, loading, error, refetch } = useAllGasolineLoads(vehicleId);
+
+  const closeModal = () => setActiveModal(null);
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
@@ -98,24 +79,76 @@ export default function GasolineLoadHistory() {
     }
   }, [refetch]);
 
-  const filteredData = useMemo(() => {
-    if (!allGasolineLoads) return [];
-    
+  const getFilteredByDate = (data: GasolineLoad[]) => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-    switch (currentTabIndex) {
-      case 1:
+    switch (dateFilter) {
+      case "week":
         const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-        return allGasolineLoads.filter(item => new Date(item.requested_at) >= weekAgo);
-      case 2:
+        return data.filter(item => new Date(item.requested_at) >= weekAgo);
+      case "month":
         const monthAgo = new Date(today.getTime());
         monthAgo.setMonth(monthAgo.getMonth() - 1);
-        return allGasolineLoads.filter(item => new Date(item.requested_at) >= monthAgo);
+        return data.filter(item => new Date(item.requested_at) >= monthAgo);
       default:
-        return allGasolineLoads;
+        return data;
     }
-  }, [allGasolineLoads, currentTabIndex]);
+  };
+
+  const filteredData = useMemo(() => {
+    if (!allGasolineLoads) return [];
+    
+    // First filter by status using the SegmentedControl
+    const statusFiltered = allGasolineLoads.filter(item => {
+      switch (currentTabIndex) {
+        case 1:
+          return item.status === "pending";
+        case 2:
+          return item.status === "approved";
+        case 3:
+          return item.status === "rejected";
+        default:
+          return true;
+      }
+    });
+
+    // Then filter by date using the modal filter
+    return getFilteredByDate(statusFiltered);
+  }, [allGasolineLoads, currentTabIndex, dateFilter]);
+
+  const DateFilterModal = () => (
+    <Modal isOpen={activeModal === "date_filter"}>
+      <View style={styles.modalContainer}>
+        <Text style={styles.closeButton} onPress={closeModal}>
+          Cerrar
+        </Text>
+        <View style={styles.section}>
+          <View style={styles.group}>
+            <FormTitle title="Filtrar por fecha" />
+            <Text style={styles.subtitle}>
+              Selecciona un rango de fechas para filtrar el historial
+            </Text>
+          </View>
+          <View style={styles.group}>
+            {["all", "week", "month"].map((filter) => (
+              <FormButton
+                key={filter}
+                title={
+                  filter === "all" ? "Todos los registros" :
+                  filter === "week" ? "Última semana" : "Último mes"
+                }
+                onPress={() => { 
+                  setDateFilter(filter as DateFilter); 
+                  closeModal(); 
+                }}
+              />
+            ))}
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
 
   if (!vehicleId) {
     return (
@@ -154,26 +187,53 @@ export default function GasolineLoadHistory() {
 
   return (
     <>
+      <DateFilterModal />
       <Stack.Screen 
         options={{
           title: "Historial de Cargas",
           headerLargeTitle: false,
-          headerTitle: () => (
-            <SegmentedControl
-              values={["Todos", "Última semana", "Último mes"]}
-              selectedIndex={currentTabIndex}
-              onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
-              style={styles.segmentedControl}
-            />
+          headerRight: () => (
+            <Pressable onPress={() => setActiveModal("date_filter")}>
+              <Filter color={styles.filterIcon.color} />
+            </Pressable>
           ),
         }} 
+      />
+      <SegmentedControl
+        values={["Todos", "Pendientes", "Aprobados", "Rechazados"]}
+        selectedIndex={currentTabIndex}
+        onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
+        style={[
+          styles.segmentedControl,
+          { marginTop: Platform.OS === "ios" ? headerHeight + 6 : 6 },
+        ]}
       />
       <View style={styles.safeContainer}>
         <FlatList
           contentInsetAdjustmentBehavior="automatic"
           data={filteredData}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <GasolineCard item={item} />}
+          renderItem={({ item }) => (
+            <View style={styles.container}>
+              <View style={styles.contentContainer}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <StatusChip
+                    status={item.status}
+                    statesConfig={statesConfig}
+                  />
+                  <Text style={styles.title}>${item.amount.toFixed(2)} MXN</Text>
+                </View>
+                <View>
+                  <Text style={styles.subtitle}>
+                    {`${item.liters.toFixed(2)} L • ${formatDate(item.requested_at)}`}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.chevronView}>
+                <ChevronRight color={styles.chevron.color} />
+              </View>
+            </View>
+          )}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -199,89 +259,62 @@ const stylesheet = createStyleSheet((theme) => ({
     backgroundColor: theme.ui.colors.background,
   },
   container: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: theme.ui.colors.border,
+    padding: 12,
+  },
+  contentContainer: {
+    gap: 6,
+    flexDirection: "column",
     flex: 1,
-    padding: 15,
-    backgroundColor: theme.ui.colors.background,
-  },
-  card: {
-    backgroundColor: theme.ui.colors.card,
-    padding: 15,
-    borderRadius: 12,
-    marginBottom: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  amount: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: theme.headerButtons.color,
-  },
-  date: {
-    fontSize: 14,
-    color: theme.textPresets.subtitle,
-    marginTop: 4,
-  },
-  status: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-  },
-  statusText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  loadingText: {
-    fontSize: 16,
-    color: theme.textPresets.subtitle,
-    textAlign: 'center',
-    padding: 20,
-  },
-  errorText: {
-    fontSize: 16,
-    color: '#d32f2f',
-    textAlign: 'center',
-    padding: 20,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 15,
-    paddingHorizontal: 5,
+    marginHorizontal: 12,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 17,
+    fontWeight: "bold",
+    paddingLeft: 10,
+    color: theme.textPresets.main,
+    marginRight: 120,
+  },
+  subtitle: {
+    color: theme.textPresets.subtitle,
+    fontSize: 15,
+  },
+  modalContainer: {
+    width: "100%",
+    alignSelf: "center",
+    maxWidth: 500,
+    backgroundColor: theme.ui.colors.card,
+    borderRadius: 10,
+    padding: 24,
+  },
+  closeButton: {
+    color: theme.headerButtons.color,
+    fontSize: 18,
+    textAlign: "right",
+  },
+  section: {
+    gap: theme.marginsComponents.section,
+    alignItems: "center",
+  },
+  group: {
+    gap: theme.marginsComponents.group,
+    width: "100%",
+  },
+  chevron: {
+    color: theme.textPresets.subtitle,
+  },
+  chevronView: {
+    paddingRight: 12,
+  },
+  filterIcon: {
     color: theme.headerButtons.color,
   },
-  filterButton: {
-    backgroundColor: theme.headerButtons.color,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    marginRight: -8,
-  },
-  filterButtonText: {
-    color: theme.textPresets.main,
-    fontWeight: '600',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
   segmentedControl: {
-    width: 350,
-  },
-  liters: {
-    fontSize: 14,
-    color: theme.textPresets.subtitle,
-    marginTop: 4,
+    width: "97%",
+    margin: "auto",
+    marginBottom: 6,
   },
 }));
