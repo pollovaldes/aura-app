@@ -7,6 +7,9 @@ import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import AssignRoleModal from "@/components/Modal/AssignRoleModal";
 import Modal from "@/components/Modal/Modal";
+import useUsers from "@/hooks/peopleHooks/useUsers";
+import LoadingScreen from "@/components/dataStates/LoadingScreen";
+import ErrorScreen from "@/components/dataStates/ErrorScreen";
 
 type ModalType = "assignRole" | null;
 
@@ -14,12 +17,37 @@ export default function TruckPeopleAdminContainer() {
   const { styles } = useStyles(stylesheet);
   const [modalVisible, setModalVisible] = useState(false);
 
+  const { personId } = useLocalSearchParams();
+  const { users, usersAreLoading, fetchUsers } = useUsers();
+
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => {
     setActiveModal(null);
   }
   const openModal = () => {
     setActiveModal("assignRole");
+  }
+
+  if (usersAreLoading) {
+    return <LoadingScreen caption={"Cargando Perfil"}></LoadingScreen>
+  }
+
+  if (!users) {
+    return <ErrorScreen 
+      caption="Error al cargar el perfil"
+      buttonCaption="Reintentar"
+      retryFunction={fetchUsers}
+    />
+  }
+  
+  const profile = users.find((user) => user.id === personId);
+
+  if (!profile) {
+    return <ErrorScreen 
+      caption="Error al cargar el perfil"
+      buttonCaption="Reintentar"
+      retryFunction={fetchUsers}
+    />
   }
 
   return (
@@ -31,7 +59,11 @@ export default function TruckPeopleAdminContainer() {
           <Row
             title="Rol actual"
             trailingType="chevron"
-            caption = {"vemos"}// No esta funcionando algo
+            caption = {
+              profile.role === "OWNER" ? "Dueño" :
+              profile.role === "ADMIN" ? "Administrador" : 
+              profile.role === "DRIVER" ? "Operador" : "No tiene rol"
+            }
             showChevron={false}
             disabled={true}
           />
