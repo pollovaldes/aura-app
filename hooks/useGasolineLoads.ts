@@ -20,7 +20,7 @@ const useGasolineLoads = () => {
                         content: 'New gasoline load inserted',
                     }]);
 
-                    /*
+                    /* ////Borrar o ver que hacer
             if (error) {
                 console.error('Error inserting gasoline load:', error);
                 Alert.alert('Error', 'Failed to insert gasoline load');

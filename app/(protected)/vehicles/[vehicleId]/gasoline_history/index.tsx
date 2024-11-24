@@ -53,7 +53,7 @@ const GasolineHistoryContent = React.memo(({
   const [selectedView, setSelectedView] = useState(0); // 0 for weekly, 1 for monthly
   
   const handleHistoryPress = useCallback(() => {
-    router.push(`/vehicles/${vehicleId}/gasoline_history/GasolineLoadHistory`);
+    router.push(`/vehicles/${vehicleId}/gasoline_history/GasolineLoadHistory`); // !Cambiar ruta o eliminar una de las dos gasolinas
   }, [vehicleId, router]);
 
   return (
@@ -103,7 +103,7 @@ export default function GasolineHistory() {
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
 
-  useGasolineLoads();
+  useGasolineLoads(); // * Borrar o ver que hacer
 
   // Find the vehicle
   const vehicle = vehicles?.find((Vehicle) => Vehicle.id === vehicleId);
@@ -113,7 +113,7 @@ export default function GasolineHistory() {
     isGasolineStatusLoading,
     fetchGasolineStatus,
     updateGasolineThreshold
-  } = useGasolineStatus(vehicle?.id);
+  } = useGasolineStatus(vehicle?.id); // TODO arreglar todos los pdos de supabase
 
   const isAdmin = profile?.role === 'ADMIN' || profile?.role === 'OWNER';
 
@@ -210,7 +210,7 @@ export default function GasolineHistory() {
           data={[null]} // Changed to [null] for better type safety
           renderItem={() => null}
           ListHeaderComponent={
-            <GasolineHistoryContent 
+            <GasolineHistoryContent // TODO: En supabase no se esta recargando la gasolina restante
               profile={profile}
               vehicle={vehicle}
               isAdmin={isAdmin}
