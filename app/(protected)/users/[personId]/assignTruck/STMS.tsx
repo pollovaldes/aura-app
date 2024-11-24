@@ -6,21 +6,14 @@ import useAssignVehicle from '@/hooks/peopleHooks/useAssignVehicle';
 import React, { useEffect, useState } from 'react';
 import { useSearch } from '@/context/SearchContext';
 import { supabase } from '@/lib/supabase';
-
-type Truck =
-  {
-    id: string;
-    numero_economico: string;
-    marca: string;
-    sub_marca: string;
-    modelo: string;
-  }
+import { Vehicle } from '@/types/Vehicle';
+import TruckThumbnail from '@/components/vehicles/TruckThumbnail';
 
 export default function SeeTruckModalScreen() {
   const router = useRouter();
   const { styles } = useStyles(stylesheet);
   const { personId } = useLocalSearchParams<{ personId: string }>();
-  const [trucks, setTrucks] = useState<Truck[]>([]);
+  const [trucks, setTrucks] = useState<Vehicle[]>([]);
   const [eraseTrucks, setEraseTrucks] = useState<{ vehicle_id: string }[]>([]);
   const [loading, setLoading] = useState(true);
   //const { trucks, loading } = useTruck({ isComplete: false }); // quitar
@@ -86,16 +79,16 @@ export default function SeeTruckModalScreen() {
       try {
         const truckIds = eraseTrucks.map((truck) => truck.vehicle_id);
         const { data, error } = await supabase
-          .from("camiones")
-          .select("id, numero_economico, marca, sub_marca, modelo")
-          .order('numero_economico', { ascending: true })
+          .from("vehicles")
+          .select("id, economic_number, brand, sub_brand, year")
+          .order('economic_number', { ascending: true })
           .in("id", truckIds);
 
         if (error) {
           throw error;
         }
 
-        setTrucks(data as Truck[]);
+        setTrucks(data as Vehicle[]);
       } catch (error) {
         console.error("Error fetching trucks:", error);
       } finally {
@@ -114,7 +107,7 @@ export default function SeeTruckModalScreen() {
   useEffect(() => {
     if (searchQuery) {
       const filtered = trucks.filter((truck) =>
-        `${truck.numero_economico} ${truck.marca} ${truck.sub_marca} (${truck.modelo})`
+        `${truck.economic_number} ${truck.brand} ${truck.sub_brand} (${truck.year})`
           .toLowerCase()
           .includes(searchQuery.toLowerCase())
       );
@@ -190,14 +183,11 @@ export default function SeeTruckModalScreen() {
                   <View style={[styles.container, isSelected ? styles.selectedItem : null]}>
                     <View style={styles.contentContainer}>
                       <View style={styles.imageContainer}>
-                        <Image
-                          style={styles.image}
-                          source={{ uri: "https://placehold.co/512x512.png" }}
-                        />
+                        <TruckThumbnail vehicleId={item.id} />
                       </View>
                       <Text style={styles.itemText}>
-                        <Text style={{ fontWeight: 'bold' }}>{item.numero_economico}</Text>
-                        {`\n${capitalizeWords(item.marca)} ${capitalizeWords(item.sub_marca)} (${capitalizeWords(item.modelo)})`}
+                        <Text style={{ fontWeight: 'bold' }}>{item.economic_number}</Text>
+                        {`\n${capitalizeWords(item.brand)} ${capitalizeWords(item.sub_brand)} (${item.year})`}
                       </Text>
                     </View>
                     <View style={styles.chevronView}>

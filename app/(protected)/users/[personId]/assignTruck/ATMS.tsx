@@ -14,6 +14,7 @@ import useVehicle from "@/hooks/truckHooks/useVehicle";
 import React, { useEffect, useState } from "react";
 import { useSearch } from "@/context/SearchContext";
 import useAssignVehicle from "@/hooks/peopleHooks/useAssignVehicle";
+import TruckThumbnail from "@/components/vehicles/TruckThumbnail";
 
 export default function AssignVehicleModalScreen() {
   const router = useRouter();
@@ -151,10 +152,7 @@ export default function AssignVehicleModalScreen() {
                   >
                     <View style={styles.contentContainer}>
                       <View style={styles.imageContainer}>
-                        <Image
-                          style={styles.image}
-                          source={{ uri: "https://placehold.co/512x512.png" }}
-                        />
+                        <TruckThumbnail vehicleId={item.id} />
                       </View>
                       <Text style={styles.itemText}>
                         <Text style={{ fontWeight: "bold" }}>
