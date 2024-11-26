@@ -47,6 +47,6 @@ export default function PhoneForm({ togglePrimaryForm }: PrimaryFormProps) {
 const stylesheet = createStyleSheet((theme) => ({
   section: {
     gap: theme.marginsComponents.section,
-    width: "100%",
+    width: "90%",
   },
 }));
