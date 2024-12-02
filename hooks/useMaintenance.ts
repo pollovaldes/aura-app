@@ -14,7 +14,7 @@ export type Maintenance = {
   status: "PENDING_REVISION" | "IN_REVISION" | "SOLVED";
 };
 
-export default function useMaintenance(vehicleId?: string) {
+export default function useMaintenance(vehicleId?: string, recordId?: string) {
   const [maintenanceRecords, setMaintenanceRecords] = useState<
     Maintenance[] | null
   >(null);
@@ -45,11 +45,14 @@ export default function useMaintenance(vehicleId?: string) {
       .from("maintenance")
       .select(
         "id, vehicle_id, issued_by, issued_datetime, resolved_by, resolved_datetime, title, description, status"
-      )
-      .order("issued_datetime", { ascending: false });
+      );
 
     if (vehicleId) {
       query = query.eq("vehicle_id", vehicleId);
+    } else if (recordId) {
+      query = query.eq("id", recordId);
+    } else {
+      query = query.order("issued_datetime", { ascending: false });
     }
 
     const { data, error } = await query;

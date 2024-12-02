@@ -298,7 +298,7 @@ export default function Index() {
             renderItem={({ item }) => (
               <Link
                 href={{
-                  pathname: `/vehicles/[vehicleId]/maintenance/1`,
+                  pathname: `/vehicles/${vehicleId}/maintenance/${item.id}`,
                 }}
                 asChild
               >
