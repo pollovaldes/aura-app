@@ -8,13 +8,12 @@ import AddMaintenance from "@/components/vehicles/modals/AddMaintenance";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
 import useMaintenance from "@/hooks/useMaintenance";
 import useProfile from "@/hooks/useProfile";
-import { supabase } from "@/lib/supabase";
 import { User } from "@/types/User";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { ChevronRight, Plus } from "lucide-react-native";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FlatList, Platform, Pressable, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
@@ -25,41 +24,12 @@ export default function Index() {
   const { styles } = useStyles(stylesheet);
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
   const { profile, isProfileLoading, fetchProfile } = useProfile();
-  const { maintenanceRecords, areMaintenanceRecordsLoading, fetchMaintenance } =
-    useMaintenance();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
+  const { maintenanceRecords, areMaintenanceRecordsLoading, fetchMaintenance } =
+    useMaintenance(vehicleId);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
-  const [allProfiles, setAllProfiles] = useState<User[] | null>(null);
   const closeModal = () => setActiveModal(null);
   const headerHeight = useHeaderHeight();
-
-  const getALLProfiles = async (uuids: string[]) => {
-    try {
-      const profiles = await Promise.all(
-        uuids.map(async (uuid) => {
-          const { data: profile, error } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", uuid)
-            .single();
-
-          if (error) {
-            alert(
-              `Error fetching profile with UUID ${uuid}:\n${error.message}`
-            );
-            return null;
-          }
-
-          return profile;
-        })
-      );
-
-      // Filter out any null values (failed fetches) and update state
-      setAllProfiles(profiles.filter((profile) => profile !== null));
-    } catch (error) {
-      console.error("Error fetching profiles:", error);
-    }
-  };
 
   if (isProfileLoading) {
     return (
@@ -193,10 +163,6 @@ export default function Index() {
     const uuids = currentVechicleMaintenanceRecords.map(
       (record) => record.issued_by
     );
-
-    if (allProfiles === null) {
-      getALLProfiles(uuids);
-    }
   }
 
   function formatDate(dateString: string, prefix: string) {
@@ -249,30 +215,6 @@ export default function Index() {
       }
     }
   );
-
-  const getProfileName = (id: string | null | undefined) => {
-    const profile = allProfiles?.find((profile) => profile.id === id);
-    if (!profile) return "un usuario desconocido";
-
-    return `${profile.name ?? ""} ${profile.father_last_name ?? ""} ${
-      profile.mother_last_name ?? ""
-    }.`.trim();
-  };
-
-  const renderSolvedText = (
-    resolvedDatetime: string | null | undefined,
-    resolvedBy: string | null | undefined
-  ) => {
-    const resolverName = getProfileName(resolvedBy);
-    return resolvedDatetime
-      ? `${formatDate(resolvedDatetime, "Solicitud resuelta el ")} por ${resolverName}.`
-      : `No se pudo obtener la fecha de resolución. Esta solicitud fue resuelta por ${resolverName}.`;
-  };
-
-  const renderIssuedText = (issuedDatetime: string, issuedBy: string) => {
-    const issuerName = getProfileName(issuedBy);
-    return `${formatDate(issuedDatetime, "Solicitado el ")} por ${issuerName}`;
-  };
 
   return (
     <>
@@ -369,15 +311,37 @@ export default function Index() {
                       </View>
                       <View>
                         <Text style={styles.subtitle}>
-                          {item.status === "SOLVED"
-                            ? renderSolvedText(
-                                item.resolved_datetime,
-                                item.resolved_by
-                              )
-                            : renderIssuedText(
-                                item.issued_datetime,
-                                item.issued_by
-                              )}
+                          {(() => {
+                            const {
+                              issued_by,
+                              issued_datetime,
+                              resolved_by,
+                              resolved_datetime,
+                              status,
+                            } = item;
+
+                            const getFullName = (user: User | null): string => {
+                              return user
+                                ? `${user.name} ${user.father_last_name} ${user.mother_last_name}`.trim()
+                                : "un usuario desconocido";
+                            };
+
+                            const issuedByName = getFullName(issued_by);
+                            const issuedDate = issued_datetime
+                              ? formatDate(issued_datetime, "el ")
+                              : "una fecha desconocida";
+
+                            if (status === "SOLVED") {
+                              const resolvedByName = getFullName(resolved_by!);
+                              const resolvedDate = resolved_datetime
+                                ? formatDate(resolved_datetime, "el ")
+                                : "una fecha desconocida";
+
+                              return `Esta solicitud fue hecha por ${issuedByName} ${issuedDate} y fue resuelta ${resolvedDate} por ${resolvedByName}`;
+                            }
+
+                            return `Esta solicitud fue hecha por ${issuedByName} ${issuedDate}`;
+                          })()}
                         </Text>
                       </View>
                     </View>

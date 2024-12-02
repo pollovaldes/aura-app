@@ -1,37 +1,58 @@
 import { supabase } from "@/lib/supabase";
-import { useLocalSearchParams } from "expo-router";
+import { User } from "@/types/User";
 import { useEffect, useState } from "react";
 
-// Define the type for a maintenance record
 export type Maintenance = {
-  id: string; // Maintenance ID
-  vehicle_id: string; // Vehicle ID
-  issued_by: string;
+  id: string;
+  vehicle_id: string;
+  issued_by: User;
   issued_datetime: string;
-  resolved_by?: string;
+  resolved_by?: User | null;
   resolved_datetime?: string;
   title: string;
   description: string;
   status: "PENDING_REVISION" | "IN_REVISION" | "SOLVED";
 };
 
-export default function useMaintenance() {
+export default function useMaintenance(vehicleId?: string) {
   const [maintenanceRecords, setMaintenanceRecords] = useState<
     Maintenance[] | null
   >(null);
   const [areMaintenanceRecordsLoading, setAreMaintenanceRecordsLoading] =
     useState<boolean>(false);
 
-  // Fetch maintenance records from the Supabase table
+  const fetchUserById = async (userId: string): Promise<User | null> => {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select(
+        "id, name, father_last_name, mother_last_name, position, role, is_fully_registered"
+      )
+      .eq("id", userId)
+      .single();
+
+    if (error) {
+      console.error(`Error fetching user with ID ${userId}:`, error);
+      return null;
+    }
+
+    return data as User;
+  };
+
   const fetchMaintenance = async (): Promise<void> => {
     setAreMaintenanceRecordsLoading(true);
 
-    const { data, error } = await supabase
-      .from("maintenance") // Type the table response
+    let query = supabase
+      .from("maintenance")
       .select(
         "id, vehicle_id, issued_by, issued_datetime, resolved_by, resolved_datetime, title, description, status"
       )
       .order("issued_datetime", { ascending: false });
+
+    if (vehicleId) {
+      query = query.eq("vehicle_id", vehicleId);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       alert(
@@ -45,7 +66,35 @@ export default function useMaintenance() {
       return;
     }
 
-    setMaintenanceRecords(data);
+    const enrichedRecords: Maintenance[] = await Promise.all(
+      data.map(async (record: any) => {
+        let resolvedByUser: User | null = null;
+        let issuedByUser: User | null = null;
+
+        if (record.resolved_by) {
+          resolvedByUser = await fetchUserById(record.resolved_by);
+        }
+
+        if (record.issued_by !== undefined) {
+          issuedByUser = await fetchUserById(record.issued_by);
+        }
+
+        return {
+          id: record.id,
+          vehicle_id: record.vehicle_id,
+          issued_by: issuedByUser as User,
+          issued_datetime: record.issued_datetime,
+          resolved_by: resolvedByUser,
+          resolved_datetime: record.resolved_datetime,
+          title: record.title,
+          description: record.description,
+          status: record.status,
+        };
+      })
+    );
+
+    setMaintenanceRecords(enrichedRecords);
+    console.log(enrichedRecords);
     setAreMaintenanceRecordsLoading(false);
   };
 
