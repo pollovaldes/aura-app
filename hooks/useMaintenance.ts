@@ -94,7 +94,6 @@ export default function useMaintenance(vehicleId?: string) {
     );
 
     setMaintenanceRecords(enrichedRecords);
-    console.log(enrichedRecords);
     setAreMaintenanceRecordsLoading(false);
   };
 
