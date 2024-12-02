@@ -296,7 +296,12 @@ export default function Index() {
             data={filteredMaintenanceRecords}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <Link href={{ pathname: `/vehicles/${item.id}` }} asChild>
+              <Link
+                href={{
+                  pathname: `/vehicles/[vehicleId]/maintenance/1`,
+                }}
+                asChild
+              >
                 <Pressable>
                   <View style={styles.container}>
                     <View style={styles.contentContainer}>
