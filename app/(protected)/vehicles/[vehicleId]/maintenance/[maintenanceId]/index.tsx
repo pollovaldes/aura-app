@@ -1,14 +1,19 @@
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
+import GroupedList from "@/components/grouped-list/GroupedList";
+import Row from "@/components/grouped-list/Row";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
 import useMaintenance from "@/hooks/useMaintenance";
 import useProfile from "@/hooks/useProfile";
+import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Text } from "react-native";
+import { Platform, ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { colorPalette } from "@/style/themes";
+import { Info } from "lucide-react-native";
 
 export default function maintenanceId() {
   const { styles } = useStyles(stylesheet);
@@ -18,6 +23,7 @@ export default function maintenanceId() {
   const { maintenanceRecords, areMaintenanceRecordsLoading, fetchMaintenance } =
     useMaintenance(undefined, maintenanceId);
   const headerHeight = useHeaderHeight();
+  const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
   if (isProfileLoading) {
     return (
@@ -154,12 +160,58 @@ export default function maintenanceId() {
     <>
       <Stack.Screen
         options={{
-          title: "Detalles de solicitud",
+          title: "Detalles de la solicitud",
           headerLargeTitle: false,
         }}
       />
+      <View
+        style={[
+          { marginTop: Platform.OS === "ios" ? headerHeight + 0 : 6 },
+          styles.headerContainer,
+        ]}
+      >
+        <SegmentedControl
+          values={["General", "Archivos y medios", "Actualizaciones"]}
+          selectedIndex={currentTabIndex}
+          onChange={(event) =>
+            setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)
+          }
+          style={[styles.segmentedControl, {}]}
+        />
+      </View>
+      <ScrollView contentInsetAdjustmentBehavior="automatic">
+        <GroupedList
+          header="Información general"
+          footer="Información inicial provista en la base de datos"
+        >
+          <Row
+            title="Descripción general"
+            trailingType="chevron"
+            showChevron={false}
+            caption={record.title}
+            icon={<Info size={24} color="white" />}
+            color={colorPalette.cyan[500]}
+          />
+        </GroupedList>
+      </ScrollView>
     </>
   );
 }
 
-const stylesheet = createStyleSheet((theme) => ({}));
+const stylesheet = createStyleSheet((theme) => ({
+  segmentedControl: {
+    width: "97%",
+    margin: "auto",
+    marginTop: 6,
+    marginBottom: 16,
+  },
+  headerContainer: {},
+  headerTitle: {
+    textAlign: "center",
+    fontSize: 22,
+    fontWeight: "bold",
+    marginHorizontal: 12,
+    marginVertical: 12,
+    color: theme.textPresets.main,
+  },
+}));

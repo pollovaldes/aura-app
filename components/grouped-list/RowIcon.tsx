@@ -21,13 +21,11 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 17,
     ...Platform.select({
       web: {
         width: 25,
         height: 25,
         borderRadius: 5,
-        marginRight: 12,
       },
     }),
   },

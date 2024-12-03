@@ -49,6 +49,7 @@ const GroupedList = ({
           {row}
         </View>
       ))}
+
       {footer && (
         <View style={styles.footer}>
           <Text style={styles.footerText}>{footer}</Text>
@@ -67,7 +68,6 @@ const stylesheet = createStyleSheet((theme) => ({
         maxWidth: 430, // Restricts to max 400 points on web
         minWidth: 250,
         alignSelf: "center",
-        width: "100%",
       },
     }),
   },

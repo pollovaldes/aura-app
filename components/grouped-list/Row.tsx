@@ -52,34 +52,29 @@ const Row = ({
         { opacity: disabled ? 0.75 : 1 },
         pressed && { opacity: 0.45 },
         isHovered && styles.containerHovered,
+        styles.container,
       ]}
     >
-      <View style={styles.container}>
-        {children && <View style={styles.childrenContainer}>{children}</View>}
-        <View style={styles.leadingContainer}>
+      {children && <View>{children}</View>}
+
+      <View style={[styles.leadingContainer, { flex: caption ? 1 : 10 }]}>
+        <View>
           {icon && color && <RowIcon icon={icon} backgroundColor={color} />}
-          <Text style={styles.title} ellipsizeMode="head" numberOfLines={1}>
-            {title}
-          </Text>
         </View>
-        <View style={styles.trailingContainer}>
-          {isLoading ? (
-            <ActivityIndicator />
-          ) : (
-            <>
-              <Text
-                style={styles.caption}
-                ellipsizeMode="head"
-                numberOfLines={1}
-              >
-                {caption}
-              </Text>
-              {showChevron ? (
-                <MaterialIcons name="chevron-right" size={25} color="#c4c4c7" />
-              ) : null}
-            </>
-          )}
-        </View>
+        <Text style={styles.title}>{title}</Text>
+      </View>
+
+      <View style={styles.trailingContainer}>
+        {isLoading ? (
+          <ActivityIndicator />
+        ) : (
+          <>
+            <Text style={styles.caption}>{caption}</Text>
+            {showChevron ? (
+              <MaterialIcons name="chevron-right" size={25} color="#c4c4c7" />
+            ) : null}
+          </>
+        )}
       </View>
     </Pressable>
   );
@@ -89,34 +84,28 @@ export default Row;
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
-    minHeight: 50,
-    marginHorizontal: 20,
+    padding: 12,
+    gap: 12,
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    ...Platform.select({
-      web: {
-        minHeight: 45,
-      },
-    }),
   },
   containerHovered: {
     backgroundColor: theme.components.navBarListItem.hoveredBG,
   },
-  childrenContainer: {
-    width: "80%",
-    marginVertical: 12,
-    height: 70,
-  },
   trailingContainer: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "flex-end",
+    gap: 12,
   },
   leadingContainer: {
-    flexDirection: "row",
+    flex: 1,
+    gap: 12,
     alignItems: "center",
+    flexDirection: "row",
   },
   title: {
+    flexShrink: 1,
     fontSize: 17.5,
     color: theme.textPresets.main,
     ...Platform.select({
@@ -126,6 +115,8 @@ const stylesheet = createStyleSheet((theme) => ({
     }),
   },
   caption: {
+    flexShrink: 1,
+    textAlign: "right",
     fontSize: 16.5,
     color: theme.textPresets.subtitle,
     ...Platform.select({
