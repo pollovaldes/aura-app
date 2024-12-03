@@ -10,10 +10,17 @@ import SegmentedControl from "@react-native-segmented-control/segmented-control"
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Platform, ScrollView, Text, View } from "react-native";
+import { Platform, RefreshControl, ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { colorPalette } from "@/style/themes";
-import { Info } from "lucide-react-native";
+import {
+  CircleHelp,
+  Info,
+  MessageCirclePlus,
+  RefreshCcw,
+  Trash,
+} from "lucide-react-native";
+import StatusChip from "@/components/General/StatusChip";
 
 export default function maintenanceId() {
   const { styles } = useStyles(stylesheet);
@@ -156,6 +163,37 @@ export default function maintenanceId() {
     profile.role === "OWNER" ||
     profile.role === "DRIVER";
 
+  const statesConfig = {
+    IN_REVISION: {
+      text: "En revisión",
+      backgroundColor: "#e3f2fd", // Azul claro
+      textColor: "#1e88e5", // Azul
+    },
+    PENDING_REVISION: {
+      text: "Recibido",
+      backgroundColor: "#fff3e0", // Naranja claro
+      textColor: "#ef6c00", // Naranja
+    },
+    SOLVED: {
+      text: "Resuelto",
+      backgroundColor: "#e8f5e9", // Verde claro
+      textColor: "#2e7d32", // Verde
+    },
+  };
+
+  function formatDate(dateString: string, prefix: string) {
+    const date = new Date(dateString);
+
+    const day = date.getDate();
+    const month = date.toLocaleString("es", { month: "long" }); // Get month in Spanish
+    const year = date.getFullYear();
+
+    const hours = date.getHours().toString().padStart(2, "0"); // Add leading zero
+    const minutes = date.getMinutes().toString().padStart(2, "0"); // Add leading zero
+
+    return `${prefix}${day} de ${month} del ${year} a las ${hours}:${minutes} horas`;
+  }
+
   return (
     <>
       <Stack.Screen
@@ -165,10 +203,7 @@ export default function maintenanceId() {
         }}
       />
       <View
-        style={[
-          { marginTop: Platform.OS === "ios" ? headerHeight + 0 : 6 },
-          styles.headerContainer,
-        ]}
+        style={[{ marginTop: Platform.OS === "ios" ? headerHeight + 0 : 6 }]}
       >
         <SegmentedControl
           values={["General", "Archivos y medios", "Actualizaciones"]}
@@ -179,20 +214,96 @@ export default function maintenanceId() {
           style={[styles.segmentedControl, {}]}
         />
       </View>
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <GroupedList
-          header="Información general"
-          footer="Información inicial provista en la base de datos"
-        >
-          <Row
-            title="Descripción general"
-            trailingType="chevron"
-            showChevron={false}
-            caption={record.title}
-            icon={<Info size={24} color="white" />}
-            color={colorPalette.cyan[500]}
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        refreshControl={
+          <RefreshControl
+            refreshing={
+              vehiclesAreLoading ||
+              areMaintenanceRecordsLoading ||
+              isProfileLoading
+            }
+            onRefresh={() => {
+              fetchVehicles();
+              fetchProfile();
+              fetchMaintenance();
+            }}
           />
-        </GroupedList>
+        }
+      >
+        <View style={styles.groupedListsContainer}>
+          <GroupedList>
+            <Row
+              title="Estatus de la solicitud"
+              trailingType="chevron"
+              caption={() => {
+                return (
+                  <StatusChip
+                    status={record.status}
+                    statesConfig={statesConfig}
+                  />
+                );
+              }}
+              icon={<CircleHelp size={24} color="white" />}
+              color={colorPalette.orange[500]}
+            />
+            <Row
+              title="Descripción general"
+              trailingType="chevron"
+              showChevron={false}
+              caption={record.title}
+              icon={<Info size={24} color="white" />}
+              color={colorPalette.cyan[500]}
+            />
+            <Row
+              trailingType="chevron"
+              title=""
+              onPress={() => {}}
+              showChevron={false}
+            >
+              <Text style={styles.haderDescription}>
+                {record.description === ""
+                  ? "No se proveyó ninguna descripción para esta solicitud de mantenimiento."
+                  : record.description}
+              </Text>
+            </Row>
+          </GroupedList>
+          <GroupedList>
+            <Row
+              title="Inicio de la solicitud"
+              trailingType="chevron"
+              showChevron={false}
+              caption={formatDate(record.issued_datetime, "Iniciada el ")}
+            />
+            <Row
+              title="Quien solicitó"
+              trailingType="chevron"
+              showChevron={false}
+              caption={record.issued_by.name}
+            />
+          </GroupedList>
+
+          <GroupedList header="Acciones para esta solicitud">
+            <Row
+              title="Cambiar el estatus de la solicitud"
+              trailingType="chevron"
+              icon={<RefreshCcw size={24} color="white" />}
+              color={colorPalette.green[500]}
+            />
+            <Row
+              title="Agregar comentario"
+              trailingType="chevron"
+              icon={<MessageCirclePlus size={24} color="white" />}
+              color={colorPalette.neutral[500]}
+            />
+            <Row
+              title="Eliminar solicitud"
+              trailingType="chevron"
+              icon={<Trash size={24} color="white" />}
+              color={colorPalette.red[500]}
+            />
+          </GroupedList>
+        </View>
       </ScrollView>
     </>
   );
@@ -202,10 +313,16 @@ const stylesheet = createStyleSheet((theme) => ({
   segmentedControl: {
     width: "97%",
     margin: "auto",
-    marginTop: 6,
-    marginBottom: 16,
+    marginVertical: 6,
   },
-  headerContainer: {},
+  groupedListsContainer: {
+    gap: theme.marginsComponents.section,
+    marginTop: 6,
+  },
+  haderDescription: {
+    color: theme.textPresets.main,
+    fontSize: 16,
+  },
   headerTitle: {
     textAlign: "center",
     fontSize: 22,

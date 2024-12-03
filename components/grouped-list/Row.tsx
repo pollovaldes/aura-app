@@ -25,7 +25,7 @@ interface BaseProps {
 // Properties when trailingType is "default"
 interface DefaultProps extends BaseProps {
   trailingType: "chevron";
-  caption?: string;
+  caption?: string | React.JSX.Element | (() => React.JSX.Element);
 }
 
 const Row = ({
@@ -67,12 +67,14 @@ const Row = ({
       <View style={styles.trailingContainer}>
         {isLoading ? (
           <ActivityIndicator />
+        ) : typeof caption === "function" ? (
+          caption()
         ) : (
           <>
             <Text style={styles.caption}>{caption}</Text>
-            {showChevron ? (
+            {showChevron && (
               <MaterialIcons name="chevron-right" size={25} color="#c4c4c7" />
-            ) : null}
+            )}
           </>
         )}
       </View>
@@ -92,7 +94,7 @@ const stylesheet = createStyleSheet((theme) => ({
     backgroundColor: theme.components.navBarListItem.hoveredBG,
   },
   trailingContainer: {
-    flex: 1,
+    flex: 1.2,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",

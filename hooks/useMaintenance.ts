@@ -58,7 +58,7 @@ export default function useMaintenance(vehicleId?: string, recordId?: string) {
     const { data, error } = await query;
 
     if (error) {
-      alert(
+      console.error(
         `Ocurrió un error al obtener los registros de mantenimiento: \n\n` +
           `Mensaje de error: ${error.message}\n\n` +
           `Código de error: ${error.code}\n\n` +
