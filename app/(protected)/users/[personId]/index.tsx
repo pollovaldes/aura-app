@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, Text, Switch } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
-import { Info, SquarePen, Truck } from "lucide-react-native";
+import {
+  Info,
+  SquarePen,
+  Truck,
+  UserCog,
+  UserPlus,
+  UserRound,
+  UserRoundCog,
+  Users,
+} from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import ProfileColumn from "@/components/people/ProfileColumn";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
@@ -16,6 +25,22 @@ export default function UserDetail() {
   const { personId } = useLocalSearchParams<{ personId: string }>();
   const { styles } = useStyles(stylesheet);
   const { users, usersAreLoading, fetchUsers } = useUsers();
+
+  // =========== SWITCHES ===========
+
+  // Define states for each switch
+  const [isAdminEnabled, setIsAdminEnabled] = useState(false);
+  const [isAllPeopleEnabled, setIsAllPeopleEnabled] = useState(false);
+  const [isAllVehiclesEnabled, setIsAllVehiclesEnabled] = useState(false);
+
+  // Toggle functions for each switch
+  const toggleAdminSwitch = () => setIsAdminEnabled(!isAdminEnabled);
+  const toggleAllPeopleSwitch = () =>
+    setIsAllPeopleEnabled(!isAllPeopleEnabled);
+  const toggleAllVehiclesSwitch = () =>
+    setIsAllVehiclesEnabled(!isAllVehiclesEnabled);
+
+  // =========== SWITCHES ===========
 
   if (usersAreLoading) {
     return <LoadingScreen caption="Cargando perfil" />;
@@ -46,6 +71,27 @@ export default function UserDetail() {
     );
   }
 
+  const getDescription = () => {
+    switch (true) {
+      case isAdminEnabled && isAllPeopleEnabled && isAllVehiclesEnabled:
+        return 'Con los tres botones activos, el administrador tiene el control más amplio disponible. Puede gestionar roles administrativos, reorganizar personas entre diferentes responsables y gestionar la flota completa. Por ejemplo, puede reasignar una persona a un grupo, promoverla a administrador y asignarle un conjunto de vehículos bajo su nueva responsabilidad. Esto lo transforma en un "superadministrador" con casi las mismas capacidades que el rol "Dueño", excepto que no puede crear o eliminar otros superadministradores ni otorgar el rol de "Dueño".';
+      case isAdminEnabled && isAllPeopleEnabled:
+        return "Esta combinación amplía el alcance del administrador permitiéndole reasignar personas entre diferentes responsables y otorgar o revocar roles de administrador para cualquier persona en la base de datos. Por ejemplo, puede mover una persona de un grupo a otro y, además, promoverla a administrador si lo considera necesario. Esto permite una gestión integral de personas y roles dentro de toda la estructura organizativa, sin restricciones locales.";
+      case isAdminEnabled && isAllVehiclesEnabled:
+        return "El administrador puede otorgar y revocar roles de administrador a las personas que ya están bajo su cargo y, al mismo tiempo, gestionar todos los vehículos de la base de datos. Por ejemplo, puede asignar nuevos administradores a ciertos vehículos o reorganizar encargados de flotas sin intervención externa. Esto habilita la capacidad de reorganizar roles administrativos vinculados a la gestión de flotas.";
+      case isAllPeopleEnabled && isAllVehiclesEnabled:
+        return 'Permite al administrador gestionar tanto personas como vehículos. Por ejemplo, puede reasignar una persona a un grupo diferente y, además, reasignar los vehículos asociados a esa persona o grupo. Sin embargo, no puede cambiar el rol de ninguna persona a "Administrador", ya que eso requiere el permiso "Puede administrar personas". Esta combinación optimiza la capacidad de reorganización, permitiendo ajustes tanto en equipos humanos como en la logística vehicular.';
+      case isAdminEnabled:
+        return "El administrador puede otorgar o revocar roles de administrador, pero únicamente para las personas que ya están bajo su control. Esto significa que no puede administrar a personas que no han sido previamente asignadas a él. Por ejemplo, si una persona pertenece al grupo de otro administrador, no podrá interactuar con esa persona para asignarle o revocarle roles de administrador.";
+      case isAllPeopleEnabled:
+        return 'El administrador tiene acceso completo a la base de datos de personas y puede reasignarlas a diferentes administradores. Sin embargo, este privilegio no incluye la capacidad de otorgar o revocar roles de administrador, ya que esto requiere el toggle "Administra Admins". Por ejemplo, si una persona está en el estado "driver" o "no_role", el administrador puede moverla a otro grupo, pero no puede promoverla a "admin". Este privilegio permite organizar y distribuir personas entre diferentes responsables para optimizar la gestión local.';
+      case isAllVehiclesEnabled:
+        return 'El administrador puede acceder a todos los vehículos de la base de datos. Puede ver información relevante, como documentos asociados al vehículo, imágenes, y los encargados asignados. Además, puede reasignar vehículos a diferentes personas o grupos. No tiene acceso directo a las personas que manejan estos vehículos, a menos que tenga el toggle "Administra Personas". Este privilegio es útil para administradores que necesitan supervisar la flota completa, gestionar documentación o realizar ajustes en la asignación de vehículos.';
+      default:
+        return 'El administrador no tiene privilegios adicionales activados. Sus capacidades se limitan a las funciones básicas: asignar o revocar los roles de "Conductor" y "Sin rol" a las personas bajo su responsabilidad, banear a personas bajo su cargo y modificar los camiones asignados, como cambiar imágenes o documentos.';
+    }
+  };
+
   return (
     <>
       <Stack.Screen
@@ -56,35 +102,109 @@ export default function UserDetail() {
           <View style={styles.imageContainer}>
             <ProfileColumn profile={user} />
           </View>
-          <GroupedList
-            header="Datos"
-            footer="Asigne roles a los usuarios o solicite que le sea asignado un rol."
-          >
+          <GroupedList>
             <Row
-              title="Información del conductor"
+              title="Información personal"
               trailingType="chevron"
               onPress={() => router.navigate(`/users/${personId}/details`)}
               icon={<Info size={24} color="white" />}
               color={colorPalette.cyan[500]}
             />
+          </GroupedList>
+          <GroupedList>
             <Row
-              title="Cambiar Rol"
+              title="Rol"
+              trailingType="chevron"
+              showChevron={false}
+              caption={(() => {
+                switch (user.role) {
+                  case "ADMIN":
+                    return "Administrador";
+                  case "DRIVER":
+                    return "Conductor";
+                  case "BANNED":
+                    return "Bloqueado";
+                  case "NO_ROLE":
+                    return "Sin rol";
+                  case "OWNER":
+                    return "Dueño";
+                  default:
+                    return "Indefinido";
+                }
+              })()}
+              icon={<UserCog size={24} color="white" />}
+              color={colorPalette.orange[500]}
+            />
+            <Row
+              title="Asignación de personas"
+              trailingType="chevron"
+              icon={<UserPlus size={24} color="white" />}
+              color={colorPalette.lime[500]}
+            />
+            <Row
+              title="Puede administrar administradores"
+              trailingType="chevron"
+              showChevron={false}
+              caption={() => {
+                return (
+                  <Switch
+                    value={isAdminEnabled}
+                    onValueChange={toggleAdminSwitch}
+                  />
+                );
+              }}
+            />
+            <Row
+              title="Puede administrar a todas las personas"
+              trailingType="chevron"
+              showChevron={false}
+              caption={() => {
+                return (
+                  <Switch
+                    value={isAllPeopleEnabled}
+                    onValueChange={toggleAllPeopleSwitch}
+                  />
+                );
+              }}
+            />
+            <Row
+              title="Puede administrar todos los vehículos"
+              trailingType="chevron"
+              showChevron={false}
+              caption={() => {
+                return (
+                  <Switch
+                    value={isAllVehiclesEnabled}
+                    onValueChange={toggleAllVehiclesSwitch}
+                  />
+                );
+              }}
+            />
+            <Row
+              trailingType="chevron"
+              title=""
+              onPress={() => {}}
+              showChevron={false}
+            >
+              <Text style={styles.permissionsDescription}>
+                {getDescription()}
+              </Text>
+            </Row>
+          </GroupedList>
+          <GroupedList header="Acciones">
+            <Row
+              title="Editar rol"
               trailingType="chevron"
               onPress={() => router.navigate(`/users/${personId}/changeRole`)}
               icon={<SquarePen size={24} color="white" />}
-              color={colorPalette.orange[500]}
+              color={colorPalette.red[500]}
             />
-          </GroupedList>
-          <GroupedList
-            header="Asignaciones"
-            footer="Asigne un camión a su respectivo conductor."
-          >
             <Row
-              title="Asignar camión"
+              title="Asignación de vehículos"
               trailingType="chevron"
               onPress={() => router.navigate(`/users/${personId}/assignTruck`)}
               icon={<Truck size={24} color="white" />}
-              color={colorPalette.emerald[500]}
+              color={colorPalette.green[500]}
             />
           </GroupedList>
         </View>
@@ -95,8 +215,8 @@ export default function UserDetail() {
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
-    flex: 1,
     gap: theme.marginsComponents.section,
+    marginBottom: theme.marginsComponents.section,
   },
   imageContainer: {
     alignItems: "center",
@@ -111,20 +231,8 @@ const stylesheet = createStyleSheet((theme) => ({
     width: "100%",
     height: 250,
   },
-  button: {
-    backgroundColor: "#add8e6", // Azul claro
-    borderColor: "#000", // Borde negro
-    borderWidth: 1,
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    marginVertical: 10,
-    borderRadius: 15,
-    width: "100%", // Ancho completo
-    alignItems: "center",
-  },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#000", // Texto negro
+  permissionsDescription: {
+    color: theme.textPresets.main,
+    fontSize: 16,
   },
 }));

@@ -23,46 +23,60 @@ export default function TruckPeopleAdminContainer() {
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => {
     setActiveModal(null);
-  }
+  };
   const openModal = () => {
     setActiveModal("assignRole");
-  }
+  };
 
   if (usersAreLoading) {
-    return <LoadingScreen caption={"Cargando Perfil"}></LoadingScreen>
+    return <LoadingScreen caption={"Cargando Perfil"}></LoadingScreen>;
   }
 
   if (!users) {
-    return <ErrorScreen 
-      caption="Error al cargar el perfil"
-      buttonCaption="Reintentar"
-      retryFunction={fetchUsers}
-    />
+    return (
+      <ErrorScreen
+        caption="Error al cargar el perfil"
+        buttonCaption="Reintentar"
+        retryFunction={fetchUsers}
+      />
+    );
   }
-  
+
   const profile = users.find((user) => user.id === personId);
 
   if (!profile) {
-    return <ErrorScreen 
-      caption="Error al cargar el perfil"
-      buttonCaption="Reintentar"
-      retryFunction={fetchUsers}
-    />
+    return (
+      <ErrorScreen
+        caption="Error al cargar el perfil"
+        buttonCaption="Reintentar"
+        retryFunction={fetchUsers}
+      />
+    );
   }
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View style={styles.container}>
-        <Stack.Screen options={{ headerBackTitle: "Info", title: "Cambiar Rol", headerShown: true }} />
-        
+        <Stack.Screen
+          options={{
+            headerBackTitle: "Info",
+            title: "Cambiar Rol",
+            headerShown: true,
+          }}
+        />
+
         <GroupedList header="Rol de usuario">
           <Row
             title="Rol actual"
             trailingType="chevron"
-            caption = {
-              profile.role === "OWNER" ? "Dueño" :
-              profile.role === "ADMIN" ? "Administrador" : 
-              profile.role === "DRIVER" ? "Operador" : "No tiene rol"
+            caption={
+              profile.role === "OWNER"
+                ? "Dueño"
+                : profile.role === "ADMIN"
+                  ? "Administrador"
+                  : profile.role === "DRIVER"
+                    ? "Operador"
+                    : "No tiene rol"
             }
             showChevron={false}
             disabled={true}
@@ -107,15 +121,15 @@ const stylesheet = createStyleSheet((theme) => ({
   modalOption: {
     fontSize: 16,
     marginBottom: 15,
-    color: '#007BFF',
+    color: "#007BFF",
   },
   closeButton: {
     color: theme.headerButtons.color,
     fontSize: 18,
   },
   textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
   },
 }));

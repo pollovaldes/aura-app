@@ -102,12 +102,12 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   leadingContainer: {
     flex: 1,
-    gap: 12,
     alignItems: "center",
     flexDirection: "row",
   },
   title: {
     flexShrink: 1,
+    textAlign: "left",
     fontSize: 17.5,
     color: theme.textPresets.main,
     ...Platform.select({

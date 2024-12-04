@@ -16,6 +16,7 @@ export default RowIcon;
 
 const styles = StyleSheet.create({
   container: {
+    marginRight: 12,
     width: 32,
     height: 32,
     borderRadius: 7,
