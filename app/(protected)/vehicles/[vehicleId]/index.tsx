@@ -362,7 +362,6 @@ const stylesheet = createStyleSheet((theme) => ({
     }),
   },
   groupedListsContainer: {
-    flex: 1.5,
     gap: theme.marginsComponents.section,
   },
   loadingContainer: {

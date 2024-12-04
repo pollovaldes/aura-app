@@ -55,7 +55,7 @@ const Row = ({
         styles.container,
       ]}
     >
-      {children && <View>{children}</View>}
+      {children && <View style={{ width: "100%" }}>{children}</View>}
 
       <View style={[styles.leadingContainer, { flex: caption ? 1 : 10 }]}>
         <View>

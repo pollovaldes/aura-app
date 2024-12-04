@@ -200,21 +200,21 @@ export default function Index() {
               showChevron={profile.role === "ADMIN" || profile.role === "OWNER"}
             />
             <Row
-              title="Modelo"
+              title="Año"
               onPress={() => setModelo(true)}
               trailingType="chevron"
               caption={`${vehicle.year}`}
               showChevron={profile.role === "ADMIN" || profile.role === "OWNER"}
             />
             <Row
-              title="No. de serie"
+              title="Número de serie"
               onPress={() => setNoSerie(true)}
               trailingType="chevron"
-              caption={`${vehicle.serial_number?.substring(0, 8) ?? "No disponible"}${vehicle.serial_number && vehicle.serial_number.length > 8 ? "..." : ""}`}
+              caption={`${vehicle.serial_number}`}
               showChevron={profile.role === "ADMIN" || profile.role === "OWNER"}
             />
             <Row
-              title="No. de placa"
+              title="Número de placa"
               onPress={() => setPlaca(true)}
               trailingType="chevron"
               caption={`${vehicle.plate}`}

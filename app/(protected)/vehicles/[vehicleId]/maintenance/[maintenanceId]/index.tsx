@@ -268,7 +268,7 @@ export default function maintenanceId() {
               </Text>
             </Row>
           </GroupedList>
-          <GroupedList>
+          <GroupedList header="Información sobre la petición">
             <Row
               title="Inicio de la solicitud"
               trailingType="chevron"
@@ -279,7 +279,9 @@ export default function maintenanceId() {
               title="vehículo al que se le solicitó"
               trailingType="chevron"
               caption={`${vehicle.brand} ${vehicle.sub_brand} (${vehicle.year})\n`.trim()}
-              onPress={() => router.push(`/vehicles/`)}
+              onPress={() =>
+                router.push(`/vehicles/${vehicle.id}/technical_sheet/`)
+              }
             />
             <Row
               title="Quien solicitó"
@@ -294,6 +296,37 @@ export default function maintenanceId() {
               caption={`${record.issued_by.name} ${record.issued_by.father_last_name} ${record.issued_by.mother_last_name}`.trim()}
             />
           </GroupedList>
+
+          {record.status === "SOLVED" && (
+            <GroupedList header="Información sobre la resolución">
+              <Row
+                title="Fecha de resolución"
+                trailingType="chevron"
+                showChevron={false}
+                caption={
+                  record.resolved_datetime
+                    ? formatDate(record.resolved_datetime, "Finalizada el ")
+                    : "Aunque la solicitud ya fue resuelta, no se registró la fecha de resolución."
+                }
+              />
+              <Row
+                title="Quien resolvió"
+                trailingType="chevron"
+                onPress={() => {
+                  router.push(`/users`);
+                  // Add a delay if you want to ensure `/users` is visited first
+                  setTimeout(() => {
+                    router.push(`/users/${record.issued_by.id}/`);
+                  }, 0);
+                }}
+                caption={
+                  record.resolved_by
+                    ? `${record.issued_by.name} ${record.issued_by.father_last_name} ${record.issued_by.mother_last_name}`.trim()
+                    : "Aunque la solicitud ya fue resuelta, no se registró quien la resolvió."
+                }
+              />
+            </GroupedList>
+          )}
 
           <GroupedList header="Acciones para esta solicitud">
             <Row
