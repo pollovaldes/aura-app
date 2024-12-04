@@ -13,7 +13,7 @@ export default function useUsers() {
       const { data, error } = await supabase
         .from("profiles")
         .select(
-          "id, name, father_last_name, mother_last_name, position, role, is_fully_registered"
+          "id, name, father_last_name, mother_last_name, position, role, is_fully_registered, can_manage_admins, can_manage_people, can_manage_vehicles"
         );
 
       if (!error) {

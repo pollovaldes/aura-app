@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { View, ScrollView, Text, Switch } from "react-native";
+import { View, ScrollView, Text, Switch, RefreshControl } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
@@ -8,11 +8,9 @@ import {
   Info,
   SquarePen,
   Truck,
+  User,
   UserCog,
   UserPlus,
-  UserRound,
-  UserRoundCog,
-  Users,
 } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import ProfileColumn from "@/components/people/ProfileColumn";
@@ -20,11 +18,14 @@ import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import useUsers from "@/hooks/peopleHooks/useUsers";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
+import useProfile from "@/hooks/useProfile";
+import { FormButton } from "@/components/Form/FormButton";
 
 export default function UserDetail() {
   const { personId } = useLocalSearchParams<{ personId: string }>();
   const { styles } = useStyles(stylesheet);
   const { users, usersAreLoading, fetchUsers } = useUsers();
+  const { profile, isProfileLoading, fetchProfile } = useProfile();
 
   // =========== SWITCHES ===========
 
@@ -41,6 +42,21 @@ export default function UserDetail() {
     setIsAllVehiclesEnabled(!isAllVehiclesEnabled);
 
   // =========== SWITCHES ===========
+
+  if (isProfileLoading) {
+    return (
+      <>
+        <Stack.Screen
+          options={{
+            title: "Cargando...",
+            headerLargeTitle: false,
+            headerRight: undefined,
+          }}
+        />
+        <LoadingScreen caption="Cargando perfil y permisos" />
+      </>
+    );
+  }
 
   if (usersAreLoading) {
     return <LoadingScreen caption="Cargando perfil" />;
@@ -71,6 +87,27 @@ export default function UserDetail() {
     );
   }
 
+  if (!profile) {
+    return (
+      <>
+        <Stack.Screen
+          options={{
+            title: "Error",
+            headerLargeTitle: false,
+            headerRight: undefined,
+          }}
+        />
+        <ErrorScreen
+          caption="Ocurrió un error al recuperar tu perfil"
+          buttonCaption="Reintentar"
+          retryFunction={fetchProfile}
+        />
+      </>
+    );
+  }
+
+  // =============== CAPTIONS ===============
+
   const getDescription = () => {
     switch (true) {
       case isAdminEnabled && isAllPeopleEnabled && isAllVehiclesEnabled:
@@ -92,12 +129,90 @@ export default function UserDetail() {
     }
   };
 
+  const getEditRoleState = (() => {
+    // Case 1: User is viewing their own profile
+    if (user.id === profile.id) {
+      return {
+        description: "No puedes cambiar tu propio rol",
+        disabled: true,
+      };
+    }
+
+    // Case 2: No one can change the role of an OWNER
+    if (user.role === "OWNER") {
+      return {
+        description: "No puedes cambiar el rol de un propietario",
+        disabled: true,
+      };
+    }
+
+    // Case 3: Profile role is OWNER
+    if (profile.role === "OWNER") {
+      return {
+        description: "",
+        disabled: false,
+      };
+    }
+
+    // Case 4: Admins or Owners can always edit roles for DRIVER, NO_ROLE, or BANNED
+    if (
+      (profile.role === "ADMIN" || profile.role === "OWNER") &&
+      ["DRIVER", "NO_ROLE", "BANNED"].includes(user.role)
+    ) {
+      return {
+        description: "",
+        disabled: false,
+      };
+    }
+
+    // Case 5: Profile role is ADMIN and user role is ADMIN or OWNER
+    if (
+      profile.role === "ADMIN" &&
+      (user.role === "ADMIN" || user.role === "OWNER")
+    ) {
+      if (profile.can_manage_admins) {
+        return {
+          description: "",
+          disabled: false,
+        };
+      }
+      return {
+        description:
+          "No tienes permisos para cambiar el rol de otros administradores",
+        disabled: true,
+      };
+    }
+
+    // Default case
+    return {
+      description: "No puedes editar el rol en este momento",
+      disabled: true,
+    };
+  })();
+
+  // =============== CAPTIONS ===============
+
   return (
     <>
       <Stack.Screen
-        options={{ headerShown: true, title: "", headerLargeTitle: false }}
+        options={{
+          headerShown: true,
+          title: user.id === profile.id ? "Tú" : "",
+          headerLargeTitle: false,
+        }}
       />
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        refreshControl={
+          <RefreshControl
+            refreshing={isProfileLoading || usersAreLoading}
+            onRefresh={() => {
+              fetchProfile();
+              fetchUsers();
+            }}
+          />
+        }
+      >
         <View style={styles.container}>
           <View style={styles.imageContainer}>
             <ProfileColumn profile={user} />
@@ -136,11 +251,12 @@ export default function UserDetail() {
               color={colorPalette.orange[500]}
             />
             <Row
-              title="Asignación de personas"
+              title="Administrar personas"
               trailingType="chevron"
               icon={<UserPlus size={24} color="white" />}
               color={colorPalette.lime[500]}
             />
+            {}
             <Row
               title="Puede administrar administradores"
               trailingType="chevron"
@@ -185,10 +301,31 @@ export default function UserDetail() {
               title=""
               onPress={() => {}}
               showChevron={false}
+              disabled
             >
               <Text style={styles.permissionsDescription}>
                 {getDescription()}
               </Text>
+            </Row>
+            <Row
+              trailingType="chevron"
+              title=""
+              onPress={() => {}}
+              showChevron={false}
+              disabled
+            >
+              <View style={{ flexDirection: "row", flex: 1, gap: 12 }}>
+                <View style={{ flex: 1 }}>
+                  <FormButton
+                    title="Restablecer"
+                    onPress={() => {}}
+                    buttonType="danger"
+                  />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <FormButton title="Guardar cambios" onPress={() => {}} />
+                </View>
+              </View>
             </Row>
           </GroupedList>
           <GroupedList header="Acciones">
@@ -198,6 +335,8 @@ export default function UserDetail() {
               onPress={() => router.navigate(`/users/${personId}/changeRole`)}
               icon={<SquarePen size={24} color="white" />}
               color={colorPalette.red[500]}
+              caption={getEditRoleState.description}
+              disabled={getEditRoleState.disabled}
             />
             <Row
               title="Asignación de vehículos"

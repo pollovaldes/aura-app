@@ -28,6 +28,9 @@ export default function useProfile() {
           position: profileData.position,
           role: profileData.role,
           is_fully_registered: profileData.is_fully_registered,
+          can_manage_admins: profileData.can_manage_admins,
+          can_manage_people: profileData.can_manage_people,
+          can_manage_vehicles: profileData.can_manage_vehicles,
         });
       }
       if (error) throw error;
