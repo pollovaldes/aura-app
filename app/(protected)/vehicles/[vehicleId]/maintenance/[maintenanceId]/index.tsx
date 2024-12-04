@@ -8,7 +8,7 @@ import useMaintenance from "@/hooks/useMaintenance";
 import useProfile from "@/hooks/useProfile";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { useHeaderHeight } from "@react-navigation/elements";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Platform, RefreshControl, ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -276,10 +276,22 @@ export default function maintenanceId() {
               caption={formatDate(record.issued_datetime, "Iniciada el ")}
             />
             <Row
+              title="vehículo al que se le solicitó"
+              trailingType="chevron"
+              caption={`${vehicle.brand} ${vehicle.sub_brand} (${vehicle.year})\n`.trim()}
+              onPress={() => router.push(`/vehicles/`)}
+            />
+            <Row
               title="Quien solicitó"
               trailingType="chevron"
-              showChevron={false}
-              caption={record.issued_by.name}
+              onPress={() => {
+                router.push(`/users`);
+                // Add a delay if you want to ensure `/users` is visited first
+                setTimeout(() => {
+                  router.push(`/users/${record.issued_by.id}/`);
+                }, 0);
+              }}
+              caption={`${record.issued_by.name} ${record.issued_by.father_last_name} ${record.issued_by.mother_last_name}`.trim()}
             />
           </GroupedList>
 
