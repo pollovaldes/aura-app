@@ -1,12 +1,13 @@
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "@/components/Form/FormButton";
 import FormInput from "@/components/Form/FormInput";
+import FilePickerMenu from "@/components/maintenance/filePickerMenu";
 import { supabase } from "@/lib/supabase";
 import { User } from "@/types/User";
 import { Vehicle } from "@/types/Vehicle";
 import { ImagePlus, Plus, Trash2 } from "lucide-react-native";
 import { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Platform, Text, TouchableOpacity, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 interface addMaintenanceModalProps {
@@ -14,6 +15,11 @@ interface addMaintenanceModalProps {
   fetchMaintenance: () => void;
   vehicle: Vehicle;
   profile: User;
+}
+
+interface FileItem {
+  localId: string;
+  description: string;
 }
 
 export default function AddMaintenance({
@@ -29,6 +35,35 @@ export default function AddMaintenance({
   const [requestTitle, setRequestTitle] = useState("");
   const [requestDescription, setRequestDescription] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+
+  // ================== File picker ==================
+
+  const [fileViews, setFileViews] = useState<FileItem[]>([]);
+
+  const generateUniqueId = () => {
+    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  };
+
+  const addFileView = () => {
+    setFileViews((prev) => [
+      ...prev,
+      { localId: generateUniqueId(), description: "" },
+    ]);
+  };
+
+  const removeFileView = (localId: string) => {
+    setFileViews((prev) => prev.filter((file) => file.localId !== localId));
+  };
+
+  const updateFileDescription = (localId: string, description: string) => {
+    setFileViews((prev) =>
+      prev.map((file) =>
+        file.localId === localId ? { ...file, description } : file
+      )
+    );
+  };
+
+  // ================== File picker ==================
 
   const uploadRequest = async (
     vehicle_id: string,
@@ -108,40 +143,70 @@ export default function AddMaintenance({
         <Text style={styles.subtitle}>
           Adjunta imágenes o videos que respalden tu solicitud de ser necesario
         </Text>
-        <View style={styles.fileContainer}>
-          <View style={styles.twoPaneContainer}>
-            <TouchableOpacity disabled={isUploading}>
-              <View style={styles.selectFileContainer}>
-                <ImagePlus color={styles.fileIcon.color} size={50} />
-                <Text
-                  style={styles.fileText}
-                  ellipsizeMode="middle"
-                  numberOfLines={2}
-                >
-                  {"Seleccionar\narchivo"}
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <FormInput
-              description="Descripción del archivo"
-              placeholder="Aquí puedes describir brevemente lo que sucede en la imagen o video."
-              multiline
-              editable={!isUploading}
-            />
+        {fileViews.map((item) => (
+          <View key={item.localId} style={styles.fileContainer}>
+            <View style={styles.twoPaneContainer}>
+              {Platform.OS !== "web" && (
+                <FilePickerMenu
+                  onSelect={() => console.log("Fui presioado")}
+                  items={[
+                    { key: "image", title: "Seleccionar desde la galeria" },
+                    { key: "video", title: "Seleccionar desde archivos" },
+                  ]}
+                  trigger={
+                    <View style={styles.selectFileContainer}>
+                      <ImagePlus color={styles.fileIcon.color} size={50} />
+                      <Text
+                        style={styles.fileText}
+                        ellipsizeMode="middle"
+                        numberOfLines={2}
+                      >
+                        {"Seleccionar\narchivo"}
+                      </Text>
+                    </View>
+                  }
+                />
+              )}
+
+              {Platform.OS === "web" && (
+                <TouchableOpacity>
+                  <View style={styles.selectFileContainer}>
+                    <ImagePlus color={styles.fileIcon.color} size={50} />
+                    <Text
+                      style={styles.fileText}
+                      ellipsizeMode="middle"
+                      numberOfLines={2}
+                    >
+                      {"Seleccionar\narchivo"}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+              <FormInput
+                description="Descripción del archivo"
+                placeholder="Aquí puedes describir brevemente lo que sucede en la imagen o video."
+                multiline
+                editable
+                value={item.description}
+                onChangeText={(text) =>
+                  updateFileDescription(item.localId, text)
+                }
+              />
+            </View>
+            <View style={styles.deleteButtonContainer}>
+              <FormButton
+                title="Eliminar"
+                onPress={() => removeFileView(item.localId)}
+                buttonType="danger"
+                icon={() => <Trash2 color={styles.iconColor.color} />}
+                isDisabled={false}
+              />
+            </View>
           </View>
-          <View style={styles.deleteButtonContainer}>
-            <FormButton
-              title="Eliminar"
-              onPress={() => {}}
-              buttonType="danger"
-              icon={() => <Trash2 color={styles.iconColor.color} />}
-              isDisabled={isUploading}
-            />
-          </View>
-        </View>
+        ))}
         <FormButton
           title="Agregar"
-          onPress={() => {}}
+          onPress={addFileView}
           buttonType="normal"
           icon={() => <Plus color={styles.iconColor.color} />}
           isDisabled={isUploading}

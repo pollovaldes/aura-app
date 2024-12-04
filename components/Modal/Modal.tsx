@@ -33,7 +33,7 @@ export default function Modal({ isOpen, children, ...rest }: ModalProps) {
             paddingTop: 80,
             paddingBottom: 80,
           }}
-          keyboardShouldPersistTaps="always"
+          keyboardShouldPersistTaps="handled"
         >
           {children}
         </ScrollView>
