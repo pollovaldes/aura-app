@@ -287,11 +287,7 @@ export default function maintenanceId() {
               title="Quien solicitó"
               trailingType="chevron"
               onPress={() => {
-                router.push(`/users`);
-                // Add a delay if you want to ensure `/users` is visited first
-                setTimeout(() => {
-                  router.push(`/users/${record.issued_by.id}/`);
-                }, 0);
+                router.push(`/users/${record.issued_by.id}/`);
               }}
               caption={`${record.issued_by.name} ${record.issued_by.father_last_name} ${record.issued_by.mother_last_name}`.trim()}
             />
@@ -313,15 +309,13 @@ export default function maintenanceId() {
                 title="Quien resolvió"
                 trailingType="chevron"
                 onPress={() => {
-                  router.push(`/users`);
-                  // Add a delay if you want to ensure `/users` is visited first
-                  setTimeout(() => {
-                    router.push(`/users/${record.issued_by.id}/`);
-                  }, 0);
+                  record.resolved_by &&
+                    router.push(`/users/${record.resolved_by.id}/`);
                 }}
+                showChevron={record.resolved_by ? true : false}
                 caption={
                   record.resolved_by
-                    ? `${record.issued_by.name} ${record.issued_by.father_last_name} ${record.issued_by.mother_last_name}`.trim()
+                    ? `${record.resolved_by.name} ${record.resolved_by.father_last_name} ${record.resolved_by.mother_last_name}`.trim()
                     : "Aunque la solicitud ya fue resuelta, no se registró quien la resolvió."
                 }
               />
