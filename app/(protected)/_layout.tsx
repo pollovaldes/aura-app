@@ -2,7 +2,13 @@ import { Redirect, Slot, Tabs, usePathname } from "expo-router";
 import { View, useWindowDimensions } from "react-native";
 import Sidebar from "../../components/sidebar/Sidebar";
 import ListItem from "../../components/sidebar/ListItem";
-import { Bell, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
+import {
+  Bell,
+  Boxes,
+  CircleUserRound,
+  Truck,
+  UsersRound,
+} from "lucide-react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { useSessionContext } from "@/context/SessionContext";
 import useProfile from "@/hooks/useProfile";
@@ -42,7 +48,7 @@ export default function HomeLayout() {
         <ErrorScreen
           caption="Ocurrió un error al recuperar tu sesión o tu perfil"
           buttonCaption="Intentar cerrar sesión"
-          retryFunction={() => supabase.auth.signOut({scope: 'local'})}
+          retryFunction={() => supabase.auth.signOut({ scope: "local" })}
         />
       </View>
     );
@@ -99,85 +105,95 @@ export default function HomeLayout() {
   return (
     <VehiclesContextProvider>
       <UsersContextProvider>
-          <ProfileImageProvider>
-            {width > widthThreshold ? (
-              <View style={styles.container}>
-                <View style={styles.innerContainer}>
-                  {/* Sidebar for larger screens */}
-                  <Sidebar>
+        <ProfileImageProvider>
+          {width > widthThreshold ? (
+            <View style={styles.container}>
+              <View style={styles.innerContainer}>
+                {/* Sidebar for larger screens */}
+                <Sidebar>
+                  <ListItem
+                    href={mayShowListItem.vehicles}
+                    title="Vehículos"
+                    iconComponent={
+                      <Truck color={styles.icon.color} size={19} />
+                    }
+                  />
+                  {isAdminOrOwner && (
                     <ListItem
-                      href={mayShowListItem.vehicles}
-                      title="Vehículos"
+                      href={mayShowListItem.users}
+                      title="Personas"
                       iconComponent={
-                        <Truck color={styles.icon.color} size={19} />
+                        <UsersRound color={styles.icon.color} size={19} />
                       }
                     />
-                    {isAdminOrOwner && (
-                      <ListItem
-                        href={mayShowListItem.users}
-                        title="Personas"
-                        iconComponent={
-                          <UsersRound color={styles.icon.color} size={19} />
-                        }
-                      />
-                    )}
-                    <ListItem
-                      href={mayShowListItem.notifications}
-                      title="Notificaciones"
-                      iconComponent={
-                        <Bell color={styles.icon.color} size={19} />
-                      }
-                    />
-                    <ListItem
-                      href="profile"
-                      title="Perfil"
-                      iconComponent={
-                        <CircleUserRound color={styles.icon.color} size={19} />
-                      }
-                    />
-                  </Sidebar>
-                  <Slot />
-                </View>
+                  )}
+                  <ListItem
+                    href="fleets"
+                    title="Flotillas"
+                    iconComponent={
+                      <Boxes color={styles.icon.color} size={19} />
+                    }
+                  />
+                  <ListItem
+                    href={mayShowListItem.notifications}
+                    title="Notificaciones"
+                    iconComponent={<Bell color={styles.icon.color} size={19} />}
+                  />
+                  <ListItem
+                    href="profile"
+                    title="Perfil"
+                    iconComponent={
+                      <CircleUserRound color={styles.icon.color} size={19} />
+                    }
+                  />
+                </Sidebar>
+                <Slot />
               </View>
-            ) : (
-              // Tabs for smaller screens
-              <Tabs screenOptions={{ headerShown: false }}>
-                <Tabs.Screen
-                  name="vehicles"
-                  options={{
-                    href: mayShowTab.vehicles,
-                    title: "Vehículos",
-                    tabBarIcon: ({ color }) => <Truck color={color} />,
-                  }}
-                />
-                <Tabs.Screen
-                  name="users"
-                  options={{
-                    href: mayShowTab.users,
-                    title: "Personas",
-                    tabBarIcon: ({ color }) => <UsersRound color={color} />,
-                  }}
-                />
-                <Tabs.Screen
-                  name="notifications"
-                  options={{
-                    href: mayShowTab.notifications,
-                    title: "Notificaciones",
-                    tabBarIcon: ({ color }) => <Bell color={color} />,
-                  }}
-                />
-                <Tabs.Screen
-                  name="profile"
-                  options={{
-                    title: "Perfil",
-                    tabBarIcon: ({ color }) => (
-                      <CircleUserRound color={color} />
-                    ),
-                  }}
-                />
-              </Tabs>
-            )}
-          </ProfileImageProvider>
+            </View>
+          ) : (
+            // Tabs for smaller screens
+            <Tabs screenOptions={{ headerShown: false }}>
+              <Tabs.Screen
+                name="vehicles"
+                options={{
+                  href: mayShowTab.vehicles,
+                  title: "Vehículos",
+                  tabBarIcon: ({ color }) => <Truck color={color} />,
+                }}
+              />
+              <Tabs.Screen
+                name="users"
+                options={{
+                  href: mayShowTab.users,
+                  title: "Personas",
+                  tabBarIcon: ({ color }) => <UsersRound color={color} />,
+                }}
+              />
+              <Tabs.Screen
+                name="fleets"
+                options={{
+                  title: "Flotillas",
+                  tabBarIcon: ({ color }) => <Boxes color={color} />,
+                }}
+              />
+              <Tabs.Screen
+                name="notifications"
+                options={{
+                  href: mayShowTab.notifications,
+                  title: "Notificaciones",
+                  tabBarIcon: ({ color }) => <Bell color={color} />,
+                }}
+              />
+              <Tabs.Screen
+                name="profile"
+                options={{
+                  title: "Perfil",
+                  tabBarIcon: ({ color }) => <CircleUserRound color={color} />,
+                }}
+              />
+            </Tabs>
+          )}
+        </ProfileImageProvider>
       </UsersContextProvider>
     </VehiclesContextProvider>
   );
