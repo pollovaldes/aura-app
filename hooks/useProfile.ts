@@ -15,23 +15,14 @@ export default function useProfile() {
     try {
       const { data: profileData, error } = await supabase
         .from("profiles")
-        .select("*")
+        .select(
+          "id, name, father_last_name, mother_last_name, position, role, is_fully_registered"
+        )
         .eq("id", session?.user.id)
         .single();
 
       if (profileData) {
-        setProfile({
-          id: profileData.id,
-          name: profileData.name,
-          father_last_name: profileData.father_last_name,
-          mother_last_name: profileData.mother_last_name,
-          position: profileData.position,
-          role: profileData.role,
-          is_fully_registered: profileData.is_fully_registered,
-          can_manage_admins: profileData.can_manage_admins,
-          can_manage_people: profileData.can_manage_people,
-          can_manage_vehicles: profileData.can_manage_vehicles,
-        });
+        setProfile(profileData as User);
       }
       if (error) throw error;
     } catch (error) {

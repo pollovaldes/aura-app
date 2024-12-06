@@ -76,6 +76,11 @@ export default function HomeLayout() {
       : isAdminOrOwner && profile.is_fully_registered
         ? undefined
         : null,
+    fleets: isBannedOrNoRole
+      ? null
+      : profile.is_fully_registered
+        ? undefined
+        : null,
     notifications: isBannedOrNoRole
       ? null
       : profile.is_fully_registered
@@ -93,6 +98,11 @@ export default function HomeLayout() {
       ? null
       : isAdminOrOwner && profile.is_fully_registered
         ? "users"
+        : null,
+    fleets: isBannedOrNoRole
+      ? null
+      : profile.is_fully_registered
+        ? "fleets"
         : null,
     notifications: isBannedOrNoRole
       ? null
@@ -128,7 +138,7 @@ export default function HomeLayout() {
                     />
                   )}
                   <ListItem
-                    href="fleets"
+                    href={mayShowListItem.fleets}
                     title="Flotillas"
                     iconComponent={
                       <Boxes color={styles.icon.color} size={19} />
@@ -172,6 +182,7 @@ export default function HomeLayout() {
               <Tabs.Screen
                 name="fleets"
                 options={{
+                  href: mayShowTab.fleets,
                   title: "Flotillas",
                   tabBarIcon: ({ color }) => <Boxes color={color} />,
                 }}
