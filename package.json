@@ -21,6 +21,7 @@
     "base64-arraybuffer": "^1.0.2",
     "expo": "^52.0.7",
     "expo-constants": "~17.0.3",
+    "expo-crypto": "~14.0.1",
     "expo-dev-client": "~5.0.2",
     "expo-document-picker": "~13.0.1",
     "expo-file-system": "~18.0.3",
@@ -46,6 +47,7 @@
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.2",
+    "uuid": "^11.0.3",
     "zeego": "^2.0.4"
   },
   "devDependencies": {
