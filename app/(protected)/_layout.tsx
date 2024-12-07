@@ -1,5 +1,5 @@
 import { Redirect, Slot, Tabs, usePathname } from "expo-router";
-import { View, useWindowDimensions } from "react-native";
+import { Text, View, useWindowDimensions } from "react-native";
 import Sidebar from "../../components/sidebar/Sidebar";
 import ListItem from "../../components/sidebar/ListItem";
 import {
@@ -18,6 +18,12 @@ import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { supabase } from "@/lib/supabase";
 import { ProfileImageProvider } from "@/context/ProfileImageContext";
 import { UsersContextProvider } from "@/context/UsersContext";
+import {
+  Tabs as CustomTabs,
+  TabList,
+  TabTrigger,
+  TabSlot,
+} from "expo-router/ui";
 
 export default function HomeLayout() {
   const { styles } = useStyles(stylesheet);
@@ -161,6 +167,30 @@ export default function HomeLayout() {
               </View>
             </View>
           ) : (
+            // <CustomTabs>
+            //   <TabSlot />
+            //   <TabList>
+            //     <TabTrigger name="vehicles" href="/vehicles">
+            //       <Text>Vehículos</Text>
+            //     </TabTrigger>
+            //     <TabTrigger name="fleets" href="/fleets">
+            //       <Text>Flotillas</Text>
+            //     </TabTrigger>
+            //     <TabTrigger name="notifications" href="/notifications">
+            //       <Text>Notificaciones</Text>
+            //     </TabTrigger>
+            //     <TabTrigger name="profile" href="/profile">
+            //       <Text>Perfil</Text>
+            //     </TabTrigger>
+            //     {/* Conditionally render the "Personas" tab for admin or owner */}
+            //     {isAdminOrOwner && (
+            //       <TabTrigger name="users" href="/users">
+            //         <Text>Personas</Text>
+            //       </TabTrigger>
+            //     )}
+            //   </TabList>
+            // </CustomTabs>
+
             // Tabs for smaller screens
             <Tabs screenOptions={{ headerShown: false }}>
               <Tabs.Screen

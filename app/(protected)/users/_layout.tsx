@@ -1,6 +1,6 @@
 import React from "react";
 import { Stack } from "expo-router";
-import { Platform, View } from "react-native";
+import { Platform } from "react-native";
 import { SearchProvider, useSearch } from "@/context/SearchContext"; // Import the SearchContext
 
 export const unstable_settings = {
