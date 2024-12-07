@@ -223,7 +223,7 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   innerContainer: {
     flexDirection: "row",
-    width: "85%",
+    width: "100%",
   },
   icon: {
     color: theme.colors.inverted,

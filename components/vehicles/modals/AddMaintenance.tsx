@@ -104,6 +104,10 @@ export default function AddMaintenance({
     }
   };
 
+  const handleDropDownSelect = (key: string) => {
+    alert(`Seleccionaste ${key}`);
+  };
+
   return (
     <View style={styles.section}>
       <View style={styles.group}>
@@ -148,11 +152,11 @@ export default function AddMaintenance({
             <View style={styles.twoPaneContainer}>
               {Platform.OS !== "web" && (
                 <FilePickerMenu
-                  onSelect={() => console.log("Fui presioado")}
                   items={[
                     { key: "image", title: "Seleccionar desde la galeria" },
-                    { key: "video", title: "Seleccionar desde archivos" },
+                    { key: "file", title: "Seleccionar desde archivos" },
                   ]}
+                  onSelect={handleDropDownSelect}
                   trigger={
                     <View style={styles.selectFileContainer}>
                       <ImagePlus color={styles.fileIcon.color} size={50} />

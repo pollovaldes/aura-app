@@ -25,7 +25,7 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:scheme="com.aurasustentable.auraapp"/>
+        <data android:scheme="auraapp"/>
         <data android:scheme="com.aurasustentable.auraapp"/>
         <data android:scheme="exp+aura-app"/>
       </intent-filter>

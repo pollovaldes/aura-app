@@ -27,7 +27,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>com.aurasustentable.auraapp</string>
+          <string>auraapp</string>
           <string>com.aurasustentable.auraapp</string>
         </array>
       </dict>

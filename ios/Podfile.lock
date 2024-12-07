@@ -1515,6 +1515,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-menu (1.1.7):
+    - React
   - react-native-safe-area-context (4.12.0):
     - React-Core
   - react-native-segmented-control (2.5.4):
@@ -1828,7 +1830,7 @@ PODS:
     - React-logger (= 0.76.2)
     - React-perflogger (= 0.76.2)
     - React-utils (= 0.76.2)
-  - ReactNativeIosContextMenu (2.5.2):
+  - ReactNativeIosContextMenu (2.5.3):
     - ContextMenuAuxiliaryPreview (~> 0.3)
     - DGSwiftUtilities
     - ExpoModulesCore
@@ -1930,6 +1932,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
+  - "react-native-menu (from `../node_modules/@react-native-menu/menu`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-segmented-control (from `../node_modules/@react-native-segmented-control/segmented-control`)"
   - react-native-unistyles (from `../node_modules/react-native-unistyles`)
@@ -2096,6 +2099,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   React-microtasksnativemodule:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
+  react-native-menu:
+    :path: "../node_modules/@react-native-menu/menu"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-segmented-control:
@@ -2236,6 +2241,7 @@ SPEC CHECKSUMS:
   React-logger: 81d58ca6f1d93fca9a770bda6cc1c4fbfcc99c9c
   React-Mapbuffer: 726951e68f4bb1c2513d322f2548798b2a3d628d
   React-microtasksnativemodule: bc55596cbf40957f5099bc495f1a06f459d0be88
+  react-native-menu: c8dfe61ce656aa531ab18e8ee3bb4ee55ce972ea
   react-native-safe-area-context: 142fade490cbebbe428640b8cbdb09daf17e8191
   react-native-segmented-control: fde795d4d9c95ebc97cd37a034eb0a7a922f1ec5
   react-native-unistyles: 73ea92e9c3711ea187ff2786f9728bc0a720eaa3
@@ -2267,7 +2273,7 @@ SPEC CHECKSUMS:
   React-utils: ed6cb7ba089ac0856aa104df12691e99abbf14e1
   ReactCodegen: 93b271af49774429f34d7fd561197020d86436e2
   ReactCommon: 208cb02e3c0bb8a727b3e1a1782202bcfa5d9631
-  ReactNativeIosContextMenu: 3e0880f9bd20af2905b57ace99b69a36be125d1a
+  ReactNativeIosContextMenu: 4601cc5113ca45bc7295707bf5c76987caac8bd7
   ReactNativeIosUtilities: 4980803356bff7906929d5d034da58bfc9bb824a
   RNCAsyncStorage: 826b603ae9c0f88b5ac4e956801f755109fa4d5c
   RNCPicker: f963e01f78e546a93b98aa201501713dbda14e94

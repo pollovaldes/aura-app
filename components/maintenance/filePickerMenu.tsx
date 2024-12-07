@@ -1,4 +1,3 @@
-import { Text, View } from "react-native";
 import * as DropdownMenu from "zeego/dropdown-menu";
 
 export type Props = {
