@@ -15,6 +15,7 @@ import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import * as Crypto from "expo-crypto";
 import { decode } from "base64-arraybuffer";
+import { router } from "expo-router";
 
 interface addMaintenanceModalProps {
   closeModal: () => void;
@@ -193,6 +194,7 @@ export default function AddMaintenance({
           alert("Ocurrió un error subiendo el archivo con id: " + file.localId);
           setIsUploading(false);
           closeModal();
+          router.navigate(`vehicles/[vehicleId]/maintenance/${maintenanceId}`);
           return;
         }
       }
@@ -200,6 +202,7 @@ export default function AddMaintenance({
       setIsUploading(false);
       fetchMaintenance();
       closeModal();
+      router.navigate(`vehicles/[vehicleId]/maintenance/${maintenanceId}`);
       return data;
     } else {
       closeModal();
@@ -346,6 +349,7 @@ export default function AddMaintenance({
                   trigger={
                     <FormButton
                       title="Seleccionar archivo"
+                      isDisabled={isUploading}
                       onPress={() => {}}
                       icon={() => (
                         <ArrowUpFromLine
@@ -360,6 +364,7 @@ export default function AddMaintenance({
               {Platform.OS === "web" && (
                 <FormButton
                   title="Seleccionar archivo"
+                  isDisabled={isUploading}
                   onPress={() => handleSelectFile("web", item.localId)}
                   icon={() => (
                     <ArrowUpFromLine
@@ -372,6 +377,7 @@ export default function AddMaintenance({
                 <View style={styles.filePreviewContainer}>
                   <View>
                     <TouchableOpacity
+                      disabled={isUploading}
                       onPress={() =>
                         setFileViews((prev) =>
                           prev.map((file) =>
@@ -415,7 +421,7 @@ export default function AddMaintenance({
               )}
               <FormInput
                 description="Título del archivo"
-                editable
+                editable={!isUploading}
                 value={item.title}
                 onChangeText={(text) => updateFileTitle(item.localId, text)}
               />
@@ -423,7 +429,7 @@ export default function AddMaintenance({
                 description="Descripción del archivo"
                 placeholder="Describe brevemente lo que sucede en la imagen, video o archivo."
                 multiline
-                editable
+                editable={!isUploading}
                 value={item.description}
                 onChangeText={(text) =>
                   updateFileDescription(item.localId, text)
@@ -436,7 +442,7 @@ export default function AddMaintenance({
                 onPress={() => removeFileView(item.localId)}
                 buttonType="danger"
                 icon={() => <Trash2 color={styles.iconColor.color} />}
-                isDisabled={false}
+                isDisabled={isUploading}
               />
             </View>
           </View>
