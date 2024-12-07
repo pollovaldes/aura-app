@@ -4,7 +4,6 @@ import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import FileViewer from "@/components/fileViewer/FileViewer";
 import Modal from "@/components/Modal/Modal";
 import EditDocument from "@/components/vehicles/modals/EditDocument";
-import useDocuments from "@/hooks/useDocuments";
 import useProfile from "@/hooks/useProfile";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { RotateCw, Share as ShareIcon } from "lucide-react-native";
@@ -18,21 +17,34 @@ import {
   Platform,
 } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
 import { supabase } from "@/lib/supabase";
 import { Share } from "react-native";
+import useMaintenanceDocuments from "@/hooks/useMaintenanceDocuments";
 
 type ModalType = "edit_document" | null;
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
-  const { documentId } = useLocalSearchParams<{ documentId: string }>();
+
   const { profile, isProfileLoading, fetchProfile } = useProfile();
-  const { documents, areDocumentsLoading, fetchDocuments } = useDocuments();
+
   const [activeModal, setActiveModal] = useState<ModalType>(null);
+
   const [randomKey, setRandomKey] = useState(0); // This is a hack to force the FileViewer to re-render
+
   const [isSharing, setIsSharing] = useState(false);
+
+  const { documentId } = useLocalSearchParams<{
+    documentId: string;
+  }>();
+
+  const {
+    areMaintenanceDocumentsLoading,
+    fetchMaintenanceDocuments,
+    maintenanceDocuments,
+  } = useMaintenanceDocuments();
+
   const closeModal = () => setActiveModal(null);
 
   if (isProfileLoading) {
@@ -50,7 +62,7 @@ export default function Index() {
     );
   }
 
-  if (areDocumentsLoading) {
+  if (areMaintenanceDocumentsLoading) {
     return (
       <>
         <Stack.Screen
@@ -84,7 +96,7 @@ export default function Index() {
     );
   }
 
-  if (documents === null) {
+  if (maintenanceDocuments === null) {
     return (
       <>
         <Stack.Screen
@@ -97,13 +109,13 @@ export default function Index() {
         <ErrorScreen
           caption={`Ocurrió un error y no \npudimos cargar los documentos`}
           buttonCaption="Reintentar"
-          retryFunction={fetchDocuments}
+          retryFunction={fetchMaintenanceDocuments}
         />
       </>
     );
   }
 
-  const document = documents.find(
+  const document = maintenanceDocuments.find(
     (Document) => Document.document_id === documentId
   );
 
@@ -120,14 +132,14 @@ export default function Index() {
         <UnauthorizedScreen
           caption="No tienes acceso a este recurso."
           buttonCaption="Reintentar"
-          retryFunction={fetchDocuments}
+          retryFunction={fetchMaintenanceDocuments}
         />
       </>
     );
   }
 
   const canEdit = profile.role === "ADMIN" || profile.role === "OWNER";
-  const fileUrl = `https://wkkfbhlvghhrscihbdev.supabase.co/storage/v1/object/public/documents/${document.vehicle_id}/${document.document_id}`;
+  const fileUrl = `https://wkkfbhlvghhrscihbdev.supabase.co/storage/v1/object/public/maintenance_files/${document.vehicle_id}/${document.maintenance_id}/${document.document_id}`;
 
   const getFileExtensionFromMimeType = (mimeType: string) => {
     const mimeToExtensionMap: Record<string, string> = {
@@ -263,7 +275,7 @@ export default function Index() {
           <EditDocument
             closeModal={closeModal}
             document={document}
-            fetchDocuments={fetchDocuments}
+            fetchDocuments={fetchMaintenanceDocuments}
           />
         </View>
       </Modal>

@@ -9,7 +9,7 @@ import useProfile from "@/hooks/useProfile";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Platform, RefreshControl, ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { colorPalette } from "@/style/themes";
@@ -22,15 +22,29 @@ import {
   Trash,
 } from "lucide-react-native";
 import StatusChip from "@/components/General/StatusChip";
+import useMaintenanceDocuments from "@/hooks/useMaintenanceDocuments";
+import EmptyScreen from "@/components/dataStates/EmptyScreen";
 
 export default function maintenanceId() {
   const { styles } = useStyles(stylesheet);
+
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
+
   const { profile, isProfileLoading, fetchProfile } = useProfile();
+
   const { maintenanceId } = useLocalSearchParams<{ maintenanceId: string }>();
+
   const { maintenanceRecords, areMaintenanceRecordsLoading, fetchMaintenance } =
     useMaintenance(undefined, maintenanceId);
+
+  const {
+    areMaintenanceDocumentsLoading,
+    fetchMaintenanceDocuments,
+    maintenanceDocuments,
+  } = useMaintenanceDocuments(maintenanceId);
+
   const headerHeight = useHeaderHeight();
+
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
   if (isProfileLoading) {
@@ -59,6 +73,21 @@ export default function maintenanceId() {
           }}
         />
         <LoadingScreen caption="Cargando solicitudes de mantenimiento" />
+      </>
+    );
+  }
+
+  if (areMaintenanceDocumentsLoading) {
+    return (
+      <>
+        <Stack.Screen
+          options={{
+            title: "Cargando...",
+            headerLargeTitle: false,
+            headerRight: undefined,
+          }}
+        />
+        <LoadingScreen caption="Cargando documentos" />
       </>
     );
   }
@@ -116,6 +145,25 @@ export default function maintenanceId() {
     );
   }
 
+  if (!maintenanceDocuments) {
+    return (
+      <>
+        <Stack.Screen
+          options={{
+            title: "Error",
+            headerLargeTitle: false,
+            headerRight: undefined,
+          }}
+        />
+        <ErrorScreen
+          caption={`Ocurrió un error y no pudimos \ncargar los documentos`}
+          buttonCaption="Reintentar"
+          retryFunction={fetchMaintenanceDocuments}
+        />
+      </>
+    );
+  }
+
   if (vehicles === null) {
     return (
       <>
@@ -134,6 +182,8 @@ export default function maintenanceId() {
       </>
     );
   }
+
+  console.log("maintennaceDocs" + maintenanceDocuments);
 
   const record = maintenanceRecords[0];
 
@@ -222,12 +272,14 @@ export default function maintenanceId() {
             refreshing={
               vehiclesAreLoading ||
               areMaintenanceRecordsLoading ||
-              isProfileLoading
+              isProfileLoading ||
+              areMaintenanceDocumentsLoading
             }
             onRefresh={() => {
               fetchVehicles();
               fetchProfile();
               fetchMaintenance();
+              fetchMaintenanceDocuments();
             }}
           />
         }
@@ -347,27 +399,56 @@ export default function maintenanceId() {
           </View>
         )}
         {currentTabIndex === 1 && (
-          <View style={styles.groupedListsContainer}>
-            <GroupedList>
-              <Row
-                title="Adjunto 1"
-                trailingType="chevron"
-                icon={<File size={24} color="white" />}
-                color={colorPalette.green[500]}
-                onPress={() =>
-                  router.navigate(`/vehicles/[vehicleId]/documentation/${5}`)
-                }
-              />
-              <Row trailingType="chevron" title="" showChevron={false}>
-                <Text style={styles.haderDescription}>
-                  {record.description === ""
-                    ? "No se proveyó ninguna descripción para esta solicitud de mantenimiento."
-                    : record.description}
-                </Text>
-              </Row>
-            </GroupedList>
-          </View>
+          <>
+            {maintenanceDocuments.length === 0 ? (
+              <View style={{ marginTop: 36 }}>
+                <EmptyScreen
+                  caption="No se han adjuntado archivos a esta solicitud"
+                  buttonCaption="Reintentar"
+                  retryFunction={fetchMaintenanceDocuments}
+                />
+              </View>
+            ) : (
+              <View style={styles.groupedListsContainer}>
+                {maintenanceDocuments.map((document) => (
+                  <GroupedList
+                    key={document.document_id}
+                    header={`Creado ${formatDate(document.created_at, "el")}`}
+                  >
+                    <React.Fragment>
+                      <Row
+                        title={
+                          document.title ? document.title : document.document_id
+                        }
+                        trailingType="chevron"
+                        icon={<File size={24} color="white" />}
+                        color={colorPalette.green[500]}
+                        onPress={() =>
+                          router.navigate(
+                            `/vehicles/${document.vehicle_id}/maintenance/${document.maintenance_id}/${document.document_id}/`
+                          )
+                        }
+                      />
+                      <Row
+                        trailingType="chevron"
+                        showChevron={false}
+                        title=""
+                        disabled
+                      >
+                        <Text style={styles.haderDescription}>
+                          {document.description
+                            ? document.description
+                            : "No se proveyó ninguna descripción para este documento."}
+                        </Text>
+                      </Row>
+                    </React.Fragment>
+                  </GroupedList>
+                ))}
+              </View>
+            )}
+          </>
         )}
+
         {currentTabIndex === 2 && (
           <View style={styles.groupedListsContainer}>
             <GroupedList>

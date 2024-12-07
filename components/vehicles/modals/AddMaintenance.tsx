@@ -29,6 +29,7 @@ interface FileItem {
   title: string;
   description: string;
   document?: DocumentPickerAsset | ImagePicker.ImagePickerAsset | null;
+  created_at: string;
 }
 
 export default function AddMaintenance({
@@ -58,7 +59,12 @@ export default function AddMaintenance({
   const addFileView = () => {
     setFileViews((prev) => [
       ...prev,
-      { localId: generateUniqueId(), description: "", title: "" },
+      {
+        localId: generateUniqueId(),
+        title: "",
+        description: "",
+        created_at: new Date().toISOString(),
+      },
     ]);
   };
 
@@ -167,8 +173,10 @@ export default function AddMaintenance({
           .insert([
             {
               vehicle_id: vehicle.id,
+              maintenance_id: maintenanceId,
               title: file.title,
               description: file.description,
+              created_at: new Date().toISOString(),
             },
           ])
           .select();
