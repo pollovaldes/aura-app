@@ -21,6 +21,7 @@ import * as FileSystem from "expo-file-system";
 import { supabase } from "@/lib/supabase";
 import { Share } from "react-native";
 import useMaintenanceDocuments from "@/hooks/useMaintenanceDocuments";
+import EditMaintenanceDocument from "@/components/vehicles/modals/EditMaintenanceDocument";
 
 type ModalType = "edit_document" | null;
 
@@ -171,8 +172,10 @@ export default function Index() {
 
       // Fetch the document from Supabase
       const { data: blob, error } = await supabase.storage
-        .from("documents")
-        .download(`${document.vehicle_id}/${document.document_id}`);
+        .from("maintenance_files")
+        .download(
+          `${document.vehicle_id}/${document.maintenance_id}/${document.document_id}`
+        );
 
       if (error) {
         console.error("Error downloading the document:", error.message);
@@ -272,7 +275,7 @@ export default function Index() {
           <Text style={styles.closeButton} onPress={closeModal}>
             Cerrar
           </Text>
-          <EditDocument
+          <EditMaintenanceDocument
             closeModal={closeModal}
             document={document}
             fetchDocuments={fetchMaintenanceDocuments}

@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 
-type Document = {
+export type MaintenanceDocument = {
   document_id: string;
   vehicle_id: string;
   maintenance_id: string;
@@ -13,7 +13,7 @@ type Document = {
 
 export default function useMaintenanceDocuments(maintenanceId?: string) {
   const [maintenanceDocuments, setMaintenanceDocuments] = useState<
-    Document[] | null
+    MaintenanceDocument[] | null
   >(null);
   const [areMaintenanceDocumentsLoading, setAreMaintenanceDocumentsLoading] =
     useState(false);

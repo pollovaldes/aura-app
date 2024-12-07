@@ -16,7 +16,7 @@ export default function FileViewer({ fileUrl, randomKey }: FileViewerProps) {
   const [isWebViewLoading, setIsWebViewLoading] = useState(false);
   const headerHeight = useHeaderHeight();
 
-  const embeddedUrl = `http://docs.google.com/gview?embedded=true&url=${fileUrl}`;
+  const embeddedUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${fileUrl}`;
 
   if (Platform.OS === "web") {
     return (
@@ -33,7 +33,9 @@ export default function FileViewer({ fileUrl, randomKey }: FileViewerProps) {
         <WebView
           incognito={true}
           javaScriptEnabled={true}
-          source={{ uri: Platform.OS === "ios" ? fileUrl : embeddedUrl }}
+          source={
+            Platform.OS === "android" ? { uri: embeddedUrl } : { uri: fileUrl }
+          }
           onLoadStart={(syntheticEvent) => {
             setIsWebViewLoading(true);
           }}

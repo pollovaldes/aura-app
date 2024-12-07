@@ -476,6 +476,7 @@ const stylesheet = createStyleSheet((theme) => ({
   groupedListsContainer: {
     gap: theme.marginsComponents.section,
     marginTop: 6,
+    marginBottom: 36,
   },
   haderDescription: {
     color: theme.textPresets.main,
