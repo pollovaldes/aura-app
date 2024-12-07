@@ -14,7 +14,6 @@ import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import * as Crypto from "expo-crypto";
-import { Maintenance } from "@/hooks/useMaintenance";
 import { decode } from "base64-arraybuffer";
 
 interface addMaintenanceModalProps {
@@ -26,6 +25,7 @@ interface addMaintenanceModalProps {
 
 interface FileItem {
   localId: string;
+  title: string;
   description: string;
   document?: DocumentPickerAsset | ImagePicker.ImagePickerAsset | null;
 }
@@ -44,9 +44,7 @@ export default function AddMaintenance({
   const [requestDescription, setRequestDescription] = useState("");
   const [isUploading, setIsUploading] = useState(false);
 
-  const [newMaintenance, setNewMaintenance] = useState<Maintenance | null>(
-    null
-  );
+  const [currentUploadingFile, setCurrentUploadingFile] = useState<string>("");
 
   // ================== File picker ==================
 
@@ -59,7 +57,7 @@ export default function AddMaintenance({
   const addFileView = () => {
     setFileViews((prev) => [
       ...prev,
-      { localId: generateUniqueId(), description: "" },
+      { localId: generateUniqueId(), description: "", title: "" },
     ]);
   };
 
@@ -75,11 +73,18 @@ export default function AddMaintenance({
     );
   };
 
+  const updateFileTitle = (localId: string, title: string) => {
+    setFileViews((prev) =>
+      prev.map((file) => (file.localId === localId ? { ...file, title } : file))
+    );
+  };
+
   // ================== File picker ==================
 
   const uploadDocumentToStorage = async (
     localId: string,
-    maintenanceId: string
+    maintenanceId: string,
+    documentId: string
   ): Promise<boolean> => {
     const file = fileViews.find((file) => file.localId === localId);
 
@@ -107,12 +112,12 @@ export default function AddMaintenance({
       return false;
     }
 
-    const fileName = `${vehicle.id}/${maintenanceId}/${Crypto.randomUUID()}`;
+    const fileName = `${vehicle.id}/${maintenanceId}/${documentId}`;
     console.log("Nombre archivo ", fileName);
 
     const { data, error } = await supabase.storage
       .from("maintenance_files")
-      .upload(fileName, fileData, {
+      .upload(`${vehicle.id}/${maintenanceId}/${documentId}`, fileData, {
         contentType: file.document.mimeType,
       });
 
@@ -154,28 +159,51 @@ export default function AddMaintenance({
     if (!error && data) {
       const maintenanceId = data[0].id;
 
-      console.log("Antes del for");
-
       for (const file of fileViews) {
-        const success = await uploadDocumentToStorage(
-          file.localId,
-          maintenanceId
-        );
-        if (!success) {
-          alert("Ocurrió un error subiendo el archivo con id: " + file.localId);
-          setIsUploading(false);
+        setCurrentUploadingFile(file.title);
+        const { data: tableData, error: tableError } = await supabase
+          .from("vehicle_maintenance_documentation")
+          .insert([
+            {
+              vehicle_id: vehicle.id,
+              title: file.title,
+              description: file.description,
+            },
+          ])
+          .select();
+
+        if (tableError && !tableData) {
+          alert(
+            `Ocurrió un error al agregar el documento \n–––– Detalles del error ––––\n\nMensaje de error: ${tableError.message}\n\nCódigo de error: ${tableError.code}\n\nDetalles: ${tableError.details}\n\nSugerencia: ${tableError.hint}`
+          );
           return;
         }
-        console.log("Fin de iteración");
-      }
 
-      console.log("Despues del for");
+        const success = await uploadDocumentToStorage(
+          file.localId,
+          maintenanceId,
+          tableData[0].document_id
+        );
+
+        if (!success) {
+          const { error } = await supabase
+            .from("vehicle_maintenance_documentation")
+            .delete()
+            .eq("document_id", tableData[0].document_id);
+          alert("Ocurrió un error subiendo el archivo con id: " + file.localId);
+          setIsUploading(false);
+          closeModal();
+          return;
+        }
+      }
 
       setIsUploading(false);
       fetchMaintenance();
       closeModal();
       return data;
     } else {
+      closeModal();
+      fetchMaintenance();
       alert(`¡Ocurrió un error!\n${error.message}`);
       setIsUploading(false);
     }
@@ -187,8 +215,8 @@ export default function AddMaintenance({
     if (key === "image") {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ["images", "videos"],
-        allowsEditing: true,
-        quality: 0.35,
+        allowsEditing: false,
+        quality: 0.45,
         selectionLimit: 1,
         videoMaxDuration: 60,
         base64: true,
@@ -379,15 +407,21 @@ export default function AddMaintenance({
                         {item.document && "size" in item.document
                           ? ((item.document.size ?? 0) / 1000000).toFixed(2) +
                             " MB"
-                          : "Tamaño desconocido"}
+                          : item.document.mimeType}
                       </Text>
                     </View>
                   </View>
                 </View>
               )}
               <FormInput
+                description="Título del archivo"
+                editable
+                value={item.title}
+                onChangeText={(text) => updateFileTitle(item.localId, text)}
+              />
+              <FormInput
                 description="Descripción del archivo"
-                placeholder="Aquí puedes describir brevemente lo que sucede en la imagen o video."
+                placeholder="Describe brevemente lo que sucede en la imagen, video o archivo."
                 multiline
                 editable
                 value={item.description}
@@ -418,6 +452,7 @@ export default function AddMaintenance({
       <View style={styles.group}>
         <FormButton
           title="Enviar solicitud"
+          isLoading={isUploading}
           onPress={() =>
             uploadRequest(
               vehicle.id,
@@ -429,6 +464,13 @@ export default function AddMaintenance({
           }
           isDisabled={isUploading}
         />
+        <Text style={styles.subtitle}>
+          {isUploading && "Subiendo solicitud, no cierres la app ni el diálogo"}
+        </Text>
+        <Text style={styles.subtitle}>
+          {currentUploadingFile &&
+            `Actualmente subiendo: ${currentUploadingFile}`}
+        </Text>
       </View>
     </View>
   );

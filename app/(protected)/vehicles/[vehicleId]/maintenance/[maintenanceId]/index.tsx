@@ -15,6 +15,7 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { colorPalette } from "@/style/themes";
 import {
   CircleHelp,
+  File,
   Info,
   MessageCirclePlus,
   RefreshCcw,
@@ -231,118 +232,155 @@ export default function maintenanceId() {
           />
         }
       >
-        <View style={styles.groupedListsContainer}>
-          <GroupedList>
-            <Row
-              title="Estatus de la solicitud"
-              trailingType="chevron"
-              caption={() => {
-                return (
-                  <StatusChip
-                    status={record.status}
-                    statesConfig={statesConfig}
-                  />
-                );
-              }}
-              icon={<CircleHelp size={24} color="white" />}
-              color={colorPalette.orange[500]}
-            />
-            <Row
-              title="Descripción general"
-              trailingType="chevron"
-              showChevron={false}
-              caption={record.title}
-              icon={<Info size={24} color="white" />}
-              color={colorPalette.cyan[500]}
-            />
-            <Row
-              trailingType="chevron"
-              title=""
-              onPress={() => {}}
-              showChevron={false}
-            >
-              <Text style={styles.haderDescription}>
-                {record.description === ""
-                  ? "No se proveyó ninguna descripción para esta solicitud de mantenimiento."
-                  : record.description}
-              </Text>
-            </Row>
-          </GroupedList>
-          <GroupedList header="Información sobre la petición">
-            <Row
-              title="Inicio de la solicitud"
-              trailingType="chevron"
-              showChevron={false}
-              caption={formatDate(record.issued_datetime, "Iniciada el ")}
-            />
-            <Row
-              title="vehículo al que se le solicitó"
-              trailingType="chevron"
-              caption={`${vehicle.brand} ${vehicle.sub_brand} (${vehicle.year})\n`.trim()}
-              onPress={() =>
-                router.push(`/vehicles/${vehicle.id}/technical_sheet/`)
-              }
-            />
-            <Row
-              title="Quien solicitó"
-              trailingType="chevron"
-              onPress={() => {
-                router.push(`/users/${record.issued_by.id}/`);
-              }}
-              caption={`${record.issued_by.name} ${record.issued_by.father_last_name} ${record.issued_by.mother_last_name}`.trim()}
-            />
-          </GroupedList>
-
-          {record.status === "SOLVED" && (
-            <GroupedList header="Información sobre la resolución">
+        {currentTabIndex === 0 && (
+          <View style={styles.groupedListsContainer}>
+            <GroupedList>
               <Row
-                title="Fecha de resolución"
+                title="Estatus de la solicitud"
+                trailingType="chevron"
+                caption={() => {
+                  return (
+                    <StatusChip
+                      status={record.status}
+                      statesConfig={statesConfig}
+                    />
+                  );
+                }}
+                icon={<CircleHelp size={24} color="white" />}
+                color={colorPalette.orange[500]}
+              />
+              <Row
+                title="Descripción general"
                 trailingType="chevron"
                 showChevron={false}
-                caption={
-                  record.resolved_datetime
-                    ? formatDate(record.resolved_datetime, "Finalizada el ")
-                    : "Aunque la solicitud ya fue resuelta, no se registró la fecha de resolución."
+                caption={record.title}
+                icon={<Info size={24} color="white" />}
+                color={colorPalette.cyan[500]}
+              />
+              <Row
+                trailingType="chevron"
+                title=""
+                onPress={() => {}}
+                showChevron={false}
+              >
+                <Text style={styles.haderDescription}>
+                  {record.description === ""
+                    ? "No se proveyó ninguna descripción para esta solicitud de mantenimiento."
+                    : record.description}
+                </Text>
+              </Row>
+            </GroupedList>
+            <GroupedList header="Información sobre la petición">
+              <Row
+                title="Inicio de la solicitud"
+                trailingType="chevron"
+                showChevron={false}
+                caption={formatDate(record.issued_datetime, "Iniciada el ")}
+              />
+              <Row
+                title="vehículo al que se le solicitó"
+                trailingType="chevron"
+                caption={`${vehicle.brand} ${vehicle.sub_brand} (${vehicle.year})\n`.trim()}
+                onPress={() =>
+                  router.push(`/vehicles/${vehicle.id}/technical_sheet/`)
                 }
               />
               <Row
-                title="Quien resolvió"
+                title="Quien solicitó"
                 trailingType="chevron"
                 onPress={() => {
-                  record.resolved_by &&
-                    router.push(`/users/${record.resolved_by.id}/`);
+                  router.push(`/users/${record.issued_by.id}/`);
                 }}
-                showChevron={record.resolved_by ? true : false}
-                caption={
-                  record.resolved_by
-                    ? `${record.resolved_by.name} ${record.resolved_by.father_last_name} ${record.resolved_by.mother_last_name}`.trim()
-                    : "Aunque la solicitud ya fue resuelta, no se registró quien la resolvió."
-                }
+                caption={`${record.issued_by.name} ${record.issued_by.father_last_name} ${record.issued_by.mother_last_name}`.trim()}
               />
             </GroupedList>
-          )}
 
-          <GroupedList header="Acciones para esta solicitud">
-            <Row
-              title="Cambiar el estatus de la solicitud"
-              trailingType="chevron"
-              icon={<RefreshCcw size={24} color="white" />}
-              color={colorPalette.green[500]}
-            />
-            <Row
-              title="Agregar comentario"
-              trailingType="chevron"
-              icon={<MessageCirclePlus size={24} color="white" />}
-              color={colorPalette.neutral[500]}
-            />
-            <Row
-              title="Eliminar solicitud"
-              trailingType="chevron"
-              icon={<Trash size={24} color="white" />}
-              color={colorPalette.red[500]}
-            />
-          </GroupedList>
-        </View>
+            {record.status === "SOLVED" && (
+              <GroupedList header="Información sobre la resolución">
+                <Row
+                  title="Fecha de resolución"
+                  trailingType="chevron"
+                  showChevron={false}
+                  caption={
+                    record.resolved_datetime
+                      ? formatDate(record.resolved_datetime, "Finalizada el ")
+                      : "Aunque la solicitud ya fue resuelta, no se registró la fecha de resolución."
+                  }
+                />
+                <Row
+                  title="Quien resolvió"
+                  trailingType="chevron"
+                  onPress={() => {
+                    record.resolved_by &&
+                      router.push(`/users/${record.resolved_by.id}/`);
+                  }}
+                  showChevron={record.resolved_by ? true : false}
+                  caption={
+                    record.resolved_by
+                      ? `${record.resolved_by.name} ${record.resolved_by.father_last_name} ${record.resolved_by.mother_last_name}`.trim()
+                      : "Aunque la solicitud ya fue resuelta, no se registró quien la resolvió."
+                  }
+                />
+              </GroupedList>
+            )}
+
+            <GroupedList header="Acciones para esta solicitud">
+              <Row
+                title="Cambiar el estatus de la solicitud"
+                trailingType="chevron"
+                icon={<RefreshCcw size={24} color="white" />}
+                color={colorPalette.green[500]}
+              />
+              <Row
+                title="Agregar comentario"
+                trailingType="chevron"
+                icon={<MessageCirclePlus size={24} color="white" />}
+                color={colorPalette.neutral[500]}
+              />
+              <Row
+                title="Eliminar solicitud"
+                trailingType="chevron"
+                icon={<Trash size={24} color="white" />}
+                color={colorPalette.red[500]}
+              />
+            </GroupedList>
+          </View>
+        )}
+        {currentTabIndex === 1 && (
+          <View style={styles.groupedListsContainer}>
+            <GroupedList>
+              <Row
+                title="Adjunto 1"
+                trailingType="chevron"
+                icon={<File size={24} color="white" />}
+                color={colorPalette.green[500]}
+                onPress={() =>
+                  router.navigate(`/vehicles/[vehicleId]/documentation/${5}`)
+                }
+              />
+              <Row trailingType="chevron" title="" showChevron={false}>
+                <Text style={styles.haderDescription}>
+                  {record.description === ""
+                    ? "No se proveyó ninguna descripción para esta solicitud de mantenimiento."
+                    : record.description}
+                </Text>
+              </Row>
+            </GroupedList>
+          </View>
+        )}
+        {currentTabIndex === 2 && (
+          <View style={styles.groupedListsContainer}>
+            <GroupedList>
+              <Row
+                title="Actualizaciones"
+                trailingType="chevron"
+                caption="No se registraron actualizaciones para esta solicitud"
+                icon={<Info size={24} color="white" />}
+                color={colorPalette.cyan[500]}
+              />
+            </GroupedList>
+          </View>
+        )}
       </ScrollView>
     </>
   );

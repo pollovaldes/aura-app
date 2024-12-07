@@ -115,14 +115,11 @@ export default function AddDocument({
 
     const uploadSuccess = await uploadDocument(data[0].document_id);
 
-    console.log(uploadSuccess);
-
     if (!uploadSuccess) {
       const { error } = await supabase
         .from("vehicle_documentation_sheet")
         .delete()
         .eq("document_id", data[0].document_id);
-    } else {
     }
 
     setIsUploading(false);
