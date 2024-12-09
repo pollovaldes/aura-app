@@ -1,25 +1,30 @@
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
-import { FlatList, Text, View } from "react-native";
+import { FlatList, Platform, Pressable, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import useProfile from "@/hooks/useProfile";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import { Boxes } from "lucide-react-native";
+import { Boxes, ChevronRight } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import useFleets from "@/hooks/useFleets";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
-import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
-import { useEffect } from "react";
+import { Link, Stack, useLocalSearchParams, useNavigation } from "expo-router";
+import { useEffect, useState } from "react";
 import { useHeaderHeight } from "@react-navigation/elements";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
+import SegmentedControl from "@react-native-segmented-control/segmented-control";
+import UserThumbnail from "@/components/people/UserThumbnail";
+import useUsers from "@/hooks/peopleHooks/useUsers";
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
   const { profile, isProfileLoading, fetchProfile } = useProfile();
   const { fleetId } = useLocalSearchParams<{ fleetId: string }>();
   const { areFleetsLoading, fetchFleets, fleets } = useFleets(fleetId);
+  const { users, usersAreLoading, fetchUsers } = useUsers();
   const headerHeight = useHeaderHeight();
+  const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
   const navigation = useNavigation();
 
@@ -38,6 +43,36 @@ export default function Index() {
           }}
         />
         <LoadingScreen caption="Cargando perfil" />
+      </>
+    );
+  }
+
+  if (areFleetsLoading) {
+    return (
+      <>
+        <Stack.Screen
+          options={{
+            title: "Cargando",
+            headerRight: undefined,
+            headerLargeTitle: false,
+          }}
+        />
+        <LoadingScreen caption="Cargando flotillas" />
+      </>
+    );
+  }
+
+  if (usersAreLoading) {
+    return (
+      <>
+        <Stack.Screen
+          options={{
+            title: "Cargando",
+            headerRight: undefined,
+            headerLargeTitle: false,
+          }}
+        />
+        <LoadingScreen caption="Cargando usuarios" />
       </>
     );
   }
@@ -61,21 +96,6 @@ export default function Index() {
     );
   }
 
-  if (areFleetsLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-        <LoadingScreen caption="Cargando flotillas" />
-      </>
-    );
-  }
-
   if (!fleets) {
     return (
       <>
@@ -83,6 +103,25 @@ export default function Index() {
           caption="Ocurrió un error al recuperar las flotillas"
           buttonCaption="Reintentar"
           retryFunction={fetchFleets}
+        />
+        <Stack.Screen
+          options={{
+            title: "Error",
+            headerRight: undefined,
+            headerLargeTitle: false,
+          }}
+        />
+      </>
+    );
+  }
+
+  if (!users) {
+    return (
+      <>
+        <ErrorScreen
+          caption={`Ocurrió un error y no \npudimos cargar los usuarios`}
+          buttonCaption="Reintentar"
+          retryFunction={fetchUsers}
         />
         <Stack.Screen
           options={{
@@ -127,55 +166,119 @@ export default function Index() {
           headerLargeTitle: false,
         }}
       />
-      <FlatList
-        contentInsetAdjustmentBehavior="automatic"
-        data={fleet.users}
-        keyExtractor={(item) => item.id}
-        refreshing={areFleetsLoading || isProfileLoading}
-        onRefresh={() => {
-          fetchFleets();
-          fetchProfile();
-        }}
-        style={{ marginBottom: 36 }}
-        renderItem={({ item }) => (
-          <View style={styles.container}>
-            <GroupedList>
-              <Row
-                title={item.name}
-                trailingType="chevron"
-                icon={<Boxes size={24} color="white" />}
-                color={colorPalette.cyan[500]}
-              />
-              <Row
-                trailingType="chevron"
-                disabled
-                title=""
-                onPress={() => {}}
-                showChevron={false}
-              >
-                <Text style={styles.description}>{item.father_last_name}</Text>
-              </Row>
-            </GroupedList>
-          </View>
-        )}
-        ListEmptyComponent={
-          <View style={{ marginTop: 100 }}>
-            <EmptyScreen
-              caption="No hay personas en esta flotilla"
-              buttonCaption="Añadir personas"
-              retryFunction={fetchFleets}
-            />
-          </View>
-        }
-      />
+      <View
+        style={[{ marginTop: Platform.OS === "ios" ? headerHeight + 0 : 6 }]}
+      >
+        <SegmentedControl
+          values={["Personas en esta flotilla", "Todas las personas"]}
+          selectedIndex={currentTabIndex}
+          onChange={(event) =>
+            setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)
+          }
+          style={styles.segmentedControl}
+        />
+      </View>
+
+      {currentTabIndex === 0 ? (
+        <FlatList
+          contentInsetAdjustmentBehavior="automatic"
+          data={fleet.users}
+          keyExtractor={(item) => item.id}
+          refreshing={areFleetsLoading || isProfileLoading}
+          onRefresh={() => {
+            fetchFleets();
+            fetchProfile();
+          }}
+          style={{ marginBottom: 36 }}
+          renderItem={({ item }) => (
+            <Link href={{ pathname: `/users/${item.id}` }} asChild>
+              <Pressable>
+                <View style={styles.listContainer}>
+                  <View style={styles.contentContainer}>
+                    <View style={styles.imageContainer}>
+                      <UserThumbnail userId={item.id} size={60} />
+                    </View>
+                    <Text
+                      style={styles.itemText}
+                    >{`${item.name} ${item.father_last_name} ${item.mother_last_name}`}</Text>
+                  </View>
+                  <View style={styles.chevronView}>
+                    <ChevronRight color={styles.chevron.color} />
+                  </View>
+                </View>
+              </Pressable>
+            </Link>
+          )}
+          ListEmptyComponent={
+            <View style={{ marginTop: 100 }}>
+              <EmptyScreen caption="Esta flotilla no tiene personas" />
+            </View>
+          }
+        />
+      ) : (
+        <FlatList
+          refreshing={usersAreLoading}
+          onRefresh={fetchUsers}
+          contentInsetAdjustmentBehavior="automatic"
+          data={users}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <Link href={{ pathname: `/users/${item.id}` }} asChild>
+              <Pressable>
+                <View style={styles.listContainer}>
+                  <View style={styles.contentContainer}>
+                    <View style={styles.imageContainer}>
+                      <UserThumbnail userId={item.id} size={60} />
+                    </View>
+                    <Text
+                      style={styles.itemText}
+                    >{`${item.name} ${item.father_last_name} ${item.mother_last_name}`}</Text>
+                  </View>
+                  <View style={styles.chevronView}>
+                    <ChevronRight color={styles.chevron.color} />
+                  </View>
+                </View>
+              </Pressable>
+            </Link>
+          )}
+        />
+      )}
     </>
   );
 }
 
 const stylesheet = createStyleSheet((theme) => ({
+  listContainer: {
+    justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: theme.ui.colors.border,
+  },
   container: {
     gap: theme.marginsComponents.section,
-    marginTop: theme.marginsComponents.section, //Excepción
+    marginTop: theme.marginsComponents.section,
+  },
+  contentContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
+  imageContainer: {
+    padding: 12,
+  },
+  chevron: {
+    color: theme.textPresets.subtitle,
+  },
+  chevronView: {
+    paddingRight: 12,
+  },
+  itemText: {
+    fontSize: 18,
+    paddingLeft: 10,
+    color: theme.textPresets.main,
+    flexShrink: 1,
+    marginRight: 18,
   },
   modalContainer: {
     width: "100%",

@@ -1,18 +1,10 @@
-import {
-  View,
-  Text,
-  ActivityIndicator,
-  FlatList,
-  Pressable,
-  Image,
-} from "react-native";
+import { View, Text, FlatList, Pressable } from "react-native";
 import useUsers from "@/hooks/peopleHooks/useUsers";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link, Redirect } from "expo-router";
 import { useEffect, useState } from "react";
 import { ChevronRight } from "lucide-react-native";
 import { useSearch } from "@/context/SearchContext";
-import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import React from "react";
 import useProfile from "@/hooks/useProfile";
 import LoadingScreen from "../dataStates/LoadingScreen";
