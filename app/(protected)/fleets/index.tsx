@@ -1,101 +1,151 @@
-import TermsAndPrivacy from "@/app/auth/TermsAndPrivacy";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
-import Modal from "@/components/Modal/Modal";
-import PersonalInfoModal from "@/components/profile/PersonalInfoModal";
-import RoleModal from "@/components/profile/RoleModal";
-import { supabase } from "@/lib/supabase";
-import { useState } from "react";
-import { RefreshControl, ScrollView, Switch, Text, View } from "react-native";
+import { FlatList, Pressable, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import ProfileRow from "@/components/profile/ProfileRow";
-import ChangeImageModal from "@/components/profile/ChangeImageModal";
 import useProfile from "@/hooks/useProfile";
-import { useSessionContext } from "@/context/SessionContext";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
+import { Boxes, Plus } from "lucide-react-native";
+import { colorPalette } from "@/style/themes";
+import useFleets from "@/hooks/useFleets";
+import EmptyScreen from "@/components/dataStates/EmptyScreen";
+import { Stack } from "expo-router";
+import { useState } from "react";
+import Modal from "@/components/Modal/Modal";
+import AddFleetModal from "@/components/fleets/AddFleetModal";
 
-type ModalType =
-  | "personal_info"
-  | "role"
-  | "email"
-  | "password"
-  | "change_image"
-  | null;
+type ModalType = "add_fleet" | null;
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
+  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { areFleetsLoading, fetchFleets, fleets } = useFleets();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
-  const signOut = async () => {
-    let { error } = await supabase.auth.signOut({ scope: "local" });
-  };
-
-  const { session, isLoading: isSessionLoading } = useSessionContext();
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
-
-  if (isSessionLoading) {
-    return <LoadingScreen caption="Cargando sesión" />;
-  }
 
   if (isProfileLoading) {
-    return <LoadingScreen caption="Cargando perfil" />;
+    return (
+      <>
+        <Stack.Screen
+          options={{
+            headerRight: undefined,
+          }}
+        />
+        <LoadingScreen caption="Cargando perfil" />
+      </>
+    );
   }
 
   if (!profile) {
     return (
-      <ErrorScreen
-        caption="Ocurrió un error al recuperar tu perfil"
-        buttonCaption="Reintentar"
-        retryFunction={fetchProfile}
-      />
+      <>
+        <Stack.Screen
+          options={{
+            headerRight: undefined,
+          }}
+        />
+        <ErrorScreen
+          caption="Ocurrió un error al recuperar tu perfil"
+          buttonCaption="Reintentar"
+          retryFunction={fetchProfile}
+        />
+      </>
     );
   }
 
-  if (!session) {
+  if (areFleetsLoading) {
     return (
-      <ErrorScreen
-        caption="Ocurrió un error al recuperar tu sesión"
-        buttonCaption="Intentar cerrar sesión"
-        retryFunction={() => supabase.auth.signOut({ scope: "local" })}
-      />
+      <>
+        <Stack.Screen
+          options={{
+            headerRight: undefined,
+          }}
+        />
+        <LoadingScreen caption="Cargando flotillas" />
+      </>
     );
   }
 
-  if (!session.user.identities) {
+  if (!fleets) {
     return (
-      <ErrorScreen
-        caption="Ocurrió un error al recuperar tus identidades"
-        buttonCaption="Intentar cerrar sesión"
-        retryFunction={() => supabase.auth.signOut({ scope: "local" })}
-      />
+      <>
+        <ErrorScreen
+          caption="Ocurrió un error al recuperar las flotillas"
+          buttonCaption="Reintentar"
+          retryFunction={fetchFleets}
+        />
+        <Stack.Screen
+          options={{
+            headerRight: undefined,
+          }}
+        />
+      </>
     );
   }
+
+  const canAddFleet = profile.role === "ADMIN" || profile.role === "OWNER";
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      refreshControl={
-        <RefreshControl
-          refreshing={isProfileLoading}
-          onRefresh={fetchProfile}
+    <>
+      <Modal isOpen={activeModal === "add_fleet"}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.closeButton} onPress={closeModal}>
+            Cerrar
+          </Text>
+          <AddFleetModal closeModal={closeModal} fetchFleets={fetchFleets} />
+        </View>
+      </Modal>
+      <Stack.Screen
+        options={{
+          headerRight: () =>
+            canAddFleet && (
+              <Pressable onPress={() => setActiveModal("add_fleet")}>
+                <Plus color={styles.plusIcon.color} />
+              </Pressable>
+            ),
+        }}
+      />
+      {fleets.length === 0 ? (
+        <EmptyScreen
+          caption="Parece ser que no tienes flotillas asignadas"
+          buttonCaption="Reintentar"
+          retryFunction={fetchFleets}
         />
-      }
-    >
-      <View style={styles.container}>
-        <GroupedList
-          header="Es más fácil manejar los permisos a través de flotillas (algo así como un grupo de canvas) que a través de permisos por cada administrador. Esto se implementa en fa, no se me asusten. Ustedes chambeen como si nada "
-          footer="Que ya se acabe por favor 🙏🙏"
-        >
-          <Row
-            title="chido"
-            trailingType="chevron"
-            caption="que rollo bandera"
-          />
-        </GroupedList>
-        <View />
-      </View>
-    </ScrollView>
+      ) : (
+        <FlatList
+          contentInsetAdjustmentBehavior="automatic"
+          data={fleets}
+          keyExtractor={(item) => item.id}
+          refreshing={areFleetsLoading || isProfileLoading}
+          onRefresh={() => {
+            fetchFleets();
+            fetchProfile();
+          }}
+          style={{ marginBottom: 36 }}
+          renderItem={({ item }) => (
+            <View style={styles.container}>
+              <GroupedList>
+                <Row
+                  title={item.title}
+                  trailingType="chevron"
+                  icon={<Boxes size={24} color="white" />}
+                  color={colorPalette.cyan[500]}
+                />
+                <Row
+                  trailingType="chevron"
+                  disabled
+                  title=""
+                  onPress={() => {}}
+                  showChevron={false}
+                >
+                  <Text style={styles.description}>{item.description}</Text>
+                </Row>
+              </GroupedList>
+            </View>
+          )}
+        />
+      )}
+    </>
   );
 }
 
@@ -104,9 +154,6 @@ const stylesheet = createStyleSheet((theme) => ({
     gap: theme.marginsComponents.section,
     marginTop: theme.marginsComponents.section, //Excepción
   },
-  termsAndPrivacy: {
-    marginHorizontal: 12,
-  },
   modalContainer: {
     width: "100%",
     alignSelf: "center",
@@ -114,6 +161,10 @@ const stylesheet = createStyleSheet((theme) => ({
     backgroundColor: theme.ui.colors.card,
     borderRadius: 10,
     padding: 24,
+  },
+  description: {
+    color: theme.textPresets.main,
+    fontSize: 16,
   },
   text: {
     color: theme.textPresets.main,
@@ -148,5 +199,9 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.headerButtons.color,
     fontSize: 18,
     textAlign: "right",
+  },
+  plusIcon: {
+    fontSize: 16,
+    color: theme.headerButtons.color,
   },
 }));
