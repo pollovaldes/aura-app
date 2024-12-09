@@ -1,34 +1,40 @@
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
-import { FlatList, Pressable, Text, View } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import useProfile from "@/hooks/useProfile";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import { Boxes, Plus } from "lucide-react-native";
+import { Boxes } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import useFleets from "@/hooks/useFleets";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
-import { Link, router, Stack } from "expo-router";
-import { useState } from "react";
-import Modal from "@/components/Modal/Modal";
-import AddFleetModal from "@/components/fleets/AddFleetModal";
-
-type ModalType = "add_fleet" | null;
+import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
+import { useEffect } from "react";
+import { useHeaderHeight } from "@react-navigation/elements";
+import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
   const { profile, isProfileLoading, fetchProfile } = useProfile();
-  const { areFleetsLoading, fetchFleets, fleets } = useFleets();
-  const [activeModal, setActiveModal] = useState<ModalType>(null);
-  const closeModal = () => setActiveModal(null);
+  const { fleetId } = useLocalSearchParams<{ fleetId: string }>();
+  const { areFleetsLoading, fetchFleets, fleets } = useFleets(fleetId);
+  const headerHeight = useHeaderHeight();
+
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    navigation.setOptions({ presentation: "modal" });
+  }, [navigation]);
 
   if (isProfileLoading) {
     return (
       <>
         <Stack.Screen
           options={{
+            title: "Cargando",
             headerRight: undefined,
+            headerLargeTitle: false,
           }}
         />
         <LoadingScreen caption="Cargando perfil" />
@@ -41,7 +47,9 @@ export default function Index() {
       <>
         <Stack.Screen
           options={{
+            title: "Error",
             headerRight: undefined,
+            headerLargeTitle: false,
           }}
         />
         <ErrorScreen
@@ -58,7 +66,9 @@ export default function Index() {
       <>
         <Stack.Screen
           options={{
+            title: "Cargando",
             headerRight: undefined,
+            headerLargeTitle: false,
           }}
         />
         <LoadingScreen caption="Cargando flotillas" />
@@ -76,7 +86,28 @@ export default function Index() {
         />
         <Stack.Screen
           options={{
+            title: "Error",
             headerRight: undefined,
+            headerLargeTitle: false,
+          }}
+        />
+      </>
+    );
+  }
+
+  if (fleets.length === 0) {
+    return (
+      <>
+        <UnauthorizedScreen
+          caption="No tienes acceso a este recurso"
+          buttonCaption="Reintentar"
+          retryFunction={fetchFleets}
+        />
+        <Stack.Screen
+          options={{
+            title: "Error",
+            headerRight: undefined,
+            headerLargeTitle: false,
           }}
         />
       </>
@@ -85,69 +116,58 @@ export default function Index() {
 
   const canAddFleet = profile.role === "ADMIN" || profile.role === "OWNER";
 
+  const fleet = fleets[0];
+
   return (
     <>
-      <Modal isOpen={activeModal === "add_fleet"}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.closeButton} onPress={closeModal}>
-            Cerrar
-          </Text>
-          <AddFleetModal closeModal={closeModal} fetchFleets={fetchFleets} />
-        </View>
-      </Modal>
       <Stack.Screen
         options={{
-          headerRight: () =>
-            canAddFleet && (
-              <Pressable onPress={() => setActiveModal("add_fleet")}>
-                <Plus color={styles.plusIcon.color} />
-              </Pressable>
-            ),
+          title: "Administrar personas",
+          headerRight: undefined,
+          headerLargeTitle: false,
         }}
       />
-      {fleets.length === 0 ? (
-        <EmptyScreen
-          caption="Parece ser que no tienes flotillas asignadas"
-          buttonCaption="Reintentar"
-          retryFunction={fetchFleets}
-        />
-      ) : (
-        <FlatList
-          contentInsetAdjustmentBehavior="automatic"
-          data={fleets}
-          keyExtractor={(item) => item.id}
-          refreshing={areFleetsLoading || isProfileLoading}
-          onRefresh={() => {
-            fetchFleets();
-            fetchProfile();
-          }}
-          renderItem={({ item }) => (
-            <View style={styles.container}>
-              <GroupedList>
-                <Row
-                  title={item.title}
-                  onPress={() => {
-                    router.navigate(`/fleets/${item.id}`);
-                  }}
-                  trailingType="chevron"
-                  icon={<Boxes size={24} color="white" />}
-                  color={colorPalette.cyan[500]}
-                />
-
-                <Row
-                  trailingType="chevron"
-                  disabled
-                  title=""
-                  onPress={() => {}}
-                  showChevron={false}
-                >
-                  <Text style={styles.description}>{item.description}</Text>
-                </Row>
-              </GroupedList>
-            </View>
-          )}
-        />
-      )}
+      <FlatList
+        contentInsetAdjustmentBehavior="automatic"
+        data={fleet.users}
+        keyExtractor={(item) => item.id}
+        refreshing={areFleetsLoading || isProfileLoading}
+        onRefresh={() => {
+          fetchFleets();
+          fetchProfile();
+        }}
+        style={{ marginBottom: 36 }}
+        renderItem={({ item }) => (
+          <View style={styles.container}>
+            <GroupedList>
+              <Row
+                title={item.name}
+                trailingType="chevron"
+                icon={<Boxes size={24} color="white" />}
+                color={colorPalette.cyan[500]}
+              />
+              <Row
+                trailingType="chevron"
+                disabled
+                title=""
+                onPress={() => {}}
+                showChevron={false}
+              >
+                <Text style={styles.description}>{item.father_last_name}</Text>
+              </Row>
+            </GroupedList>
+          </View>
+        )}
+        ListEmptyComponent={
+          <View style={{ marginTop: 100 }}>
+            <EmptyScreen
+              caption="No hay personas en esta flotilla"
+              buttonCaption="Añadir personas"
+              retryFunction={fetchFleets}
+            />
+          </View>
+        }
+      />
     </>
   );
 }
@@ -206,5 +226,10 @@ const stylesheet = createStyleSheet((theme) => ({
   plusIcon: {
     fontSize: 16,
     color: theme.headerButtons.color,
+  },
+  segmentedControl: {
+    width: "97%",
+    margin: "auto",
+    marginVertical: 6,
   },
 }));

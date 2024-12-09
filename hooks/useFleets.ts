@@ -11,37 +11,80 @@ export type Fleet = {
   vehicles: Vehicle[];
 };
 
-export default function useFleets() {
+export default function useFleets(fleet_id?: string) {
   const [fleets, setFleets] = useState<Fleet[] | null>(null);
   const [areFleetsLoading, setAreFleetsLoading] = useState(false);
 
   const fetchFleetsUserVehicles = async () => {
-    const { data: relations, error: relationsError } = await supabase
-      .from("fleets_users_vehicles")
-      .select("id, fleet_id, user_id, vehicle_id");
+    let relations = [];
+    let fleetData = [];
 
-    if (relationsError) {
-      alert(
-        `Ocurrió un error al obtener las relaciones de las flotillas: \n\nMensaje de error: ${relationsError.message}\n\nCódigo de error: ${relationsError.code}\n\nDetalles: ${relationsError.details}\n\nSugerencia: ${relationsError.hint}`
-      );
-      return [];
+    if (fleet_id) {
+      // Fetch only the relations for the provided fleet_id
+      const { data: singleRelations, error: relationsError } = await supabase
+        .from("fleets_users_vehicles")
+        .select("fleet_id, user_id, vehicle_id")
+        .eq("fleet_id", fleet_id);
+
+      if (relationsError) {
+        alert(
+          `Ocurrió un error al obtener las relaciones de las flotillas: \n\nMensaje de error: ${relationsError.message}\n\nCódigo de error: ${relationsError.code}\n\nDetalles: ${relationsError.details}\n\nSugerencia: ${relationsError.hint}`
+        );
+        return [];
+      }
+
+      relations = singleRelations;
+
+      // Fetch the specific fleet
+      const { data: singleFleet, error: fleetError } = await supabase
+        .from("fleets")
+        .select("id, title, description")
+        .eq("id", fleet_id)
+        .single();
+
+      if (fleetError) {
+        alert(
+          `Ocurrió un error al obtener la flotilla: \n\nMensaje de error: ${fleetError.message}\n\nCódigo de error: ${fleetError.code}\n\nDetalles: ${fleetError.details}\n\nSugerencia: ${fleetError.hint}`
+        );
+        return [];
+      }
+
+      fleetData = [singleFleet];
+    } else {
+      // Fetch all relations
+      const { data: allRelations, error: relationsError } = await supabase
+        .from("fleets_users_vehicles")
+        .select("fleet_id, user_id, vehicle_id");
+
+      if (relationsError) {
+        alert(
+          `Ocurrió un error al obtener las relaciones de las flotillas: \n\nMensaje de error: ${relationsError.message}\n\nCódigo de error: ${relationsError.code}\n\nDetalles: ${relationsError.details}\n\nSugerencia: ${relationsError.hint}`
+        );
+        return [];
+      }
+
+      relations = allRelations;
+
+      // Fetch all fleets
+      const { data: allFleets, error: fleetError } = await supabase
+        .from("fleets")
+        .select("id, title, description");
+
+      if (fleetError) {
+        alert(
+          `Ocurrió un error al obtener las flotillas: \n\nMensaje de error: ${fleetError.message}\n\nCódigo de error: ${fleetError.code}\n\nDetalles: ${fleetError.details}\n\nSugerencia: ${fleetError.hint}`
+        );
+        return [];
+      }
+
+      fleetData = allFleets;
     }
 
-    const fleetIds = [...new Set(relations.map((rel) => rel.fleet_id))];
+    // Extract user and vehicle IDs from relations
     const userIds = [...new Set(relations.map((rel) => rel.user_id))];
     const vehicleIds = [...new Set(relations.map((rel) => rel.vehicle_id))];
 
-    const { data: fleetData, error: fleetError } = await supabase
-      .from("fleets")
-      .select("id, title, description");
-
-    if (fleetError) {
-      alert(
-        `Ocurrió un error al obtener las flotillas: \n\nMensaje de error: ${fleetError.message}\n\nCódigo de error: ${fleetError.code}\n\nDetalles: ${fleetError.details}\n\nSugerencia: ${fleetError.hint}`
-      );
-      return [];
-    }
-
+    // Fetch only necessary users
     const { data: userData, error: userError } = await supabase
       .from("profiles")
       .select(
@@ -56,6 +99,7 @@ export default function useFleets() {
       return [];
     }
 
+    // Fetch only necessary vehicles
     const { data: vehicleData, error: vehicleError } = await supabase
       .from("vehicles")
       .select(
@@ -70,6 +114,7 @@ export default function useFleets() {
       return [];
     }
 
+    // Map relations to fleets
     const fleetsWithDetails = fleetData.map((fleet) => {
       const fleetRelations = relations.filter(
         (rel) => rel.fleet_id === fleet.id
@@ -104,7 +149,7 @@ export default function useFleets() {
 
   useEffect(() => {
     fetchFleets();
-  }, []);
+  }, [fleet_id]);
 
   return { fleets, areFleetsLoading, fetchFleets };
 }
