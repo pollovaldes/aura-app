@@ -24,6 +24,7 @@ import {
 import StatusChip from "@/components/General/StatusChip";
 import useMaintenanceDocuments from "@/hooks/useMaintenanceDocuments";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
+import { SkeletonLoading } from "@/components/dataStates/SkeletonLoading";
 
 export default function maintenanceId() {
   const { styles } = useStyles(stylesheet);
@@ -47,7 +48,12 @@ export default function maintenanceId() {
 
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
-  if (isProfileLoading) {
+  if (
+    isProfileLoading ||
+    vehiclesAreLoading ||
+    areMaintenanceRecordsLoading ||
+    areMaintenanceDocumentsLoading
+  ) {
     return (
       <>
         <Stack.Screen
@@ -57,52 +63,7 @@ export default function maintenanceId() {
             headerRight: undefined,
           }}
         />
-        <LoadingScreen caption="Cargando perfil y permisos" />
-      </>
-    );
-  }
-
-  if (areMaintenanceRecordsLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando...",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <LoadingScreen caption="Cargando solicitudes de mantenimiento" />
-      </>
-    );
-  }
-
-  if (areMaintenanceDocumentsLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando...",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <LoadingScreen caption="Cargando documentos" />
-      </>
-    );
-  }
-
-  if (vehiclesAreLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando...",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <LoadingScreen caption="Cargando vehículos" />
+        <SkeletonLoading />
       </>
     );
   }

@@ -6,9 +6,10 @@ import React from "react";
 
 type ProfileRowProps = {
   profile: User;
+  showRole?: boolean;
 };
 
-export default function ProfileColumn({ profile }: ProfileRowProps) {
+export default function ProfileColumn({ profile, showRole }: ProfileRowProps) {
   const { styles } = useStyles(stylesheet);
 
   return (
@@ -22,7 +23,9 @@ export default function ProfileColumn({ profile }: ProfileRowProps) {
           <Text
             style={styles.name}
           >{`${profile.father_last_name} ${profile.mother_last_name}`}</Text>
-          <Text style={styles.description}>{profile.position}</Text>
+          {showRole && (
+            <Text style={styles.description}>{profile.position}</Text>
+          )}
         </>
       </View>
     </View>
@@ -34,7 +37,6 @@ const stylesheet = createStyleSheet((theme) => ({
     flexDirection: "column",
     gap: 18,
     alignItems: "center",
-    marginTop: 12,
   },
   descriptioonContainer: {
     flexDirection: "column",

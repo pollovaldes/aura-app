@@ -1,45 +1,42 @@
 import TermsAndPrivacy from "@/app/auth/TermsAndPrivacy";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
-import Modal from "@/components/Modal/Modal";
-import PersonalInfoModal from "@/components/profile/PersonalInfoModal";
-import RoleModal from "@/components/profile/RoleModal";
 import { supabase } from "@/lib/supabase";
-import { useState } from "react";
-import { RefreshControl, ScrollView, Switch, Text, View } from "react-native";
+import { RefreshControl, ScrollView, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import ProfileRow from "@/components/profile/ProfileRow";
-import ChangeImageModal from "@/components/profile/ChangeImageModal";
 import useProfile from "@/hooks/useProfile";
 import { useSessionContext } from "@/context/SessionContext";
-import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
-
-type ModalType =
-  | "personal_info"
-  | "role"
-  | "email"
-  | "password"
-  | "change_image"
-  | null;
+import { SkeletonLoading } from "@/components/dataStates/SkeletonLoading";
+import { Stack } from "expo-router";
+import React from "react";
+import { Bug, Code, LogOut, Moon, User } from "lucide-react-native";
+import { colorPalette } from "@/style/themes";
+import ProfileColumn from "@/components/people/ProfileColumn";
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
-  const [activeModal, setActiveModal] = useState<ModalType>(null);
-  const closeModal = () => setActiveModal(null);
   const signOut = async () => {
-    let { error } = await supabase.auth.signOut({ scope: "local" });
+    await supabase.auth.signOut({ scope: "local" });
   };
 
   const { session, isLoading: isSessionLoading } = useSessionContext();
   const { profile, isProfileLoading, fetchProfile } = useProfile();
 
-  if (isSessionLoading) {
-    return <LoadingScreen caption="Cargando sesión" />;
-  }
-
-  if (isProfileLoading) {
-    return <LoadingScreen caption="Cargando perfil" />;
+  if (isProfileLoading || isSessionLoading) {
+    return (
+      <>
+        <Stack.Screen
+          options={{
+            title: "Cargando...",
+            headerLargeTitle: false,
+            headerRight: undefined,
+          }}
+        />
+        <SkeletonLoading />
+      </>
+    );
   }
 
   if (!profile) {
@@ -82,53 +79,24 @@ export default function Index() {
         />
       }
     >
-      <Modal isOpen={activeModal === "personal_info"}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.closeButton} onPress={closeModal}>
-            Cerrar
-          </Text>
-          <PersonalInfoModal closeModal={closeModal} />
-        </View>
-      </Modal>
-      <Modal isOpen={activeModal === "role"}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.closeButton} onPress={closeModal}>
-            Cerrar
-          </Text>
-          <RoleModal closeModal={closeModal} profile={profile} />
-        </View>
-      </Modal>
-      <Modal isOpen={activeModal === "change_image"}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.closeButton} onPress={closeModal}>
-            Cerrar
-          </Text>
-          <ChangeImageModal closeModal={closeModal} />
-        </View>
-      </Modal>
       <View style={styles.container}>
         {profile.is_fully_registered && (
           <GroupedList>
-            <Row
-              trailingType="chevron"
-              title=""
-              onPress={() => setActiveModal("change_image")}
-            >
-              <ProfileRow profile={profile} />
+            <Row trailingType="chevron" title="">
+              <ProfileColumn profile={profile} />
             </Row>
           </GroupedList>
         )}
         <GroupedList
-          footer="Para garantizar el acceso completo a la aplicación, le solicitamos  completar los pasos requeridos. Aunque ya disponga de una cuenta, esta información es indispensable para brindarle una experiencia completa y personalizada."
+          footer="Tu perfil debe estar completo para acceder a todas las funcionalidades de la aplicación"
           header="Acceso a la App"
         >
           <Row
             title="Datos personales"
             trailingType="chevron"
             caption={
-              profile.is_fully_registered ? "Completo ✅" : "Sin completar ⚠️"
+              profile.is_fully_registered ? "Completo" : "Sin completar ⚠️"
             }
-            onPress={() => setActiveModal("personal_info")}
           />
           <Row
             title="Rol"
@@ -149,80 +117,45 @@ export default function Index() {
                   return "Indefinido";
               }
             })()}
-            onPress={() => setActiveModal("role")}
           />
         </GroupedList>
-        <GroupedList
-          header="Seguridad y acceso"
-          footer="Le invitamos a explorar las opciones disponibles para proteger su cuenta. Tenga en cuenta que las configuraciones de correo electrónico y contraseña estarán habilitadas únicamente si la dirección de correo electrónico se encuentra correctamente vinculada."
-        >
+        <GroupedList>
           <Row
-            title="Correo electrónico"
+            title="Cuenta"
+            icon={<User size={24} color="white" />}
+            color={colorPalette.cyan[500]}
             trailingType="chevron"
-            caption={session.user.email ? "Vinculado" : "Sin vinculado"}
-          />
-          <Row title="Contraseña" trailingType="chevron" />
-          <Row title="2FA" trailingType="chevron" caption="No configurado" />
-        </GroupedList>
-        <GroupedList
-          header="Identidades"
-          footer="Centralice su información y acceso unificando sus cuentas de distintos servicios en un solo perfil."
-        >
-          <Row
-            title="Correo electrónico"
-            trailingType="chevron"
-            caption={
-              session.user.identities.some(
-                (identity) => identity.provider === "email"
-              )
-                ? "Vinculado"
-                : "Sin vincular"
-            }
           />
           <Row
-            title="Número de celular"
+            title="Tema de la aplicación"
+            icon={<Moon size={24} color="white" />}
+            color={colorPalette.neutral[500]}
             trailingType="chevron"
-            caption={
-              session.user.identities.some(
-                (identity) => identity.provider === "phone"
-              )
-                ? "Vinculado"
-                : "Sin vincular"
-            }
-          />
-          <Row
-            title="Apple"
-            trailingType="chevron"
-            caption={
-              session.user.identities.some(
-                (identity) => identity.provider === "apple"
-              )
-                ? "Vinculado"
-                : "Sin vincular"
-            }
-          />
-          <Row
-            title="Google"
-            trailingType="chevron"
-            caption={
-              session.user.identities.some(
-                (identity) => identity.provider === "google"
-              )
-                ? "Vinculado"
-                : "Sin vincular"
-            }
           />
         </GroupedList>
 
+        <GroupedList header="Otros">
+          <Row
+            title="Licensias de código abierto"
+            icon={<Code size={24} color="white" />}
+            color={colorPalette.green[500]}
+            trailingType="chevron"
+          />
+          <Row
+            title="Reportar un problema"
+            icon={<Bug size={24} color="white" />}
+            color={colorPalette.orange[500]}
+            trailingType="chevron"
+          />
+        </GroupedList>
         <GroupedList>
-          <Row title="Cerrar sesión" trailingType="chevron" onPress={signOut} />
-        </GroupedList>
-        <GroupedList header="Créditos y extras" footer="">
-          <Row title="Licensias de código abierto" trailingType="chevron" />
-          <Row title="Reporta un error" trailingType="chevron" />
-        </GroupedList>
-        <GroupedList header="Zona de peligro">
-          <Row title="Eliminar cuenta" trailingType="chevron" />
+          <Row
+            title="Cerrar sesión"
+            icon={<LogOut size={24} color="white" />}
+            color={colorPalette.red[500]}
+            trailingType="chevron"
+            onPress={signOut}
+          />
         </GroupedList>
         <View style={styles.termsAndPrivacy}>
           <TermsAndPrivacy />
@@ -236,7 +169,7 @@ export default function Index() {
 const stylesheet = createStyleSheet((theme) => ({
   container: {
     gap: theme.marginsComponents.section,
-    marginTop: theme.marginsComponents.section, //Excepción
+    marginTop: theme.marginsComponents.section,
   },
   termsAndPrivacy: {
     marginHorizontal: 12,

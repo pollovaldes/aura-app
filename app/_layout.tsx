@@ -9,16 +9,19 @@ import {
   DefaultTheme,
 } from "@react-navigation/native";
 import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const path = usePathname();
   const currentTheme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
 
-  SplashScreen.setOptions({
-    duration: 1000,
-    fade: true,
-  });
+  useEffect(() => {
+    SplashScreen.setOptions({
+      duration: 1000,
+      fade: true,
+    });
+  }, []);
 
   return (
     <ThemeProvider value={currentTheme}>

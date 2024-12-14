@@ -19,6 +19,7 @@ import TruckThumbnail from "./TruckThumbnail";
 import React from "react";
 import AddVehicleComponent from "./AddVehicleComponent";
 import { exportVehiclesToCsv } from "@/hooks/cvsLogic/csvExportVehicles";
+import { SkeletonLoading } from "../dataStates/SkeletonLoading";
 
 export default function VehicleList() {
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
@@ -42,12 +43,19 @@ export default function VehicleList() {
     }
   }, [searchQuery, vehicles]);
 
-  if (vehiclesAreLoading) {
-    return <LoadingScreen caption="Cargando vehículos" />;
-  }
-
-  if (isProfileLoading) {
-    return <LoadingScreen caption="Cargando perfil y permisos" />;
+  if (isProfileLoading || vehiclesAreLoading) {
+    return (
+      <>
+        <Stack.Screen
+          options={{
+            title: "Cargando...",
+            headerLargeTitle: false,
+            headerRight: undefined,
+          }}
+        />
+        <SkeletonLoading />
+      </>
+    );
   }
 
   if (!profile) {
@@ -60,10 +68,10 @@ export default function VehicleList() {
     );
   }
 
-  if (vehicles === null) {
+  if (!vehicles) {
     return (
       <ErrorScreen
-        caption={`Tuvimos un problema al cargar los vehículos. \n Intenta nuevamente en unos momentos.`}
+        caption={`Ocurrió un error al recuperar los vehículos`}
         buttonCaption="Reintentar"
         retryFunction={fetchVehicles}
       />

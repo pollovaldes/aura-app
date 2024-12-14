@@ -11,25 +11,21 @@ export default function useProfile() {
 
   const fetchProfile = async () => {
     setIsProfileLoading(true);
+    const { data: profileData, error } = await supabase
+      .from("profiles")
+      .select(
+        "id, name, father_last_name, mother_last_name, position, role, is_fully_registered"
+      )
+      .eq("id", session?.user.id)
+      .single();
 
-    try {
-      const { data: profileData, error } = await supabase
-        .from("profiles")
-        .select(
-          "id, name, father_last_name, mother_last_name, position, role, is_fully_registered"
-        )
-        .eq("id", session?.user.id)
-        .single();
-
-      if (profileData) {
-        setProfile(profileData as User);
-      }
-      if (error) throw error;
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-    } finally {
-      setIsProfileLoading(false);
+    if (profileData) {
+      setProfile(profileData as User);
     }
+
+    setIsProfileLoading(false);
+
+    if (error) throw error;
   };
 
   useEffect(() => {
@@ -59,7 +55,7 @@ export default function useProfile() {
         supabase.removeChannel(profileSubscription);
       };
     }
-  }, [isSessionLoading, session]);
+  }, []);
 
   return {
     isProfileLoading,

@@ -23,9 +23,8 @@ export default function ProfileRow({ profile }: ProfileRowProps) {
       </View>
       <View style={styles.descriptionContainer}>
         <Text style={styles.name}>
-          {`${profile.name} ${profile.father_last_name} ${profile.mother_last_name}`}
+          {`${profile.name}\n${profile.father_last_name} ${profile.mother_last_name}`}
         </Text>
-        <Text style={styles.description}>{profile.position}</Text>
       </View>
     </View>
   );

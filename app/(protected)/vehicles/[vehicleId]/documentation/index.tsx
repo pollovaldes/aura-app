@@ -26,6 +26,7 @@ import { useCallback, useState } from "react";
 import AddDocument from "@/components/vehicles/modals/AddDocument";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import React from "react";
+import { SkeletonLoading } from "@/components/dataStates/SkeletonLoading";
 
 type ModalType = "add_document" | null;
 
@@ -44,7 +45,7 @@ export default function Index() {
     }, [])
   );
 
-  if (isProfileLoading) {
+  if (isProfileLoading || vehiclesAreLoading || areDocumentsLoading) {
     return (
       <>
         <Stack.Screen
@@ -54,37 +55,7 @@ export default function Index() {
             headerRight: undefined,
           }}
         />
-        <LoadingScreen caption="Cargando perfil y permisos" />
-      </>
-    );
-  }
-
-  if (vehiclesAreLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando...",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <LoadingScreen caption="Cargando vehículos" />
-      </>
-    );
-  }
-
-  if (areDocumentsLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando...",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <LoadingScreen caption="Cargando documentos" />
+        <SkeletonLoading />
       </>
     );
   }

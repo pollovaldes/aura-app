@@ -80,40 +80,34 @@ export default function UsersList() {
     return <EmptyScreen caption="Ningún resultado" />;
   }
 
-  const isAdminOrOwner = profile.role === "ADMIN" || profile.role === "OWNER";
-
-  if (isAdminOrOwner) {
-    return (
-      <FlatList
-        refreshing={usersAreLoading}
-        onRefresh={fetchUsers}
-        contentInsetAdjustmentBehavior="automatic"
-        data={filteredUsers}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <Link href={{ pathname: `/users/${item.id}` }} asChild>
-            <TouchableOpacity>
-              <View style={styles.container}>
-                <View style={styles.contentContainer}>
-                  <View style={styles.imageContainer}>
-                    <UserThumbnail userId={item.id.toString()} size={60} />
-                  </View>
-                  <Text
-                    style={styles.itemText}
-                  >{`${capitalizeWords(item.name)} ${capitalizeWords(item.father_last_name)} ${capitalizeWords(item.mother_last_name)}`}</Text>
+  return (
+    <FlatList
+      refreshing={usersAreLoading}
+      onRefresh={fetchUsers}
+      contentInsetAdjustmentBehavior="automatic"
+      data={filteredUsers}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => (
+        <Link href={{ pathname: `/users/${item.id}` }} asChild>
+          <TouchableOpacity>
+            <View style={styles.container}>
+              <View style={styles.contentContainer}>
+                <View style={styles.imageContainer}>
+                  <UserThumbnail userId={item.id.toString()} size={60} />
                 </View>
-                <View style={styles.chevronView}>
-                  <ChevronRight color={styles.chevron.color} />
-                </View>
+                <Text
+                  style={styles.itemText}
+                >{`${capitalizeWords(item.name)} ${capitalizeWords(item.father_last_name)} ${capitalizeWords(item.mother_last_name)}`}</Text>
               </View>
-            </TouchableOpacity>
-          </Link>
-        )}
-      />
-    );
-  } else {
-    return <Redirect href={"/vehicles"} />;
-  }
+              <View style={styles.chevronView}>
+                <ChevronRight color={styles.chevron.color} />
+              </View>
+            </View>
+          </TouchableOpacity>
+        </Link>
+      )}
+    />
+  );
 }
 
 const stylesheet = createStyleSheet((theme) => ({

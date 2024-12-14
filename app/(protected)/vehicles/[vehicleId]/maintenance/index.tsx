@@ -1,6 +1,7 @@
+import React from "react";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import LoadingScreen from "@/components/dataStates/LoadingScreen";
+import { SkeletonLoading } from "@/components/dataStates/SkeletonLoading";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import StatusChip from "@/components/General/StatusChip";
 import Modal from "@/components/Modal/Modal";
@@ -31,7 +32,7 @@ export default function Index() {
   const closeModal = () => setActiveModal(null);
   const headerHeight = useHeaderHeight();
 
-  if (isProfileLoading) {
+  if (isProfileLoading || vehiclesAreLoading || areMaintenanceRecordsLoading) {
     return (
       <>
         <Stack.Screen
@@ -41,37 +42,7 @@ export default function Index() {
             headerRight: undefined,
           }}
         />
-        <LoadingScreen caption="Cargando perfil y permisos" />
-      </>
-    );
-  }
-
-  if (areMaintenanceRecordsLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando...",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <LoadingScreen caption="Cargando solicitudes de mantenimiento" />
-      </>
-    );
-  }
-
-  if (vehiclesAreLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando...",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <LoadingScreen caption="Cargando vehículos" />
+        <SkeletonLoading />
       </>
     );
   }

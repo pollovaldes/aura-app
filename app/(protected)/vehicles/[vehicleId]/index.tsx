@@ -31,14 +31,14 @@ import {
 import { colorPalette } from "@/style/themes";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
-import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import useVehicleThumbnail from "@/hooks/truckHooks/useVehicleThumbnail";
 import useProfile from "@/hooks/useProfile";
 import Modal from "@/components/Modal/Modal";
 import ChangeCoverImage from "@/components/vehicles/modals/ChangeCoverImage";
 import { supabase } from "@/lib/supabase";
+import { useHeaderHeight } from "@react-navigation/elements";
+import { SkeletonLoading } from "@/components/dataStates/SkeletonLoading";
 
 type ModalType = "change_cover_image" | null;
 
@@ -56,12 +56,10 @@ export default function VehicleDetail() {
   const { profile, isProfileLoading, fetchProfile } = useProfile();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
-
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
-
   const { deleteThumbnail, selectThumbnail } = useVehicleThumbnail();
 
-  if (isProfileLoading) {
+  if (isProfileLoading || vehiclesAreLoading) {
     return (
       <>
         <Stack.Screen
@@ -71,22 +69,7 @@ export default function VehicleDetail() {
             headerRight: undefined,
           }}
         />
-        <LoadingScreen caption="Cargando perfil y permisos" />
-      </>
-    );
-  }
-
-  if (vehiclesAreLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando...",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <LoadingScreen caption="Cargando vehículos" />
+        <SkeletonLoading />
       </>
     );
   }
@@ -110,12 +93,12 @@ export default function VehicleDetail() {
     );
   }
 
-  if (vehicles === null) {
+  if (!vehicles) {
     return (
       <>
         <Stack.Screen
           options={{
-            title: "Recurso inaccesible",
+            title: "Error",
             headerLargeTitle: false,
             headerRight: undefined,
           }}
@@ -125,21 +108,6 @@ export default function VehicleDetail() {
           buttonCaption="Reintentar"
           retryFunction={fetchVehicles}
         />
-      </>
-    );
-  }
-
-  if (vehicles.length === 0) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Recurso inaccesible",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-        <EmptyScreen caption="Ningún detalle por aquí" />;
       </>
     );
   }
@@ -359,6 +327,9 @@ const stylesheet = createStyleSheet((theme) => ({
   loadingText: {
     fontSize: 16,
     color: theme.textPresets.subtitle,
+  },
+  moti: {
+    color: theme.ui.colors.card,
   },
   rightPressText: {
     color: theme.headerButtons.color,

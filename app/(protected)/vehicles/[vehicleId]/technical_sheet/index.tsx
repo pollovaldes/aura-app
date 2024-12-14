@@ -1,18 +1,16 @@
-import { View, ScrollView, Alert, RefreshControl } from "react-native";
+import { View, ScrollView, RefreshControl } from "react-native";
 import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import ChangeDataModal from "@/components/Modal/ChangeDataModal";
-import { FormButton } from "@/components/Form/FormButton";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
 import useProfile from "@/hooks/useProfile";
-import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import React from "react";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
+import { SkeletonLoading } from "@/components/dataStates/SkeletonLoading";
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
@@ -33,22 +31,17 @@ export default function Index() {
     });
   }, []);
 
-  if (vehiclesAreLoading) {
+  if (isProfileLoading || vehiclesAreLoading) {
     return (
       <>
-        <LoadingScreen caption="Cargando vehículos" />
         <Stack.Screen
-          options={{ title: "Cargando...", headerLargeTitle: false }}
+          options={{
+            title: "Cargando...",
+            headerLargeTitle: false,
+            headerRight: undefined,
+          }}
         />
-      </>
-    );
-  }
-
-  if (isProfileLoading) {
-    return (
-      <>
-        <Stack.Screen options={{ title: "Cargando..." }} />
-        <LoadingScreen caption="Cargando perfil y permisos" />
+        <SkeletonLoading />
       </>
     );
   }
