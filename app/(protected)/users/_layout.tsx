@@ -23,7 +23,7 @@ function SearchConsumer() {
   return (
     <Stack
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
         headerLargeTitle: true,
         headerBlurEffect: "regular",
         headerTransparent: Platform.OS === "ios" ? true : false,

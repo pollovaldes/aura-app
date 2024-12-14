@@ -7,7 +7,7 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import useProfile from "@/hooks/useProfile";
 import { useSessionContext } from "@/context/SessionContext";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import { SkeletonLoading } from "@/components/dataStates/SkeletonLoading";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import { router, Stack } from "expo-router";
 import React from "react";
 import { Bug, Code, LogOut, Moon, User } from "lucide-react-native";
@@ -24,7 +24,11 @@ export default function Index() {
   const { profile, isProfileLoading, fetchProfile } = useProfile();
 
   if (isProfileLoading || isSessionLoading) {
-    return <SkeletonLoading />;
+    return (
+      <FetchingIndicator
+        caption={isProfileLoading ? "Cargando perfil" : "Cargando sesión"}
+      />
+    );
   }
 
   if (!profile) {

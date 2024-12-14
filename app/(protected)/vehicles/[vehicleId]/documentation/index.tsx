@@ -26,7 +26,7 @@ import { useCallback, useState } from "react";
 import AddDocument from "@/components/vehicles/modals/AddDocument";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import React from "react";
-import { SkeletonLoading } from "@/components/dataStates/SkeletonLoading";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 
 type ModalType = "add_document" | null;
 
@@ -55,7 +55,15 @@ export default function Index() {
             headerRight: undefined,
           }}
         />
-        <SkeletonLoading />
+        <FetchingIndicator
+          caption={
+            isProfileLoading
+              ? "Cargando perfil"
+              : vehiclesAreLoading
+                ? "Cargando vehículos"
+                : "Cargando documentos"
+          }
+        />
       </>
     );
   }

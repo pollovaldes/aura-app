@@ -10,7 +10,7 @@ import useProfile from "@/hooks/useProfile";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import React from "react";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
-import { SkeletonLoading } from "@/components/dataStates/SkeletonLoading";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
@@ -41,7 +41,9 @@ export default function Index() {
             headerRight: undefined,
           }}
         />
-        <SkeletonLoading />
+        <FetchingIndicator
+          caption={isProfileLoading ? "Cargando perfil" : "Cargando vehículos"}
+        />
       </>
     );
   }

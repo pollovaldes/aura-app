@@ -24,7 +24,9 @@ export default function ProfileColumn({ profile, showRole }: ProfileRowProps) {
             style={styles.name}
           >{`${profile.father_last_name} ${profile.mother_last_name}`}</Text>
           {showRole && (
-            <Text style={styles.description}>{profile.position}</Text>
+            <View style={styles.descriptionContainer}>
+              <Text style={styles.description}>{profile.position}</Text>
+            </View>
           )}
         </>
       </View>
@@ -49,8 +51,10 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   description: {
     fontSize: 16,
-    paddingVertical: 6,
     color: theme.textPresets.subtitle,
     textAlign: "center",
+  },
+  descriptionContainer: {
+    marginTop: 12,
   },
 }));

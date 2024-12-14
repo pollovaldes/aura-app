@@ -1,7 +1,7 @@
 import React from "react";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import { SkeletonLoading } from "@/components/dataStates/SkeletonLoading";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import StatusChip from "@/components/General/StatusChip";
 import Modal from "@/components/Modal/Modal";
@@ -42,7 +42,15 @@ export default function Index() {
             headerRight: undefined,
           }}
         />
-        <SkeletonLoading />
+        <FetchingIndicator
+          caption={
+            isProfileLoading
+              ? "Cargando perfil"
+              : vehiclesAreLoading
+                ? "Cargando vehículos"
+                : "Cargando registros de mantenimiento"
+          }
+        />
       </>
     );
   }

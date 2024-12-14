@@ -24,7 +24,7 @@ import {
 import StatusChip from "@/components/General/StatusChip";
 import useMaintenanceDocuments from "@/hooks/useMaintenanceDocuments";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
-import { SkeletonLoading } from "@/components/dataStates/SkeletonLoading";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 
 export default function maintenanceId() {
   const { styles } = useStyles(stylesheet);
@@ -58,12 +58,22 @@ export default function maintenanceId() {
       <>
         <Stack.Screen
           options={{
-            title: "Cargando...",
+            title: "Cargando",
             headerLargeTitle: false,
             headerRight: undefined,
           }}
         />
-        <SkeletonLoading />
+        <FetchingIndicator
+          caption={
+            isProfileLoading
+              ? "Cargando perfil"
+              : vehiclesAreLoading
+                ? "Cargando vehículos"
+                : areMaintenanceRecordsLoading
+                  ? "Cargando solicitudes de mantenimiento"
+                  : "Cargando documentos"
+          }
+        />
       </>
     );
   }

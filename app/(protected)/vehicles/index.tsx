@@ -14,7 +14,7 @@ import useProfile from "@/hooks/useProfile";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
 import React from "react";
 import { exportVehiclesToCsv } from "@/hooks/cvsLogic/csvExportVehicles";
-import { SkeletonLoading } from "@/components/dataStates/SkeletonLoading";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import AddVehicleComponent from "@/components/vehicles/AddVehicleComponent";
@@ -45,7 +45,9 @@ export default function VehicleList() {
   if (isProfileLoading || vehiclesAreLoading) {
     return (
       <>
-        <SkeletonLoading />
+        <FetchingIndicator
+          caption={isProfileLoading ? "Cargando perfil" : "Cargando vehículos"}
+        />
       </>
     );
   }

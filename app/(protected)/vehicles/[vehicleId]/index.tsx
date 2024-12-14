@@ -38,7 +38,7 @@ import Modal from "@/components/Modal/Modal";
 import ChangeCoverImage from "@/components/vehicles/modals/ChangeCoverImage";
 import { supabase } from "@/lib/supabase";
 import { useHeaderHeight } from "@react-navigation/elements";
-import { SkeletonLoading } from "@/components/dataStates/SkeletonLoading";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 
 type ModalType = "change_cover_image" | null;
 
@@ -50,7 +50,6 @@ export default function VehicleDetail() {
       presentation: showModal === "true" ? "modal" : "card",
     });
   }, []);
-
   const { styles } = useStyles(stylesheet);
   const { vehicles, fetchVehicles, vehiclesAreLoading } = useVehicle();
   const { profile, isProfileLoading, fetchProfile } = useProfile();
@@ -69,7 +68,9 @@ export default function VehicleDetail() {
             headerRight: undefined,
           }}
         />
-        <SkeletonLoading />
+        <FetchingIndicator
+          caption={isProfileLoading ? "Cargando perfil" : "Cargando vehículos"}
+        />
       </>
     );
   }
