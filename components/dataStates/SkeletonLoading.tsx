@@ -13,7 +13,10 @@ export function SkeletonLoading() {
       animate={{ backgroundColor: "transparent" }}
       style={{
         paddingTop:
-          Platform.OS === "android" || Platform.OS === "web" ? 0 : headerHeight,
+          Platform.OS === "android" || Platform.OS === "web"
+            ? 32
+            : headerHeight + 32,
+        paddingHorizontal: 16,
       }}
     >
       <Skeleton

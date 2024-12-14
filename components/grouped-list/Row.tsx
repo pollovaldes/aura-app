@@ -20,6 +20,7 @@ interface BaseProps {
   isLoading?: boolean;
   showChevron?: boolean;
   children?: ReactNode;
+  pressedStyle?: boolean;
 }
 
 // Properties when trailingType is "default"
@@ -38,6 +39,7 @@ const Row = ({
   isLoading,
   showChevron = true,
   children,
+  pressedStyle = true,
 }: DefaultProps) => {
   const { styles } = useStyles(stylesheet);
   const [isHovered, setIsHovered] = useState(false);
@@ -50,7 +52,7 @@ const Row = ({
       onPress={onPress}
       style={({ pressed }) => [
         { opacity: disabled ? 0.75 : 1 },
-        pressed && { opacity: 0.45 },
+        pressedStyle && pressed && { opacity: 0.45 },
         isHovered && styles.containerHovered,
         styles.container,
       ]}

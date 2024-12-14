@@ -1,5 +1,5 @@
 import { Redirect, Slot, Tabs, usePathname } from "expo-router";
-import { Text, View, useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import Sidebar from "../../components/sidebar/Sidebar";
 import ListItem from "../../components/sidebar/ListItem";
 import {
@@ -18,22 +18,15 @@ import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { supabase } from "@/lib/supabase";
 import { ProfileImageProvider } from "@/context/ProfileImageContext";
 import { UsersContextProvider } from "@/context/UsersContext";
-import {
-  Tabs as CustomTabs,
-  TabList,
-  TabTrigger,
-  TabSlot,
-} from "expo-router/ui";
 
 export default function HomeLayout() {
   const { styles } = useStyles(stylesheet);
   const { width } = useWindowDimensions();
-  const widthThreshold = 600; // TODO: Move dimensions to a theme file.
+  const widthThreshold = 600;
   const { isLoading: isSessionLoading, error, session } = useSessionContext();
   const { isProfileLoading, profile } = useProfile();
   const path = usePathname();
 
-  // Show loading screen while session or profile is loading
   if (isSessionLoading || isProfileLoading) {
     return (
       <View style={styles.fullscreenView}>

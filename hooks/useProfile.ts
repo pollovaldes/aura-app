@@ -55,7 +55,7 @@ export default function useProfile() {
         supabase.removeChannel(profileSubscription);
       };
     }
-  }, []);
+  }, [session, isSessionLoading]);
 
   return {
     isProfileLoading,

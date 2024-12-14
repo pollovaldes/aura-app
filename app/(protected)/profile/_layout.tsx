@@ -1,6 +1,10 @@
 import { Stack } from "expo-router";
 import { Platform } from "react-native";
 
+export const unstable_settings = {
+  initialRouteName: "index",
+};
+
 export default function Layout() {
   return (
     <Stack
@@ -12,6 +16,7 @@ export default function Layout() {
       }}
     >
       <Stack.Screen name="index" options={{ title: "Perfil" }} />
+      <Stack.Screen name="account" options={{ title: "Cuenta" }} />
     </Stack>
   );
 }
