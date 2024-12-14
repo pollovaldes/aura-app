@@ -30,23 +30,28 @@ export default function FileViewer({ fileUrl, randomKey }: FileViewerProps) {
             <LoadingScreen caption="Cargando documento" />
           </View>
         )}
-        <WebView
-          incognito={true}
-          javaScriptEnabled={true}
-          source={
-            Platform.OS === "android" ? { uri: embeddedUrl } : { uri: fileUrl }
-          }
-          onLoadStart={(syntheticEvent) => {
-            setIsWebViewLoading(true);
-          }}
-          onLoadEnd={(syntheticEvent) => {
-            setIsWebViewLoading(false);
-          }}
-          style={{
-            marginTop: Platform.OS === "ios" ? headerHeight : 0,
-          }}
-          key={randomKey}
-        />
+        <View style={{ flex: 1, overflow: "hidden" }}>
+          <WebView
+            incognito={true}
+            javaScriptEnabled={true}
+            source={
+              Platform.OS === "android"
+                ? { uri: embeddedUrl }
+                : { uri: fileUrl }
+            }
+            onLoadStart={(syntheticEvent) => {
+              setIsWebViewLoading(true);
+            }}
+            onLoadEnd={(syntheticEvent) => {
+              setIsWebViewLoading(false);
+            }}
+            style={{
+              marginTop: Platform.OS === "ios" ? headerHeight : 0,
+              opacity: 0.99,
+            }}
+            key={randomKey}
+          />
+        </View>
       </>
     );
   }

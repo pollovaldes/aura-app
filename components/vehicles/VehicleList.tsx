@@ -1,4 +1,10 @@
-import { View, Text, FlatList, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link, Stack } from "expo-router";
 import { useEffect, useState } from "react";
@@ -117,7 +123,7 @@ export default function VehicleList() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Link href={{ pathname: `/vehicles/${item.id}` }} asChild>
-            <Pressable>
+            <TouchableOpacity>
               <View style={styles.container}>
                 <View style={styles.contentContainer}>
                   <View style={styles.imageContainer}>
@@ -135,7 +141,7 @@ export default function VehicleList() {
                   <ChevronRight color={styles.chevron.color} />
                 </View>
               </View>
-            </Pressable>
+            </TouchableOpacity>
           </Link>
         )}
       />

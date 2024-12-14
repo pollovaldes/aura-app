@@ -1,5 +1,10 @@
-import React, { useState } from "react";
-import { router, Stack, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
+import {
+  router,
+  Stack,
+  useLocalSearchParams,
+  useNavigation,
+} from "expo-router";
 import {
   View,
   Image,
@@ -38,6 +43,14 @@ import { supabase } from "@/lib/supabase";
 type ModalType = "change_cover_image" | null;
 
 export default function VehicleDetail() {
+  const navigation = useNavigation();
+  const { showModal } = useLocalSearchParams();
+  useEffect(() => {
+    navigation.setOptions({
+      presentation: showModal === "true" ? "modal" : "card",
+    });
+  }, []);
+
   const { styles } = useStyles(stylesheet);
   const { vehicles, fetchVehicles, vehiclesAreLoading } = useVehicle();
   const { profile, isProfileLoading, fetchProfile } = useProfile();

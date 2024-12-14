@@ -1,4 +1,10 @@
-import { View, Text, FlatList, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import useUsers from "@/hooks/peopleHooks/useUsers";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link, Redirect } from "expo-router";
@@ -86,7 +92,7 @@ export default function UsersList() {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <Link href={{ pathname: `/users/${item.id}` }} asChild>
-            <Pressable>
+            <TouchableOpacity>
               <View style={styles.container}>
                 <View style={styles.contentContainer}>
                   <View style={styles.imageContainer}>
@@ -100,7 +106,7 @@ export default function UsersList() {
                   <ChevronRight color={styles.chevron.color} />
                 </View>
               </View>
-            </Pressable>
+            </TouchableOpacity>
           </Link>
         )}
       />

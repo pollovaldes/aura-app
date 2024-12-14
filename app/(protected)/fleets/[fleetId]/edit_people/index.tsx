@@ -1,12 +1,9 @@
-import GroupedList from "@/components/grouped-list/GroupedList";
-import Row from "@/components/grouped-list/Row";
 import { FlatList, Platform, Pressable, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import useProfile from "@/hooks/useProfile";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import { Boxes, ChevronRight } from "lucide-react-native";
-import { colorPalette } from "@/style/themes";
+import { ChevronRight } from "lucide-react-native";
 import useFleets from "@/hooks/useFleets";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import { Link, Stack, useLocalSearchParams, useNavigation } from "expo-router";
@@ -225,17 +222,23 @@ export default function Index() {
           renderItem={({ item }) => (
             <Link href={{ pathname: `/users/${item.id}` }} asChild>
               <Pressable>
-                <View style={styles.listContainer}>
-                  <View style={styles.contentContainer}>
-                    <View style={styles.imageContainer}>
-                      <UserThumbnail userId={item.id} size={60} />
+                <View
+                  style={{
+                    flexDirection: "column",
+                  }}
+                >
+                  <View style={styles.listContainer}>
+                    <View style={styles.contentContainer}>
+                      <View style={styles.imageContainer}>
+                        <UserThumbnail userId={item.id} size={60} />
+                      </View>
+                      <Text
+                        style={styles.itemText}
+                      >{`${item.name} ${item.father_last_name} ${item.mother_last_name}`}</Text>
                     </View>
-                    <Text
-                      style={styles.itemText}
-                    >{`${item.name} ${item.father_last_name} ${item.mother_last_name}`}</Text>
-                  </View>
-                  <View style={styles.chevronView}>
-                    <ChevronRight color={styles.chevron.color} />
+                    <View style={styles.chevronView}>
+                      <ChevronRight color={styles.chevron.color} />
+                    </View>
                   </View>
                 </View>
               </Pressable>

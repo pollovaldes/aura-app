@@ -1,5 +1,10 @@
-import React, { useState } from "react";
-import { router, Stack, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
+import {
+  router,
+  Stack,
+  useLocalSearchParams,
+  useNavigation,
+} from "expo-router";
 import { View, ScrollView, Text, Switch, RefreshControl } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";

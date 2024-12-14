@@ -7,7 +7,7 @@ export const unstable_settings = {
   initialRouteName: "index",
 };
 
-export default function _layout() {
+export default function Layout() {
   return (
     // Wrap the entire layout with SearchProvider to provide search context
     <SearchProvider>

@@ -1,23 +1,30 @@
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
-import { FlatList, Platform, Pressable, Text, View } from "react-native";
+import {
+  FlatList,
+  Platform,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import useProfile from "@/hooks/useProfile";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import { Boxes, Plus } from "lucide-react-native";
+import { Boxes, ChevronRight, Plus } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import useFleets from "@/hooks/useFleets";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
-import { router, Stack, useLocalSearchParams } from "expo-router";
+import { Link, router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import Modal from "@/components/Modal/Modal";
 import AddFleetModal from "@/components/fleets/AddFleetModal";
 import { useHeaderHeight } from "@react-navigation/elements";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
-
-type ModalType = "add_fleet" | null;
+import UserThumbnail from "@/components/people/UserThumbnail";
+import VehicleThumbnail from "@/components/vehicles/TruckThumbnail";
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
@@ -25,8 +32,6 @@ export default function Index() {
   const { fleetId } = useLocalSearchParams<{ fleetId: string }>();
   const { areFleetsLoading, fetchFleets, fleets } = useFleets(fleetId);
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
-  const [activeModal, setActiveModal] = useState<ModalType>(null);
-  const closeModal = () => setActiveModal(null);
   const headerHeight = useHeaderHeight();
 
   if (isProfileLoading) {
@@ -117,19 +122,10 @@ export default function Index() {
   }
 
   const canAddFleet = profile.role === "ADMIN" || profile.role === "OWNER";
-
   const fleet = fleets[0];
 
   return (
     <>
-      <Modal isOpen={activeModal === "add_fleet"}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.closeButton} onPress={closeModal}>
-            Cerrar
-          </Text>
-          <AddFleetModal closeModal={closeModal} fetchFleets={fetchFleets} />
-        </View>
-      </Modal>
       <Stack.Screen
         options={{
           headerLargeTitle: false,
@@ -155,7 +151,10 @@ export default function Index() {
         }}
       />
       <View
-        style={[{ marginTop: Platform.OS === "ios" ? headerHeight + 0 : 6 }]}
+        style={[
+          styles.container,
+          { marginTop: Platform.OS === "ios" ? headerHeight : 6 },
+        ]}
       >
         <SegmentedControl
           values={["Personas", "Vehículos"]}
@@ -163,7 +162,7 @@ export default function Index() {
           onChange={(event) =>
             setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)
           }
-          style={[styles.segmentedControl, {}]}
+          style={styles.segmentedControl}
         />
       </View>
 
@@ -177,32 +176,28 @@ export default function Index() {
             fetchFleets();
             fetchProfile();
           }}
-          style={{ marginBottom: 36 }}
+          style={styles.flatList}
           renderItem={({ item }) => (
-            <View style={styles.container}>
-              <GroupedList>
-                <Row
-                  title={item.name}
-                  trailingType="chevron"
-                  icon={<Boxes size={24} color="white" />}
-                  color={colorPalette.cyan[500]}
-                />
-                <Row
-                  trailingType="chevron"
-                  disabled
-                  title=""
-                  onPress={() => {}}
-                  showChevron={false}
-                >
-                  <Text style={styles.description}>
-                    {item.father_last_name}
-                  </Text>
-                </Row>
-              </GroupedList>
-            </View>
+            <Link href={`/users/${item.id}?showModal=true`} asChild>
+              <Pressable>
+                <View style={styles.rowContainer}>
+                  <View style={styles.contentContainer}>
+                    <View style={styles.imageContainer}>
+                      <UserThumbnail userId={item.id} size={60} />
+                    </View>
+                    <Text style={styles.itemText}>
+                      {`${item.name} ${item.father_last_name} ${item.mother_last_name}`}
+                    </Text>
+                  </View>
+                  <View style={styles.chevronView}>
+                    <ChevronRight color={styles.chevron.color} />
+                  </View>
+                </View>
+              </Pressable>
+            </Link>
           )}
           ListEmptyComponent={
-            <View style={{ marginTop: 100 }}>
+            <View style={styles.emptyStateContainer}>
               <EmptyScreen
                 caption="No hay personas en esta flotilla"
                 buttonCaption="Añadir personas"
@@ -228,30 +223,35 @@ export default function Index() {
             fetchFleets();
             fetchProfile();
           }}
-          style={{ marginBottom: 36 }}
+          style={styles.flatList}
           renderItem={({ item }) => (
-            <View style={styles.container}>
-              <GroupedList>
-                <Row
-                  title={item.brand}
-                  trailingType="chevron"
-                  icon={<Boxes size={24} color="white" />}
-                  color={colorPalette.cyan[500]}
-                />
-                <Row
-                  trailingType="chevron"
-                  disabled
-                  title=""
-                  onPress={() => {}}
-                  showChevron={false}
-                >
-                  <Text style={styles.description}>{item.sub_brand}</Text>
-                </Row>
-              </GroupedList>
-            </View>
+            <Link
+              href={{ pathname: `/vehicles/${item.id}?showModal=true` }}
+              asChild
+            >
+              <TouchableOpacity>
+                <View style={styles.rowContainer}>
+                  <View style={styles.contentContainer}>
+                    <View style={styles.imageContainer}>
+                      <VehicleThumbnail vehicleId={item.id} />
+                    </View>
+                    <Text style={styles.itemText}>
+                      <Text style={styles.boldText}>
+                        {`${item.brand} ${item.sub_brand} (${item.year})\n`}
+                      </Text>
+                      {`Placa: ${item.plate}\n`}
+                      {`Número económico: ${item.economic_number}\n`}
+                    </Text>
+                  </View>
+                  <View style={styles.chevronView}>
+                    <ChevronRight color={styles.chevron.color} />
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </Link>
           )}
           ListEmptyComponent={
-            <View style={{ marginTop: 100 }}>
+            <View style={styles.emptyStateContainer}>
               <EmptyScreen
                 caption="No hay vehículos en esta flotilla"
                 buttonCaption="Añadir vehículos"
@@ -273,63 +273,54 @@ export default function Index() {
 }
 
 const stylesheet = createStyleSheet((theme) => ({
+  flatList: {
+    marginBottom: 36,
+  },
   container: {
-    gap: theme.marginsComponents.section,
-    marginTop: theme.marginsComponents.section, //Excepción
-  },
-  modalContainer: {
-    width: "100%",
-    alignSelf: "center",
-    maxWidth: 500,
-    backgroundColor: theme.ui.colors.card,
-    borderRadius: 10,
-    padding: 24,
-  },
-  description: {
-    color: theme.textPresets.main,
-    fontSize: 16,
-  },
-  text: {
-    color: theme.textPresets.main,
-  },
-  section: {
-    gap: theme.marginsComponents.section,
-    alignItems: "center",
-  },
-  group: {
-    gap: theme.marginsComponents.group,
-    width: "100%",
-  },
-  logo: {
-    color: theme.colors.inverted,
-    width: 180,
-    height: 60,
-  },
-  subtitle: {
-    color: theme.textPresets.main,
-    textAlign: "center",
-  },
-  textInput: {
-    height: 45,
-    borderRadius: 5,
-    paddingHorizontal: 12,
-    fontSize: 18,
-    color: theme.textPresets.main,
-    placehoolderTextColor: theme.textPresets.subtitle,
-    backgroundColor: theme.textInput.backgroundColor,
-  },
-  closeButton: {
-    color: theme.headerButtons.color,
-    fontSize: 18,
-    textAlign: "right",
-  },
-  plusIcon: {
-    fontSize: 16,
-    color: theme.headerButtons.color,
+    marginTop: theme.marginsComponents.section,
   },
   segmentedControl: {
     width: "97%",
     margin: "auto",
     marginVertical: 6,
+  },
+  rowContainer: {
+    justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: theme.ui.colors.border,
+    paddingVertical: 10,
+  },
+  contentContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
+  imageContainer: {
+    padding: 12,
+  },
+  itemText: {
+    fontSize: 18,
+    paddingLeft: 10,
+    color: theme.textPresets.main,
+    flexShrink: 1,
+    marginRight: 18,
+  },
+  boldText: {
+    fontWeight: "bold",
+  },
+  chevronView: {
+    paddingRight: 12,
+  },
+  plusIcon: {
+    fontSize: 16,
+    color: theme.headerButtons.color,
+  },
+  emptyStateContainer: {
+    marginTop: 100,
+  },
+  chevron: {
+    color: theme.textPresets.subtitle,
   },
 }));

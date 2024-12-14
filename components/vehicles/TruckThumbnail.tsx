@@ -49,7 +49,6 @@ export default function VehicleThumbnail({ vehicleId }: VehicleThumbnailProps) {
     loadThumbnail();
   }, []);
 
-
   return (
     <>
       {thumbnailIsLoading ? (

@@ -1,6 +1,6 @@
 import { View, ScrollView, Alert, RefreshControl } from "react-native";
-import { Stack, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
+import { useEffect, useState } from "react";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
@@ -25,6 +25,13 @@ export default function Index() {
   const { profile, isProfileLoading, fetchProfile } = useProfile();
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
+
+  const navigation = useNavigation();
+  useEffect(() => {
+    navigation.setOptions({
+      presentation: undefined,
+    });
+  }, []);
 
   if (vehiclesAreLoading) {
     return (
