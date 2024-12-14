@@ -16,7 +16,6 @@ export default function Layout() {
       }}
     >
       <Stack.Screen name="index" options={{ title: "Flotillas" }} />
-      <Stack.Screen name="index/[fleetId]" />
     </Stack>
   );
 }
