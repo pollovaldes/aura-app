@@ -14,7 +14,7 @@ export default function ProfileColumn({ profile, showRole }: ProfileRowProps) {
 
   return (
     <View style={styles.container}>
-      <View>
+      <View style={{ height: 120 }}>
         <UserThumbnail userId={profile.id} size={120} />
       </View>
       <View style={styles.descriptioonContainer}>

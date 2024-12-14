@@ -14,7 +14,10 @@ type UserThumbnailProps = {
   size?: number;
 };
 
-export default function UserThumbnail({ userId, size = 60 }: UserThumbnailProps) {
+export default function UserThumbnail({
+  userId,
+  size = 60,
+}: UserThumbnailProps) {
   const { styles } = useStyles(stylesheet);
   const { users, setUsers, usersAreLoading, fetchUsers } = useUsers();
   const { fetchThumbnail } = useUserThumbnail();
@@ -74,14 +77,25 @@ export default function UserThumbnail({ userId, size = 60 }: UserThumbnailProps)
   return (
     <>
       {thumbnailIsLoading ? (
-        <View style={[styles.emptyImageContainer, { width: size, height: size }]}>
+        <View
+          style={[styles.emptyImageContainer, { width: size, height: size }]}
+        >
           <ActivityIndicator />
         </View>
       ) : item && item.thumbnail ? (
-        <Image style={[styles.image, { width: size, height: size }]} source={{ uri: item.thumbnail }} />
+        <Image
+          style={[styles.image, { width: size, height: size }]}
+          source={{ uri: item.thumbnail }}
+        />
       ) : (
-        <View style={[styles.emptyImageContainer, { width: size, height: size }]}>
-          <UserRound size={size * 0.4375} color={styles.noImageIcon.color} strokeWidth={1.25} />
+        <View
+          style={[styles.emptyImageContainer, { width: size, height: size }]}
+        >
+          <UserRound
+            size={size * 0.4375}
+            color={styles.noImageIcon.color}
+            strokeWidth={1.25}
+          />
         </View>
       )}
     </>

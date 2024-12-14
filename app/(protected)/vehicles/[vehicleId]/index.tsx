@@ -37,7 +37,6 @@ import useProfile from "@/hooks/useProfile";
 import Modal from "@/components/Modal/Modal";
 import ChangeCoverImage from "@/components/vehicles/modals/ChangeCoverImage";
 import { supabase } from "@/lib/supabase";
-import { useHeaderHeight } from "@react-navigation/elements";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 
 type ModalType = "change_cover_image" | null;
