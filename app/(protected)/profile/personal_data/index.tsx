@@ -41,6 +41,8 @@ export default function Index() {
       setPosition(profile.position || "");
       setRole(profile.role || "");
 
+      console.log(profile);
+
       // Set the initial state once profile is loaded
       setInitialState({
         name: profile.name || "",

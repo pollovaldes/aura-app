@@ -14,7 +14,7 @@ export default function useProfile() {
     const { data: profileData, error } = await supabase
       .from("profiles")
       .select(
-        "id, name, father_last_name, mother_last_name, position, role, is_fully_registered"
+        "id, name, father_last_name, mother_last_name, position, role, is_fully_registered, birthday"
       )
       .eq("id", session?.user.id)
       .single();
