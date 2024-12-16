@@ -10,7 +10,7 @@ import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import { router } from "expo-router";
 import React from "react";
-import { Bell, Bug, Code, Info, LogOut, Moon, User } from "lucide-react-native";
+import { Bell, Bug, Info, LogOut, Moon, User } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import ProfileColumn from "@/components/people/ProfileColumn";
 

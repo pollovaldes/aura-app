@@ -1,72 +1,120 @@
 import { supabase } from "@/lib/supabase";
-import { RefreshControl, ScrollView, View } from "react-native";
+import { Platform, RefreshControl, ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import useProfile from "@/hooks/useProfile";
 import { useSessionContext } from "@/context/SessionContext";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import { router, Stack } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { createElement, useEffect, useState } from "react";
 import FormInput from "@/components/Form/FormInput";
 import { FormButton } from "@/components/Form/FormButton";
+import DatePicker from "react-native-date-picker";
+import { differenceInYears, isValid } from "date-fns";
 
-type Profile = {
+type PersonalData = {
   name: string;
   fatherLastName: string;
   motherLastName: string;
   position: string;
+  birthday: Date;
 };
+
+function DateTimePickerWeb({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) {
+  return createElement("input", {
+    type: "date",
+    value: value,
+    onChange: onChange,
+    style: {
+      padding: 10,
+      fontSize: 16,
+      borderRadius: 5,
+      border: "1px solid #ccc",
+      width: "100%",
+    },
+  });
+}
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
-  const { session, isLoading: isSessionLoading } = useSessionContext();
   const { profile, isProfileLoading, fetchProfile } = useProfile();
 
   const [name, setName] = useState("");
   const [fatherLastName, setFatherLastName] = useState("");
   const [motherLastName, setMotherLastName] = useState("");
   const [position, setPosition] = useState("");
-  const [role, setRole] = useState("");
-
+  const [birthday, setBirthday] = useState(new Date());
   const [isSaving, setIsSaving] = useState(false);
 
-  // Store initial state for comparison
-  const [initialState, setInitialState] = useState<Profile | null>(null);
+  const [initialState, setInitialState] = useState<PersonalData | null>(null);
+
+  // Function to format date to Mexico City timezone
+  const formatToMexicoCityDate = (date: Date): string => {
+    const formatter = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "America/Mexico_City",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    return formatter.format(date); // YYYY-MM-DD format
+  };
+
+  const calculateAge = (birthday: Date): string => {
+    if (!isValid(birthday)) {
+      return "La selección no es válida";
+    }
+    const age = differenceInYears(new Date(), birthday);
+    if (age < 18) {
+      return "Debes ser mayor de edad";
+    }
+    return `Tienes ${age} años`;
+  };
+
+  const ageMessage = calculateAge(birthday);
 
   useEffect(() => {
     if (profile) {
+      const [year, month, day] = profile.birthday.split("-").map(Number);
+      const birthdayInMexicoCity = new Date(Date.UTC(year, month - 1, day));
+
       setName(profile.name || "");
       setFatherLastName(profile.father_last_name || "");
       setMotherLastName(profile.mother_last_name || "");
       setPosition(profile.position || "");
-      setRole(profile.role || "");
+      setBirthday(birthdayInMexicoCity);
 
-      console.log(profile);
-
-      // Set the initial state once profile is loaded
       setInitialState({
         name: profile.name || "",
         fatherLastName: profile.father_last_name || "",
         motherLastName: profile.mother_last_name || "",
         position: profile.position || "",
+        birthday: birthdayInMexicoCity,
       });
     }
   }, [profile]);
 
-  // Calculate the disabled condition
   const disabledCondition =
-    !initialState || // Disable if the initial state is not set
+    !initialState ||
     name === "" ||
     fatherLastName === "" ||
     motherLastName === "" ||
     position === "" ||
-    role === "" ||
+    !birthday ||
+    calculateAge(birthday) !==
+      `Tienes ${differenceInYears(new Date(), birthday)} años` ||
     (name === initialState.name &&
       fatherLastName === initialState.fatherLastName &&
       motherLastName === initialState.motherLastName &&
-      position === initialState.position);
+      position === initialState.position &&
+      birthday.getTime() === initialState.birthday.getTime());
 
-  if (isProfileLoading || isSessionLoading) {
+  if (isProfileLoading) {
     return (
       <>
         <Stack.Screen
@@ -102,25 +150,6 @@ export default function Index() {
     );
   }
 
-  if (!session) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar tu sesión"
-          buttonCaption="Intentar cerrar sesión"
-          retryFunction={() => supabase.auth.signOut({ scope: "local" })}
-        />
-      </>
-    );
-  }
-
   const handleSave = async () => {
     setIsSaving(true);
 
@@ -131,25 +160,26 @@ export default function Index() {
         father_last_name: fatherLastName,
         mother_last_name: motherLastName,
         position,
+        birthday: formatToMexicoCityDate(birthday),
       })
-      .eq("id", session.user.id);
+      .eq("id", profile.id);
 
     setIsSaving(false);
 
     if (error) {
       alert("Ocurrió un error al guardar los datos");
-    } else {
-      fetchProfile();
-      setTimeout(() => {
-        router.replace("/profile");
-        setTimeout(() => {
-          router.push("/profile/personal_data");
-          setTimeout(() => {
-            alert("Datos guardados correctamente");
-          }, 500);
-        }, 200);
-      }, 200);
+      return;
     }
+
+    fetchProfile();
+
+    setTimeout(() => {
+      router.replace("/profile");
+    }, 300);
+
+    setTimeout(() => {
+      router.push("/profile/personal_data");
+    }, 600);
   };
 
   return (
@@ -165,7 +195,7 @@ export default function Index() {
         contentInsetAdjustmentBehavior="automatic"
         refreshControl={
           <RefreshControl
-            refreshing={isProfileLoading || isSessionLoading}
+            refreshing={isProfileLoading}
             onRefresh={fetchProfile}
           />
         }
@@ -178,6 +208,7 @@ export default function Index() {
             onChangeText={setName}
             value={name}
           />
+
           <FormInput
             description="Apellido paterno"
             enterKeyHint="done"
@@ -185,6 +216,7 @@ export default function Index() {
             onChangeText={setFatherLastName}
             value={fatherLastName}
           />
+
           <FormInput
             description="Apellido materno"
             enterKeyHint="done"
@@ -198,13 +230,32 @@ export default function Index() {
             onChangeText={setPosition}
             value={position}
           />
+          <View style={styles.dateContainer}>
+            <Text style={styles.text}>Fecha de nacimiento</Text>
+            <Text style={styles.subtitle}>{ageMessage}</Text>
+            {Platform.OS === "web" ? (
+              <View style={{ width: 150 }}>
+                <DateTimePickerWeb
+                  value={formatToMexicoCityDate(birthday)}
+                  onChange={(e) => setBirthday(new Date(e.currentTarget.value))}
+                />
+              </View>
+            ) : (
+              <DatePicker
+                date={birthday}
+                onDateChange={setBirthday}
+                mode="date"
+                locale="mx"
+              />
+            )}
+          </View>
+
           <FormButton
             title="Guardar datos"
             onPress={handleSave}
             isDisabled={disabledCondition}
             isLoading={isSaving}
           />
-          <View />
         </View>
       </ScrollView>
     </>
@@ -216,5 +267,24 @@ const stylesheet = createStyleSheet((theme) => ({
     gap: theme.marginsComponents.group,
     marginTop: theme.marginsComponents.group,
     padding: 16,
+  },
+  dateContainer: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 16,
+    gap: 8,
+    backgroundColor: theme.textInput.backgroundColor,
+    padding: 12,
+    borderRadius: 5,
+  },
+  text: {
+    color: theme.textPresets.main,
+    fontSize: 22,
+    fontWeight: "bold",
+  },
+  subtitle: {
+    color: theme.textPresets.subtitle,
+    fontSize: 18,
   },
 }));
