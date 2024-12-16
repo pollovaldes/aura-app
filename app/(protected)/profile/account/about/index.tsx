@@ -16,12 +16,6 @@ export default function Index() {
   const { profile, isProfileLoading, fetchProfile } = useProfile();
   const navigation = useNavigation();
 
-  useEffect(() => {
-    navigation.setOptions({
-      presentation: "modal",
-    });
-  }, []);
-
   if (isProfileLoading || isSessionLoading) {
     return (
       <>
@@ -100,7 +94,7 @@ export default function Index() {
         contentInsetAdjustmentBehavior="automatic"
         refreshControl={
           <RefreshControl
-            refreshing={isProfileLoading}
+            refreshing={isProfileLoading || isSessionLoading}
             onRefresh={fetchProfile}
           />
         }

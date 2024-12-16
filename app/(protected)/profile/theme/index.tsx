@@ -44,8 +44,8 @@ export default function Index() {
     <>
       <Stack.Screen
         options={{
-          title: "Tema de la aplicación",
-          headerLargeTitle: false,
+          title: "Tema de la app",
+          headerLargeTitle: true,
           headerRight: undefined,
         }}
       />

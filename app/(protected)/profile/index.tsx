@@ -8,13 +8,13 @@ import useProfile from "@/hooks/useProfile";
 import { useSessionContext } from "@/context/SessionContext";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
-import { router, Stack } from "expo-router";
+import { router } from "expo-router";
 import React from "react";
-import { Bug, Code, LogOut, Moon, User } from "lucide-react-native";
+import { Bell, Bug, Code, Info, LogOut, Moon, User } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import ProfileColumn from "@/components/people/ProfileColumn";
 
-export default function Index() {
+export default function Profile() {
   const { styles } = useStyles(stylesheet);
   const signOut = async () => {
     await supabase.auth.signOut({ scope: "local" });
@@ -80,6 +80,9 @@ export default function Index() {
               caption={
                 profile.is_fully_registered ? "Completo" : "Sin completar ⚠️"
               }
+              onPress={() =>
+                router.push("./personal_data", { relativeToDirectory: true })
+              }
             />
             <Row
               title="Rol"
@@ -100,13 +103,16 @@ export default function Index() {
                     return "Indefinido";
                 }
               })()}
+              onPress={() =>
+                router.push("./role", { relativeToDirectory: true })
+              }
             />
           </GroupedList>
           <GroupedList>
             <Row
               title="Cuenta"
               icon={<User size={24} color="white" />}
-              color={colorPalette.cyan[500]}
+              color={colorPalette.green[500]}
               trailingType="chevron"
               onPress={() =>
                 router.push("./account", { relativeToDirectory: true })
@@ -121,20 +127,35 @@ export default function Index() {
                 router.push("./theme", { relativeToDirectory: true })
               }
             />
+            <Row
+              title="Notificaciones"
+              icon={<Bell size={24} color="white" />}
+              color={colorPalette.red[500]}
+              trailingType="chevron"
+              onPress={() =>
+                router.push("./notifications", { relativeToDirectory: true })
+              }
+            />
           </GroupedList>
 
           <GroupedList header="Otros">
             <Row
-              title="Licensias de código abierto"
-              icon={<Code size={24} color="white" />}
-              color={colorPalette.green[500]}
+              title="Sobre Aura"
+              icon={<Info size={24} color="white" />}
+              color={colorPalette.cyan[500]}
               trailingType="chevron"
+              onPress={() =>
+                router.push("./about", { relativeToDirectory: true })
+              }
             />
             <Row
               title="Reportar un problema"
               icon={<Bug size={24} color="white" />}
               color={colorPalette.orange[500]}
               trailingType="chevron"
+              onPress={() =>
+                router.push("./report", { relativeToDirectory: true })
+              }
             />
           </GroupedList>
           <GroupedList>

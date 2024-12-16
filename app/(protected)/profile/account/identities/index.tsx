@@ -7,8 +7,8 @@ import useProfile from "@/hooks/useProfile";
 import { useSessionContext } from "@/context/SessionContext";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
-import { router, Stack, useNavigation } from "expo-router";
-import React, { useEffect } from "react";
+import { router, Stack } from "expo-router";
+import React from "react";
 import { Info } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 
@@ -16,13 +16,6 @@ export default function Index() {
   const { styles } = useStyles(stylesheet);
   const { session, isLoading: isSessionLoading } = useSessionContext();
   const { profile, isProfileLoading, fetchProfile } = useProfile();
-
-  const navigation = useNavigation();
-  useEffect(() => {
-    navigation.setOptions({
-      presentation: "modal",
-    });
-  }, []);
 
   if (isProfileLoading || isSessionLoading) {
     return (

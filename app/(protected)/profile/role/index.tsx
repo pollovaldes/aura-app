@@ -14,7 +14,7 @@ export default function Index() {
     <>
       <Stack.Screen
         options={{
-          title: "Cuenta",
+          title: "Rol",
           headerLargeTitle: true,
           headerRight: undefined,
         }}

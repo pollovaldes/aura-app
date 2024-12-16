@@ -11,13 +11,13 @@ export type Fleet = {
   vehicles: Vehicle[];
 };
 
-export default function useFleets(fleet_id?: string) {
+export function useFleets(fleet_id?: string) {
   const [fleets, setFleets] = useState<Fleet[] | null>(null);
   const [areFleetsLoading, setAreFleetsLoading] = useState(false);
 
   const fetchFleetsUserVehicles = async () => {
     let relations = [];
-    let fleetData = [];
+    let fleetData = null;
 
     if (fleet_id) {
       // Fetch only the relations for the provided fleet_id
@@ -30,7 +30,7 @@ export default function useFleets(fleet_id?: string) {
         alert(
           `Ocurrió un error al obtener las relaciones de las flotillas: \n\nMensaje de error: ${relationsError.message}\n\nCódigo de error: ${relationsError.code}\n\nDetalles: ${relationsError.details}\n\nSugerencia: ${relationsError.hint}`
         );
-        return [];
+        return null;
       }
 
       relations = singleRelations;
@@ -46,7 +46,7 @@ export default function useFleets(fleet_id?: string) {
         alert(
           `Ocurrió un error al obtener la flotilla: \n\nMensaje de error: ${fleetError.message}\n\nCódigo de error: ${fleetError.code}\n\nDetalles: ${fleetError.details}\n\nSugerencia: ${fleetError.hint}`
         );
-        return [];
+        return null;
       }
 
       fleetData = [singleFleet];
@@ -60,7 +60,7 @@ export default function useFleets(fleet_id?: string) {
         alert(
           `Ocurrió un error al obtener las relaciones de las flotillas: \n\nMensaje de error: ${relationsError.message}\n\nCódigo de error: ${relationsError.code}\n\nDetalles: ${relationsError.details}\n\nSugerencia: ${relationsError.hint}`
         );
-        return [];
+        return null;
       }
 
       relations = allRelations;
@@ -74,11 +74,13 @@ export default function useFleets(fleet_id?: string) {
         alert(
           `Ocurrió un error al obtener las flotillas: \n\nMensaje de error: ${fleetError.message}\n\nCódigo de error: ${fleetError.code}\n\nDetalles: ${fleetError.details}\n\nSugerencia: ${fleetError.hint}`
         );
-        return [];
+        return null;
       }
 
       fleetData = allFleets;
     }
+
+    if (!fleetData) return null;
 
     // Extract user and vehicle IDs from relations
     const userIds = [...new Set(relations.map((rel) => rel.user_id))];
@@ -96,7 +98,6 @@ export default function useFleets(fleet_id?: string) {
       alert(
         `Ocurrió un error al obtener los usuarios: \n\nMensaje de error: ${userError.message}\n\nCódigo de error: ${userError.code}\n\nDetalles: ${userError.details}\n\nSugerencia: ${userError.hint}`
       );
-      return [];
     }
 
     // Fetch only necessary vehicles
@@ -111,7 +112,6 @@ export default function useFleets(fleet_id?: string) {
       alert(
         `Ocurrió un error al obtener los vehículos: \n\nMensaje de error: ${vehicleError.message}\n\nCódigo de error: ${vehicleError.code}\n\nDetalles: ${vehicleError.details}\n\nSugerencia: ${vehicleError.hint}`
       );
-      return [];
     }
 
     // Map relations to fleets
@@ -121,12 +121,12 @@ export default function useFleets(fleet_id?: string) {
       );
 
       const users = fleetRelations
-        .map((rel) => userData.find((user) => user.id === rel.user_id))
+        .map((rel) => userData?.find((user) => user.id === rel.user_id))
         .filter(Boolean) as User[];
 
       const vehicles = fleetRelations
         .map((rel) =>
-          vehicleData.find((vehicle) => vehicle.id === rel.vehicle_id)
+          vehicleData?.find((vehicle) => vehicle.id === rel.vehicle_id)
         )
         .filter(Boolean) as Vehicle[];
 

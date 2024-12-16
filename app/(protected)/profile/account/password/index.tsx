@@ -21,13 +21,6 @@ export default function Index() {
   const [newPassword, setNewPassword] = React.useState("");
   const [repeatPassword, setRepeatPassword] = React.useState("");
 
-  const navigation = useNavigation();
-  useEffect(() => {
-    navigation.setOptions({
-      presentation: "modal",
-    });
-  }, []);
-
   useEffect(() => {
     if (!isSessionLoading && session) {
       if (!session.user.email) {
@@ -114,7 +107,7 @@ export default function Index() {
       >
         <View style={styles.container}>
           <FormInput
-            description="Contraseña"
+            description="Contraseña actual"
             enterKeyHint="done"
             autoComplete="current-password"
             secureTextEntry={true}
@@ -137,7 +130,9 @@ export default function Index() {
           <FormButton
             title="Cambiar contraseña"
             onPress={() => {}}
-            isDisabled={newPassword !== repeatPassword || !newPassword}
+            isDisabled={
+              newPassword !== repeatPassword || !newPassword || !password
+            }
           />
           <View />
         </View>

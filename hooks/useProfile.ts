@@ -25,7 +25,10 @@ export default function useProfile() {
 
     setIsProfileLoading(false);
 
-    if (error) throw error;
+    if (error || !profileData) {
+      setProfile(null);
+      throw error;
+    }
   };
 
   useEffect(() => {
@@ -50,7 +53,6 @@ export default function useProfile() {
         )
         .subscribe();
 
-      // Cleanup the subscription when the component unmounts
       return () => {
         supabase.removeChannel(profileSubscription);
       };

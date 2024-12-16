@@ -22,12 +22,6 @@ export default function Index() {
   const { profile, isProfileLoading, fetchProfile } = useProfile();
   const navigation = useNavigation();
 
-  useEffect(() => {
-    navigation.setOptions({
-      presentation: "modal",
-    });
-  }, []);
-
   if (isProfileLoading || isSessionLoading) {
     return (
       <>

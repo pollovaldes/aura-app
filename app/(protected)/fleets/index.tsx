@@ -3,17 +3,17 @@ import Row from "@/components/grouped-list/Row";
 import { FlatList, Pressable, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import useProfile from "@/hooks/useProfile";
-import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { Boxes, Plus } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
-import useFleets from "@/hooks/useFleets";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
-import { Link, router, Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import { useState } from "react";
 import Modal from "@/components/Modal/Modal";
 import AddFleetModal from "@/components/fleets/AddFleetModal";
 import React from "react";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
+import { useFleets } from "@/hooks/useFleets";
 
 type ModalType = "add_fleet" | null;
 
@@ -24,15 +24,12 @@ export default function Index() {
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
 
-  if (isProfileLoading) {
+  if (isProfileLoading || areFleetsLoading) {
     return (
       <>
-        <Stack.Screen
-          options={{
-            headerRight: undefined,
-          }}
+        <FetchingIndicator
+          caption={isProfileLoading ? "Cargando perfil" : "Cargando flotillas"}
         />
-        <LoadingScreen caption="Cargando perfil" />
       </>
     );
   }
@@ -50,19 +47,6 @@ export default function Index() {
           buttonCaption="Reintentar"
           retryFunction={fetchProfile}
         />
-      </>
-    );
-  }
-
-  if (areFleetsLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            headerRight: undefined,
-          }}
-        />
-        <LoadingScreen caption="Cargando flotillas" />
       </>
     );
   }

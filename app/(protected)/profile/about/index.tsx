@@ -4,8 +4,17 @@ import { ScrollView, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { router, Stack } from "expo-router";
 import React from "react";
-import { Info, LockKeyhole, Trash, Users } from "lucide-react-native";
+import {
+  Code,
+  GlobeLock,
+  Handshake,
+  Info,
+  LockKeyhole,
+  Trash,
+  Users,
+} from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
+import { openBrowserAsync } from "expo-web-browser";
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
@@ -14,49 +23,51 @@ export default function Index() {
     <>
       <Stack.Screen
         options={{
-          title: "Cuenta",
+          title: "Sobre Aura",
           headerLargeTitle: true,
           headerRight: undefined,
         }}
       />
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View style={styles.container}>
-          <GroupedList header="Opciones de la cuenta">
+          <GroupedList>
             <Row
-              title="Información de la cuenta"
-              icon={<Info size={24} color="white" />}
-              color={colorPalette.cyan[500]}
+              title="Licensias de código abierto"
+              icon={<Code size={24} color="white" />}
+              color={colorPalette.green[500]}
               trailingType="chevron"
               onPress={() =>
-                router.push("./about", { relativeToDirectory: true })
+                router.push("./licenses", { relativeToDirectory: true })
               }
             />
             <Row
-              title="Contraseña"
-              icon={<LockKeyhole size={24} color="white" />}
+              title="Términos"
+              icon={<Handshake size={24} color="white" />}
               color={colorPalette.orange[500]}
               trailingType="chevron"
               onPress={() =>
-                router.push("./password", { relativeToDirectory: true })
+                openBrowserAsync(
+                  "https://raw.githubusercontent.com/pollovaldes/aura-app/main/terms.txt"
+                )
               }
             />
             <Row
-              title="Identidades"
-              icon={<Users size={24} color="white" />}
-              color={colorPalette.emerald[500]}
+              title="Política de privacidad"
+              icon={<GlobeLock size={24} color="white" />}
+              color={colorPalette.neutral[500]}
               trailingType="chevron"
               onPress={() =>
-                router.push("./identities", { relativeToDirectory: true })
+                openBrowserAsync(
+                  "https://raw.githubusercontent.com/pollovaldes/aura-app/main/privacy-policy.txt"
+                )
               }
             />
             <Row
-              title="Eliminar cuenta"
-              icon={<Trash size={24} color="white" />}
-              color={colorPalette.red[500]}
+              title="Versión"
+              caption={"1.0.0"}
               trailingType="chevron"
-              onPress={() =>
-                alert("Esta acción no se puede deshacer. ¿Estás seguro?")
-              }
+              showChevron={false}
+              pressedStyle={false}
             />
           </GroupedList>
           <View />
