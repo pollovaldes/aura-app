@@ -65,8 +65,13 @@ export default function Profile() {
         <View style={styles.container}>
           {profile.is_fully_registered && (
             <GroupedList>
-              <Row trailingType="chevron" title="" showChevron={false}>
-                <ProfileColumn profile={profile} />
+              <Row
+                trailingType="chevron"
+                title=""
+                showChevron={false}
+                pressedStyle={false}
+              >
+                <ProfileColumn profile={profile} showPosition />
               </Row>
             </GroupedList>
           )}

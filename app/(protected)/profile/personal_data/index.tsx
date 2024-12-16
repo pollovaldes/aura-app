@@ -30,7 +30,7 @@ function DateTimePickerWeb({
   return createElement("input", {
     type: "date",
     value: value,
-    onChange: onChange,
+    onInput: onChange,
     style: {
       padding: 10,
       fontSize: 16,
@@ -160,7 +160,7 @@ export default function Index() {
         father_last_name: fatherLastName,
         mother_last_name: motherLastName,
         position,
-        birthday: formatToMexicoCityDate(birthday),
+        birthday: birthday,
       })
       .eq("id", profile.id);
 
@@ -233,6 +233,7 @@ export default function Index() {
           <View style={styles.dateContainer}>
             <Text style={styles.text}>Fecha de nacimiento</Text>
             <Text style={styles.subtitle}>{ageMessage}</Text>
+            <Text style={styles.subtitle}>{birthday.getMonth()}</Text>
             {Platform.OS === "web" ? (
               <View style={{ width: 150 }}>
                 <DateTimePickerWeb

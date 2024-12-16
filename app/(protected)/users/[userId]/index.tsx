@@ -95,7 +95,7 @@ export default function Index() {
         <View style={styles.container}>
           <GroupedList>
             <Row trailingType="chevron" title="" showChevron={false}>
-              <ProfileColumn profile={user} showRole />
+              <ProfileColumn profile={user} showPosition />
             </Row>
           </GroupedList>
           <GroupedList>
