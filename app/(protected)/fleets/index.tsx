@@ -118,7 +118,6 @@ export default function Index() {
                   icon={<Boxes size={24} color="white" />}
                   color={colorPalette.cyan[500]}
                 />
-
                 <Row
                   trailingType="chevron"
                   disabled

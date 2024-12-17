@@ -1,137 +1,149 @@
-import ErrorScreen from '@/components/dataStates/ErrorScreen';
-import LoadingScreen from '@/components/dataStates/LoadingScreen';
-import Notification from '@/components/Notification/Notification';
-import useProfile from '@/hooks/useProfile';
-import { supabase } from '@/lib/supabase';
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, FlatList, TouchableOpacity } from 'react-native';
-import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import { FlatList, Platform, RefreshControl, Text, View } from "react-native";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
+import useProfile from "@/hooks/useProfile";
+import ErrorScreen from "@/components/dataStates/ErrorScreen";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
+import { Stack } from "expo-router";
+import React, { useState } from "react";
+import { FilterSelector } from "@/components/radioButton/FilterSelector";
+import { useHeaderHeight } from "@react-navigation/elements";
 
-const Notifications = () => {
-  const [notifications, setNotifications] = useState<any[]>([]);
-  const { isProfileLoading, profile } = useProfile();
+export default function Index() {
+  const [selectedFilter, setSelectedFilter] = useState("todo");
   const { styles } = useStyles(stylesheet);
+  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const headerHeight = useHeaderHeight();
 
-  const fetchNotifications = async () => {
-    if (!profile) return;
+  // Define filter options
+  const FILTER_OPTIONS = [
+    { key: "todo", label: "Todo" },
+    { key: "mantenimiento", label: "Mantenimiento" },
+    { key: "gasolina", label: "Gasolina" },
+    { key: "roles", label: "Roles" },
+    { key: "ayuda", label: "Ayuda" },
+    { key: "reportes", label: "Reportes de error" },
+  ];
 
-    try {
-      const { data, error } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('user_id', profile?.id)
-        .order('created_at', { ascending: false });
+  // Sample data for FlatList
+  const DATA = [
+    { id: "1", category: "mantenimiento", title: "Cambio de aceite" },
+    { id: "2", category: "gasolina", title: "Recarga de gasolina" },
+    { id: "3", category: "roles", title: "Asignar roles" },
+    { id: "4", category: "ayuda", title: "Solicitar soporte" },
+  ];
 
-      if (error) {
-        console.error('Error fetching notifications:', error);
-        return;
-      }
-      setNotifications(data);
-    } catch (err) {
-      console.error('Unexpected error:', err);
-    }
-  };
-
-  useEffect(() => {
-    let channel: any;
-
-    const initialize = async () => {
-      if (!profile) return;
-      await fetchNotifications();
-
-      channel = supabase.channel('AllChanges')
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'notifications' },
-          (payload) => {
-            fetchNotifications();
-            console.log('Notification payload:', payload);
-          }
-        )
-        .subscribe()
-
-    }
-
-    initialize();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
+  // Filter data based on selected option
+  const filteredData =
+    selectedFilter === "todo"
+      ? DATA
+      : DATA.filter((item) => item.category === selectedFilter);
 
   if (isProfileLoading) {
     return (
-      <View style={styles.fullscreenView}>
-        <LoadingScreen caption="Cargando sesión" />
-      </View>
+      <>
+        <Stack.Screen
+          options={{
+            title: "Cargando",
+            headerLargeTitle: false,
+            headerRight: undefined,
+          }}
+        />
+        <FetchingIndicator
+          caption={isProfileLoading ? "Cargando perfil" : "Cargando sesión"}
+        />
+      </>
     );
   }
 
-  // Show error screen if there's an issue with the session or profile
   if (!profile) {
     return (
-      <View style={styles.fullscreenView}>
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar tu sesión o tu perfil"
-          buttonCaption="Intentar cerrar sesión"
-          retryFunction={() => supabase.auth.signOut({scope: 'local'})}
+      <>
+        <Stack.Screen
+          options={{
+            title: "Error",
+            headerLargeTitle: false,
+            headerRight: undefined,
+          }}
         />
-      </View>
+        <ErrorScreen
+          caption="Ocurrió un error al recuperar tu perfil"
+          buttonCaption="Reintentar"
+          retryFunction={fetchProfile}
+        />
+      </>
     );
   }
 
-  const handleDeleteNotification = async (notificationId: string) => {
-    const { error } = await supabase
-      .from('notifications')
-      .delete()
-      .eq('id', notificationId);
-
-    if (error) {
-      console.log('Error deleting notification:', error);
-    } else {
-      setNotifications((prevNotifications) =>
-        prevNotifications.filter((notification) => notification.id !== notificationId)
-      );
-    }
-  };
-
   return (
-    <FlatList
-      refreshing={isProfileLoading}
-      onRefresh={fetchNotifications}
-      contentInsetAdjustmentBehavior='automatic'
-      data={notifications}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => (
-        <View
-          style={styles.container}
-        >
-          <Notification
-            title={item.content}
-            onPressDiscard={() => handleDeleteNotification(item.id)}
-            description={item.content}
-          ></Notification>
-        </View>
-      )}
-    />
+    <>
+      <Stack.Screen
+        options={{
+          title: "Notificaciones",
+          headerLargeTitle: true,
+          headerRight: undefined,
+        }}
+      />
+      {/* Filter selector before scrollview */}
+      <View
+        style={[
+          styles.filerSelectorContainer,
+          { paddingTop: Platform.OS === "ios" ? headerHeight + 12 : 0 },
+        ]}
+      >
+        <FilterSelector
+          options={FILTER_OPTIONS}
+          selected={selectedFilter}
+          onChange={setSelectedFilter}
+        />
+      </View>
+      <FlatList
+        refreshControl={
+          <RefreshControl
+            refreshing={isProfileLoading}
+            onRefresh={fetchProfile}
+          />
+        }
+        style={styles.container}
+        data={filteredData}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.listItem}>
+            <Text style={styles.itemText}>{item.title}</Text>
+          </View>
+        )}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>No hay resultados disponibles</Text>
+        }
+      />
+    </>
   );
-};
-
-export default Notifications;
+}
 
 const stylesheet = createStyleSheet((theme) => ({
-  fullscreenView: {
-    flex: 1,
-    backgroundColor: theme.ui.colors.card,
-  },
   container: {
-    padding: 10,
+    gap: theme.marginsComponents.section,
+    marginTop: theme.marginsComponents.section,
   },
-  innerContainer: {
-    flexDirection: "row",
-    width: "85%",
+  filerSelectorContainer: {
+    paddingVertical: 12,
   },
-  icon: {
-    color: theme.colors.inverted,
+  listItem: {
+    padding: 12,
+    marginVertical: 6,
+    backgroundColor: "#f9f9f9",
+    borderRadius: 8,
+    marginHorizontal: 12,
+    borderWidth: 1,
+    borderColor: theme.ui.colors.border,
+  },
+  itemText: {
+    fontSize: 16,
+    color: theme.textPresets.main,
+  },
+  emptyText: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 16,
+    color: theme.textPresets.subtitle,
   },
 }));

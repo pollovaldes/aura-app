@@ -2,7 +2,7 @@ import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import { ScrollView, Appearance, useColorScheme, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { Stack } from "expo-router";
+import { Stack, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Moon, Sun, SunMoon } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
@@ -13,7 +13,6 @@ import { StatusBar } from "expo-status-bar";
 export default function Index() {
   const { styles } = useStyles(stylesheet);
   const [selectedOption, setSelectedOption] = useState("auto");
-  const options = ["auto", "dark", "light"];
   const currentTheme = useColorScheme();
 
   const handleRadioChange = async (option: string) => {

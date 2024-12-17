@@ -3,16 +3,25 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import useProfile from "@/hooks/useProfile";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
-import { router, Stack } from "expo-router";
-import React from "react";
+import { Stack, useNavigation } from "expo-router";
+import React, { useEffect, useState } from "react";
 import Row from "@/components/grouped-list/Row";
-import { UserRoundPen } from "lucide-react-native";
+import { UserRound, UserRoundPen } from "lucide-react-native";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import { colorPalette } from "@/style/themes";
+import FormInput from "@/components/Form/FormInput";
+import { FormButton } from "@/components/Form/FormButton";
+import { ChipSelecto } from "@/components/radioButton/ChipSelecto";
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
   const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const navigation = useNavigation();
+  const [selectedOption, setSelectedOption] = useState("NONE");
+
+  useEffect(() => {
+    navigation.setOptions({ presentation: "modal" });
+  }, [navigation]);
 
   if (isProfileLoading) {
     return (
@@ -67,20 +76,16 @@ export default function Index() {
     }
   };
 
-  const getRoleDescription = (role: string) => {
-    switch (role) {
+  const handleRadioChange = (option: string) => {
+    setSelectedOption(option);
+
+    switch (option) {
       case "ADMIN":
-        return "Eres un administrador, lo que significa que puedes gestionar usuarios, configuraciones y modificar datos.";
+        break;
       case "DRIVER":
-        return "Eres un conductor, puedes ver los camiones que tu supervisor te haya asignado, consultar información sobre ellos, y hacer peticiones sobre viajes, cargas de combustibles, etc.";
-      case "BANNED":
-        return "Estás bloqueado, no puedes acceder a la aplicación.";
-      case "NO_ROLE":
-        return "No tienes un rol asignado, contacta a soporte.";
-      case "OWNER":
-        return "Eres el dueño de la aplicación, puedes gestionar todo.";
+        break;
       default:
-        return "Tu rol no está definido, contacta a soporte.";
+        alert("Opción inválida");
     }
   };
 
@@ -88,13 +93,14 @@ export default function Index() {
     <>
       <Stack.Screen
         options={{
-          title: "Rol",
-          headerLargeTitle: true,
+          title: "Cambio de rol",
+          headerLargeTitle: false,
           headerRight: undefined,
         }}
       />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
+        automaticallyAdjustKeyboardInsets={true}
         refreshControl={
           <RefreshControl
             refreshing={isProfileLoading}
@@ -105,20 +111,51 @@ export default function Index() {
         <View style={styles.container}>
           <View style={styles.dateContainer}>
             <Text style={styles.text}>{getRoleLabel(profile.role)}</Text>
-            <Text style={styles.subtitle}>
-              {getRoleDescription(profile.role)}
-            </Text>
+            <Text style={styles.subtitle}>{profile.role}</Text>
           </View>
           <GroupedList>
             <Row
-              title="Cambio de rol"
-              icon={<UserRoundPen size={24} color="white" />}
+              title="Rol actual"
+              icon={<UserRound size={24} color="white" />}
               color={colorPalette.cyan[500]}
               trailingType="chevron"
-              onPress={() => router.push("/profile/role/change")}
+              caption={getRoleLabel(profile.role)}
+              showChevron={false}
+              pressedStyle={false}
             />
+            <Row
+              title="Selecciona el nuevo rol"
+              icon={<UserRoundPen size={24} color="white" />}
+              color={colorPalette.green[500]}
+              trailingType="chevron"
+              showChevron={false}
+              pressedStyle={false}
+            />
+            <Row
+              trailingType="chevron"
+              disabled
+              title=""
+              onPress={() => {}}
+              showChevron={false}
+            >
+              <View style={styles.roleChangeContainer}>
+                <ChipSelecto
+                  selected={selectedOption === "ADMIN"}
+                  onPress={() => handleRadioChange("ADMIN")}
+                  caption="Administrador"
+                />
+                <ChipSelecto
+                  selected={selectedOption === "DRIVER"}
+                  onPress={() => handleRadioChange("DRIVER")}
+                  caption="Conductor"
+                />
+              </View>
+            </Row>
           </GroupedList>
-
+          <View style={styles.inputContainer}>
+            <FormInput description="Describe el motivo del cambio" multiline />
+            <FormButton title="Aceptar" onPress={() => {}} />
+          </View>
           <View />
         </View>
       </ScrollView>
@@ -130,6 +167,17 @@ const stylesheet = createStyleSheet((theme) => ({
   container: {
     gap: theme.marginsComponents.section,
     marginTop: theme.marginsComponents.section,
+  },
+  roleChangeContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  inputContainer: {
+    marginHorizontal: 6,
+    flexDirection: "column",
+    gap: 16,
+    borderRadius: 5,
+    padding: 12,
   },
   dateContainer: {
     marginHorizontal: 16,
