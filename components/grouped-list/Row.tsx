@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 import {
   View,
   Text,
@@ -42,8 +42,8 @@ const Row = ({
   hasTouchableFeedback = true,
 }: RowProps) => {
   const { styles, breakpoint } = useStyles(stylesheet);
-
   const isWide = breakpoint === "wide";
+  const [isHovered, setIsHovered] = useState(false);
 
   if (children) {
     return (
@@ -57,12 +57,15 @@ const Row = ({
     <Pressable
       onPress={onPress}
       disabled={isLoading || disabled || !onPress}
+      onHoverIn={() => hasTouchableFeedback && setIsHovered(true)}
+      onHoverOut={() => hasTouchableFeedback && setIsHovered(false)}
       style={({ pressed }) => [
         styles.container,
         isWide && styles.containerWide,
         style,
         { opacity: disabled ? 0.6 : 1 },
-        hasTouchableFeedback && pressed && { opacity: 0.7 },
+        hasTouchableFeedback && isHovered && styles.containerHovered,
+        hasTouchableFeedback && pressed && styles.containerPressed,
       ]}
     >
       {icon && <RowIcon icon={icon} backgroundColor={backgroundColor} />}
@@ -104,6 +107,12 @@ const stylesheet = createStyleSheet((theme) => ({
     borderColor: theme.ui.colors.border,
     borderRadius: 10,
     alignItems: "flex-start",
+  },
+  containerHovered: {
+    backgroundColor: theme.components.plainList.hover,
+  },
+  containerPressed: {
+    backgroundColor: theme.components.plainList.pressed,
   },
   textContainer: {
     flex: 1,
