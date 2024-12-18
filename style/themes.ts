@@ -204,6 +204,10 @@ export const lightTheme = {
       good: colorPalette.lime[600],
       message: colorPalette.neutral[600],
     },
+    plainList: {
+      hover: colorPalette.neutral[200],
+      pressed: colorPalette.neutral[400],
+    },
   },
   textInput: {
     backgroundColor: colorPalette.neutral[200],
@@ -264,6 +268,10 @@ export const darkTheme = {
       bad: colorPalette.red[200],
       good: colorPalette.lime[300],
       message: colorPalette.neutral[300],
+    },
+    plainList: {
+      hover: colorPalette.neutral[700],
+      pressed: colorPalette.neutral[800],
     },
   },
   textInput: {
