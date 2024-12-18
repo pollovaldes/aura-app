@@ -1,55 +1,47 @@
-import { View, Text, StyleProp, ViewStyle, Platform } from "react-native";
-import React, { Children } from "react";
+import React, { Children, ReactNode } from "react";
+import { View, Text, StyleProp, ViewStyle } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 interface GroupedListProps {
   header?: string;
   footer?: string;
-  children: React.ReactNode;
-  extraStyles?: ViewStyle;
+  children: ReactNode;
+  containerStyle?: StyleProp<ViewStyle>;
 }
 
 const GroupedList = ({
-  children,
   header,
   footer,
-  extraStyles,
+  children,
+  containerStyle,
 }: GroupedListProps) => {
   const rows = Children.toArray(children);
   const rowsCount = rows.length;
+  const { styles, breakpoint } = useStyles(stylesheet);
 
-  const { styles } = useStyles(stylesheet);
-
-  const getRowStyleFromIndex = (index: number): StyleProp<ViewStyle> => {
-    //Single item style
+  const getRowStyle = (index: number): StyleProp<ViewStyle> => {
     if (rowsCount === 1) return styles.single;
-
-    //Two items style
-    if (rowsCount === 2) {
-      if (index != 0) return styles.last;
-      return styles.first;
-    }
-
-    //Whatever number of items style
     if (index === 0) return styles.first;
     if (index === rowsCount - 1) return styles.last;
     return styles.middle;
   };
 
+  const isWide = breakpoint === "wide";
+
   return (
-    <View style={styles.containerRounded}>
+    <View
+      style={[styles.container, isWide && styles.containerWide, containerStyle]}
+    >
       {header && (
         <View style={styles.header}>
-          <Text style={styles.headerText}>{header?.toUpperCase()}</Text>
+          <Text style={styles.headerText}>{header.toUpperCase()}</Text>
         </View>
       )}
-
-      {rows.map((row, i) => (
-        <View key={`row-${i}`} style={[getRowStyleFromIndex(i), extraStyles]}>
-          {row}
-        </View>
-      ))}
-
+      {rows.map((row, index) =>
+        React.cloneElement(row as React.ReactElement, {
+          style: isWide ? styles.rowWide : getRowStyle(index), // Different styles for wide screens
+        })
+      )}
       {footer && (
         <View style={styles.footer}>
           <Text style={styles.footerText}>{footer}</Text>
@@ -60,53 +52,50 @@ const GroupedList = ({
 };
 
 const stylesheet = createStyleSheet((theme) => ({
-  containerRounded: {
-    userSelect: "none",
+  container: {
     paddingHorizontal: 16,
-    ...Platform.select({
-      web: {
-        maxWidth: 430, // Restricts to max 400 points on web
-        minWidth: 250,
-        alignSelf: "center",
-      },
-    }),
   },
-  first: {
-    backgroundColor: theme.ui.colors.card,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    borderBottomWidth: 0.35,
-    borderColor: theme.ui.colors.border,
-  },
-  middle: {
-    backgroundColor: theme.ui.colors.card,
-    borderBottomWidth: 0.35,
-    borderColor: theme.ui.colors.border,
-  },
-  last: {
-    backgroundColor: theme.ui.colors.card,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-  },
-  single: {
-    backgroundColor: theme.ui.colors.card,
-    borderRadius: 10,
+  containerWide: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 16,
+    justifyContent: "space-between",
   },
   header: {
-    marginLeft: 20,
     marginBottom: 10,
+    marginLeft: 16,
   },
   footer: {
-    marginLeft: 20,
     marginTop: 10,
+    marginLeft: 16,
   },
   headerText: {
-    fontSize: 13,
+    fontSize: 14,
+    fontWeight: "bold",
     color: theme.textPresets.main,
   },
   footerText: {
-    fontSize: 13,
+    fontSize: 12,
     color: theme.textPresets.subtitle,
+  },
+  single: {
+    borderRadius: 10,
+  },
+  first: {
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  middle: {
+    borderRadius: 0,
+  },
+  last: {
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    borderBottomWidth: 0,
+  },
+  rowWide: {
+    width: "48%",
+    borderRadius: 10,
   },
 }));
 

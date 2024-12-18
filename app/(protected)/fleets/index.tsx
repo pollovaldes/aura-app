@@ -119,17 +119,10 @@ export default function Index() {
                   onPress={() => {
                     router.navigate(`/fleets/${item.id}`);
                   }}
-                  trailingType="chevron"
-                  icon={<Boxes size={24} color="white" />}
-                  color={colorPalette.cyan[500]}
+                  icon={Boxes}
+                  backgroundColor={colorPalette.cyan[500]}
                 />
-                <Row
-                  trailingType="chevron"
-                  disabled
-                  title=""
-                  onPress={() => {}}
-                  showChevron={false}
-                >
+                <Row>
                   <Text style={styles.description}>{item.description}</Text>
                 </Row>
               </GroupedList>

@@ -11,7 +11,7 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 export default function TruckPeopleAdminComponent() {
   const { styles } = useStyles(stylesheet);
   const { users, usersAreLoading, fetchUsers } = useUsers();
-  
+
   const { personId } = useLocalSearchParams<{ personId: string }>();
   const user = users?.find((user) => user.id === personId);
 
@@ -49,30 +49,26 @@ export default function TruckPeopleAdminComponent() {
         >
           <Row
             title="Nombre"
-            trailingType="chevron"
             caption={`${user.name}`}
-            showChevron={false}
+            hideChevron
             disabled={true}
           />
           <Row
             title="Apellido Paterno"
-            trailingType="chevron"
             caption={`${user.father_last_name}`}
-            showChevron={false}
+            hideChevron
             disabled={true}
           />
           <Row
             title="Apellido Materno"
-            trailingType="chevron"
             caption={`${user.mother_last_name}`}
-            showChevron={false}
+            hideChevron
             disabled={true}
           />
           <Row
             title="Posición"
-            trailingType="chevron"
             caption={`${user.position}`}
-            showChevron={false}
+            hideChevron
             disabled={true}
           />
         </GroupedList>

@@ -40,8 +40,9 @@ export default function ProfileColumn({
 const stylesheet = createStyleSheet((theme) => ({
   container: {
     flexDirection: "column",
-    gap: 18,
     alignItems: "center",
+    gap: 18,
+    width: "100%",
   },
   descriptioonContainer: {
     flexDirection: "column",

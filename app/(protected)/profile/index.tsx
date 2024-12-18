@@ -65,12 +65,7 @@ export default function Profile() {
         <View style={styles.container}>
           {profile.is_fully_registered && (
             <GroupedList>
-              <Row
-                trailingType="chevron"
-                title=""
-                showChevron={false}
-                pressedStyle={false}
-              >
+              <Row>
                 <ProfileColumn profile={profile} showPosition />
               </Row>
             </GroupedList>
@@ -81,7 +76,6 @@ export default function Profile() {
           >
             <Row
               title="Datos personales"
-              trailingType="chevron"
               caption={
                 profile.is_fully_registered ? "Completo" : "Sin completar ⚠️"
               }
@@ -91,7 +85,6 @@ export default function Profile() {
             />
             <Row
               title="Rol"
-              trailingType="chevron"
               caption={(() => {
                 switch (profile.role) {
                   case "ADMIN":
@@ -116,27 +109,24 @@ export default function Profile() {
           <GroupedList>
             <Row
               title="Cuenta"
-              icon={<User size={24} color="white" />}
-              color={colorPalette.green[500]}
-              trailingType="chevron"
+              icon={User}
+              backgroundColor={colorPalette.green[500]}
               onPress={() =>
                 router.push("./account", { relativeToDirectory: true })
               }
             />
             <Row
               title="Tema de la aplicación"
-              icon={<Moon size={24} color="white" />}
-              color={colorPalette.neutral[500]}
-              trailingType="chevron"
+              icon={Moon}
+              backgroundColor={colorPalette.neutral[500]}
               onPress={() =>
                 router.push("./theme", { relativeToDirectory: true })
               }
             />
             <Row
               title="Notificaciones"
-              icon={<Bell size={24} color="white" />}
-              color={colorPalette.red[500]}
-              trailingType="chevron"
+              icon={Bell}
+              backgroundColor={colorPalette.red[500]}
               onPress={() =>
                 router.push("./notifications", { relativeToDirectory: true })
               }
@@ -146,18 +136,16 @@ export default function Profile() {
           <GroupedList header="Otros">
             <Row
               title="Sobre Aura"
-              icon={<Info size={24} color="white" />}
-              color={colorPalette.cyan[500]}
-              trailingType="chevron"
+              icon={Info}
+              backgroundColor={colorPalette.cyan[500]}
               onPress={() =>
                 router.push("./about", { relativeToDirectory: true })
               }
             />
             <Row
               title="Reportar un problema"
-              icon={<Bug size={24} color="white" />}
-              color={colorPalette.orange[500]}
-              trailingType="chevron"
+              icon={Bug}
+              backgroundColor={colorPalette.orange[500]}
               onPress={() =>
                 router.push("./report", { relativeToDirectory: true })
               }
@@ -166,9 +154,8 @@ export default function Profile() {
           <GroupedList>
             <Row
               title="Cerrar sesión"
-              icon={<LogOut size={24} color="white" />}
-              color={colorPalette.red[500]}
-              trailingType="chevron"
+              icon={LogOut}
+              backgroundColor={colorPalette.red[500]}
               onPress={signOut}
             />
           </GroupedList>

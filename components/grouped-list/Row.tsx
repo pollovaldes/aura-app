@@ -1,132 +1,122 @@
+import React, { ReactNode } from "react";
 import {
   View,
   Text,
   Pressable,
   ActivityIndicator,
-  Platform,
+  StyleProp,
+  ViewStyle,
 } from "react-native";
-import React, { ReactNode, useState } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
 import RowIcon from "./RowIcon";
+import { MaterialIcons } from "@expo/vector-icons";
+import { LucideProps } from "lucide-react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
-// Base properties common to all types
-interface BaseProps {
-  title: string;
-  icon?: ReactNode;
-  color?: string;
+interface RowProps {
+  title?: string;
+  caption?: string | ReactNode;
+  icon?: React.ComponentType<Partial<LucideProps>>;
+  backgroundColor?: string;
   onPress?: () => void;
-  disabled?: boolean;
   isLoading?: boolean;
-  showChevron?: boolean;
+  disabled?: boolean;
+  trailing?: ReactNode;
   children?: ReactNode;
-  pressedStyle?: boolean;
-}
-
-// Properties when trailingType is "default"
-interface DefaultProps extends BaseProps {
-  trailingType: "chevron";
-  caption?: string | React.JSX.Element | (() => React.JSX.Element);
+  style?: StyleProp<ViewStyle>;
+  hideChevron?: boolean;
+  hasTouchableFeedback?: boolean;
 }
 
 const Row = ({
   title,
   caption,
   icon,
-  color = "white",
+  backgroundColor = "#ffffff",
   onPress,
+  isLoading = false,
   disabled = false,
-  isLoading,
-  showChevron = true,
+  trailing,
   children,
-  pressedStyle = true,
-}: DefaultProps) => {
-  const { styles } = useStyles(stylesheet);
-  const [isHovered, setIsHovered] = useState(false);
+  style,
+  hideChevron = false,
+  hasTouchableFeedback = true,
+}: RowProps) => {
+  const { styles, breakpoint } = useStyles(stylesheet);
+
+  const isWide = breakpoint === "wide";
+
+  if (children) {
+    return (
+      <View style={[styles.container, isWide && styles.containerWide, style]}>
+        {children}
+      </View>
+    );
+  }
 
   return (
     <Pressable
-      onHoverIn={() => !isLoading && !disabled && setIsHovered(true)}
-      onHoverOut={() => setIsHovered(false)}
-      disabled={isLoading || disabled}
       onPress={onPress}
+      disabled={isLoading || disabled || !onPress}
       style={({ pressed }) => [
-        { opacity: disabled ? 0.75 : 1 },
-        pressedStyle && pressed && { opacity: 0.45 },
-        isHovered && styles.containerHovered,
         styles.container,
+        isWide && styles.containerWide,
+        style,
+        { opacity: disabled ? 0.6 : 1 },
+        hasTouchableFeedback && pressed && { opacity: 0.7 },
       ]}
     >
-      {children && <View style={{ width: "100%" }}>{children}</View>}
-
-      <View style={[styles.leadingContainer, { flex: caption ? 1 : 10 }]}>
-        <View>
-          {icon && color && <RowIcon icon={icon} backgroundColor={color} />}
-        </View>
+      {icon && <RowIcon icon={icon} backgroundColor={backgroundColor} />}
+      <View style={styles.textContainer}>
         <Text style={styles.title}>{title}</Text>
-      </View>
-
-      <View style={styles.trailingContainer}>
-        {isLoading ? (
-          <ActivityIndicator />
-        ) : typeof caption === "function" ? (
-          caption()
-        ) : (
-          <>
-            <Text style={styles.caption}>{caption}</Text>
-            {showChevron && (
-              <MaterialIcons name="chevron-right" size={25} color="#c4c4c7" />
-            )}
-          </>
+        {caption && (
+          <Text style={styles.caption}>
+            {typeof caption === "string" ? caption : caption}
+          </Text>
         )}
       </View>
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : trailing ? (
+        <View>{trailing}</View>
+      ) : (
+        !hideChevron && (
+          <MaterialIcons name="chevron-right" size={24} color="#c4c4c7" />
+        )
+      )}
     </Pressable>
   );
 };
 
-export default Row;
-
 const stylesheet = createStyleSheet((theme) => ({
   container: {
-    padding: 12,
-    gap: 12,
-    flexDirection: "row",
-  },
-  containerHovered: {
-    backgroundColor: theme.components.navBarListItem.hoveredBG,
-  },
-  trailingContainer: {
-    flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-end",
-    gap: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: theme.ui.colors.card,
+    borderBottomWidth: 0.5,
+    borderColor: theme.ui.colors.border,
   },
-  leadingContainer: {
+  containerWide: {
+    flexDirection: "column",
+    padding: 20,
+    borderWidth: 1,
+    borderColor: theme.ui.colors.border,
+    borderRadius: 10,
+    alignItems: "flex-start",
+  },
+  textContainer: {
     flex: 1,
-    alignItems: "center",
-    flexDirection: "row",
+    justifyContent: "center",
   },
   title: {
-    flexShrink: 1,
-    textAlign: "left",
-    fontSize: 17.5,
+    fontSize: 16,
     color: theme.textPresets.main,
-    ...Platform.select({
-      web: {
-        fontSize: 15.5,
-      },
-    }),
   },
   caption: {
-    flexShrink: 1,
-    textAlign: "right",
-    fontSize: 16.5,
+    fontSize: 14,
     color: theme.textPresets.subtitle,
-    ...Platform.select({
-      web: {
-        fontSize: 15.5,
-      },
-    }),
   },
 }));
+
+export default Row;

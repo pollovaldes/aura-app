@@ -26,111 +26,63 @@ export default function Index() {
               title="Recibir notificaciones"
               icon={<BellDot size={24} color="white" />}
               color={colorPalette.red[500]}
-              trailingType="chevron"
-              showChevron={false}
-              caption={<Switch />}
-              pressedStyle={false}
+              trailing={<Switch />}
             />
           </GroupedList>
 
           <GroupedList header="Permisos">
             <Row
               title="Recibir alertas sobre documentos agregados o cambiados"
-              trailingType="chevron"
-              showChevron={false}
-              caption={<Switch />}
-              pressedStyle={false}
+              trailing={<Switch />}
             />
             <Row
               title="Avisos de cambios en la ficha técnica"
-              trailingType="chevron"
-              showChevron={false}
-              caption={<Switch />}
-              pressedStyle={false}
+              trailing={<Switch />}
             />
             <Row
               title="Notificaciones sobre cargas de gasolina recientes"
-              trailingType="chevron"
-              showChevron={false}
-              caption={<Switch />}
-              pressedStyle={false}
+              trailing={<Switch />}
             />
             <Row
               title="Actualizaciones sobre historial de rutas"
-              trailingType="chevron"
-              showChevron={false}
-              caption={<Switch />}
-              pressedStyle={false}
+              trailing={<Switch />}
             />
             <Row
               title="Alertas sobre tareas administrativas pendientes"
-              trailingType="chevron"
-              showChevron={false}
-              caption={<Switch />}
-              pressedStyle={false}
+              trailing={<Switch />}
             />
             <Row
               title="Proximidad a vencimientos de seguros o mantenimientos"
-              trailingType="chevron"
-              showChevron={false}
-              caption={<Switch />}
-              pressedStyle={false}
+              trailing={<Switch />}
             />
             <Row
               title="Alertas de seguridad durante las rutas"
-              trailingType="chevron"
-              showChevron={false}
-              caption={<Switch />}
-              pressedStyle={false}
+              trailing={<Switch />}
             />
             <Row
               title="Avisos de asignación de vehículos a conductores"
-              trailingType="chevron"
-              showChevron={false}
-              caption={<Switch />}
-              pressedStyle={false}
+              trailing={<Switch />}
             />
-            <Row
-              title="Permisos generales del sistema"
-              trailingType="chevron"
-              showChevron={false}
-              caption={<Switch />}
-              pressedStyle={false}
-            />
+            <Row title="Permisos generales del sistema" trailing={<Switch />} />
             <Row
               title="Configuraciones sobre notificaciones de flota"
-              trailingType="chevron"
-              showChevron={false}
-              caption={<Switch />}
-              pressedStyle={false}
+              trailing={<Switch />}
             />
             <Row
               title="Recibir notificaciones de solicitudes de conductores"
-              trailingType="chevron"
-              showChevron={false}
-              caption={<Switch />}
-              pressedStyle={false}
+              trailing={<Switch />}
             />
             <Row
               title="Alertas sobre autorizaciones pendientes"
-              trailingType="chevron"
-              showChevron={false}
-              caption={<Switch />}
-              pressedStyle={false}
+              trailing={<Switch />}
             />
             <Row
               title="Proximidad de servicios programados"
-              trailingType="chevron"
-              showChevron={false}
-              caption={<Switch />}
-              pressedStyle={false}
+              trailing={<Switch />}
             />
             <Row
               title="Notificaciones generales relacionadas con el sistema"
-              trailingType="chevron"
-              showChevron={false}
-              caption={<Switch />}
-              pressedStyle={false}
+              trailing={<Switch />}
             />
           </GroupedList>
           <View />

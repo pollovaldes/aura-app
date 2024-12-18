@@ -208,14 +208,13 @@ export default function Index() {
           <View style={styles.container}>
             <GroupedList
               header="Documentos"
-              footer="Solo los administradores tienen permiso para modificar los documentos."
+              footer="Solo los administradores tienen permiso para modificar o agregar documentos en la guantera digital"
             >
               {associatedDocuments.map((doc) => (
                 <Row
                   key={doc.document_id}
                   title={doc.title}
                   caption={doc.description}
-                  trailingType="chevron"
                   onPress={() =>
                     router.navigate(
                       `/vehicles/[vehicleId]/documentation/${doc.document_id}`

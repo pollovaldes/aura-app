@@ -1,5 +1,4 @@
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
@@ -260,32 +259,23 @@ export default function maintenanceId() {
             <GroupedList>
               <Row
                 title="Estatus de la solicitud"
-                trailingType="chevron"
-                caption={() => {
-                  return (
-                    <StatusChip
-                      status={record.status}
-                      statesConfig={statesConfig}
-                    />
-                  );
-                }}
-                icon={<CircleHelp size={24} color="white" />}
-                color={colorPalette.orange[500]}
+                trailing={
+                  <StatusChip
+                    status={record.status}
+                    statesConfig={statesConfig}
+                  />
+                }
+                icon={CircleHelp}
+                backgroundColor={colorPalette.orange[500]}
               />
               <Row
                 title="Descripción general"
-                trailingType="chevron"
-                showChevron={false}
                 caption={record.title}
-                icon={<Info size={24} color="white" />}
-                color={colorPalette.cyan[500]}
+                icon={Info}
+                backgroundColor={colorPalette.cyan[500]}
+                hideChevron
               />
-              <Row
-                trailingType="chevron"
-                title=""
-                onPress={() => {}}
-                showChevron={false}
-              >
+              <Row>
                 <Text style={styles.haderDescription}>
                   {record.description === ""
                     ? "No se proveyó ninguna descripción para esta solicitud de mantenimiento."
@@ -296,13 +286,11 @@ export default function maintenanceId() {
             <GroupedList header="Información sobre la petición">
               <Row
                 title="Inicio de la solicitud"
-                trailingType="chevron"
-                showChevron={false}
                 caption={formatDate(record.issued_datetime, "Iniciada el ")}
+                hideChevron
               />
               <Row
                 title="vehículo al que se le solicitó"
-                trailingType="chevron"
                 caption={`${vehicle.brand} ${vehicle.sub_brand} (${vehicle.year})\n`.trim()}
                 onPress={() =>
                   router.push(`/vehicles/${vehicle.id}/technical_sheet/`)
@@ -310,7 +298,6 @@ export default function maintenanceId() {
               />
               <Row
                 title="Quien solicitó"
-                trailingType="chevron"
                 onPress={() => {
                   router.push(`/users/${record.issued_by.id}/`);
                 }}
@@ -322,8 +309,7 @@ export default function maintenanceId() {
               <GroupedList header="Información sobre la resolución">
                 <Row
                   title="Fecha de resolución"
-                  trailingType="chevron"
-                  showChevron={false}
+                  hideChevron
                   caption={
                     record.resolved_datetime
                       ? formatDate(record.resolved_datetime, "Finalizada el ")
@@ -332,12 +318,11 @@ export default function maintenanceId() {
                 />
                 <Row
                   title="Quien resolvió"
-                  trailingType="chevron"
                   onPress={() => {
                     record.resolved_by &&
                       router.push(`/users/${record.resolved_by.id}/`);
                   }}
-                  showChevron={record.resolved_by ? true : false}
+                  hideChevron={record.resolved_by ? false : true}
                   caption={
                     record.resolved_by
                       ? `${record.resolved_by.name} ${record.resolved_by.father_last_name} ${record.resolved_by.mother_last_name}`.trim()
@@ -350,21 +335,18 @@ export default function maintenanceId() {
             <GroupedList header="Acciones para esta solicitud">
               <Row
                 title="Cambiar el estatus de la solicitud"
-                trailingType="chevron"
-                icon={<RefreshCcw size={24} color="white" />}
-                color={colorPalette.green[500]}
+                icon={RefreshCcw}
+                backgroundColor={colorPalette.green[500]}
               />
               <Row
                 title="Agregar comentario"
-                trailingType="chevron"
-                icon={<MessageCirclePlus size={24} color="white" />}
-                color={colorPalette.neutral[500]}
+                icon={MessageCirclePlus}
+                backgroundColor={colorPalette.neutral[500]}
               />
               <Row
                 title="Eliminar solicitud"
-                trailingType="chevron"
-                icon={<Trash size={24} color="white" />}
-                color={colorPalette.red[500]}
+                icon={Trash}
+                backgroundColor={colorPalette.red[500]}
               />
             </GroupedList>
           </View>
@@ -386,33 +368,25 @@ export default function maintenanceId() {
                     key={document.document_id}
                     header={`Creado ${formatDate(document.created_at, "el")}`}
                   >
-                    <React.Fragment>
-                      <Row
-                        title={
-                          document.title ? document.title : document.document_id
-                        }
-                        trailingType="chevron"
-                        icon={<File size={24} color="white" />}
-                        color={colorPalette.green[500]}
-                        onPress={() =>
-                          router.navigate(
-                            `/vehicles/${document.vehicle_id}/maintenance/${document.maintenance_id}/${document.document_id}/`
-                          )
-                        }
-                      />
-                      <Row
-                        trailingType="chevron"
-                        showChevron={false}
-                        title=""
-                        disabled
-                      >
-                        <Text style={styles.haderDescription}>
-                          {document.description
-                            ? document.description
-                            : "No se proveyó ninguna descripción para este documento."}
-                        </Text>
-                      </Row>
-                    </React.Fragment>
+                    <Row
+                      title={
+                        document.title ? document.title : document.document_id
+                      }
+                      icon={File}
+                      backgroundColor={colorPalette.green[500]}
+                      onPress={() =>
+                        router.navigate(
+                          `/vehicles/${document.vehicle_id}/maintenance/${document.maintenance_id}/${document.document_id}/`
+                        )
+                      }
+                    />
+                    <Row>
+                      <Text style={styles.haderDescription}>
+                        {document.description
+                          ? document.description
+                          : "No se proveyó ninguna descripción para este documento."}
+                      </Text>
+                    </Row>
                   </GroupedList>
                 ))}
               </View>
@@ -425,10 +399,9 @@ export default function maintenanceId() {
             <GroupedList>
               <Row
                 title="Actualizaciones"
-                trailingType="chevron"
                 caption="No se registraron actualizaciones para esta solicitud"
-                icon={<Info size={24} color="white" />}
-                color={colorPalette.cyan[500]}
+                icon={Info}
+                backgroundColor={colorPalette.cyan[500]}
               />
             </GroupedList>
           </View>

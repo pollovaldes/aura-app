@@ -9,9 +9,10 @@ import {
   View,
   Image,
   ScrollView,
-  RefreshControl, Text,
+  RefreshControl,
+  Text,
   Platform,
-  Alert
+  Alert,
 } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
@@ -22,8 +23,9 @@ import {
   Clipboard,
   Fuel,
   Images,
-  Trash, Waypoints,
-  Wrench
+  Trash,
+  Waypoints,
+  Wrench,
 } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
@@ -232,24 +234,21 @@ export default function VehicleDetail() {
             <GroupedList header="Consulta general">
               <Row
                 title="Galería"
-                trailingType="chevron"
-                icon={<Images size={styles.iconSize.gap} color="white" />}
-                color={colorPalette.cyan[500]}
+                icon={Images}
+                backgroundColor={colorPalette.cyan[500]}
               />
               <Row
                 title="Ficha técnica"
-                trailingType="chevron"
                 onPress={() =>
                   router.navigate(`/vehicles/${vehicleId}/technical_sheet`)
                 }
-                icon={<Clipboard size={styles.iconSize.gap} color="white" />}
-                color={colorPalette.green[500]}
+                icon={Clipboard}
+                backgroundColor={colorPalette.green[500]}
               />
               <Row
                 title="Guantera digital"
-                trailingType="chevron"
-                icon={<BookOpen size={styles.iconSize.gap} color="white" />}
-                color={colorPalette.orange[500]}
+                icon={BookOpen}
+                backgroundColor={colorPalette.orange[500]}
                 onPress={() =>
                   router.navigate(`/vehicles/${vehicleId}/documentation`)
                 }
@@ -258,34 +257,30 @@ export default function VehicleDetail() {
             <GroupedList header="Acciones">
               <Row
                 title="Mantenimiento"
-                trailingType="chevron"
-                icon={<Wrench size={styles.iconSize.gap} color="white" />}
-                color={colorPalette.cyan[500]}
+                icon={Wrench}
+                backgroundColor={colorPalette.cyan[500]}
                 onPress={() =>
                   router.navigate(`/vehicles/${vehicleId}/maintenance`)
                 }
               />
               <Row
                 title="Cargas de gasolina"
-                trailingType="chevron"
-                icon={<Fuel size={styles.iconSize.gap} color="white" />}
-                color={colorPalette.red[500]}
+                icon={Fuel}
+                backgroundColor={colorPalette.red[500]}
                 onPress={() =>
                   router.navigate(`/vehicles/${vehicleId}/gasoline_history`)
                 }
               />
               <Row
                 title="Rutas"
-                trailingType="chevron"
-                icon={<Waypoints size={styles.iconSize.gap} color="white" />}
-                color={colorPalette.sky[500]}
+                icon={Waypoints}
+                backgroundColor={colorPalette.sky[500]}
               />
               {canEditVehicle && (
                 <Row
                   title="Administrar flotillas"
-                  trailingType="chevron"
-                  icon={<Boxes size={styles.iconSize.gap} color="white" />}
-                  color={colorPalette.lime[500]}
+                  icon={Boxes}
+                  backgroundColor={colorPalette.lime[500]}
                   onPress={() =>
                     router.navigate(`/vehicles/${vehicleId}/manage_fleets`)
                   }
@@ -297,9 +292,8 @@ export default function VehicleDetail() {
               <GroupedList>
                 <Row
                   title="Borrar vehículo"
-                  trailingType="chevron"
-                  icon={<Trash size={styles.iconSize.gap} color="white" />}
-                  color={colorPalette.red[500]}
+                  icon={Trash}
+                  backgroundColor={colorPalette.red[500]}
                   onPress={() => deleteVehicle()}
                 />
               </GroupedList>

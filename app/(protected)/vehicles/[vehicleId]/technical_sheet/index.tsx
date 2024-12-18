@@ -89,6 +89,10 @@ export default function Index() {
     );
   }
 
+  const isChevronVisible = !(
+    profile.role === "ADMIN" || profile.role === "OWNER"
+  );
+
   return (
     vehicle && (
       <ScrollView
@@ -183,44 +187,38 @@ export default function Index() {
             <Row
               title="Numero Económico"
               onPress={() => setNumEco(true)}
-              trailingType="chevron"
               caption={`${vehicle.economic_number}`}
-              showChevron={profile.role === "ADMIN" || profile.role === "OWNER"}
+              hideChevron={isChevronVisible}
             />
             <Row
               title="Marca"
               onPress={() => setMarca(true)}
-              trailingType="chevron"
               caption={`${vehicle.brand}`}
-              showChevron={profile.role === "ADMIN" || profile.role === "OWNER"}
+              hideChevron={isChevronVisible}
             />
             <Row
               title="Submarca"
               onPress={() => setSubMarca(true)}
-              trailingType="chevron"
               caption={`${vehicle.sub_brand}`}
-              showChevron={profile.role === "ADMIN" || profile.role === "OWNER"}
+              hideChevron={isChevronVisible}
             />
             <Row
               title="Año"
               onPress={() => setModelo(true)}
-              trailingType="chevron"
               caption={`${vehicle.year}`}
-              showChevron={profile.role === "ADMIN" || profile.role === "OWNER"}
+              hideChevron={isChevronVisible}
             />
             <Row
               title="Número de serie"
               onPress={() => setNoSerie(true)}
-              trailingType="chevron"
               caption={`${vehicle.serial_number}`}
-              showChevron={profile.role === "ADMIN" || profile.role === "OWNER"}
+              hideChevron={isChevronVisible}
             />
             <Row
               title="Número de placa"
               onPress={() => setPlaca(true)}
-              trailingType="chevron"
               caption={`${vehicle.plate}`}
-              showChevron={profile.role === "ADMIN" || profile.role === "OWNER"}
+              hideChevron={isChevronVisible}
             />
           </GroupedList>
         </View>

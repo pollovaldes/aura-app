@@ -94,30 +94,27 @@ export default function Index() {
       >
         <View style={styles.container}>
           <GroupedList>
-            <Row trailingType="chevron" title="" showChevron={false}>
+            <Row>
               <ProfileColumn profile={user} showPosition />
             </Row>
           </GroupedList>
           <GroupedList>
             <Row
               title="Información personal"
-              trailingType="chevron"
-              icon={<Info size={24} color="white" />}
-              color={colorPalette.cyan[500]}
+              icon={Info}
+              backgroundColor={colorPalette.cyan[500]}
             />
           </GroupedList>
           <GroupedList header="Acciones">
             <Row
               title="Editar rol"
-              trailingType="chevron"
-              icon={<SquarePen size={24} color="white" />}
-              color={colorPalette.red[500]}
+              icon={SquarePen}
+              backgroundColor={colorPalette.red[500]}
             />
             <Row
               title="Asignación de vehículos"
-              trailingType="chevron"
-              icon={<Truck size={24} color="white" />}
-              color={colorPalette.green[500]}
+              icon={Truck}
+              backgroundColor={colorPalette.green[500]}
             />
           </GroupedList>
         </View>

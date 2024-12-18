@@ -143,17 +143,10 @@ export default function Index() {
             <GroupedList>
               <Row
                 title={item.name}
-                trailingType="chevron"
-                icon={<Boxes size={24} color="white" />}
-                color={colorPalette.cyan[500]}
+                icon={Boxes}
+                backgroundColor={colorPalette.cyan[500]}
               />
-              <Row
-                trailingType="chevron"
-                disabled
-                title=""
-                onPress={() => {}}
-                showChevron={false}
-              >
+              <Row disabled title="" onPress={() => {}} hideChevron>
                 <Text style={styles.description}>{item.father_last_name}</Text>
               </Row>
             </GroupedList>

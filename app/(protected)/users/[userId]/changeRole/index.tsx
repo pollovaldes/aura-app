@@ -68,7 +68,6 @@ export default function TruckPeopleAdminContainer() {
         <GroupedList header="Rol de usuario">
           <Row
             title="Rol actual"
-            trailingType="chevron"
             caption={
               profile.role === "OWNER"
                 ? "Dueño"
@@ -78,15 +77,10 @@ export default function TruckPeopleAdminContainer() {
                     ? "Operador"
                     : "No tiene rol"
             }
-            showChevron={false}
+            hideChevron
             disabled={true}
           />
-          <Row
-            title="Cambiar rol"
-            trailingType="chevron"
-            showChevron={true}
-            onPress={openModal}
-          />
+          <Row title="Cambiar rol" onPress={openModal} />
         </GroupedList>
         <Modal isOpen={activeModal === "assignRole"}>
           <View style={styles.modalContainer}>

@@ -122,38 +122,28 @@ export default function Index() {
               title="Rol actual"
               icon={<UserRound size={24} color="white" />}
               color={colorPalette.cyan[500]}
-              trailingType="chevron"
               caption={getRoleLabel(profile.role)}
-              showChevron={false}
-              pressedStyle={false}
+              hasTouchableFeedback={false}
+              hideChevron={true}
             />
             <Row
               title="Selecciona el nuevo rol"
               icon={<UserRoundPen size={24} color="white" />}
               color={colorPalette.green[500]}
-              trailingType="chevron"
-              showChevron={false}
-              pressedStyle={false}
+              hasTouchableFeedback={false}
+              hideChevron={true}
             />
-            <Row
-              trailingType="chevron"
-              disabled
-              title=""
-              onPress={() => {}}
-              showChevron={false}
-            >
+            <Row>
               <View style={styles.roleChangeContainer}>
                 <ChipSelecto
                   selected={selectedOption === "ADMIN"}
                   onPress={() => handleRadioChange("ADMIN")}
                   caption="Administrador"
-                  disabled={true}
                 />
                 <ChipSelecto
                   selected={selectedOption === "DRIVER"}
                   onPress={() => handleRadioChange("DRIVER")}
                   caption="Conductor"
-                  disabled={true}
                 />
               </View>
             </Row>
@@ -175,6 +165,7 @@ const stylesheet = createStyleSheet((theme) => ({
     marginTop: theme.marginsComponents.section,
   },
   roleChangeContainer: {
+    width: "100%",
     flexDirection: "row",
     justifyContent: "space-around",
   },
