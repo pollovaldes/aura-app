@@ -276,28 +276,26 @@ export default function VehicleDetail() {
                 icon={Waypoints}
                 backgroundColor={colorPalette.sky[500]}
               />
-              {canEditVehicle && (
-                <Row
-                  title="Administrar flotillas"
-                  icon={Boxes}
-                  backgroundColor={colorPalette.lime[500]}
-                  onPress={() =>
-                    router.navigate(`/vehicles/${vehicleId}/manage_fleets`)
-                  }
-                />
-              )}
-            </GroupedList>
 
-            {canEditVehicle && (
-              <GroupedList>
-                <Row
-                  title="Borrar vehículo"
-                  icon={Trash}
-                  backgroundColor={colorPalette.red[500]}
-                  onPress={() => deleteVehicle()}
-                />
-              </GroupedList>
-            )}
+              <Row
+                title="Administrar flotillas"
+                icon={Boxes}
+                backgroundColor={colorPalette.lime[500]}
+                onPress={() =>
+                  router.navigate(`/vehicles/${vehicleId}/manage_fleets`)
+                }
+                show={canEditVehicle}
+              />
+            </GroupedList>
+            <GroupedList header="Zona de peligro">
+              <Row
+                title="Borrar vehículo"
+                icon={Trash}
+                backgroundColor={colorPalette.red[500]}
+                onPress={() => deleteVehicle()}
+                show={canEditVehicle}
+              />
+            </GroupedList>
           </View>
           <View />
         </View>

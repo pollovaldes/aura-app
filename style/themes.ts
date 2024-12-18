@@ -271,7 +271,7 @@ export const darkTheme = {
     },
     plainList: {
       hover: colorPalette.neutral[700],
-      pressed: colorPalette.neutral[800],
+      pressed: colorPalette.neutral[900],
     },
   },
   textInput: {

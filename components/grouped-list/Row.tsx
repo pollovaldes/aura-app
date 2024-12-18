@@ -25,6 +25,7 @@ interface RowProps {
   style?: StyleProp<ViewStyle>;
   hideChevron?: boolean;
   hasTouchableFeedback?: boolean;
+  show?: boolean;
 }
 
 const Row = ({
@@ -40,10 +41,13 @@ const Row = ({
   style,
   hideChevron = false,
   hasTouchableFeedback = true,
+  show = true,
 }: RowProps) => {
   const { styles, breakpoint } = useStyles(stylesheet);
   const isWide = breakpoint === "wide";
   const [isHovered, setIsHovered] = useState(false);
+
+  if (!show) return;
 
   if (children) {
     return (

@@ -15,15 +15,25 @@ const GroupedList = ({
   children,
   containerStyle,
 }: GroupedListProps) => {
-  const rows = Children.toArray(children);
+  // Filter rows to include only visible ones
+  const rows = Children.toArray(children).filter(
+    (child) =>
+      child !== null &&
+      React.isValidElement(child) &&
+      (child.props.show === undefined || child.props.show === true) // Include rows without `show` or with `show={true}`
+  );
   const rowsCount = rows.length;
+
+  // If no rows are visible, do not render the GroupedList
+  if (rowsCount === 0) return null;
+
   const { styles, breakpoint } = useStyles(stylesheet);
 
   const getRowStyle = (index: number): StyleProp<ViewStyle> => {
-    if (rowsCount === 1) return styles.single;
-    if (index === 0) return styles.first;
-    if (index === rowsCount - 1) return styles.last;
-    return styles.middle;
+    if (rowsCount === 1) return styles.single; // Single item
+    if (index === 0) return styles.first; // First item
+    if (index === rowsCount - 1) return styles.last; // Last item
+    return styles.middle; // Middle item
   };
 
   const isWide = breakpoint === "wide";
@@ -39,7 +49,7 @@ const GroupedList = ({
       )}
       {rows.map((row, index) =>
         React.cloneElement(row as React.ReactElement, {
-          style: isWide ? styles.rowWide : getRowStyle(index), // Different styles for wide screens
+          style: isWide ? styles.rowWide : getRowStyle(index), // Apply styles
         })
       )}
       {footer && (
