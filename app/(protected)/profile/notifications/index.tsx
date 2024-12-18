@@ -24,8 +24,8 @@ export default function Index() {
           <GroupedList>
             <Row
               title="Recibir notificaciones"
-              icon={<BellDot size={24} color="white" />}
-              color={colorPalette.red[500]}
+              icon={BellDot}
+              backgroundColor={colorPalette.red[500]}
               trailing={<Switch />}
             />
           </GroupedList>

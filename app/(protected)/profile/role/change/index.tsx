@@ -120,16 +120,16 @@ export default function Index() {
           <GroupedList>
             <Row
               title="Rol actual"
-              icon={<UserRound size={24} color="white" />}
-              color={colorPalette.cyan[500]}
+              icon={UserRound}
+              backgroundColor={colorPalette.cyan[500]}
               caption={getRoleLabel(profile.role)}
               hasTouchableFeedback={false}
               hideChevron={true}
             />
             <Row
               title="Selecciona el nuevo rol"
-              icon={<UserRoundPen size={24} color="white" />}
-              color={colorPalette.green[500]}
+              icon={UserRoundPen}
+              backgroundColor={colorPalette.green[500]}
               hasTouchableFeedback={false}
               hideChevron={true}
             />

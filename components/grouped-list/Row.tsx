@@ -110,7 +110,7 @@ const stylesheet = createStyleSheet((theme) => ({
     justifyContent: "center",
   },
   title: {
-    fontSize: 16,
+    fontSize: 18,
     color: theme.textPresets.main,
   },
   caption: {
