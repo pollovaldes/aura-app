@@ -233,7 +233,6 @@ export default function Index() {
           <View style={styles.dateContainer}>
             <Text style={styles.text}>Fecha de nacimiento</Text>
             <Text style={styles.subtitle}>{ageMessage}</Text>
-            <Text style={styles.subtitle}>{birthday.getMonth()}</Text>
             {Platform.OS === "web" ? (
               <View style={{ width: 150 }}>
                 <DateTimePickerWeb
