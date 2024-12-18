@@ -20,6 +20,7 @@ import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import {
   BookOpen,
+  Boxes,
   Clipboard,
   Fuel,
   Images,
@@ -277,14 +278,12 @@ export default function VehicleDetail() {
             >
               {canEditVehicle && (
                 <Row
-                  title="Administrar personas"
+                  title="Administrar flotillas"
                   trailingType="chevron"
-                  icon={
-                    <UsersRoundIcon size={styles.iconSize.gap} color="white" />
-                  }
+                  icon={<Boxes size={styles.iconSize.gap} color="white" />}
                   color={colorPalette.lime[500]}
                   onPress={() =>
-                    router.navigate(`/vehicles/${vehicleId}/people`)
+                    router.navigate(`/vehicles/${vehicleId}/manage_fleets`)
                   }
                 />
               )}

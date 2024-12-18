@@ -5,6 +5,7 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 interface RoleChangeSelectorProps {
   selected: boolean;
   caption: string;
+  disabled?: boolean;
   onPress: () => void;
 }
 
@@ -12,6 +13,7 @@ export function ChipSelecto({
   selected,
   onPress,
   caption,
+  disabled,
 }: RoleChangeSelectorProps) {
   const { styles } = useStyles(stylesheet);
 
@@ -25,6 +27,7 @@ export function ChipSelecto({
             : styles.unselected.backgroundColor,
         },
       ]}
+      disabled={disabled}
       onPress={onPress}
     >
       <Text
@@ -56,6 +59,10 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   selected: {
     backgroundColor: theme.ui.colors.primary,
+    color: "#fff",
+  },
+  selectedDisabled: {
+    backgroundColor: theme.ui.colors.card,
     color: "#fff",
   },
   unselected: {

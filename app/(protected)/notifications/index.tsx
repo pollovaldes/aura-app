@@ -79,23 +79,11 @@ export default function Index() {
       <Stack.Screen
         options={{
           title: "Notificaciones",
-          headerLargeTitle: true,
+          headerLargeTitle: false,
           headerRight: undefined,
         }}
       />
-      {/* Filter selector before scrollview */}
-      <View
-        style={[
-          styles.filerSelectorContainer,
-          { paddingTop: Platform.OS === "ios" ? headerHeight + 12 : 0 },
-        ]}
-      >
-        <FilterSelector
-          options={FILTER_OPTIONS}
-          selected={selectedFilter}
-          onChange={setSelectedFilter}
-        />
-      </View>
+
       <FlatList
         refreshControl={
           <RefreshControl
@@ -114,6 +102,15 @@ export default function Index() {
         ListEmptyComponent={
           <Text style={styles.emptyText}>No hay resultados disponibles</Text>
         }
+        ListHeaderComponent={() => (
+          <View style={styles.filterContainer}>
+            <FilterSelector
+              options={FILTER_OPTIONS}
+              selected={selectedFilter}
+              onChange={setSelectedFilter}
+            />
+          </View>
+        )}
       />
     </>
   );
@@ -121,10 +118,9 @@ export default function Index() {
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
-    gap: theme.marginsComponents.section,
-    marginTop: theme.marginsComponents.section,
+    //backgroundColor: "green",
   },
-  filerSelectorContainer: {
+  filterContainer: {
     paddingVertical: 12,
   },
   listItem: {

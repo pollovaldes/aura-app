@@ -110,8 +110,12 @@ export default function Index() {
       >
         <View style={styles.container}>
           <View style={styles.dateContainer}>
-            <Text style={styles.text}>{getRoleLabel(profile.role)}</Text>
-            <Text style={styles.subtitle}>{profile.role}</Text>
+            <Text style={styles.text}>Solicitud en progreso</Text>
+            <Text style={styles.subtitle}>
+              Se inició una solicitud para el cambio de rol al puesto de
+              conductor el 17 de diciembre de 2024. A continuación podrás ver la
+              solicitud.
+            </Text>
           </View>
           <GroupedList>
             <Row
@@ -143,11 +147,13 @@ export default function Index() {
                   selected={selectedOption === "ADMIN"}
                   onPress={() => handleRadioChange("ADMIN")}
                   caption="Administrador"
+                  disabled={true}
                 />
                 <ChipSelecto
                   selected={selectedOption === "DRIVER"}
                   onPress={() => handleRadioChange("DRIVER")}
                   caption="Conductor"
+                  disabled={true}
                 />
               </View>
             </Row>
