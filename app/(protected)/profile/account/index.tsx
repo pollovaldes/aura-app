@@ -24,36 +24,32 @@ export default function Index() {
           <GroupedList header="Opciones de la cuenta">
             <Row
               title="Información de la cuenta"
-              icon={<Info size={24} color="white" />}
-              color={colorPalette.cyan[500]}
-              trailingType="chevron"
+              icon={Info}
+              backgroundColor={colorPalette.cyan[500]}
               onPress={() =>
                 router.push("./about", { relativeToDirectory: true })
               }
             />
             <Row
               title="Contraseña"
-              icon={<LockKeyhole size={24} color="white" />}
-              color={colorPalette.orange[500]}
-              trailingType="chevron"
+              icon={LockKeyhole}
+              backgroundColor={colorPalette.orange[500]}
               onPress={() =>
                 router.push("./password", { relativeToDirectory: true })
               }
             />
             <Row
               title="Identidades"
-              icon={<Users size={24} color="white" />}
-              color={colorPalette.emerald[500]}
-              trailingType="chevron"
+              icon={Users}
+              backgroundColor={colorPalette.emerald[500]}
               onPress={() =>
                 router.push("./identities", { relativeToDirectory: true })
               }
             />
             <Row
               title="Eliminar cuenta"
-              icon={<Trash size={24} color="white" />}
-              color={colorPalette.red[500]}
-              trailingType="chevron"
+              icon={Trash}
+              backgroundColor={colorPalette.red[500]}
               onPress={() =>
                 alert("Esta acción no se puede deshacer. ¿Estás seguro?")
               }

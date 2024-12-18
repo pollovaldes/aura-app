@@ -33,12 +33,8 @@ export default function Index() {
           <GroupedList>
             <Row
               title="Licensias de código abierto"
-              icon={<Code size={24} color="white" />}
-              color={colorPalette.green[500]}
-              trailingType="chevron"
-              onPress={() =>
-                router.push("./about", { relativeToDirectory: true })
-              }
+              icon={Code}
+              backgroundColor={colorPalette.green[500]}
             />
           </GroupedList>
           <View />

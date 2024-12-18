@@ -112,9 +112,8 @@ export default function Index() {
           <GroupedList>
             <Row
               title="Cambio de rol"
-              icon={<UserRoundPen size={24} color="white" />}
-              color={colorPalette.cyan[500]}
-              trailingType="chevron"
+              icon={UserRoundPen}
+              backgroundColor={colorPalette.cyan[500]}
               onPress={() => router.push("/profile/role/change")}
             />
           </GroupedList>

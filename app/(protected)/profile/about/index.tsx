@@ -7,11 +7,7 @@ import React from "react";
 import {
   Code,
   GlobeLock,
-  Handshake,
-  Info,
-  LockKeyhole,
-  Trash,
-  Users,
+  Handshake
 } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import { openBrowserAsync } from "expo-web-browser";
@@ -33,18 +29,16 @@ export default function Index() {
           <GroupedList>
             <Row
               title="Licensias de código abierto"
-              icon={<Code size={24} color="white" />}
-              color={colorPalette.green[500]}
-              trailingType="chevron"
+              icon={Code}
+              backgroundColor={colorPalette.green[500]}
               onPress={() =>
                 router.push("./licenses", { relativeToDirectory: true })
               }
             />
             <Row
               title="Términos"
-              icon={<Handshake size={24} color="white" />}
-              color={colorPalette.orange[500]}
-              trailingType="chevron"
+              icon={Handshake}
+              backgroundColor={colorPalette.orange[500]}
               onPress={() =>
                 openBrowserAsync(
                   "https://raw.githubusercontent.com/pollovaldes/aura-app/main/terms.txt"
@@ -53,22 +47,15 @@ export default function Index() {
             />
             <Row
               title="Política de privacidad"
-              icon={<GlobeLock size={24} color="white" />}
-              color={colorPalette.neutral[500]}
-              trailingType="chevron"
+              icon={GlobeLock}
+              backgroundColor={colorPalette.neutral[500]}
               onPress={() =>
                 openBrowserAsync(
                   "https://raw.githubusercontent.com/pollovaldes/aura-app/main/privacy-policy.txt"
                 )
               }
             />
-            <Row
-              title="Versión"
-              caption={"1.0.0"}
-              trailingType="chevron"
-              showChevron={false}
-              pressedStyle={false}
-            />
+            <Row title="Versión" caption={"1.0.0"} hideChevron />
           </GroupedList>
           <View />
         </View>

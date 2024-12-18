@@ -131,32 +131,14 @@ export default function Index() {
       >
         <View style={styles.container}>
           <GroupedList>
-            <Row
-              title="Correo electrónico actual"
-              trailingType="chevron"
-              showChevron={false}
-              pressedStyle={false}
-            />
-            <Row
-              title="Correo electrónico actual"
-              trailingType="chevron"
-              showChevron={false}
-              disabled
-            >
+            <Row title="Correo electrónico actual" hideChevron />
+            <Row title="Correo electrónico actual" hideChevron>
               <Text style={styles.description}>{session.user.email}</Text>
             </Row>
           </GroupedList>
           <GroupedList>
-            <Row
-              title="Correo electrónico nuevo"
-              trailingType="chevron"
-              showChevron={false}
-            />
-            <Row
-              title="Correo electrónico actual"
-              trailingType="chevron"
-              showChevron={false}
-            >
+            <Row title="Correo electrónico nuevo" hideChevron />
+            <Row title="Correo electrónico actual" hideChevron>
               <View style={{ gap: 16 }}>
                 <FormInput description="Nuevo correo" />
                 <FormButton title="Cambiar correo" onPress={() => {}} />
@@ -166,18 +148,16 @@ export default function Index() {
           <GroupedList>
             <Row
               title="Cambiar contraseña"
-              trailingType="chevron"
-              icon={<LockKeyhole size={24} color="white" />}
-              color={colorPalette.cyan[500]}
+              icon={LockKeyhole}
+              backgroundColor={colorPalette.cyan[500]}
               onPress={() =>
                 router.replace("../../password", { relativeToDirectory: true })
               }
             />
             <Row
               title="Desvincular correo electrónico"
-              trailingType="chevron"
-              icon={<Trash size={24} color="white" />}
-              color={colorPalette.red[500]}
+              icon={Trash}
+              backgroundColor={colorPalette.red[500]}
               onPress={confirmUnlinking.showDialog}
             />
           </GroupedList>

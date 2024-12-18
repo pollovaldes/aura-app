@@ -115,19 +115,12 @@ export default function Index() {
           <GroupedList>
             <Row
               title="¿Qué es una identidad?"
-              trailingType="chevron"
-              icon={<Info size={24} color="white" />}
-              color={colorPalette.cyan[500]}
-              showChevron={false}
+              icon={Info}
+              backgroundColor={colorPalette.cyan[500]}
+              hideChevron
             />
 
-            <Row
-              trailingType="chevron"
-              disabled
-              title=""
-              onPress={() => {}}
-              showChevron={false}
-            >
+            <Row>
               <Text style={styles.description}>
                 Una identidad es cualquier método que un usuario utiliza para
                 acceder a su cuenta, como una cuenta de Google, Apple, un número
@@ -143,7 +136,6 @@ export default function Index() {
           >
             <Row
               title="Correo electrónico"
-              trailingType="chevron"
               caption={
                 identities.find((i) => i.provider === "email")
                   ? "Vinculada"
@@ -155,7 +147,6 @@ export default function Index() {
             />
             <Row
               title="Google"
-              trailingType="chevron"
               caption={
                 identities.find((i) => i.provider === "google")
                   ? "Vinculada"
@@ -164,7 +155,6 @@ export default function Index() {
             />
             <Row
               title="Apple"
-              trailingType="chevron"
               caption={
                 identities.find((i) => i.provider === "apple")
                   ? "Vinculada"
@@ -173,7 +163,6 @@ export default function Index() {
             />
             <Row
               title="Número de celular"
-              trailingType="chevron"
               caption={
                 identities.find((i) => i.provider === "phone")
                   ? "Vinculada"

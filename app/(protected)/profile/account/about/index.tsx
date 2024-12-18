@@ -101,18 +101,10 @@ export default function Index() {
       >
         <View style={styles.container}>
           <GroupedList header="Información de la cuenta">
-            <Row
-              title="ID de usuario"
-              trailingType="chevron"
-              caption={session.user.id}
-              pressedStyle={false}
-              showChevron={false}
-            />
+            <Row title="ID de usuario" caption={session.user.id} hideChevron />
             <Row
               title="Correo electrónico"
-              trailingType="chevron"
-              pressedStyle={false}
-              showChevron={false}
+              hideChevron
               caption={
                 session.user.email
                   ? session.user.email
@@ -121,23 +113,17 @@ export default function Index() {
             />
             <Row
               title="Número de celular"
-              trailingType="chevron"
-              pressedStyle={false}
-              showChevron={false}
+              hideChevron
               caption={session.user.phone ? session.user.phone : "Sin registro"}
             />
             <Row
               title="Fecha y hora de creación"
-              trailingType="chevron"
-              pressedStyle={false}
-              showChevron={false}
+              hideChevron
               caption={formatDate(session.user.created_at)}
             />
             <Row
               title="Rol"
-              trailingType="chevron"
-              pressedStyle={false}
-              showChevron={false}
+              hideChevron
               caption={session.user.role ? session.user.role : "Sin asignar"}
             />
           </GroupedList>
@@ -145,9 +131,7 @@ export default function Index() {
           <GroupedList header="Estado de confirmación">
             <Row
               title="Correo confirmado"
-              trailingType="chevron"
-              pressedStyle={false}
-              showChevron={false}
+              hideChevron
               caption={
                 session.user.email_confirmed_at
                   ? formatDate(session.user.email_confirmed_at)
@@ -156,9 +140,7 @@ export default function Index() {
             />
             <Row
               title="Teléfono confirmado"
-              trailingType="chevron"
-              pressedStyle={false}
-              showChevron={false}
+              hideChevron
               caption={
                 session.user.phone_confirmed_at
                   ? formatDate(session.user.phone_confirmed_at)
@@ -167,9 +149,7 @@ export default function Index() {
             />
             <Row
               title="Cuenta confirmada"
-              trailingType="chevron"
-              pressedStyle={false}
-              showChevron={false}
+              hideChevron
               caption={
                 session.user.confirmed_at
                   ? formatDate(session.user.confirmed_at)
@@ -181,9 +161,7 @@ export default function Index() {
           <GroupedList header="Historial de acceso">
             <Row
               title="Último inicio de sesión"
-              trailingType="chevron"
-              pressedStyle={false}
-              showChevron={false}
+              hideChevron
               caption={
                 session.user.last_sign_in_at
                   ? formatDate(session.user.last_sign_in_at)
@@ -192,9 +170,7 @@ export default function Index() {
             />
             <Row
               title="Última actualización de cuenta"
-              trailingType="chevron"
-              pressedStyle={false}
-              showChevron={false}
+              hideChevron
               caption={
                 session.user.updated_at
                   ? formatDate(session.user.updated_at)

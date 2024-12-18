@@ -54,51 +54,39 @@ export default function Index() {
           <GroupedList>
             <Row
               title="Oscuro"
-              icon={<Moon size={24} color="white" />}
-              color={colorPalette.neutral[500]}
-              trailingType="chevron"
-              pressedStyle={false}
+              icon={Moon}
+              backgroundColor={colorPalette.neutral[500]}
               onPress={() => handleRadioChange("dark")}
-              caption={() => {
-                return (
-                  <RadioButton
-                    selected={selectedOption === "dark"}
-                    onPress={() => handleRadioChange("dark")}
-                  />
-                );
-              }}
+              trailing={
+                <RadioButton
+                  selected={selectedOption === "dark"}
+                  onPress={() => handleRadioChange("dark")}
+                />
+              }
             />
             <Row
               title="Claro"
-              icon={<Sun size={24} color="white" />}
-              color={colorPalette.neutral[500]}
-              trailingType="chevron"
-              pressedStyle={false}
+              icon={Sun}
+              backgroundColor={colorPalette.neutral[500]}
               onPress={() => handleRadioChange("light")}
-              caption={() => {
-                return (
-                  <RadioButton
-                    selected={selectedOption === "light"}
-                    onPress={() => handleRadioChange("light")}
-                  />
-                );
-              }}
+              trailing={
+                <RadioButton
+                  selected={selectedOption === "light"}
+                  onPress={() => handleRadioChange("light")}
+                />
+              }
             />
             <Row
               title="Automático"
-              icon={<SunMoon size={24} color="white" />}
-              color={colorPalette.neutral[500]}
-              trailingType="chevron"
-              pressedStyle={false}
+              icon={SunMoon}
+              backgroundColor={colorPalette.neutral[500]}
               onPress={() => handleRadioChange("auto")}
-              caption={() => {
-                return (
-                  <RadioButton
-                    selected={selectedOption === "auto"}
-                    onPress={() => handleRadioChange("auto")}
-                  />
-                );
-              }}
+              trailing={
+                <RadioButton
+                  selected={selectedOption === "auto"}
+                  onPress={() => handleRadioChange("auto")}
+                />
+              }
             />
           </GroupedList>
           <View />
