@@ -228,10 +228,7 @@ export default function VehicleDetail() {
             )}
           </View>
           <View style={styles.groupedListsContainer}>
-            <GroupedList
-              header="Consulta"
-              footer="Accede a información detallada y actualizada sobre este camión."
-            >
+            <GroupedList header="Consulta general">
               <Row
                 title="Galería"
                 trailingType="chevron"
@@ -256,8 +253,19 @@ export default function VehicleDetail() {
                   router.navigate(`/vehicles/${vehicleId}/documentation`)
                 }
               />
+            </GroupedList>
+            <GroupedList header="Acciones">
               <Row
-                title="Histórico de cargas de gasolina"
+                title="Mantenimiento"
+                trailingType="chevron"
+                icon={<Wrench size={styles.iconSize.gap} color="white" />}
+                color={colorPalette.cyan[500]}
+                onPress={() =>
+                  router.navigate(`/vehicles/${vehicleId}/maintenance`)
+                }
+              />
+              <Row
+                title="Cargas de gasolina"
                 trailingType="chevron"
                 icon={<Fuel size={styles.iconSize.gap} color="white" />}
                 color={colorPalette.red[500]}
@@ -266,16 +274,11 @@ export default function VehicleDetail() {
                 }
               />
               <Row
-                title="Histórico de rutas"
+                title="Rutas"
                 trailingType="chevron"
                 icon={<Waypoints size={styles.iconSize.gap} color="white" />}
                 color={colorPalette.sky[500]}
               />
-            </GroupedList>
-            <GroupedList
-              header="Acciones"
-              footer="Opciones disponibles para este camión."
-            >
               {canEditVehicle && (
                 <Row
                   title="Administrar flotillas"
@@ -287,24 +290,10 @@ export default function VehicleDetail() {
                   }
                 />
               )}
-              <Row
-                title="Registrar carga de gasolina"
-                trailingType="chevron"
-                icon={<Fuel size={styles.iconSize.gap} color="white" />}
-                color={colorPalette.red[500]}
-              />
-              <Row
-                title="Mantenimiento"
-                trailingType="chevron"
-                icon={<Wrench size={styles.iconSize.gap} color="white" />}
-                color={colorPalette.cyan[500]}
-                onPress={() =>
-                  router.navigate(`/vehicles/${vehicleId}/maintenance`)
-                }
-              />
             </GroupedList>
+
             {canEditVehicle && (
-              <GroupedList header="Zona de peligro">
+              <GroupedList>
                 <Row
                   title="Borrar vehículo"
                   trailingType="chevron"
