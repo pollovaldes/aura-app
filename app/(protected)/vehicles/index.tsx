@@ -12,7 +12,6 @@ import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
 import useProfile from "@/hooks/useProfile";
-import { Vehicle } from "@/types/Vehicle";
 import { SimpleList } from "@/components/simpleList/SimpleList";
 
 export default function VehicleList() {
@@ -21,41 +20,84 @@ export default function VehicleList() {
   const { styles } = useStyles(stylesheet);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  const headerRight = () => {
+    return (
+      <ActionButtonGroup>
+        <ActionButton onPress={handleDownloadCsv} Icon={Download} />
+        <ActionButton
+          onPress={() => setIsModalVisible(true)}
+          Icon={Plus}
+          show={canEdit}
+        />
+      </ActionButtonGroup>
+    );
+  };
+
   if (isProfileLoading || vehiclesAreLoading) {
     return (
-      <FetchingIndicator
-        caption={isProfileLoading ? "Cargando perfil" : "Cargando vehículos"}
-      />
+      <>
+        <Stack.Screen
+          options={{
+            headerRight: undefined,
+          }}
+        />
+        <FetchingIndicator
+          caption={isProfileLoading ? "Cargando perfil" : "Cargando vehículos"}
+        />
+      </>
     );
   }
 
   if (!profile) {
     return (
-      <ErrorScreen
-        caption="Ocurrió un error al recuperar tu perfil"
-        buttonCaption="Reintentar"
-        retryFunction={fetchProfile}
-      />
+      <>
+        <Stack.Screen
+          options={{
+            headerRight: undefined,
+          }}
+        />
+        <ErrorScreen
+          caption="Ocurrió un error al recuperar tu perfil"
+          buttonCaption="Reintentar"
+          retryFunction={fetchProfile}
+        />
+      </>
     );
   }
 
   if (!vehicles) {
     return (
-      <ErrorScreen
-        caption="Ocurrió un error al recuperar los vehículos"
-        buttonCaption="Reintentar"
-        retryFunction={fetchVehicles}
-      />
+      <>
+        <Stack.Screen
+          options={{
+            headerRight: undefined,
+          }}
+        />
+        <ErrorScreen
+          caption="Ocurrió un error al recuperar los vehículos"
+          buttonCaption="Reintentar"
+          retryFunction={fetchVehicles}
+        />
+      </>
     );
   }
 
+  const canEdit = profile.role === "ADMIN" || profile.role === "OWNER";
+
   if (vehicles.length === 0) {
     return (
-      <EmptyScreen
-        caption="Ningún vehículo por aquí"
-        buttonCaption="Actualizar"
-        retryFunction={fetchVehicles}
-      />
+      <>
+        <Stack.Screen
+          options={{
+            headerRight: headerRight,
+          }}
+        />
+        <EmptyScreen
+          caption="Ningún vehículo por aquí"
+          buttonCaption="Actualizar"
+          retryFunction={fetchVehicles}
+        />
+      </>
     );
   }
 
@@ -67,22 +109,11 @@ export default function VehicleList() {
     }
   };
 
-  const canEdit = profile.role === "ADMIN" || profile.role === "OWNER";
-
   return (
     <>
       <Stack.Screen
         options={{
-          headerRight: () => (
-            <ActionButtonGroup>
-              <ActionButton onPress={handleDownloadCsv} Icon={Download} />
-              <ActionButton
-                onPress={() => setIsModalVisible(true)}
-                Icon={Plus}
-                show={canEdit}
-              />
-            </ActionButtonGroup>
-          ),
+          headerRight: headerRight,
         }}
       />
 
@@ -109,6 +140,13 @@ export default function VehicleList() {
             trailing={<ChevronRight color={styles.chevron.color} />}
           />
         )}
+        ListEmptyComponent={
+          <EmptyScreen
+            caption="Ningún vehículo por aquí"
+            buttonCaption="Actualizar"
+            retryFunction={fetchVehicles}
+          />
+        }
       />
 
       <AddVehicleComponent

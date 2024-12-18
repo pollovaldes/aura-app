@@ -1,7 +1,6 @@
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { Text, FlatList } from "react-native";
 import useUsers from "@/hooks/peopleHooks/useUsers";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { ChevronRight } from "lucide-react-native";
 import { useSearch } from "@/context/SearchContext";
@@ -11,6 +10,7 @@ import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import UserThumbnail from "@/components/people/UserThumbnail";
+import { SimpleList } from "@/components/simpleList/SimpleList";
 
 export default function UsersList() {
   const { profile, isProfileLoading, fetchProfile } = useProfile();
@@ -82,28 +82,16 @@ export default function UsersList() {
       data={filteredUsers}
       keyExtractor={(item) => item.id.toString()}
       renderItem={({ item }) => (
-        <Link
-          href={{ pathname: `./${item.id}` }}
-          relativeToDirectory
-          push
-          asChild
-        >
-          <TouchableOpacity>
-            <View style={styles.container}>
-              <View style={styles.contentContainer}>
-                <View style={styles.imageContainer}>
-                  <UserThumbnail userId={item.id.toString()} size={60} />
-                </View>
-                <Text
-                  style={styles.itemText}
-                >{`${capitalizeWords(item.name)} ${capitalizeWords(item.father_last_name)} ${capitalizeWords(item.mother_last_name)}`}</Text>
-              </View>
-              <View style={styles.chevronView}>
-                <ChevronRight color={styles.chevron.color} />
-              </View>
-            </View>
-          </TouchableOpacity>
-        </Link>
+        <SimpleList
+          href={`/users/${item.id}`}
+          leading={<UserThumbnail userId={item.id.toString()} size={60} />}
+          content={
+            <Text style={styles.itemText}>
+              {`${capitalizeWords(item.name)} ${capitalizeWords(item.father_last_name)} ${capitalizeWords(item.mother_last_name)}`}
+            </Text>
+          }
+          trailing={<ChevronRight color={styles.chevron.color} />}
+        />
       )}
     />
   );

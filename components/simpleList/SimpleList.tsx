@@ -1,10 +1,9 @@
 import React, { ReactNode, useState } from "react";
 import { Pressable, View } from "react-native";
-import { Link } from "expo-router";
+import { Link, LinkProps } from "expo-router";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
-interface SimpleListProps {
-  href: string;
+interface SimpleListProps extends LinkProps {
   leading?: ReactNode;
   content?: ReactNode;
   trailing?: ReactNode;
@@ -15,13 +14,14 @@ export const SimpleList: React.FC<SimpleListProps> = ({
   leading,
   content,
   trailing,
+  ...linkProps // Capture additional props for the Link
 }) => {
   const { styles } = useStyles(stylesheet);
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
 
   return (
-    <Link href={href} asChild>
+    <Link href={href} asChild {...linkProps}>
       <Pressable
         onHoverIn={() => setIsHovered(true)}
         onHoverOut={() => setIsHovered(false)}
