@@ -19,11 +19,11 @@ export default function Modal({ isOpen, children, ...rest }: ModalProps) {
       visible={isOpen}
       transparent
       animationType="slide"
-      statusBarTranslucent
       {...rest}
+      statusBarTranslucent
     >
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "height" : "padding"}
         style={styles.container}
       >
         <ScrollView
@@ -44,7 +44,7 @@ export default function Modal({ isOpen, children, ...rest }: ModalProps) {
 const stylesheet = createStyleSheet((theme) => ({
   container: {
     flex: 1,
-    paddingHorizontal: 12,
+    paddingHorizontal: 6,
     backgroundColor: "rgba(0.0, 0.0, 0.0, 0.65)",
   },
 }));

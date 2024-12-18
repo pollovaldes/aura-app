@@ -1,10 +1,10 @@
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
-import { ScrollView, View } from "react-native";
+import { ScrollView, Switch, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { router, Stack } from "expo-router";
 import React from "react";
-import { Info, LockKeyhole, Trash, Users } from "lucide-react-native";
+import { BellDot, Info, LockKeyhole, Trash, Users } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 
 export default function Index() {
@@ -21,42 +21,116 @@ export default function Index() {
       />
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View style={styles.container}>
-          <GroupedList header="Opciones de la cuenta">
+          <GroupedList>
             <Row
-              title="Información de la cuenta"
-              icon={<Info size={24} color="white" />}
-              color={colorPalette.cyan[500]}
-              trailingType="chevron"
-              onPress={() =>
-                router.push("./about", { relativeToDirectory: true })
-              }
-            />
-            <Row
-              title="Contraseña"
-              icon={<LockKeyhole size={24} color="white" />}
-              color={colorPalette.orange[500]}
-              trailingType="chevron"
-              onPress={() =>
-                router.push("./password", { relativeToDirectory: true })
-              }
-            />
-            <Row
-              title="Identidades"
-              icon={<Users size={24} color="white" />}
-              color={colorPalette.emerald[500]}
-              trailingType="chevron"
-              onPress={() =>
-                router.push("./identities", { relativeToDirectory: true })
-              }
-            />
-            <Row
-              title="Eliminar cuenta"
-              icon={<Trash size={24} color="white" />}
+              title="Recibir notificaciones"
+              icon={<BellDot size={24} color="white" />}
               color={colorPalette.red[500]}
               trailingType="chevron"
-              onPress={() =>
-                alert("Esta acción no se puede deshacer. ¿Estás seguro?")
-              }
+              showChevron={false}
+              caption={<Switch />}
+              pressedStyle={false}
+            />
+          </GroupedList>
+
+          <GroupedList header="Permisos">
+            <Row
+              title="Recibir alertas sobre documentos agregados o cambiados"
+              trailingType="chevron"
+              showChevron={false}
+              caption={<Switch />}
+              pressedStyle={false}
+            />
+            <Row
+              title="Avisos de cambios en la ficha técnica"
+              trailingType="chevron"
+              showChevron={false}
+              caption={<Switch />}
+              pressedStyle={false}
+            />
+            <Row
+              title="Notificaciones sobre cargas de gasolina recientes"
+              trailingType="chevron"
+              showChevron={false}
+              caption={<Switch />}
+              pressedStyle={false}
+            />
+            <Row
+              title="Actualizaciones sobre historial de rutas"
+              trailingType="chevron"
+              showChevron={false}
+              caption={<Switch />}
+              pressedStyle={false}
+            />
+            <Row
+              title="Alertas sobre tareas administrativas pendientes"
+              trailingType="chevron"
+              showChevron={false}
+              caption={<Switch />}
+              pressedStyle={false}
+            />
+            <Row
+              title="Proximidad a vencimientos de seguros o mantenimientos"
+              trailingType="chevron"
+              showChevron={false}
+              caption={<Switch />}
+              pressedStyle={false}
+            />
+            <Row
+              title="Alertas de seguridad durante las rutas"
+              trailingType="chevron"
+              showChevron={false}
+              caption={<Switch />}
+              pressedStyle={false}
+            />
+            <Row
+              title="Avisos de asignación de vehículos a conductores"
+              trailingType="chevron"
+              showChevron={false}
+              caption={<Switch />}
+              pressedStyle={false}
+            />
+            <Row
+              title="Permisos generales del sistema"
+              trailingType="chevron"
+              showChevron={false}
+              caption={<Switch />}
+              pressedStyle={false}
+            />
+            <Row
+              title="Configuraciones sobre notificaciones de flota"
+              trailingType="chevron"
+              showChevron={false}
+              caption={<Switch />}
+              pressedStyle={false}
+            />
+            <Row
+              title="Recibir notificaciones de solicitudes de conductores"
+              trailingType="chevron"
+              showChevron={false}
+              caption={<Switch />}
+              pressedStyle={false}
+            />
+            <Row
+              title="Alertas sobre autorizaciones pendientes"
+              trailingType="chevron"
+              showChevron={false}
+              caption={<Switch />}
+              pressedStyle={false}
+            />
+            <Row
+              title="Proximidad de servicios programados"
+              trailingType="chevron"
+              showChevron={false}
+              caption={<Switch />}
+              pressedStyle={false}
+            />
+            <Row
+              title="Notificaciones generales relacionadas con el sistema"
+              trailingType="chevron"
+              showChevron={false}
+              caption={<Switch />}
+              pressedStyle={false}
             />
           </GroupedList>
           <View />

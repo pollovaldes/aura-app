@@ -96,7 +96,7 @@ const stylesheet = createStyleSheet((theme) => ({
     backgroundColor: theme.components.navBarListItem.hoveredBG,
   },
   trailingContainer: {
-    flex: 1.2,
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",

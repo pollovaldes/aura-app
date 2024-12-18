@@ -18,10 +18,11 @@ import {
   Platform,
 } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
 import { supabase } from "@/lib/supabase";
 import { Share } from "react-native";
+import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
+import { ActionButton } from "@/components/actionButton/ActionButton";
 
 type ModalType = "edit_document" | null;
 
@@ -234,23 +235,23 @@ export default function Index() {
           title: document.title,
           headerLargeTitle: false,
           headerRight: () => (
-            <View style={styles.rightContainer}>
-              {canEdit && (
-                <Pressable onPress={() => setActiveModal("edit_document")}>
-                  <Text style={styles.rightPressText}>Editar</Text>
-                </Pressable>
-              )}
-              {isSharing ? (
-                <ActivityIndicator />
-              ) : (
-                <Pressable onPress={() => shareDocument()}>
-                  <ShareIcon color={styles.Icon.color} />
-                </Pressable>
-              )}
-              <Pressable onPress={() => setRandomKey(Math.random())}>
-                <RotateCw color={styles.Icon.color} />
-              </Pressable>
-            </View>
+            <ActionButtonGroup>
+              <ActionButton
+                show={!isSharing}
+                onPress={shareDocument}
+                Icon={ShareIcon}
+              />
+              {isSharing && <ActivityIndicator />}
+              <ActionButton
+                onPress={() => setRandomKey(Math.random())}
+                Icon={RotateCw}
+              />
+              <ActionButton
+                show={canEdit}
+                onPress={() => setActiveModal("edit_document")}
+                text="Editar"
+              />
+            </ActionButtonGroup>
           ),
         }}
       />

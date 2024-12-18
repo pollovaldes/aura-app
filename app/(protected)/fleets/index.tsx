@@ -1,6 +1,6 @@
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
-import { FlatList, Pressable, Text, View } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import useProfile from "@/hooks/useProfile";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
@@ -14,6 +14,8 @@ import AddFleetModal from "@/components/fleets/AddFleetModal";
 import React from "react";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import { useFleets } from "@/hooks/useFleets";
+import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
+import { ActionButton } from "@/components/actionButton/ActionButton";
 
 type ModalType = "add_fleet" | null;
 
@@ -82,12 +84,15 @@ export default function Index() {
       </Modal>
       <Stack.Screen
         options={{
-          headerRight: () =>
-            canAddFleet && (
-              <Pressable onPress={() => setActiveModal("add_fleet")}>
-                <Plus color={styles.plusIcon.color} />
-              </Pressable>
-            ),
+          headerRight: () => (
+            <ActionButtonGroup>
+              <ActionButton
+                Icon={Plus}
+                onPress={() => setActiveModal("add_fleet")}
+                show={canAddFleet}
+              />
+            </ActionButtonGroup>
+          ),
         }}
       />
       {fleets.length === 0 ? (

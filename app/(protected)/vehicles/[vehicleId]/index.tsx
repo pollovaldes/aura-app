@@ -9,11 +9,9 @@ import {
   View,
   Image,
   ScrollView,
-  RefreshControl,
-  Pressable,
-  Text,
+  RefreshControl, Text,
   Platform,
-  Alert,
+  Alert
 } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
@@ -24,10 +22,8 @@ import {
   Clipboard,
   Fuel,
   Images,
-  Trash,
-  UsersRoundIcon,
-  Waypoints,
-  Wrench,
+  Trash, Waypoints,
+  Wrench
 } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
@@ -39,6 +35,8 @@ import Modal from "@/components/Modal/Modal";
 import ChangeCoverImage from "@/components/vehicles/modals/ChangeCoverImage";
 import { supabase } from "@/lib/supabase";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
+import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
+import { ActionButton } from "@/components/actionButton/ActionButton";
 
 type ModalType = "change_cover_image" | null;
 
@@ -174,12 +172,15 @@ export default function VehicleDetail() {
         options={{
           title: "",
           headerLargeTitle: false,
-          headerRight: () =>
-            canEditVehicle && (
-              <Pressable onPress={() => setActiveModal("change_cover_image")}>
-                <Text style={styles.rightPressText}>Cambiar portada</Text>
-              </Pressable>
-            ),
+          headerRight: () => (
+            <ActionButtonGroup>
+              <ActionButton
+                text="Editar portada"
+                onPress={() => setActiveModal("change_cover_image")}
+                show={canEditVehicle}
+              />
+            </ActionButtonGroup>
+          ),
         }}
       />
       <Modal isOpen={activeModal === "change_cover_image"}>

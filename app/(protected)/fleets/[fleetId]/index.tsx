@@ -1,5 +1,3 @@
-import GroupedList from "@/components/grouped-list/GroupedList";
-import Row from "@/components/grouped-list/Row";
 import {
   FlatList,
   Platform,
@@ -12,19 +10,19 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import useProfile from "@/hooks/useProfile";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import { Boxes, ChevronRight, Plus } from "lucide-react-native";
-import { colorPalette } from "@/style/themes";
-import useFleets from "@/hooks/useFleets";
+import { ChevronRight, Plus } from "lucide-react-native";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import { Link, router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import Modal from "@/components/Modal/Modal";
-import AddFleetModal from "@/components/fleets/AddFleetModal";
 import { useHeaderHeight } from "@react-navigation/elements";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import UserThumbnail from "@/components/people/UserThumbnail";
 import VehicleThumbnail from "@/components/vehicles/TruckThumbnail";
+import React from "react";
+import { useFleets } from "@/hooks/useFleets";
+import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
+import { ActionButton } from "@/components/actionButton/ActionButton";
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
@@ -130,9 +128,10 @@ export default function Index() {
         options={{
           headerLargeTitle: false,
           title: fleet.title,
-          headerRight: () =>
-            canAddFleet && (
-              <Pressable
+          headerRight: () => (
+            <ActionButtonGroup>
+              <ActionButton
+                text="Editar"
                 onPress={
                   currentTabIndex === 0
                     ? () =>
@@ -144,10 +143,10 @@ export default function Index() {
                           relativeToDirectory: true,
                         })
                 }
-              >
-                <Plus color={styles.plusIcon.color} />
-              </Pressable>
-            ),
+                show={canAddFleet}
+              />
+            </ActionButtonGroup>
+          ),
         }}
       />
       <View

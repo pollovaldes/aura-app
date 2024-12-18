@@ -17,6 +17,8 @@ import { ChevronRight, Plus } from "lucide-react-native";
 import { useState } from "react";
 import { FlatList, Platform, Pressable, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
+import { ActionButton } from "@/components/actionButton/ActionButton";
 
 type ModalType = "create_maintenance_record" | null;
 
@@ -217,14 +219,15 @@ export default function Index() {
               title: "Solicitudes de mantenimiento",
               headerLargeTitle: false,
               headerTitle: undefined,
-              headerRight: () =>
-                canEdit && (
-                  <Pressable
+              headerRight: () => (
+                <ActionButtonGroup>
+                  <ActionButton
+                    Icon={Plus}
                     onPress={() => setActiveModal("create_maintenance_record")}
-                  >
-                    <Plus color={styles.plusIcon.color} />
-                  </Pressable>
-                ),
+                    show={canEdit}
+                  />
+                </ActionButtonGroup>
+              ),
             }}
           />
           <EmptyScreen
@@ -239,14 +242,16 @@ export default function Index() {
             options={{
               title: "Solicitudes de mantenimiento",
               headerLargeTitle: false,
-              headerRight: () =>
-                canEdit && (
-                  <Pressable
+              headerTitle: undefined,
+              headerRight: () => (
+                <ActionButtonGroup>
+                  <ActionButton
+                    Icon={Plus}
                     onPress={() => setActiveModal("create_maintenance_record")}
-                  >
-                    <Plus color={styles.plusIcon.color} />
-                  </Pressable>
-                ),
+                    show={canEdit}
+                  />
+                </ActionButtonGroup>
+              ),
             }}
           />
           <SegmentedControl

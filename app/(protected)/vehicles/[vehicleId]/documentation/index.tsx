@@ -27,6 +27,8 @@ import AddDocument from "@/components/vehicles/modals/AddDocument";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import React from "react";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
+import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
+import { ActionButton } from "@/components/actionButton/ActionButton";
 
 type ModalType = "add_document" | null;
 
@@ -171,12 +173,15 @@ export default function Index() {
         options={{
           title: "Guantera Digital",
           headerLargeTitle: false,
-          headerRight: () =>
-            canEdit && (
-              <Pressable onPress={() => setActiveModal("add_document")}>
-                <Plus color={styles.plusIcon.color} />
-              </Pressable>
-            ),
+          headerRight: () => (
+            <ActionButtonGroup>
+              <ActionButton
+                Icon={Plus}
+                onPress={() => setActiveModal("add_document")}
+                show={canEdit}
+              />
+            </ActionButtonGroup>
+          ),
         }}
       />
 

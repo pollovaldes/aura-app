@@ -19,6 +19,8 @@ import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import AddVehicleComponent from "@/components/vehicles/AddVehicleComponent";
 import VehicleThumbnail from "@/components/vehicles/TruckThumbnail";
+import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
+import { ActionButton } from "@/components/actionButton/ActionButton";
 
 export default function VehicleList() {
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
@@ -102,17 +104,13 @@ export default function VehicleList() {
           <Stack.Screen
             options={{
               headerRight: () => (
-                <View style={{ flexDirection: "row" }}>
-                  <Pressable
-                    onPress={handleDownloadCsv}
-                    style={{ marginRight: 10 }}
-                  >
-                    <Download color={styles.plusIcon.color} />
-                  </Pressable>
-                  <Pressable onPress={() => setIsModalVisible(true)}>
-                    <Plus color={styles.plusIcon.color} />
-                  </Pressable>
-                </View>
+                <ActionButtonGroup>
+                  <ActionButton onPress={handleDownloadCsv} Icon={Download} />
+                  <ActionButton
+                    onPress={() => setIsModalVisible(true)}
+                    Icon={Plus}
+                  />
+                </ActionButtonGroup>
               ),
             }}
           />

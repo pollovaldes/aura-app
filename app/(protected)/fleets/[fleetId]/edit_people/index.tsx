@@ -4,7 +4,6 @@ import useProfile from "@/hooks/useProfile";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { ChevronRight } from "lucide-react-native";
-import useFleets from "@/hooks/useFleets";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import { Link, Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
@@ -13,6 +12,8 @@ import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import UserThumbnail from "@/components/people/UserThumbnail";
 import useUsers from "@/hooks/peopleHooks/useUsers";
+import React from "react";
+import { useFleets } from "@/hooks/useFleets";
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
