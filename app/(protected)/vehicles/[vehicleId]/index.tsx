@@ -65,7 +65,6 @@ export default function VehicleDetail() {
           options={{
             title: "Cargando...",
             headerLargeTitle: false,
-            headerRight: undefined,
           }}
         />
         <FetchingIndicator
@@ -78,13 +77,7 @@ export default function VehicleDetail() {
   if (!profile) {
     return (
       <>
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
+        <Stack.Screen options={{ title: "Error", headerLargeTitle: false }} />
         <ErrorScreen
           caption="Ocurrió un error al recuperar tu perfil"
           buttonCaption="Reintentar"
@@ -97,15 +90,9 @@ export default function VehicleDetail() {
   if (!vehicles) {
     return (
       <>
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
+        <Stack.Screen options={{ title: "Error", headerLargeTitle: false }} />
         <ErrorScreen
-          caption={`Ocurrió un error y no \npudimos cargar los vehículos`}
+          caption="Ocurrió un error al cargar los vehículos"
           buttonCaption="Reintentar"
           retryFunction={fetchVehicles}
         />
@@ -114,16 +101,11 @@ export default function VehicleDetail() {
   }
 
   const vehicle = vehicles.find((Vehicle) => Vehicle.id === vehicleId);
-
   if (!vehicle) {
     return (
       <>
         <Stack.Screen
-          options={{
-            title: "Recurso inaccesible",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
+          options={{ title: "Recurso inaccesible", headerLargeTitle: false }}
         />
         <UnauthorizedScreen
           caption="No tienes acceso a este recurso."
@@ -138,7 +120,6 @@ export default function VehicleDetail() {
   const canEditVehicle = profile.role === "ADMIN" || profile.role === "OWNER";
 
   const deleteVehicle = () => {
-    //TODO: Implement delete vehicle alert on web
     Alert.alert(
       "Confirmación",
       `¿Estás seguro de eliminar el vehículo "${vehicleTitle}"?\nEsta acción borrará permanentemente sus rutas, historiales, documentos, etc.`,
@@ -172,8 +153,8 @@ export default function VehicleDetail() {
     <>
       <Stack.Screen
         options={{
-          title: "",
           headerLargeTitle: false,
+          title: "",
           headerRight: () => (
             <ActionButtonGroup>
               <ActionButton
@@ -210,27 +191,22 @@ export default function VehicleDetail() {
           />
         }
       >
-        <View style={styles.container}>
-          <View style={styles.imageContainer}>
+        <View style={styles.root}>
+          <View style={styles.imageWrapper}>
             {vehicle.thumbnail ? (
-              <>
-                <Image
-                  style={styles.image}
-                  source={{ uri: vehicle.thumbnail }}
-                />
-                <View style={styles.fullOverlay}>
-                  <Text style={styles.titleText}>{vehicleTitle}</Text>
-                </View>
-              </>
+              <Image source={{ uri: vehicle.thumbnail }} style={styles.image} />
             ) : (
-              <View style={styles.missingThumbnailContainer}>
-                <View style={styles.missingThumbnailContent}>
-                  <Text style={styles.noVehiclesText}>{vehicleTitle}</Text>
-                </View>
+              <View style={styles.placeholder}>
+                <Text style={styles.title}>{vehicleTitle}</Text>
               </View>
             )}
+            <View style={styles.overlay}>
+              {vehicle.thumbnail && (
+                <Text style={styles.imageText}>{vehicleTitle}</Text>
+              )}
+            </View>
           </View>
-          <View style={styles.groupedListsContainer}>
+          <View style={styles.groupedListContainer}>
             <GroupedList header="Consulta general">
               <Row
                 title="Galería"
@@ -254,6 +230,8 @@ export default function VehicleDetail() {
                 }
               />
             </GroupedList>
+          </View>
+          <View style={styles.groupedListContainer}>
             <GroupedList header="Acciones">
               <Row
                 title="Mantenimiento"
@@ -276,7 +254,6 @@ export default function VehicleDetail() {
                 icon={Waypoints}
                 backgroundColor={colorPalette.sky[500]}
               />
-
               <Row
                 title="Administrar flotillas"
                 icon={Boxes}
@@ -284,20 +261,21 @@ export default function VehicleDetail() {
                 onPress={() =>
                   router.navigate(`/vehicles/${vehicleId}/manage_fleets`)
                 }
-                show={canEditVehicle}
+                show={canEditVehicle} // Added back
               />
             </GroupedList>
+          </View>
+          <View style={styles.groupedListContainer}>
             <GroupedList header="Zona de peligro">
               <Row
                 title="Borrar vehículo"
                 icon={Trash}
                 backgroundColor={colorPalette.red[500]}
                 onPress={() => deleteVehicle()}
-                show={canEditVehicle}
+                show={canEditVehicle} // Added back
               />
             </GroupedList>
           </View>
-          <View />
         </View>
       </ScrollView>
     </>
@@ -305,157 +283,69 @@ export default function VehicleDetail() {
 }
 
 const stylesheet = createStyleSheet((theme) => ({
-  loadingText: {
-    fontSize: 16,
-    color: theme.textPresets.subtitle,
-  },
-  moti: {
-    color: theme.ui.colors.card,
-  },
-  rightPressText: {
-    color: theme.headerButtons.color,
-    fontSize: 17,
-  },
-  container: {
+  root: {
     flex: 1,
-    gap: theme.marginsComponents.section,
-    ...Platform.select({
-      web: {
-        marginTop: 16,
-        margin: "auto",
-      },
-    }),
+    width: "100%",
+    paddingBottom: 36,
   },
-  groupedListsContainer: {
+  groupedListContainer: {
     gap: theme.marginsComponents.section,
+    marginTop: theme.marginsComponents.section, //Excepción
   },
-  loadingContainer: {
-    gap: 6,
-    flex: 1,
+  imageWrapper: {
+    position: "relative",
+    aspectRatio: 16 / 9,
+    width: "100%",
+    maxWidth: Platform.OS === "web" ? 800 : "100%",
+    alignSelf: "center",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    borderRadius: Platform.OS === "web" ? 12 : 0,
+  },
+  placeholder: {
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: theme.ui.colors.border,
+    width: "100%",
+    height: "100%",
+    borderRadius: Platform.OS === "web" ? 12 : 0,
+    paddingHorizontal: 30,
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.25)",
+    justifyContent: "flex-end",
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+    borderRadius: Platform.OS === "web" ? 12 : 0,
+  },
+  imageText: {
+    color: "white",
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  title: {
+    fontSize: 24,
+    color: theme.textPresets.main,
+    fontWeight: "bold",
+    textAlign: "center",
   },
   modalContainer: {
-    width: "100%",
     alignSelf: "center",
     maxWidth: 500,
     backgroundColor: theme.ui.colors.card,
     borderRadius: 10,
     padding: 24,
   },
-  errorContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  errorText: {
-    color: "red",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  noVehiclesContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  missingThumbanilContainer: {
-    width: "100%",
-    height: 250,
-    backgroundColor: theme.ui.colors.border,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  missingThumbanilContent: {
-    flexDirection: "column",
-    width: 200,
-  },
-  title: {
-    marginTop: 6,
-    fontSize: 25,
-    fontWeight: "bold",
-    marginLeft: 16,
-    marginRight: 16,
-    color: theme.textPresets.main,
-  },
-  button: {
-    backgroundColor: "#add8e6", // Azul claro
-    borderColor: "#000", // Borde negro
-    borderWidth: 1,
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    marginVertical: 10,
-    borderRadius: 15,
-    width: "100%", // Ancho completo
-    alignItems: "center",
-  },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#000", // Texto negro
-  },
   closeButton: {
     color: theme.headerButtons.color,
     fontSize: 18,
     textAlign: "right",
-  },
-  iconSize: {
-    gap: Platform.OS === "web" ? 18 : 24,
-  },
-
-  imageContainer: {
-    aspectRatio: 16 / 9,
-    position: "relative", // Added for overlay positioning,
-    ...Platform.select({
-      web: {
-        minWidth: "125%",
-        alignSelf: "center",
-      },
-    }),
-  },
-  missingThumbnailContainer: {
-    aspectRatio: 16 / 9,
-    backgroundColor: theme.ui.colors.border,
-    justifyContent: "center",
-    alignItems: "center",
-    ...Platform.select({
-      web: {
-        borderRadius: 12,
-      },
-    }),
-  },
-  missingThumbnailContent: {
-    flexDirection: "column",
-  },
-  image: {
-    aspectRatio: 16 / 9,
-    ...Platform.select({
-      web: {
-        borderRadius: 12,
-      },
-    }),
-  },
-  fullOverlay: {
-    position: "absolute",
-    borderRadius: 12,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.25)", // Semi-transparent dark overlay
-    justifyContent: "flex-end",
-    paddingHorizontal: 16,
-    paddingBottom: 16,
-  },
-  titleText: {
-    fontSize: 28,
-    color: "white",
-    fontWeight: "bold",
-  },
-  noVehiclesText: {
-    fontSize: 28,
-    color: theme.textPresets.main,
-    fontWeight: "bold",
-    textAlign: "center",
-    paddingHorizontal: 16,
   },
 }));
