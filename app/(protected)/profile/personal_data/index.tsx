@@ -11,6 +11,7 @@ import FormInput from "@/components/Form/FormInput";
 import { FormButton } from "@/components/Form/FormButton";
 import DatePicker from "react-native-date-picker";
 import { differenceInYears, isValid } from "date-fns";
+import Toast from "react-native-toast-message";
 
 type PersonalData = {
   name: string;
@@ -44,15 +45,21 @@ function DateTimePickerWeb({
 export default function Index() {
   const { styles } = useStyles(stylesheet);
   const { profile, isProfileLoading, fetchProfile } = useProfile();
-
   const [name, setName] = useState("");
   const [fatherLastName, setFatherLastName] = useState("");
   const [motherLastName, setMotherLastName] = useState("");
   const [position, setPosition] = useState("");
   const [birthday, setBirthday] = useState(new Date());
   const [isSaving, setIsSaving] = useState(false);
-
   const [initialState, setInitialState] = useState<PersonalData | null>(null);
+
+  const showToast = (title: string, caption: string) => {
+    Toast.show({
+      type: "alert",
+      text1: title,
+      text2: caption,
+    });
+  };
 
   // Function to format date to Mexico City timezone
   const formatToMexicoCityDate = (date: Date): string => {
@@ -106,8 +113,7 @@ export default function Index() {
     motherLastName === "" ||
     position === "" ||
     !birthday ||
-    calculateAge(birthday) !==
-      `Tienes ${differenceInYears(new Date(), birthday)} años` ||
+    calculateAge(birthday) !== `Tienes ${differenceInYears(new Date(), birthday)} años` ||
     (name === initialState.name &&
       fatherLastName === initialState.fatherLastName &&
       motherLastName === initialState.motherLastName &&
@@ -124,9 +130,7 @@ export default function Index() {
             headerRight: undefined,
           }}
         />
-        <FetchingIndicator
-          caption={isProfileLoading ? "Cargando perfil" : "Cargando sesión"}
-        />
+        <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando sesión"} />
       </>
     );
   }
@@ -167,19 +171,13 @@ export default function Index() {
     setIsSaving(false);
 
     if (error) {
-      alert("Ocurrió un error al guardar los datos");
+      showToast("Error al guardar", "Ocurrió un error al guardar tus datos personales");
       return;
     }
 
+    showToast("Datos guardados", "Tus datos personales han sido actualizados");
+
     fetchProfile();
-
-    setTimeout(() => {
-      router.replace("/profile");
-    }, 300);
-
-    setTimeout(() => {
-      router.push("/profile/personal_data");
-    }, 600);
   };
 
   return (
@@ -193,21 +191,10 @@ export default function Index() {
       />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        refreshControl={
-          <RefreshControl
-            refreshing={isProfileLoading}
-            onRefresh={fetchProfile}
-          />
-        }
+        refreshControl={<RefreshControl refreshing={isProfileLoading} onRefresh={fetchProfile} />}
       >
         <View style={styles.container}>
-          <FormInput
-            description="Nombre"
-            enterKeyHint="done"
-            autoComplete="name"
-            onChangeText={setName}
-            value={name}
-          />
+          <FormInput description="Nombre" enterKeyHint="done" autoComplete="name" onChangeText={setName} value={name} />
 
           <FormInput
             description="Apellido paterno"
@@ -224,12 +211,7 @@ export default function Index() {
             onChangeText={setMotherLastName}
             value={motherLastName}
           />
-          <FormInput
-            description="Puesto"
-            enterKeyHint="done"
-            onChangeText={setPosition}
-            value={position}
-          />
+          <FormInput description="Puesto" enterKeyHint="done" onChangeText={setPosition} value={position} />
           <View style={styles.dateContainer}>
             <Text style={styles.text}>Fecha de nacimiento</Text>
             <Text style={styles.subtitle}>{ageMessage}</Text>
@@ -241,21 +223,11 @@ export default function Index() {
                 />
               </View>
             ) : (
-              <DatePicker
-                date={birthday}
-                onDateChange={setBirthday}
-                mode="date"
-                locale="mx"
-              />
+              <DatePicker date={birthday} onDateChange={setBirthday} mode="date" locale="mx" />
             )}
           </View>
 
-          <FormButton
-            title="Guardar datos"
-            onPress={handleSave}
-            isDisabled={disabledCondition}
-            isLoading={isSaving}
-          />
+          <FormButton title="Guardar datos" onPress={handleSave} isDisabled={disabledCondition} isLoading={isSaving} />
         </View>
       </ScrollView>
     </>
