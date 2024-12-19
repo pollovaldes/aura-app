@@ -54,7 +54,8 @@ export default function HomeLayout() {
   }
 
   const requiresProfileCompletion =
-    !profile.is_fully_registered && path !== "/profile";
+    !profile.is_fully_registered && !path.includes("/profile");
+
   if (requiresProfileCompletion) {
     return <Redirect href="/profile" />;
   }

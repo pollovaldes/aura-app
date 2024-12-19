@@ -16,7 +16,6 @@ export default function Layout() {
   }
 
   if (session) {
-    SplashScreen.hide();
     return <Redirect href="/vehicles" />;
   }
 
