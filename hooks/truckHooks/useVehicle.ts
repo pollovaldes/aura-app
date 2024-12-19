@@ -1,10 +1,9 @@
-import { useEffect, useContext, Dispatch, SetStateAction } from "react";
+import { useEffect, useContext } from "react";
 import { supabase } from "@/lib/supabase";
 import VehiclesContext from "@/context/VehiclesContext";
 
 export default function useVehicle() {
-  const { setVehicles, vehiclesAreLoading, setVehiclesAreLoading, vehicles } =
-    useContext(VehiclesContext);
+  const { setVehicles, vehiclesAreLoading, setVehiclesAreLoading, vehicles } = useContext(VehiclesContext);
 
   const fetchVehicles = async () => {
     setVehiclesAreLoading(true);
@@ -13,12 +12,11 @@ export default function useVehicle() {
 
     if (error) {
       setVehicles(null);
+      setVehiclesAreLoading(false);
       return;
     }
 
     setVehicles(data);
-    console.error("Error from useTruck: ", error);
-
     setVehiclesAreLoading(false);
   };
 
