@@ -1,36 +1,24 @@
-// hooks/useTruck.ts
 import { useEffect, useContext, Dispatch, SetStateAction } from "react";
 import { supabase } from "@/lib/supabase";
 import VehiclesContext from "@/context/VehiclesContext";
-import { Vehicle } from "@/types/Vehicle";
 
 export default function useVehicle() {
-  const { setVehicles, vehiclesAreLoading, setVehiclesAreLoading, vehicles } =
-    useContext(VehiclesContext);
+  const { setVehicles, vehiclesAreLoading, setVehiclesAreLoading, vehicles } = useContext(VehiclesContext);
 
   const fetchVehicles = async () => {
     setVehiclesAreLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from("vehicles")
-        .select(
-          "id, brand, sub_brand, year, plate, serial_number, economic_number, gasoline_threshold"
-        );
 
-      if (!error) {
-        const vehiclesData = data as Vehicle[];
-        setVehicles(vehiclesData);
-        //console.log("Desde el hook", vehiclesData);
-        setVehiclesAreLoading(false);
-      } else {
-        console.error("Error from useTruck: ", error);
-        setVehicles(null);
-        setVehiclesAreLoading(false);
-      }
-    } catch (error) {
-      console.error("Error fetching vehicles: ", error);
+    const { data, error } = await supabase.from("vehicles").select("*");
+
+    if (error) {
       setVehicles(null);
+      return;
     }
+
+    setVehicles(data);
+    console.error("Error from useTruck: ", error);
+
+    setVehiclesAreLoading(false);
   };
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { Vehicle } from "@/types/Vehicle";
+import { Database } from "@/database.types";
 import {
   createContext,
   ReactNode,
@@ -6,6 +6,8 @@ import {
   Dispatch,
   SetStateAction,
 } from "react";
+
+type Vehicle = Database["public"]["Tables"]["vehicles"]["Row"];
 
 interface VehiclesContextType {
   vehicles: Vehicle[] | null;
@@ -29,7 +31,7 @@ export function VehiclesContextProvider({
   children,
 }: VehiclesContextProviderProps) {
   const [vehicles, setVehicles] = useState<Vehicle[] | null>(null);
-  const [vehiclesAreLoading, setVehiclesAreLoading] = useState<boolean>(true);
+  const [vehiclesAreLoading, setVehiclesAreLoading] = useState<boolean>(false);
 
   return (
     <VehiclesContext.Provider
