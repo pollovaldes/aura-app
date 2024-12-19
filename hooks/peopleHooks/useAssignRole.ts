@@ -7,11 +7,11 @@ import { useLocalSearchParams } from "expo-router";
 export function useAssignRole() {
   const [loading, setLoading] = useState(false);
   const session = useSession();
-  const {personId} = useLocalSearchParams<{personId: string}>()
+  const { personId } = useLocalSearchParams<{ personId: string }>();
 
   type Roles = "DRIVER" | "ADMIN" | "OWNER" | "NO_ROLE" | "BANNED";
 
-  const assignUserRole = async (role : Roles) => {
+  const assignUserRole = async (role: Roles) => {
     setLoading(true);
     const { data, error } = await supabase
       .from("profiles")

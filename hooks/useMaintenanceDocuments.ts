@@ -24,7 +24,7 @@ export default function useMaintenanceDocuments(maintenanceId?: string) {
     const query = supabase
       .from("vehicle_maintenance_documentation")
       .select(
-        "document_id, vehicle_id, maintenance_id, title, description, created_at"
+        "document_id, vehicle_id, maintenance_id, title, description, created_at",
       );
 
     if (maintenanceId) {
@@ -37,7 +37,7 @@ export default function useMaintenanceDocuments(maintenanceId?: string) {
 
     if (error) {
       alert(
-        `Ocurrió un error al obtener los documentos: \n\nMensaje de error: ${error.message}\n\nCódigo de error: ${error.code}\n\nDetalles: ${error.details}\n\nSugerencia: ${error.hint}`
+        `Ocurrió un error al obtener los documentos: \n\nMensaje de error: ${error.message}\n\nCódigo de error: ${error.code}\n\nDetalles: ${error.details}\n\nSugerencia: ${error.hint}`,
       );
       setAreMaintenanceDocumentsLoading(false);
       return;

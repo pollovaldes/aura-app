@@ -1,7 +1,6 @@
 //Borrar
 //Este a chingar a su madre
 
-
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -20,7 +19,7 @@ export default function useDatabaseOperations() {
 
   const executeOperation = async (
     type: DatabaseOperationType,
-    { table, data, condition, columns }: OperationOptions
+    { table, data, condition, columns }: OperationOptions,
   ) => {
     setIsLoading(true);
     setError(null);

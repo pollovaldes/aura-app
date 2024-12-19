@@ -28,7 +28,7 @@ export function useFleets(fleet_id?: string) {
 
       if (relationsError) {
         alert(
-          `Ocurrió un error al obtener las relaciones de las flotillas: \n\nMensaje de error: ${relationsError.message}\n\nCódigo de error: ${relationsError.code}\n\nDetalles: ${relationsError.details}\n\nSugerencia: ${relationsError.hint}`
+          `Ocurrió un error al obtener las relaciones de las flotillas: \n\nMensaje de error: ${relationsError.message}\n\nCódigo de error: ${relationsError.code}\n\nDetalles: ${relationsError.details}\n\nSugerencia: ${relationsError.hint}`,
         );
         return null;
       }
@@ -44,7 +44,7 @@ export function useFleets(fleet_id?: string) {
 
       if (fleetError) {
         alert(
-          `Ocurrió un error al obtener la flotilla: \n\nMensaje de error: ${fleetError.message}\n\nCódigo de error: ${fleetError.code}\n\nDetalles: ${fleetError.details}\n\nSugerencia: ${fleetError.hint}`
+          `Ocurrió un error al obtener la flotilla: \n\nMensaje de error: ${fleetError.message}\n\nCódigo de error: ${fleetError.code}\n\nDetalles: ${fleetError.details}\n\nSugerencia: ${fleetError.hint}`,
         );
         return null;
       }
@@ -58,7 +58,7 @@ export function useFleets(fleet_id?: string) {
 
       if (relationsError) {
         alert(
-          `Ocurrió un error al obtener las relaciones de las flotillas: \n\nMensaje de error: ${relationsError.message}\n\nCódigo de error: ${relationsError.code}\n\nDetalles: ${relationsError.details}\n\nSugerencia: ${relationsError.hint}`
+          `Ocurrió un error al obtener las relaciones de las flotillas: \n\nMensaje de error: ${relationsError.message}\n\nCódigo de error: ${relationsError.code}\n\nDetalles: ${relationsError.details}\n\nSugerencia: ${relationsError.hint}`,
         );
         return null;
       }
@@ -72,7 +72,7 @@ export function useFleets(fleet_id?: string) {
 
       if (fleetError) {
         alert(
-          `Ocurrió un error al obtener las flotillas: \n\nMensaje de error: ${fleetError.message}\n\nCódigo de error: ${fleetError.code}\n\nDetalles: ${fleetError.details}\n\nSugerencia: ${fleetError.hint}`
+          `Ocurrió un error al obtener las flotillas: \n\nMensaje de error: ${fleetError.message}\n\nCódigo de error: ${fleetError.code}\n\nDetalles: ${fleetError.details}\n\nSugerencia: ${fleetError.hint}`,
         );
         return null;
       }
@@ -90,13 +90,13 @@ export function useFleets(fleet_id?: string) {
     const { data: userData, error: userError } = await supabase
       .from("profiles")
       .select(
-        "id, name, father_last_name, mother_last_name, position, role, is_fully_registered"
+        "id, name, father_last_name, mother_last_name, position, role, is_fully_registered",
       )
       .in("id", userIds);
 
     if (userError) {
       alert(
-        `Ocurrió un error al obtener los usuarios: \n\nMensaje de error: ${userError.message}\n\nCódigo de error: ${userError.code}\n\nDetalles: ${userError.details}\n\nSugerencia: ${userError.hint}`
+        `Ocurrió un error al obtener los usuarios: \n\nMensaje de error: ${userError.message}\n\nCódigo de error: ${userError.code}\n\nDetalles: ${userError.details}\n\nSugerencia: ${userError.hint}`,
       );
     }
 
@@ -104,20 +104,20 @@ export function useFleets(fleet_id?: string) {
     const { data: vehicleData, error: vehicleError } = await supabase
       .from("vehicles")
       .select(
-        "id, brand, sub_brand, year, plate, serial_number, economic_number, gasoline_threshold"
+        "id, brand, sub_brand, year, plate, serial_number, economic_number, gasoline_threshold",
       )
       .in("id", vehicleIds);
 
     if (vehicleError) {
       alert(
-        `Ocurrió un error al obtener los vehículos: \n\nMensaje de error: ${vehicleError.message}\n\nCódigo de error: ${vehicleError.code}\n\nDetalles: ${vehicleError.details}\n\nSugerencia: ${vehicleError.hint}`
+        `Ocurrió un error al obtener los vehículos: \n\nMensaje de error: ${vehicleError.message}\n\nCódigo de error: ${vehicleError.code}\n\nDetalles: ${vehicleError.details}\n\nSugerencia: ${vehicleError.hint}`,
       );
     }
 
     // Map relations to fleets
     const fleetsWithDetails = fleetData.map((fleet) => {
       const fleetRelations = relations.filter(
-        (rel) => rel.fleet_id === fleet.id
+        (rel) => rel.fleet_id === fleet.id,
       );
 
       const users = fleetRelations
@@ -126,7 +126,7 @@ export function useFleets(fleet_id?: string) {
 
       const vehicles = fleetRelations
         .map((rel) =>
-          vehicleData?.find((vehicle) => vehicle.id === rel.vehicle_id)
+          vehicleData?.find((vehicle) => vehicle.id === rel.vehicle_id),
         )
         .filter(Boolean) as Vehicle[];
 

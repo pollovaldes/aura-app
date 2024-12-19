@@ -1,6 +1,14 @@
 import { Stack, useLocalSearchParams } from "expo-router";
 import React, { useState, useMemo } from "react";
-import { View, Text, FlatList, RefreshControl, Alert, Platform, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  RefreshControl,
+  Alert,
+  Platform,
+  Pressable,
+} from "react-native";
 import useAllGasolineLoads from "@/hooks/GasolineDataTest/useAllGasolineLoadHistory";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
@@ -63,8 +71,9 @@ export default function GasolineLoadHistory() {
   const [refreshing, setRefreshing] = useState(false);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [dateFilter, setDateFilter] = useState<DateFilter>("all");
-  
-  const { allGasolineLoads, loading, error, refetch } = useAllGasolineLoads(vehicleId);
+
+  const { allGasolineLoads, loading, error, refetch } =
+    useAllGasolineLoads(vehicleId);
 
   const closeModal = () => setActiveModal(null);
 
@@ -86,11 +95,11 @@ export default function GasolineLoadHistory() {
     switch (dateFilter) {
       case "week":
         const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-        return data.filter(item => new Date(item.requested_at) >= weekAgo);
+        return data.filter((item) => new Date(item.requested_at) >= weekAgo);
       case "month":
         const monthAgo = new Date(today.getTime());
         monthAgo.setMonth(monthAgo.getMonth() - 1);
-        return data.filter(item => new Date(item.requested_at) >= monthAgo);
+        return data.filter((item) => new Date(item.requested_at) >= monthAgo);
       default:
         return data;
     }
@@ -98,9 +107,9 @@ export default function GasolineLoadHistory() {
 
   const filteredData = useMemo(() => {
     if (!allGasolineLoads) return [];
-    
+
     // First filter by status using the SegmentedControl
-    const statusFiltered = allGasolineLoads.filter(item => {
+    const statusFiltered = allGasolineLoads.filter((item) => {
       switch (currentTabIndex) {
         case 1:
           return item.status === "pending";
@@ -135,12 +144,15 @@ export default function GasolineLoadHistory() {
               <FormButton
                 key={filter}
                 title={
-                  filter === "all" ? "Todos los registros" :
-                  filter === "week" ? "Última semana" : "Último mes"
+                  filter === "all"
+                    ? "Todos los registros"
+                    : filter === "week"
+                      ? "Última semana"
+                      : "Último mes"
                 }
-                onPress={() => { 
-                  setDateFilter(filter as DateFilter); 
-                  closeModal(); 
+                onPress={() => {
+                  setDateFilter(filter as DateFilter);
+                  closeModal();
                 }}
               />
             ))}
@@ -188,7 +200,7 @@ export default function GasolineLoadHistory() {
   return (
     <>
       <DateFilterModal />
-      <Stack.Screen 
+      <Stack.Screen
         options={{
           title: "Historial de Cargas",
           headerLargeTitle: false,
@@ -197,12 +209,14 @@ export default function GasolineLoadHistory() {
               <Filter color={styles.filterIcon.color} />
             </Pressable>
           ),
-        }} 
+        }}
       />
       <SegmentedControl
         values={["Todos", "Pendientes", "Aprobados", "Rechazados"]}
         selectedIndex={currentTabIndex}
-        onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
+        onChange={(event) =>
+          setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)
+        }
         style={[
           styles.segmentedControl,
           { marginTop: Platform.OS === "ios" ? headerHeight + 6 : 6 },
@@ -221,7 +235,9 @@ export default function GasolineLoadHistory() {
                     status={item.status}
                     statesConfig={statesConfig}
                   />
-                  <Text style={styles.title}>${item.amount.toFixed(2)} MXN</Text>
+                  <Text style={styles.title}>
+                    ${item.amount.toFixed(2)} MXN
+                  </Text>
                 </View>
                 <View>
                   <Text style={styles.subtitle}>

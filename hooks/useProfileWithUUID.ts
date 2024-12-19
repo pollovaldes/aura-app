@@ -35,17 +35,17 @@ export default function useProfilesWithUUIDs(uuids: string[]) {
           }
           if (error) {
             setError(
-              `Error fetching profile with UUID ${uuid}: ${error.message}`
+              `Error fetching profile with UUID ${uuid}: ${error.message}`,
             );
             return null;
           }
           return null;
-        })
+        }),
       );
 
       // Filter out any null values (failed fetches)
       setProfiles(
-        fetchedProfiles.filter((profile): profile is User => profile !== null)
+        fetchedProfiles.filter((profile): profile is User => profile !== null),
       );
     } catch (error) {
       setError(`Error fetching profiles: ${error}`);

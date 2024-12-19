@@ -4,11 +4,7 @@ import { ScrollView, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { router, Stack } from "expo-router";
 import React from "react";
-import {
-  Code,
-  GlobeLock,
-  Handshake
-} from "lucide-react-native";
+import { Code, GlobeLock, Handshake } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import { openBrowserAsync } from "expo-web-browser";
 
@@ -41,7 +37,7 @@ export default function Index() {
               backgroundColor={colorPalette.orange[500]}
               onPress={() =>
                 openBrowserAsync(
-                  "https://raw.githubusercontent.com/pollovaldes/aura-app/main/terms.txt"
+                  "https://raw.githubusercontent.com/pollovaldes/aura-app/main/terms.txt",
                 )
               }
             />
@@ -51,7 +47,7 @@ export default function Index() {
               backgroundColor={colorPalette.neutral[500]}
               onPress={() =>
                 openBrowserAsync(
-                  "https://raw.githubusercontent.com/pollovaldes/aura-app/main/privacy-policy.txt"
+                  "https://raw.githubusercontent.com/pollovaldes/aura-app/main/privacy-policy.txt",
                 )
               }
             />

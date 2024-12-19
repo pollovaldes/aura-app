@@ -32,7 +32,7 @@ export default function AddFleetModal({ closeModal, fetchFleets }: ModalProps) {
 
     if (error) {
       alert(
-        `Ocurrió un error al crear la flotilla: \n\nMensaje de error: ${error.message}\n\nCódigo de error: ${error.code}\n\nDetalles: ${error.details}\n\nSugerencia: ${error.hint}`
+        `Ocurrió un error al crear la flotilla: \n\nMensaje de error: ${error.message}\n\nCódigo de error: ${error.code}\n\nDetalles: ${error.details}\n\nSugerencia: ${error.hint}`,
       );
       return;
     }

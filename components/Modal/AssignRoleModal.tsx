@@ -18,10 +18,10 @@ export default function AssignRoleModal({
       <FormTitle title="Asignar Rol" />
       <View style={styles.group}>
         <View style={styles.optionsContainer}>
-          <Pressable 
-            style={({pressed}) => [
+          <Pressable
+            style={({ pressed }) => [
               styles.roleOption,
-              pressed && styles.roleOptionPressed
+              pressed && styles.roleOptionPressed,
             ]}
             onPress={() => assignUserRole("ADMIN")}
           >
@@ -29,26 +29,30 @@ export default function AssignRoleModal({
             <Text style={styles.roleDescription}>Acceso total al sistema</Text>
           </Pressable>
 
-          <Pressable 
-            style={({pressed}) => [
+          <Pressable
+            style={({ pressed }) => [
               styles.roleOption,
-              pressed && styles.roleOptionPressed
+              pressed && styles.roleOptionPressed,
             ]}
             onPress={() => assignUserRole("DRIVER")}
           >
             <Text style={styles.roleTitle}>Operador</Text>
-            <Text style={styles.roleDescription}>Acceso a funciones operativas</Text>
+            <Text style={styles.roleDescription}>
+              Acceso a funciones operativas
+            </Text>
           </Pressable>
 
-          <Pressable 
-            style={({pressed}) => [
+          <Pressable
+            style={({ pressed }) => [
               styles.roleOption,
-              pressed && styles.roleOptionPressed
+              pressed && styles.roleOptionPressed,
             ]}
             onPress={() => assignUserRole("NO_ROLE")}
           >
             <Text style={styles.roleTitle}>Denegar acceso</Text>
-            <Text style={styles.roleDescription}>Revocar todos los permisos</Text>
+            <Text style={styles.roleDescription}>
+              Revocar todos los permisos
+            </Text>
           </Pressable>
         </View>
 
@@ -56,7 +60,7 @@ export default function AssignRoleModal({
           Al seleccionar una de estas opciones, los permisos de visualización
           del usuario se actualizarán en tiempo real.
         </Text>
-        
+
         <FormButton title="Cerrar" onPress={closeModal} />
       </View>
     </View>

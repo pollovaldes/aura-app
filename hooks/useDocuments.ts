@@ -22,7 +22,7 @@ export default function useDocuments() {
 
     if (error) {
       alert(
-        `Ocurrió un error al obtener los documentos: \n\nMensaje de error: ${error.message}\n\nCódigo de error: ${error.code}\n\nDetalles: ${error.details}\n\nSugerencia: ${error.hint}`
+        `Ocurrió un error al obtener los documentos: \n\nMensaje de error: ${error.message}\n\nCódigo de error: ${error.code}\n\nDetalles: ${error.details}\n\nSugerencia: ${error.hint}`,
       );
       setAreDocumentsLoading(false);
       return;

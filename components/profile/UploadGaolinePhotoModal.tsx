@@ -1,7 +1,5 @@
 //Borrar alv
 
-
-
 import React from "react";
 import { View, Text, Alert, ActivityIndicator } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -36,7 +34,7 @@ export default function UploadGasolinePhotoModal({
             closeModal();
           },
         },
-      ]
+      ],
     );
   };
 
@@ -54,10 +52,7 @@ export default function UploadGasolinePhotoModal({
       ) : (
         <View style={styles.group}>
           <View style={styles.group}>
-            <FormButton
-              title="Choose New Photo"
-              onPress={handleSelectPhoto}
-            />
+            <FormButton title="Choose New Photo" onPress={handleSelectPhoto} />
           </View>
           <View style={styles.group}>
             <FormButton

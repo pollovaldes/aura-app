@@ -12,7 +12,9 @@ interface AllGasolineLoads {
 }
 
 const useAllGasolineLoads = (vehicleId: string) => {
-  const [allGasolineLoads, setAllGasolineLoads] = useState<AllGasolineLoads[]>([]);
+  const [allGasolineLoads, setAllGasolineLoads] = useState<AllGasolineLoads[]>(
+    [],
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

@@ -16,7 +16,7 @@ export default function TermsAndPrivacy() {
         style={styles.link}
         onPress={() =>
           openBrowserAsync(
-            "https://raw.githubusercontent.com/pollovaldes/aura-app/main/terms.txt"
+            "https://raw.githubusercontent.com/pollovaldes/aura-app/main/terms.txt",
           )
         }
       >
@@ -27,7 +27,7 @@ export default function TermsAndPrivacy() {
         style={styles.link}
         onPress={() =>
           openBrowserAsync(
-            "https://raw.githubusercontent.com/pollovaldes/aura-app/main/privacy-policy.txt"
+            "https://raw.githubusercontent.com/pollovaldes/aura-app/main/privacy-policy.txt",
           )
         }
       >

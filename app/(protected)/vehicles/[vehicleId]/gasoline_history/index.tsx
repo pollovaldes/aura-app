@@ -1,11 +1,5 @@
 import React, { useState, useCallback } from "react";
-import {
-  View,
-  Text,
-  Pressable,
-  FlatList,
-  RefreshControl,
-} from "react-native";
+import { View, Text, Pressable, FlatList, RefreshControl } from "react-native";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import useProfile from "@/hooks/useProfile";
@@ -39,56 +33,59 @@ interface GasolineHistoryContentProps {
   vehicleId: string;
 }
 
-const GasolineHistoryContent = React.memo(({ 
-  profile,
-  vehicle, 
-  isAdmin, 
-  gasolineStatus, 
-  isGasolineStatusLoading, 
-  updateGasolineThreshold,
-  vehicleId
-}: GasolineHistoryContentProps) => {
-  const { styles } = useStyles(stylesheet);
-  const router = useRouter();
-  const [selectedView, setSelectedView] = useState(0); // 0 for weekly, 1 for monthly
-  
-  const handleHistoryPress = useCallback(() => {
-    router.push(`/vehicles/${vehicleId}/gasoline_history/GasolineLoadHistory`); // !Cambiar ruta o eliminar una de las dos gasolinas
-  }, [vehicleId, router]);
+const GasolineHistoryContent = React.memo(
+  ({
+    profile,
+    vehicle,
+    isAdmin,
+    gasolineStatus,
+    isGasolineStatusLoading,
+    updateGasolineThreshold,
+    vehicleId,
+  }: GasolineHistoryContentProps) => {
+    const { styles } = useStyles(stylesheet);
+    const router = useRouter();
+    const [selectedView, setSelectedView] = useState(0); // 0 for weekly, 1 for monthly
 
-  return (
-    <View style={styles.contentContainer}>
-      {<PendingGasolineLoads vehicleId={vehicle.id} profile={profile}/>}
-      <GasolineThreshold
-        gasolineStatus={gasolineStatus}
-        isLoading={isGasolineStatusLoading}
-        canEdit={isAdmin}
-        onUpdateThreshold={updateGasolineThreshold}
-      />
-      
-      <SegmentedControl
-        values={["Semanal", "Mensual"]}
-        selectedIndex={selectedView}
-        onChange={(event) => setSelectedView(event.nativeEvent.selectedSegmentIndex)}
-        style={styles.segmentedControl}
-      />
+    const handleHistoryPress = useCallback(() => {
+      router.push(
+        `/vehicles/${vehicleId}/gasoline_history/GasolineLoadHistory`,
+      ); // !Cambiar ruta o eliminar una de las dos gasolinas
+    }, [vehicleId, router]);
 
-      {selectedView === 0 ? (
-        <WeeklyGasolineChart vehicleId={vehicle.id} />
-      ) : (
-        <MonthlyGasolineChart vehicleId={vehicle.id} />
-      )}
-      
-      <RecentGasolineLoads vehicleId={vehicle.id} />
-      <Pressable
-        style={styles.historyButton}
-        onPress={handleHistoryPress}
-      >
-        <Text style={styles.viewHistoryButton}>Ver Historial Completo</Text>
-      </Pressable>
-    </View>
-  );
-});
+    return (
+      <View style={styles.contentContainer}>
+        {<PendingGasolineLoads vehicleId={vehicle.id} profile={profile} />}
+        <GasolineThreshold
+          gasolineStatus={gasolineStatus}
+          isLoading={isGasolineStatusLoading}
+          canEdit={isAdmin}
+          onUpdateThreshold={updateGasolineThreshold}
+        />
+
+        <SegmentedControl
+          values={["Semanal", "Mensual"]}
+          selectedIndex={selectedView}
+          onChange={(event) =>
+            setSelectedView(event.nativeEvent.selectedSegmentIndex)
+          }
+          style={styles.segmentedControl}
+        />
+
+        {selectedView === 0 ? (
+          <WeeklyGasolineChart vehicleId={vehicle.id} />
+        ) : (
+          <MonthlyGasolineChart vehicleId={vehicle.id} />
+        )}
+
+        <RecentGasolineLoads vehicleId={vehicle.id} />
+        <Pressable style={styles.historyButton} onPress={handleHistoryPress}>
+          <Text style={styles.viewHistoryButton}>Ver Historial Completo</Text>
+        </Pressable>
+      </View>
+    );
+  },
+);
 
 export default function GasolineHistory() {
   const { styles } = useStyles(stylesheet);
@@ -112,10 +109,10 @@ export default function GasolineHistory() {
     gasolineStatus,
     isGasolineStatusLoading,
     fetchGasolineStatus,
-    updateGasolineThreshold
+    updateGasolineThreshold,
   } = useGasolineStatus(vehicle?.id); // TODO arreglar todos los pdos de supabase
 
-  const isAdmin = profile?.role === 'ADMIN' || profile?.role === 'OWNER';
+  const isAdmin = profile?.role === "ADMIN" || profile?.role === "OWNER";
 
   // Add refresh function
   const onRefresh = useCallback(async () => {
@@ -265,7 +262,7 @@ const stylesheet = createStyleSheet((theme) => ({
     textAlign: "center",
   },
   segmentedControl: {
-    width: '95%',
+    width: "95%",
     marginVertical: 10,
   },
 }));

@@ -20,7 +20,7 @@ const GroupedList = ({
     (child) =>
       child !== null &&
       React.isValidElement(child) &&
-      (child.props.show === undefined || child.props.show === true) // Include rows without `show` or with `show={true}`
+      (child.props.show === undefined || child.props.show === true), // Include rows without `show` or with `show={true}`
   );
   const rowsCount = rows.length;
 
@@ -50,7 +50,7 @@ const GroupedList = ({
       {rows.map((row, index) =>
         React.cloneElement(row as React.ReactElement, {
           style: isWide ? styles.rowWide : getRowStyle(index), // Apply styles
-        })
+        }),
       )}
       {footer && (
         <View style={styles.footer}>

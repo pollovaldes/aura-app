@@ -24,7 +24,7 @@ export default function EditDocument({
   const { styles } = useStyles(stylesheet);
   const [documentNewName, setDocumentNewName] = React.useState(document.title);
   const [documentNewDescription, setDocumentNewDescription] = React.useState(
-    document.description
+    document.description,
   );
   const [isDocumentUpdating, setIsDocumentUpdating] = React.useState(false);
 
@@ -55,7 +55,7 @@ export default function EditDocument({
             router.back();
           },
         },
-      ]
+      ],
     );
   };
 
@@ -69,7 +69,7 @@ export default function EditDocument({
 
     if (error) {
       alert(
-        `Ocurrió un error al actualizar el nombre o descripción del archivo \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}`
+        `Ocurrió un error al actualizar el nombre o descripción del archivo \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}`,
       );
     }
 

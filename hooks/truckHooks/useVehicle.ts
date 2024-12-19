@@ -3,7 +3,8 @@ import { supabase } from "@/lib/supabase";
 import VehiclesContext from "@/context/VehiclesContext";
 
 export default function useVehicle() {
-  const { setVehicles, vehiclesAreLoading, setVehiclesAreLoading, vehicles } = useContext(VehiclesContext);
+  const { setVehicles, vehiclesAreLoading, setVehiclesAreLoading, vehicles } =
+    useContext(VehiclesContext);
 
   const fetchVehicles = async () => {
     setVehiclesAreLoading(true);

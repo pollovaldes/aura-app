@@ -117,7 +117,7 @@ export default function Index() {
   }
 
   const document = maintenanceDocuments.find(
-    (Document) => Document.document_id === documentId
+    (Document) => Document.document_id === documentId,
   );
 
   if (!document) {
@@ -174,7 +174,7 @@ export default function Index() {
       const { data: blob, error } = await supabase.storage
         .from("maintenance_files")
         .download(
-          `${document.vehicle_id}/${document.maintenance_id}/${document.document_id}`
+          `${document.vehicle_id}/${document.maintenance_id}/${document.document_id}`,
         );
 
       if (error) {

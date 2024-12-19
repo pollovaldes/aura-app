@@ -11,16 +11,20 @@ export interface GasolineStatus {
 }
 
 export default function useGasolineStatus(vehicleId: string | undefined) {
-  const [gasolineStatus, setGasolineStatus] = useState<GasolineStatus | null>(null);
+  const [gasolineStatus, setGasolineStatus] = useState<GasolineStatus | null>(
+    null,
+  );
   const [isGasolineStatusLoading, setIsGasolineStatusLoading] = useState(true);
 
   const shouldReset = (lastResetDate: string) => {
     const now = new Date();
     const lastReset = new Date(lastResetDate);
-    
+
     // Find the next Saturday midnight after the last reset
     const nextResetDate = new Date(lastReset);
-    nextResetDate.setDate(lastReset.getDate() + ((6 - lastReset.getDay() + 7) % 7));
+    nextResetDate.setDate(
+      lastReset.getDate() + ((6 - lastReset.getDay() + 7) % 7),
+    );
     nextResetDate.setHours(0, 0, 0, 0);
 
     // If we've passed the next reset date, we should reset
@@ -33,13 +37,13 @@ export default function useGasolineStatus(vehicleId: string | undefined) {
     if (shouldReset(currentStatus.last_reset_date)) {
       console.log("Resetting gasoline status...");
       const now = new Date();
-      
+
       const { error } = await supabase
         .from("vehicle_gasoline_status_two")
         .update({
           spent_gasoline: 0,
           spent_liters: 0,
-          last_reset_date: now.toISOString()
+          last_reset_date: now.toISOString(),
         })
         .eq("vehicle_id", vehicleId);
 
@@ -102,7 +106,7 @@ export default function useGasolineStatus(vehicleId: string | undefined) {
 
   useEffect(() => {
     fetchGasolineStatus();
-    
+
     // Set up an interval to check for reset every minute
     const interval = setInterval(() => {
       if (gasolineStatus) {
@@ -113,10 +117,10 @@ export default function useGasolineStatus(vehicleId: string | undefined) {
     return () => clearInterval(interval);
   }, [vehicleId]);
 
-  return { 
-    gasolineStatus, 
-    isGasolineStatusLoading, 
+  return {
+    gasolineStatus,
+    isGasolineStatusLoading,
     fetchGasolineStatus,
-    updateGasolineThreshold 
+    updateGasolineThreshold,
   };
 }

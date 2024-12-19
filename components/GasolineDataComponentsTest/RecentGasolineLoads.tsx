@@ -3,7 +3,11 @@ import { View, Text, FlatList } from "react-native";
 import useRecentGasolineLoads from "@/hooks/GasolineDataTest/useRecentGasolineLoads";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
-export default function RecentGasolineLoads({ vehicleId }: { vehicleId: string }) {
+export default function RecentGasolineLoads({
+  vehicleId,
+}: {
+  vehicleId: string;
+}) {
   const { styles } = useStyles(stylesheet);
   const { gasolineLoads, loading } = useRecentGasolineLoads(vehicleId);
 
@@ -24,10 +28,10 @@ export default function RecentGasolineLoads({ vehicleId }: { vehicleId: string }
               <Text style={styles.liters}>{item.liters.toFixed(2)} L</Text>
             </View>
             <Text style={styles.date}>
-              {new Date(item.approved_at).toLocaleDateString('es-MX', {
-                weekday: 'short',
-                day: 'numeric',
-                month: 'short'
+              {new Date(item.approved_at).toLocaleDateString("es-MX", {
+                weekday: "short",
+                day: "numeric",
+                month: "short",
               })}
             </Text>
           </View>
@@ -39,7 +43,7 @@ export default function RecentGasolineLoads({ vehicleId }: { vehicleId: string }
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
-    width: '95%',
+    width: "95%",
     padding: 25,
     backgroundColor: theme.ui.colors.card,
     borderRadius: 16,
@@ -47,14 +51,14 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 15,
     color: theme.headerButtons.color,
   },
   card: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     backgroundColor: theme.ui.colors.background,
     padding: 15,
     borderRadius: 12,
@@ -62,7 +66,7 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   amount: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: theme.headerButtons.color,
   },
   date: {
@@ -72,7 +76,7 @@ const stylesheet = createStyleSheet((theme) => ({
   loadingText: {
     fontSize: 16,
     color: theme.textPresets.subtitle,
-    textAlign: 'center',
+    textAlign: "center",
     padding: 20,
   },
   liters: {

@@ -25,7 +25,7 @@ export default function useMaintenance(vehicleId?: string, recordId?: string) {
     const { data, error } = await supabase
       .from("profiles")
       .select(
-        "id, name, father_last_name, mother_last_name, position, role, is_fully_registered"
+        "id, name, father_last_name, mother_last_name, position, role, is_fully_registered",
       )
       .eq("id", userId)
       .single();
@@ -44,7 +44,7 @@ export default function useMaintenance(vehicleId?: string, recordId?: string) {
     let query = supabase
       .from("maintenance")
       .select(
-        "id, vehicle_id, issued_by, issued_datetime, resolved_by, resolved_datetime, title, description, status"
+        "id, vehicle_id, issued_by, issued_datetime, resolved_by, resolved_datetime, title, description, status",
       );
 
     if (vehicleId) {
@@ -63,7 +63,7 @@ export default function useMaintenance(vehicleId?: string, recordId?: string) {
           `Mensaje de error: ${error.message}\n\n` +
           `Código de error: ${error.code}\n\n` +
           `Detalles: ${error.details}\n\n` +
-          `Sugerencia: ${error.hint}`
+          `Sugerencia: ${error.hint}`,
       );
       setAreMaintenanceRecordsLoading(false);
       return;
@@ -93,7 +93,7 @@ export default function useMaintenance(vehicleId?: string, recordId?: string) {
           description: record.description,
           status: record.status,
         };
-      })
+      }),
     );
 
     setMaintenanceRecords(enrichedRecords);

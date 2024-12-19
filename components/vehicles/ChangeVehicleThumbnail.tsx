@@ -55,7 +55,7 @@ export default function ChangeVehicleImageModal({
             closeModal();
           },
         },
-      ]
+      ],
     );
   };
 
@@ -72,7 +72,7 @@ export default function ChangeVehicleImageModal({
             await deletePhotoFromGalley(vehicle.id, fileName);
           },
         },
-      ]
+      ],
     );
   };
 

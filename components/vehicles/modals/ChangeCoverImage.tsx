@@ -40,7 +40,7 @@ export default function ChangeCoverImage({
             closeModal();
           },
         },
-      ]
+      ],
     );
   };
 

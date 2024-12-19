@@ -24,7 +24,11 @@ export default function VehicleList() {
     return (
       <ActionButtonGroup>
         <ActionButton onPress={handleDownloadCsv} Icon={Download} />
-        <ActionButton onPress={() => setIsModalVisible(true)} Icon={Plus} show={canEdit} />
+        <ActionButton
+          onPress={() => setIsModalVisible(true)}
+          Icon={Plus}
+          show={canEdit}
+        />
       </ActionButtonGroup>
     );
   };
@@ -37,7 +41,9 @@ export default function VehicleList() {
             headerRight: undefined,
           }}
         />
-        <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando vehículos"} />
+        <FetchingIndicator
+          caption={isProfileLoading ? "Cargando perfil" : "Cargando vehículos"}
+        />
       </>
     );
   }
@@ -86,7 +92,11 @@ export default function VehicleList() {
             headerRight: headerRight,
           }}
         />
-        <EmptyScreen caption="Ningún vehículo por aquí" buttonCaption="Actualizar" retryFunction={fetchVehicles} />
+        <EmptyScreen
+          caption="Ningún vehículo por aquí"
+          buttonCaption="Actualizar"
+          retryFunction={fetchVehicles}
+        />
       </>
     );
   }
@@ -119,7 +129,9 @@ export default function VehicleList() {
             leading={<VehicleThumbnail vehicleId={item.id} />}
             content={
               <>
-                <Text style={styles.itemTitle}>{`${item.brand} ${item.sub_brand} (${item.year})`}</Text>
+                <Text
+                  style={styles.itemTitle}
+                >{`${item.brand} ${item.sub_brand} (${item.year})`}</Text>
                 <Text style={styles.itemDetails}>
                   {`Placa: ${item.plate}\nNúmero económico: ${item.economic_number}`}
                 </Text>
@@ -129,11 +141,18 @@ export default function VehicleList() {
           />
         )}
         ListEmptyComponent={
-          <EmptyScreen caption="Ningún vehículo por aquí" buttonCaption="Actualizar" retryFunction={fetchVehicles} />
+          <EmptyScreen
+            caption="Ningún vehículo por aquí"
+            buttonCaption="Actualizar"
+            retryFunction={fetchVehicles}
+          />
         }
       />
 
-      <AddVehicleComponent visible={isModalVisible} onClose={() => setIsModalVisible(false)} />
+      <AddVehicleComponent
+        visible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+      />
     </>
   );
 }

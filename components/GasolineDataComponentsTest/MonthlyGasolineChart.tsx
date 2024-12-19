@@ -19,21 +19,25 @@ const chartConfig = {
   propsForDots: {
     r: "6",
     strokeWidth: "2",
-    stroke: "#fafafa"
-  }
+    stroke: "#fafafa",
+  },
 };
 
-export default function MonthlyGasolineChart({ vehicleId }: { vehicleId: string }) {
+export default function MonthlyGasolineChart({
+  vehicleId,
+}: {
+  vehicleId: string;
+}) {
   const { styles } = useStyles(stylesheet);
   const { monthlyData, loading } = useMonthlyGasolineData(vehicleId);
 
   const chartData = useMemo(() => {
     const sortedData = monthlyData?.slice(-4) || []; // Show last 4 weeks
-    const labels = sortedData.map(item => {
+    const labels = sortedData.map((item) => {
       const date = new Date(item.week_start_date);
       return `Sem ${date.getDate()}/${date.getMonth() + 1}`;
     });
-    const data = sortedData.map(item => item.total_spent || 0);
+    const data = sortedData.map((item) => item.total_spent || 0);
 
     return {
       labels,
@@ -68,8 +72,8 @@ export default function MonthlyGasolineChart({ vehicleId }: { vehicleId: string 
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
-    alignItems: 'center',
-    width: '95%',
+    alignItems: "center",
+    width: "95%",
     padding: 25,
     backgroundColor: theme.ui.colors.card,
     borderRadius: 16,
@@ -85,7 +89,7 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 15,
     color: theme.headerButtons.color,
   },

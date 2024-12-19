@@ -24,13 +24,13 @@ export function useAddPeople() {
   const handleCreatePerson = async () => {
     setLoading(true);
     try {
-
-      const { data: userData, error: authError } = await supabase.auth.admin.createUser({
-        email,
-        password,
-        phone,
-        email_confirm: true,
-      });
+      const { data: userData, error: authError } =
+        await supabase.auth.admin.createUser({
+          email,
+          password,
+          phone,
+          email_confirm: true,
+        });
 
       if (authError) {
         console.error("Error al crear usuario:", authError);
@@ -39,16 +39,15 @@ export function useAddPeople() {
 
       const { error: profilleError } = await supabase
         .from("profiles")
-        .update({ 
-          nombre, 
-          apellido_paterno, 
-          apellido_materno, 
-          email, 
-          phone 
+        .update({
+          nombre,
+          apellido_paterno,
+          apellido_materno,
+          email,
+          phone,
         })
         .eq("id", userData.user.id)
         .single();
-
 
       if (profilleError) {
         console.error("Error al crear perfil:", profilleError);
@@ -75,6 +74,6 @@ export function useAddPeople() {
     setPhone,
     setPassword,
     resetFields,
-    handleCreatePerson
+    handleCreatePerson,
   };
 }

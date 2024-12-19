@@ -149,7 +149,7 @@ export const useSessionContext = () => {
   const context = useContext(SessionContext);
   if (context === undefined) {
     throw new Error(
-      `useSessionContext must be used within a SessionContextProvider.`
+      `useSessionContext must be used within a SessionContextProvider.`,
     );
   }
 
@@ -165,7 +165,7 @@ export function useSupabaseClient<
   const context = useContext(SessionContext);
   if (context === undefined) {
     throw new Error(
-      `useSupabaseClient must be used within a SessionContextProvider.`
+      `useSupabaseClient must be used within a SessionContextProvider.`,
     );
   }
 

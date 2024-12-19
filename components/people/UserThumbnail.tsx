@@ -46,8 +46,8 @@ export default function UserThumbnail({
           setUsers(
             (prevUsers: User[] | null) =>
               prevUsers?.map((user) =>
-                user.id === userId ? { ...user, thumbnail } : user
-              ) || null
+                user.id === userId ? { ...user, thumbnail } : user,
+              ) || null,
           );
         }
       } catch (e) {

@@ -25,9 +25,7 @@ interface UsersContextProviderProps {
   children: ReactNode;
 }
 
-export function UsersContextProvider({
-  children,
-}: UsersContextProviderProps) {
+export function UsersContextProvider({ children }: UsersContextProviderProps) {
   const [users, setUsers] = useState<User[] | null>(null);
   const [usersAreLoading, setUsersAreLoading] = useState<boolean>(true);
 

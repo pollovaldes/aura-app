@@ -5,7 +5,7 @@ import useWeeklyGasolineData from "@/hooks/GasolineDataTest/useWeeklyGasolineDat
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 const screenWidth = Dimensions.get("window").width;
-const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+const dayNames = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 
 const chartConfig = {
   backgroundColor: "#1e88e5", // Changed from "#1e88e5"
@@ -20,11 +20,15 @@ const chartConfig = {
   propsForDots: {
     r: "6",
     strokeWidth: "2",
-    stroke: "#fafafa"
-  }
+    stroke: "#fafafa",
+  },
 };
 
-export default function WeeklyGasolineChart({ vehicleId }: { vehicleId: string }) {
+export default function WeeklyGasolineChart({
+  vehicleId,
+}: {
+  vehicleId: string;
+}) {
   const { styles } = useStyles(stylesheet);
   const { weeklyData, loading } = useWeeklyGasolineData(vehicleId);
 
@@ -67,8 +71,8 @@ export default function WeeklyGasolineChart({ vehicleId }: { vehicleId: string }
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
-    alignItems: 'center',
-    width: '95%',
+    alignItems: "center",
+    width: "95%",
     padding: 25,
     backgroundColor: theme.ui.colors.card,
     borderRadius: 16,
@@ -84,7 +88,7 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 15,
     color: theme.headerButtons.color,
   },

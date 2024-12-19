@@ -57,7 +57,7 @@ export default function AddDocument({
   const uploadDocument = async (documentId: string): Promise<boolean> => {
     if (!document) {
       alert(
-        "No se puede subir el archivo porque no se ha seleccionado ninguno"
+        "No se puede subir el archivo porque no se ha seleccionado ninguno",
       );
       return false;
     }
@@ -85,7 +85,7 @@ export default function AddDocument({
 
     if (error) {
       alert(
-        `Ocurrió un error al subir el archivo \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}`
+        `Ocurrió un error al subir el archivo \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}`,
       );
       return false;
     }
@@ -108,7 +108,7 @@ export default function AddDocument({
 
     if (error && !data) {
       alert(
-        `Ocurrió un error al agregar el documento \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}\n\nCódigo de error: ${error.code}\n\nDetalles: ${error.details}\n\nSugerencia: ${error.hint}`
+        `Ocurrió un error al agregar el documento \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}\n\nCódigo de error: ${error.code}\n\nDetalles: ${error.details}\n\nSugerencia: ${error.hint}`,
       );
       return;
     }

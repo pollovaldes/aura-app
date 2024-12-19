@@ -14,7 +14,7 @@ export default function useProfile() {
     const { data: profileData, error } = await supabase
       .from("profiles")
       .select(
-        "id, name, father_last_name, mother_last_name, position, role, is_fully_registered, birthday"
+        "id, name, father_last_name, mother_last_name, position, role, is_fully_registered, birthday",
       )
       .eq("id", session?.user.id)
       .single();
@@ -49,7 +49,7 @@ export default function useProfile() {
           (payload) => {
             console.log("Change received!", payload);
             router.replace("/");
-          }
+          },
         )
         .subscribe();
 

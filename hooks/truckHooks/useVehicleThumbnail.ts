@@ -28,7 +28,7 @@ const downloadImage = async (vehicleId: string, fileName: string) => {
   if (downloadError) {
     console.error(
       `Error downloading thumbnail for ${vehicleId}: `,
-      downloadError
+      downloadError,
     );
     return null;
   }
@@ -73,7 +73,7 @@ const fetchThumbnail = async (vehicleId: string): Promise<string | null> => {
 
 const selectThumbnail = async (
   vehicleId: string,
-  fetchVehicles: () => void
+  fetchVehicles: () => void,
 ) => {
   const options: ImagePickerOptions = {
     aspect: [16, 9],
@@ -99,14 +99,14 @@ const selectThumbnail = async (
       if (listError) {
         console.error(
           `Error listando imágenes de perfil para ${vehicleId}: `,
-          listError
+          listError,
         );
         return;
       }
 
       if (existingFiles && existingFiles.length > 0) {
         const deletePaths = existingFiles.map(
-          (file) => `${vehicleId}/perfil/${file.name}`
+          (file) => `${vehicleId}/perfil/${file.name}`,
         );
         const { error: deleteError } = await supabase.storage
           .from("imagenes-camiones")
@@ -114,7 +114,7 @@ const selectThumbnail = async (
         if (deleteError) {
           console.error(
             `Error eliminando la foto de perfil existente para ${vehicleId}: `,
-            deleteError.message
+            deleteError.message,
           );
           return;
         }
@@ -128,7 +128,7 @@ const selectThumbnail = async (
       if (uploadError) {
         console.error(
           `Error subiendo la nueva foto de perfil para ${vehicleId}: `,
-          uploadError.message
+          uploadError.message,
         );
       } else {
         // Actualizar la lista de camiones con la nueva imagen
@@ -137,7 +137,7 @@ const selectThumbnail = async (
     } catch (error) {
       console.error(
         `Error al seleccionar foto de perfil para ${vehicleId}: `,
-        error
+        error,
       );
     }
   }
@@ -145,7 +145,7 @@ const selectThumbnail = async (
 
 const addPhotoToGallery = async (
   vehicleId: string,
-  fetchVehicles: () => void
+  fetchVehicles: () => void,
 ) => {
   const options: ImagePickerOptions = {
     mediaTypes: MediaTypeOptions.Images,
@@ -172,7 +172,7 @@ const addPhotoToGallery = async (
       if (uploadError) {
         console.error(
           `Error subiendo la foto a la galería para ${vehicleId}: `,
-          uploadError.message
+          uploadError.message,
         );
       } else {
         // Actualizar la lista de camiones con la nueva imagen de galería
@@ -181,7 +181,7 @@ const addPhotoToGallery = async (
     } catch (error) {
       console.error(
         `Error al agregar foto a la galería para ${vehicleId}: `,
-        error
+        error,
       );
     }
   }
@@ -189,7 +189,7 @@ const addPhotoToGallery = async (
 
 const deleteThumbnail = async (
   vehicleId: string,
-  fetchVehicles: () => void
+  fetchVehicles: () => void,
 ) => {
   try {
     const { data: existingFiles, error: listError } = await supabase.storage
@@ -199,7 +199,7 @@ const deleteThumbnail = async (
     if (listError) {
       console.error(
         `Error listando imágenes de perfil para eliminar: ${vehicleId}: `,
-        listError
+        listError,
       );
       alert("No se pudo listar las imágenes de perfil.");
       return;
@@ -207,7 +207,7 @@ const deleteThumbnail = async (
 
     if (existingFiles && existingFiles.length > 0) {
       const deletePaths = existingFiles.map(
-        (file) => `${vehicleId}/perfil/${file.name}`
+        (file) => `${vehicleId}/perfil/${file.name}`,
       );
       const { error: deleteError } = await supabase.storage
         .from("imagenes-camiones")
@@ -215,7 +215,7 @@ const deleteThumbnail = async (
       if (deleteError) {
         console.error(
           `Error eliminando la foto de perfil para ${vehicleId}: `,
-          deleteError.message
+          deleteError.message,
         );
         alert("No se pudo eliminar la foto de perfil.");
       } else {
@@ -226,7 +226,7 @@ const deleteThumbnail = async (
   } catch (error) {
     console.error(
       `Error al eliminar la foto de perfil para ${vehicleId}: `,
-      error
+      error,
     );
     alert("Ocurrió un error al eliminar la foto de perfil.");
   }
@@ -235,7 +235,7 @@ const deleteThumbnail = async (
 const deletePhotoFromGallery = async (
   vehicleId: string,
   fileName: string,
-  fetchVehicles: () => void
+  fetchVehicles: () => void,
 ) => {
   try {
     const filePath = `${vehicleId}/galeria/${fileName}`;
@@ -246,7 +246,7 @@ const deletePhotoFromGallery = async (
     if (deleteError) {
       console.error(
         `Error eliminando la foto de galería ${fileName} para ${vehicleId}: `,
-        deleteError.message
+        deleteError.message,
       );
       alert("No se pudo eliminar la foto de la galería.");
     } else {
@@ -256,7 +256,7 @@ const deletePhotoFromGallery = async (
   } catch (error) {
     console.error(
       `Error al eliminar la foto de galería para ${vehicleId}: `,
-      error
+      error,
     );
     alert("Ocurrió un error al eliminar la foto de la galería.");
   }
@@ -266,8 +266,7 @@ const useVehicleThumbnail = () => {
   const { fetchVehicles } = useVehicle();
 
   return {
-    fetchThumbnail: (vehicleId: string) =>
-      fetchThumbnail(vehicleId),
+    fetchThumbnail: (vehicleId: string) => fetchThumbnail(vehicleId),
     selectThumbnail: (vehicleId: string) =>
       selectThumbnail(vehicleId, fetchVehicles),
     addPhotoToGallery: (vehicleId: string) =>

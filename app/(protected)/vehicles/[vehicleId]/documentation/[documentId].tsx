@@ -105,7 +105,7 @@ export default function Index() {
   }
 
   const document = documents.find(
-    (Document) => Document.document_id === documentId
+    (Document) => Document.document_id === documentId,
   );
 
   if (!document) {

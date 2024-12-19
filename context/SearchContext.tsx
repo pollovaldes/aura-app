@@ -40,7 +40,9 @@ export function SearchProvider({ children }: SearchProviderProps) {
   };
 
   return (
-    <SearchContext.Provider value={{ searchState, setSearchQuery, clearSearchQuery }}>
+    <SearchContext.Provider
+      value={{ searchState, setSearchQuery, clearSearchQuery }}
+    >
       {children}
     </SearchContext.Provider>
   );

@@ -75,14 +75,16 @@ export default function AddMaintenance({
   const updateFileDescription = (localId: string, description: string) => {
     setFileViews((prev) =>
       prev.map((file) =>
-        file.localId === localId ? { ...file, description } : file
-      )
+        file.localId === localId ? { ...file, description } : file,
+      ),
     );
   };
 
   const updateFileTitle = (localId: string, title: string) => {
     setFileViews((prev) =>
-      prev.map((file) => (file.localId === localId ? { ...file, title } : file))
+      prev.map((file) =>
+        file.localId === localId ? { ...file, title } : file,
+      ),
     );
   };
 
@@ -91,13 +93,13 @@ export default function AddMaintenance({
   const uploadDocumentToStorage = async (
     localId: string,
     maintenanceId: string,
-    documentId: string
+    documentId: string,
   ): Promise<boolean> => {
     const file = fileViews.find((file) => file.localId === localId);
 
     if (!file || !file.document) {
       alert(
-        `No se puede subir el archivo con id: ${localId} porque no se ha seleccionado ninguno`
+        `No se puede subir el archivo con id: ${localId} porque no se ha seleccionado ninguno`,
       );
       return false;
     }
@@ -132,7 +134,7 @@ export default function AddMaintenance({
 
     if (error) {
       alert(
-        `Error subiendo archivo con id: ${localId}\nMensaje de error: ${error.message}`
+        `Error subiendo archivo con id: ${localId}\nMensaje de error: ${error.message}`,
       );
       return false;
     }
@@ -145,7 +147,7 @@ export default function AddMaintenance({
     issued_by: string,
     issued_datetime: string,
     title: string,
-    description: string
+    description: string,
   ) => {
     setIsUploading(true);
 
@@ -183,7 +185,7 @@ export default function AddMaintenance({
 
         if (tableError && !tableData) {
           alert(
-            `Ocurrió un error al agregar el documento \n–––– Detalles del error ––––\n\nMensaje de error: ${tableError.message}\n\nCódigo de error: ${tableError.code}\n\nDetalles: ${tableError.details}\n\nSugerencia: ${tableError.hint}`
+            `Ocurrió un error al agregar el documento \n–––– Detalles del error ––––\n\nMensaje de error: ${tableError.message}\n\nCódigo de error: ${tableError.code}\n\nDetalles: ${tableError.details}\n\nSugerencia: ${tableError.hint}`,
           );
           return;
         }
@@ -191,7 +193,7 @@ export default function AddMaintenance({
         const success = await uploadDocumentToStorage(
           file.localId,
           maintenanceId,
-          tableData[0].document_id
+          tableData[0].document_id,
         );
 
         if (!success) {
@@ -238,8 +240,8 @@ export default function AddMaintenance({
 
         setFileViews((prev) =>
           prev.map((file) =>
-            file.localId === localId ? { ...file, document: null } : file
-          )
+            file.localId === localId ? { ...file, document: null } : file,
+          ),
         );
 
         return;
@@ -250,8 +252,8 @@ export default function AddMaintenance({
           prev.map((file) =>
             file.localId === localId
               ? { ...file, document: result.assets[0] }
-              : file
-          )
+              : file,
+          ),
         );
 
         //IMAGES
@@ -259,8 +261,8 @@ export default function AddMaintenance({
       } else {
         setFileViews((prev) =>
           prev.map((file) =>
-            file.localId === localId ? { ...file, document: null } : file
-          )
+            file.localId === localId ? { ...file, document: null } : file,
+          ),
         );
       }
     } else if (key === "file" || key === "web") {
@@ -274,8 +276,8 @@ export default function AddMaintenance({
 
         setFileViews((prev) =>
           prev.map((file) =>
-            file.localId === localId ? { ...file, document: null } : file
-          )
+            file.localId === localId ? { ...file, document: null } : file,
+          ),
         );
 
         return;
@@ -286,16 +288,16 @@ export default function AddMaintenance({
           prev.map((file) =>
             file.localId === localId
               ? { ...file, document: result.assets[0] }
-              : file
-          )
+              : file,
+          ),
         );
         //FILES
         console.log(result.assets[0]);
       } else {
         setFileViews((prev) =>
           prev.map((file) =>
-            file.localId === localId ? { ...file, document: null } : file
-          )
+            file.localId === localId ? { ...file, document: null } : file,
+          ),
         );
       }
     }
@@ -391,8 +393,8 @@ export default function AddMaintenance({
                           prev.map((file) =>
                             file.localId === item.localId
                               ? { ...file, document: null }
-                              : file
-                          )
+                              : file,
+                          ),
                         )
                       }
                     >
@@ -473,7 +475,7 @@ export default function AddMaintenance({
               profile.id,
               new Date().toISOString(),
               requestTitle,
-              requestDescription
+              requestDescription,
             )
           }
           isDisabled={isUploading}

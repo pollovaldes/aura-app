@@ -1,6 +1,5 @@
 //Borrar, se reemplaza por UserThumbnail
 
-
 import { View, ActivityIndicator, Image } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { UserRound } from "lucide-react-native";

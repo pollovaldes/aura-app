@@ -1,26 +1,23 @@
-import { useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
-import useProfile from './useProfile';
-import { Alert } from 'react-native';
-import * as Notifications from 'expo-notifications';
-
+import { useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import useProfile from "./useProfile";
+import { Alert } from "react-native";
+import * as Notifications from "expo-notifications";
 
 const useGasolineLoads = () => {
-    const { profile, isProfileLoading, fetchProfile } = useProfile();
-    const role = profile?.role;
+  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const role = profile?.role;
 
-    useEffect(() => {
+  useEffect(() => {
+    const insertGasolineLoad = async () => {
+      const { data, error } = await supabase.from("notifications").insert([
+        {
+          user_id: profile?.id,
+          content: "New gasoline load inserted",
+        },
+      ]);
 
-        const insertGasolineLoad = async () => {
-            const { data, error } = await supabase
-                .from('notifications')
-                .insert([
-                    {
-                        user_id: profile?.id,
-                        content: 'New gasoline load inserted',
-                    }]);
-
-                    /* ////Borrar o ver que hacer
+      /* ////Borrar o ver que hacer
             if (error) {
                 console.error('Error inserting gasoline load:', error);
                 Alert.alert('Error', 'Failed to insert gasoline load');
@@ -36,22 +33,25 @@ const useGasolineLoads = () => {
                 });
             }
             */
-        };
+    };
 
-        const channel = supabase.channel('gasoline_loads')
-            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'gasoline_loads' }, (payload) => {
-                // Create supabase notification:
-                //insertGasolineLoad();
+    const channel = supabase
+      .channel("gasoline_loads")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "gasoline_loads" },
+        (payload) => {
+          // Create supabase notification:
+          //insertGasolineLoad();
+          // Expo Notifications
+        },
+      )
+      .subscribe();
 
-                // Expo Notifications
-            })
-            .subscribe();
-
-
-        return () => {
-            supabase.removeChannel(channel);
-        };
-    },[role]);
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [role]);
 };
 
 export default useGasolineLoads;

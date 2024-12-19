@@ -6,9 +6,7 @@ type AssignTruckVehicle = {
   user_id: string | undefined;
 };
 
-export default function useAssignVehicle({
-  user_id,
-}: AssignTruckVehicle) {
+export default function useAssignVehicle({ user_id }: AssignTruckVehicle) {
   const [loading, setLoading] = useState(false);
 
   const assignVehicle = async (vehicle_ids: string[]) => {

@@ -40,7 +40,7 @@ export default function UsersList() {
       const filtered = users.filter((user) =>
         `${user.name} ${user.father_last_name} ${user.mother_last_name}`
           .toLowerCase()
-          .includes(searchQuery.toLowerCase())
+          .includes(searchQuery.toLowerCase()),
       );
       setFilteredUsers(filtered);
     } else {

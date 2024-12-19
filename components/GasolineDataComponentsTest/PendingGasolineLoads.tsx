@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { View, Text, Alert, Pressable } from 'react-native';
+import React, { useState } from "react";
+import { View, Text, Alert, Pressable } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { supabase } from "@/lib/supabase";
-import { FormButton } from '../Form/FormButton';
-import FormInput from '../Form/FormInput';
-import GasolineLoadStatus from './GasolineLoadStatus';
+import { FormButton } from "../Form/FormButton";
+import FormInput from "../Form/FormInput";
+import GasolineLoadStatus from "./GasolineLoadStatus";
 
 interface PendingLoad {
   id: string;
@@ -23,21 +23,24 @@ interface PendingGasolineLoadsProps {
   };
 }
 
-export default function PendingGasolineLoads({ vehicleId, profile }: PendingGasolineLoadsProps) {
+export default function PendingGasolineLoads({
+  vehicleId,
+  profile,
+}: PendingGasolineLoadsProps) {
   const { styles } = useStyles(stylesheet);
   const [pendingLoads, setPendingLoads] = useState<PendingLoad[]>([]);
-  const [rejectReason, setRejectReason] = useState('');
+  const [rejectReason, setRejectReason] = useState("");
   const [selectedLoadId, setSelectedLoadId] = useState<string | null>(null);
 
   const fetchPendingLoads = async () => {
     const { data, error } = await supabase
-      .from('gasoline_loads')
-      .select('*')
-      .eq('vehicle_id', vehicleId)
-      .eq('status', 'pending');
+      .from("gasoline_loads")
+      .select("*")
+      .eq("vehicle_id", vehicleId)
+      .eq("status", "pending");
 
     if (error) {
-      Alert.alert('Error', error.message);
+      Alert.alert("Error", error.message);
     } else {
       setPendingLoads(data);
     }
@@ -45,40 +48,40 @@ export default function PendingGasolineLoads({ vehicleId, profile }: PendingGaso
 
   const handleApprove = async (loadId: string) => {
     const { error } = await supabase
-      .from('gasoline_loads')
+      .from("gasoline_loads")
       .update({
-        status: 'approved',
+        status: "approved",
         approved_at: new Date().toISOString(),
-        approved_by: (await supabase.auth.getUser()).data.user?.id
+        approved_by: (await supabase.auth.getUser()).data.user?.id,
       })
-      .eq('id', loadId);
+      .eq("id", loadId);
 
     if (error) {
-      Alert.alert('Error', error.message);
+      Alert.alert("Error", error.message);
     } else {
       fetchPendingLoads();
-      Alert.alert('Éxito', 'Carga aprobada exitosamente');
+      Alert.alert("Éxito", "Carga aprobada exitosamente");
     }
   };
 
   const handleReject = async (loadId: string) => {
     const { error } = await supabase
-      .from('gasoline_loads')
+      .from("gasoline_loads")
       .update({
-        status: 'rejected',
+        status: "rejected",
         rejection_reason: rejectReason,
         rejected_at: new Date().toISOString(),
-        rejected_by: (await supabase.auth.getUser()).data.user?.id
+        rejected_by: (await supabase.auth.getUser()).data.user?.id,
       })
-      .eq('id', loadId);
+      .eq("id", loadId);
 
     if (error) {
-      Alert.alert('Error', error.message);
+      Alert.alert("Error", error.message);
     } else {
-      setRejectReason('');
+      setRejectReason("");
       setSelectedLoadId(null);
       fetchPendingLoads();
-      Alert.alert('Éxito', 'Carga rechazada exitosamente');
+      Alert.alert("Éxito", "Carga rechazada exitosamente");
     }
   };
 
@@ -86,7 +89,7 @@ export default function PendingGasolineLoads({ vehicleId, profile }: PendingGaso
     fetchPendingLoads();
   }, [vehicleId]);
 
-  if (profile.role !== 'OWNER' && profile.role !== 'ADMIN') {
+  if (profile.role !== "OWNER" && profile.role !== "ADMIN") {
     return <GasolineLoadStatus vehicleId={vehicleId} userId={profile.id} />;
   }
 
@@ -104,16 +107,15 @@ export default function PendingGasolineLoads({ vehicleId, profile }: PendingGaso
           <Text style={styles.loadInfo}>
             Fecha: {new Date(load.requested_at).toLocaleDateString()}
           </Text>
-          
+
           <View style={styles.buttonContainer}>
-            <FormButton 
+            <FormButton
               title="Aprobar"
               onPress={() => handleApprove(load.id)}
             />
-            <FormButton 
+            <FormButton
               title="Rechazar"
               onPress={() => setSelectedLoadId(load.id)}
-              
             />
           </View>
 
@@ -122,9 +124,10 @@ export default function PendingGasolineLoads({ vehicleId, profile }: PendingGaso
               <FormInput
                 placeholder="Razón del rechazo"
                 value={rejectReason}
-                onChangeText={setRejectReason} description={''}                
+                onChangeText={setRejectReason}
+                description={""}
               />
-              <FormButton 
+              <FormButton
                 title="Confirmar Rechazo"
                 onPress={() => handleReject(load.id)}
               />
@@ -138,7 +141,7 @@ export default function PendingGasolineLoads({ vehicleId, profile }: PendingGaso
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
-    width: '95%',
+    width: "95%",
     marginVertical: 10,
     backgroundColor: theme.ui.colors.card,
     borderRadius: 16,
@@ -151,10 +154,10 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: theme.textPresets.main,
     marginBottom: 15,
-    textAlign: 'center',
+    textAlign: "center",
   },
   loadCard: {
     backgroundColor: theme.ui.colors.background,
@@ -168,18 +171,18 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.textPresets.main,
     marginBottom: 8,
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 12,
     gap: 10,
   },
   rejectContainer: {
     marginTop: 15,
     padding: 12,
-    backgroundColor: 'rgba(0,0,0,0.03)',
+    backgroundColor: "rgba(0,0,0,0.03)",
     borderRadius: 8,
     gap: 12,
   },

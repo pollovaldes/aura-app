@@ -376,7 +376,7 @@ export default function maintenanceId() {
                       backgroundColor={colorPalette.green[500]}
                       onPress={() =>
                         router.navigate(
-                          `/vehicles/${document.vehicle_id}/maintenance/${document.maintenance_id}/${document.document_id}/`
+                          `/vehicles/${document.vehicle_id}/maintenance/${document.maintenance_id}/${document.document_id}/`,
                         )
                       }
                     />

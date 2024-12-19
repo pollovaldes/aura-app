@@ -50,9 +50,10 @@ export default function AddGasolineLoadModal({
     if (error) {
       Alert.alert("Error", error.message);
     } else {
-      const successMessage = profile?.role === "OWNER" 
-        ? "Carga de gasolina agregada exitosamente."
-        : "Carga de gasolina enviada y en espera de aprobación.";
+      const successMessage =
+        profile?.role === "OWNER"
+          ? "Carga de gasolina agregada exitosamente."
+          : "Carga de gasolina enviada y en espera de aprobación.";
       Alert.alert("Éxito", successMessage);
       onClose();
       setFormData({ amount: "", liters: "", status: "pending" });

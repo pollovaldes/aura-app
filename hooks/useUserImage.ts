@@ -1,8 +1,7 @@
 //Creo que tambien se puede ir alv
 
-
-import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 
 export const useUserImage = (userId: string) => {
   const [imageUri, setImageUri] = useState<string | null>(null);
@@ -24,11 +23,11 @@ export const useUserImage = (userId: string) => {
         setLoading(true);
         console.log(`Obteniendo imagen para userId: ${userId}`);
         const { data: files, error: listError } = await supabase.storage
-          .from('avatars')
+          .from("avatars")
           .list(`${userId}`);
 
         if (listError) {
-          console.error('Error al listar los archivos:', listError);
+          console.error("Error al listar los archivos:", listError);
           if (isMounted) {
             setImageUri(null);
             setLoading(false);
@@ -51,12 +50,13 @@ export const useUserImage = (userId: string) => {
         console.log(`Nombre del archivo: ${fileName}`);
 
         // Generar una URL firmada para acceder a la imagen
-        const { data: signedUrlData, error: signedUrlError } = await supabase.storage
-          .from('avatars')
-          .createSignedUrl(`${userId}/${fileName}`, 60); // URL válida por 60 segundos
+        const { data: signedUrlData, error: signedUrlError } =
+          await supabase.storage
+            .from("avatars")
+            .createSignedUrl(`${userId}/${fileName}`, 60); // URL válida por 60 segundos
 
         if (signedUrlError) {
-          console.error('Error al obtener la URL firmada:', signedUrlError);
+          console.error("Error al obtener la URL firmada:", signedUrlError);
           if (isMounted) {
             setImageUri(null);
             setLoading(false);
@@ -76,7 +76,7 @@ export const useUserImage = (userId: string) => {
           }
         }
       } catch (error) {
-        console.error('Error en getImage:', error);
+        console.error("Error en getImage:", error);
         if (isMounted) {
           setImageUri(null);
           setLoading(false);

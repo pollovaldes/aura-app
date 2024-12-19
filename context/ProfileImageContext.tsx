@@ -18,14 +18,14 @@ interface ProfileImageContextProps {
 }
 
 const ProfileImageContext = createContext<ProfileImageContextProps | undefined>(
-  undefined
+  undefined,
 );
 
 export const useProfileImage = (): ProfileImageContextProps => {
   const context = useContext(ProfileImageContext);
   if (!context) {
     throw new Error(
-      "useProfileImage must be used within a ProfileImageProvider"
+      "useProfileImage must be used within a ProfileImageProvider",
     );
   }
   return context;
@@ -98,7 +98,7 @@ export function ProfileImageProvider({ children }: ProfileImageProviderProps) {
           .list(session?.user?.id);
         if (existingFiles && existingFiles.length > 0) {
           const deletePaths = existingFiles.map(
-            (file) => `${session?.user?.id}/${file.name}`
+            (file) => `${session?.user?.id}/${file.name}`,
           );
           const { error: deleteError } = await supabase.storage
             .from("avatars")
@@ -136,7 +136,7 @@ export function ProfileImageProvider({ children }: ProfileImageProviderProps) {
         .list(session.user.id);
       if (existingFiles && existingFiles.length > 0) {
         const deletePaths = existingFiles.map(
-          (file) => `${session.user.id}/${file.name}`
+          (file) => `${session.user.id}/${file.name}`,
         );
         const { error: deleteError } = await supabase.storage
           .from("avatars")

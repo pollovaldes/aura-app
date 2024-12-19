@@ -22,7 +22,7 @@ const stylesheet = createStyleSheet((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     gap: 6,
-    paddingHorizontal: 12
+    paddingHorizontal: 12,
   },
   text: {
     fontSize: 16,

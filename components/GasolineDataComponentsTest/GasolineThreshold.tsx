@@ -15,71 +15,73 @@ interface GasolineThresholdProps {
   onUpdateThreshold: (newThreshold: number) => Promise<void>;
 }
 
-const ThresholdEditModal = React.memo(({ 
-  isVisible, 
-  onClose, 
-  onSave, 
-  initialValue 
-}: {
-  isVisible: boolean;
-  onClose: () => void;
-  onSave: (value: number) => Promise<void>;
-  initialValue: string;
-}) => {
-  const { styles } = useStyles(stylesheet);
-  const [value, setValue] = useState(initialValue);
-  const [error, setError] = useState('');
-  const [isUpdating, setIsUpdating] = useState(false);
+const ThresholdEditModal = React.memo(
+  ({
+    isVisible,
+    onClose,
+    onSave,
+    initialValue,
+  }: {
+    isVisible: boolean;
+    onClose: () => void;
+    onSave: (value: number) => Promise<void>;
+    initialValue: string;
+  }) => {
+    const { styles } = useStyles(stylesheet);
+    const [value, setValue] = useState(initialValue);
+    const [error, setError] = useState("");
+    const [isUpdating, setIsUpdating] = useState(false);
 
-  const handleSave = async () => {
-    const threshold = parseFloat(value);
-    if (!isNaN(threshold) && threshold > 0) {
-      setIsUpdating(true);
-      try {
-        await onSave(threshold);
-        onClose();
-      } catch (err) {
-        setError('Error al actualizar el límite');
-      } finally {
-        setIsUpdating(false);
+    const handleSave = async () => {
+      const threshold = parseFloat(value);
+      if (!isNaN(threshold) && threshold > 0) {
+        setIsUpdating(true);
+        try {
+          await onSave(threshold);
+          onClose();
+        } catch (err) {
+          setError("Error al actualizar el límite");
+        } finally {
+          setIsUpdating(false);
+        }
+      } else {
+        setError("Ingrese un valor válido mayor a 0");
       }
-    } else {
-      setError('Ingrese un valor válido mayor a 0');
-    }
-  };
+    };
 
-  return (
-    <Modal isOpen={isVisible}>
-      <View style={styles.modalContainer}>
-        <Text style={styles.closeButton} onPress={onClose}>
-          Cerrar
-        </Text>
-        <View style={styles.section}>
-          <View style={styles.group}>
-            <FormTitle title="Editar Límite de Gasolina" />
-            <Text style={styles.subtitle}>
-              Ingresa el nuevo límite de gasolina en MXN.
-            </Text>
-          </View>
-          <View style={styles.group}>
-            <FormInput
-              placeholder="Nuevo límite"
-              value={value}
-              onChangeText={setValue}
-              description="Monto en MXN"
-              keyboardType="decimal-pad"
-            />
-            <FormButton
-              title="Guardar"
-              onPress={handleSave}
-              isLoading={isUpdating}
-            />
+    return (
+      <Modal isOpen={isVisible}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.closeButton} onPress={onClose}>
+            Cerrar
+          </Text>
+          <View style={styles.section}>
+            <View style={styles.group}>
+              <FormTitle title="Editar Límite de Gasolina" />
+              <Text style={styles.subtitle}>
+                Ingresa el nuevo límite de gasolina en MXN.
+              </Text>
+            </View>
+            <View style={styles.group}>
+              <FormInput
+                placeholder="Nuevo límite"
+                value={value}
+                onChangeText={setValue}
+                description="Monto en MXN"
+                keyboardType="decimal-pad"
+              />
+              <FormButton
+                title="Guardar"
+                onPress={handleSave}
+                isLoading={isUpdating}
+              />
+            </View>
           </View>
         </View>
-      </View>
-    </Modal>
-  );
-});
+      </Modal>
+    );
+  },
+);
 
 export default function GasolineThreshold({
   gasolineStatus,
@@ -96,21 +98,25 @@ export default function GasolineThreshold({
     formattedRemaining,
     formattedThreshold,
     formattedSpent,
-    formattedLiters
+    formattedLiters,
   } = useMemo(() => {
-    if (!gasolineStatus) return {
-      progressPercentage: 0,
-      progressBarColor: "#4caf50",
-      formattedRemaining: "0.00",
-      formattedThreshold: "0.00",
-      formattedSpent: "0.00",
-      formattedLiters: "0.00"
-    };
+    if (!gasolineStatus)
+      return {
+        progressPercentage: 0,
+        progressBarColor: "#4caf50",
+        formattedRemaining: "0.00",
+        formattedThreshold: "0.00",
+        formattedSpent: "0.00",
+        formattedLiters: "0.00",
+      };
 
-    const percentage = (gasolineStatus.spent_gasoline / gasolineStatus.gasoline_threshold) * 100;
-    const color = gasolineStatus.remaining_gasoline < gasolineStatus.gasoline_threshold * 0.2
-      ? "#f44336"
-      : "#4caf50";
+    const percentage =
+      (gasolineStatus.spent_gasoline / gasolineStatus.gasoline_threshold) * 100;
+    const color =
+      gasolineStatus.remaining_gasoline <
+      gasolineStatus.gasoline_threshold * 0.2
+        ? "#f44336"
+        : "#4caf50";
 
     return {
       progressPercentage: percentage,
@@ -118,7 +124,7 @@ export default function GasolineThreshold({
       formattedRemaining: gasolineStatus.remaining_gasoline.toFixed(2),
       formattedThreshold: gasolineStatus.gasoline_threshold.toFixed(2),
       formattedSpent: gasolineStatus.spent_gasoline.toFixed(2),
-      formattedLiters: gasolineStatus.spent_liters.toFixed(2)
+      formattedLiters: gasolineStatus.spent_liters.toFixed(2),
     };
   }, [gasolineStatus]);
 
@@ -140,14 +146,13 @@ export default function GasolineThreshold({
 
   return (
     <>
-      <Pressable 
+      <Pressable
         onPress={canEdit ? () => setIsEditModalVisible(true) : undefined}
         style={[styles.thresholdContainer, canEdit && styles.editableBorder]}
       >
         <Text style={styles.thresholdTitle}>Gasolina Restante</Text>
         <Text style={styles.thresholdValue}>
-          ${formattedRemaining}{" "}
-          <Text style={styles.currency}>MXN</Text>
+          ${formattedRemaining} <Text style={styles.currency}>MXN</Text>
         </Text>
         <View style={styles.progressContainer}>
           <View style={styles.progressBar}>
@@ -165,9 +170,7 @@ export default function GasolineThreshold({
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
             <Text style={styles.statLabel}>Límite</Text>
-            <Text style={styles.statValue}>
-              ${formattedThreshold}
-            </Text>
+            <Text style={styles.statValue}>${formattedThreshold}</Text>
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
@@ -176,9 +179,7 @@ export default function GasolineThreshold({
               <Text style={[styles.statValue, { color: "#f44336" }]}>
                 ${formattedSpent}
               </Text>
-              <Text style={styles.litersValue}>
-                {formattedLiters} L
-              </Text>
+              <Text style={styles.litersValue}>{formattedLiters} L</Text>
             </View>
           </View>
         </View>
@@ -188,7 +189,7 @@ export default function GasolineThreshold({
         isVisible={isEditModalVisible}
         onClose={() => setIsEditModalVisible(false)}
         onSave={onUpdateThreshold}
-        initialValue={gasolineStatus?.gasoline_threshold.toString() || ''}
+        initialValue={gasolineStatus?.gasoline_threshold.toString() || ""}
       />
     </>
   );
@@ -275,7 +276,7 @@ const stylesheet = createStyleSheet((theme) => ({
   litersValue: {
     fontSize: 14,
     color: theme.textPresets.subtitle,
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: 2,
   },
   editableBorder: {

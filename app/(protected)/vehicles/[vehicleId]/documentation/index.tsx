@@ -44,7 +44,7 @@ export default function Index() {
   useFocusEffect(
     useCallback(() => {
       fetchDocuments();
-    }, [])
+    }, []),
   );
 
   if (isProfileLoading || vehiclesAreLoading || areDocumentsLoading) {
@@ -149,7 +149,7 @@ export default function Index() {
   }
 
   const associatedDocuments = documents.filter(
-    (doc) => doc.vehicle_id === vehicleId
+    (doc) => doc.vehicle_id === vehicleId,
   );
 
   const canEdit = profile.role === "ADMIN" || profile.role === "OWNER";
@@ -217,7 +217,7 @@ export default function Index() {
                   caption={doc.description}
                   onPress={() =>
                     router.navigate(
-                      `/vehicles/[vehicleId]/documentation/${doc.document_id}`
+                      `/vehicles/[vehicleId]/documentation/${doc.document_id}`,
                     )
                   }
                 />

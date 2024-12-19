@@ -136,7 +136,7 @@ export default function VehicleDetail() {
 
             if (error) {
               alert(
-                "Ocurrió un error al eliminar el vehículo\n" + error.message
+                "Ocurrió un error al eliminar el vehículo\n" + error.message,
               );
               return;
             }
@@ -145,7 +145,7 @@ export default function VehicleDetail() {
             router.back();
           },
         },
-      ]
+      ],
     );
   };
 

@@ -39,8 +39,8 @@ export default function VehicleThumbnail({ vehicleId }: VehicleThumbnailProps) {
         setVehicles(
           (prevVehicles: Vehicle[] | null) =>
             prevVehicles?.map((truck) =>
-              truck.id === vehicleId ? { ...truck, thumbnail } : truck
-            ) || null
+              truck.id === vehicleId ? { ...truck, thumbnail } : truck,
+            ) || null,
         );
       }
       setThumbnailIsLoading(false);

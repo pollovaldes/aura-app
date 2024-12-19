@@ -36,14 +36,13 @@ function AddPeopleComponent({ visible, onClose }: AddTruckComponentProps) {
     setPhone,
     setPassword,
     resetFields,
-    handleCreatePerson
+    handleCreatePerson,
   } = useAddPeople();
 
   const handleCancel = () => {
     resetFields();
     onClose();
   };
-  
 
   return (
     <Modal
@@ -92,13 +91,17 @@ function AddPeopleComponent({ visible, onClose }: AddTruckComponentProps) {
             style={styles.input}
           />
 
-          <Button title="Crear" onPress={handleCreatePerson} disabled={loading} />
+          <Button
+            title="Crear"
+            onPress={handleCreatePerson}
+            disabled={loading}
+          />
           <Button title="Cancelar" onPress={handleCancel} />
         </View>
       </View>
     </Modal>
   );
-};
+}
 
 const styles = StyleSheet.create({
   modalContainer: {

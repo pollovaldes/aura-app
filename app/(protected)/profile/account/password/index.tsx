@@ -26,7 +26,7 @@ export default function Index() {
       if (!session.user.email) {
         router.back();
         alert(
-          "No se puede cambiar la contraseña ya que no tienes un correo electrónico asociado a tu cuenta."
+          "No se puede cambiar la contraseña ya que no tienes un correo electrónico asociado a tu cuenta.",
         );
       }
     }
