@@ -7,12 +7,6 @@ export function useFleets(fleet_id?: string) {
   const [areFleetsLoading, setAreFleetsLoading] = useState(false);
 
   const fetchFleetsUserVehicles = async () => {
-    // Craft a typed query.
-    // Note: `fleets_users_vehicles` should have relationships set up so that:
-    // - user_id references profiles.id
-    // - vehicle_id references vehicles.id
-    // The nesting allows pulling related tables in one go.
-
     let query = supabase.from("fleets").select(`
     *,
     fleets_users_vehicles (

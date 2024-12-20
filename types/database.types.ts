@@ -330,6 +330,11 @@ export type Database = {
       user_fleet_add_request: {
         Row: {
           fleet_to_be_added: string | null
+          notification_category: Database["public"]["Enums"]["notification_category"]
+          notification_created_at: string
+          notification_description: string
+          notification_read: boolean
+          notification_title: string
           reason: string | null
           request_date: string | null
           request_id: string
@@ -341,6 +346,11 @@ export type Database = {
         }
         Insert: {
           fleet_to_be_added?: string | null
+          notification_category: Database["public"]["Enums"]["notification_category"]
+          notification_created_at: string
+          notification_description: string
+          notification_read?: boolean
+          notification_title: string
           reason?: string | null
           request_date?: string | null
           request_id?: string
@@ -352,6 +362,11 @@ export type Database = {
         }
         Update: {
           fleet_to_be_added?: string | null
+          notification_category?: Database["public"]["Enums"]["notification_category"]
+          notification_created_at?: string
+          notification_description?: string
+          notification_read?: boolean
+          notification_title?: string
           reason?: string | null
           request_date?: string | null
           request_id?: string
@@ -647,6 +662,13 @@ export type Database = {
     }
     Enums: {
       maintenance_status: "PENDING_REVISION" | "IN_REVISION" | "SOLVED"
+      notification_category:
+        | "MAINTENANCE"
+        | "GASOLINE"
+        | "ROLE"
+        | "FLEETS"
+        | "ROUTES"
+        | "OTHER"
       role_change_status:
         | "PENDING_REVISION"
         | "IN_REVISION"

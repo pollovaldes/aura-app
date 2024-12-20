@@ -1,12 +1,12 @@
-import { FlatList, Platform, RefreshControl, Text, View } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
-import useProfile from "@/hooks/useProfile";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
+import { FilterSelector } from "@/components/radioButton/FilterSelector";
+import useProfile from "@/hooks/useProfile";
+import { useHeaderHeight } from "@react-navigation/elements";
 import { Stack } from "expo-router";
 import React, { useState } from "react";
-import { FilterSelector } from "@/components/radioButton/FilterSelector";
-import { useHeaderHeight } from "@react-navigation/elements";
+import { FlatList, RefreshControl, Text, View } from "react-native";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function Index() {
   const [selectedFilter, setSelectedFilter] = useState("todo");
@@ -19,8 +19,8 @@ export default function Index() {
     { key: "mantenimiento", label: "Mantenimiento" },
     { key: "gasolina", label: "Gasolina" },
     { key: "roles", label: "Roles" },
-    { key: "ayuda", label: "Ayuda" },
-    { key: "reportes", label: "Reportes de error" },
+    { key: "flotillas", label: "Flotillas" },
+    { key: "rutas", label: "Rutas" },
   ];
 
   const DATA = [
