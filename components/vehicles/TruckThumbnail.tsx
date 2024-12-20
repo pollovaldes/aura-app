@@ -3,9 +3,9 @@ import { ActivityIndicator, Image, View } from "react-native";
 import { useStyles, createStyleSheet } from "react-native-unistyles";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
 import { useEffect, useState } from "react";
-import { Vehicle } from "@/types/Vehicle";
 import useVehicleThumbnail from "@/hooks/truckHooks/useVehicleThumbnail";
 import React from "react";
+import { Vehicle } from "@/types/globalTypes";
 
 type VehicleThumbnailProps = {
   vehicleId: string;
@@ -35,12 +35,11 @@ export default function VehicleThumbnail({ vehicleId }: VehicleThumbnailProps) {
       }
 
       const thumbnail = await fetchThumbnail(vehicleId);
+
       if (thumbnail) {
         setVehicles(
           (prevVehicles: Vehicle[] | null) =>
-            prevVehicles?.map((truck) =>
-              truck.id === vehicleId ? { ...truck, thumbnail } : truck,
-            ) || null,
+            prevVehicles?.map((truck) => (truck.id === vehicleId ? { ...truck, thumbnail } : truck)) || null
         );
       }
       setThumbnailIsLoading(false);
@@ -59,11 +58,7 @@ export default function VehicleThumbnail({ vehicleId }: VehicleThumbnailProps) {
         <Image style={styles.image} source={{ uri: item.thumbnail }} />
       ) : (
         <View style={styles.emptyImageContainer}>
-          <TruckIcon
-            size={35}
-            color={styles.noImageIcon.color}
-            strokeWidth={1.25}
-          />
+          <TruckIcon size={35} color={styles.noImageIcon.color} strokeWidth={1.25} />
         </View>
       )}
     </>

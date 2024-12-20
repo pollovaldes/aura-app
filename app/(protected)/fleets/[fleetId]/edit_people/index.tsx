@@ -3,7 +3,7 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import useProfile from "@/hooks/useProfile";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import { ChevronRight } from "lucide-react-native";
+import { ChevronRight, Plus } from "lucide-react-native";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import { Link, Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
@@ -14,6 +14,8 @@ import UserThumbnail from "@/components/people/UserThumbnail";
 import useUsers from "@/hooks/peopleHooks/useUsers";
 import React from "react";
 import { useFleets } from "@/hooks/useFleets";
+import { SimpleList } from "@/components/simpleList/SimpleList";
+import { FormButton } from "@/components/Form/FormButton";
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
@@ -23,6 +25,15 @@ export default function Index() {
   const { users, usersAreLoading, fetchUsers } = useUsers();
   const headerHeight = useHeaderHeight();
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
+
+  const capitalizeWords = (text: string | null | undefined): string => {
+    if (!text) return "";
+    return text
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
 
   const navigation = useNavigation();
 
@@ -185,23 +196,24 @@ export default function Index() {
           }}
           style={{ marginBottom: 36 }}
           renderItem={({ item }) => (
-            <Link href={{ pathname: `/users/${item.id}` }} asChild>
-              <Pressable>
-                <View style={styles.listContainer}>
-                  <View style={styles.contentContainer}>
-                    <View style={styles.imageContainer}>
-                      <UserThumbnail userId={item.id} size={60} />
-                    </View>
-                    <Text
-                      style={styles.itemText}
-                    >{`${item.name} ${item.father_last_name} ${item.mother_last_name}`}</Text>
-                  </View>
-                  <View style={styles.chevronView}>
-                    <ChevronRight color={styles.chevron.color} />
-                  </View>
-                </View>
-              </Pressable>
-            </Link>
+            <SimpleList
+              hideChevron
+              leading={<UserThumbnail userId={item.id.toString()} size={60} />}
+              content={
+                <Text style={styles.listText}>
+                  {`${capitalizeWords(item.name)} ${capitalizeWords(item.father_last_name)} ${capitalizeWords(item.mother_last_name)}`}
+                </Text>
+              }
+              trailing={
+                <FormButton
+                  title="Eliminar"
+                  buttonType="danger"
+                  onPress={() => {
+                    console.log("Eliminar");
+                  }}
+                />
+              }
+            />
           )}
           ListEmptyComponent={
             <View style={{ marginTop: 100 }}>
@@ -217,29 +229,24 @@ export default function Index() {
           data={users}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <Link href={{ pathname: `/users/${item.id}` }} asChild>
-              <Pressable>
-                <View
-                  style={{
-                    flexDirection: "column",
+            <SimpleList
+              hideChevron
+              leading={<UserThumbnail userId={item.id.toString()} size={60} />}
+              content={
+                <Text style={styles.listText}>
+                  {`${capitalizeWords(item.name)} ${capitalizeWords(item.father_last_name)} ${capitalizeWords(item.mother_last_name)}`}
+                </Text>
+              }
+              trailing={
+                <FormButton
+                  title="Agregar"
+                  icon={() => <Plus size={18} color={styles.buttonIcon.color} />}
+                  onPress={() => {
+                    console.log("Agregar");
                   }}
-                >
-                  <View style={styles.listContainer}>
-                    <View style={styles.contentContainer}>
-                      <View style={styles.imageContainer}>
-                        <UserThumbnail userId={item.id} size={60} />
-                      </View>
-                      <Text
-                        style={styles.itemText}
-                      >{`${item.name} ${item.father_last_name} ${item.mother_last_name}`}</Text>
-                    </View>
-                    <View style={styles.chevronView}>
-                      <ChevronRight color={styles.chevron.color} />
-                    </View>
-                  </View>
-                </View>
-              </Pressable>
-            </Link>
+                />
+              }
+            />
           )}
         />
       )}
@@ -334,5 +341,15 @@ const stylesheet = createStyleSheet((theme) => ({
     width: "97%",
     margin: "auto",
     marginVertical: 6,
+  },
+  listText: {
+    fontSize: 18,
+    paddingLeft: 10,
+    color: theme.textPresets.main,
+    flexShrink: 1,
+    marginRight: 18,
+  },
+  buttonIcon: {
+    color: theme.textPresets.inverted,
   },
 }));

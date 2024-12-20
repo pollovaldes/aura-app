@@ -25,7 +25,18 @@ export default function Index() {
   const headerHeight = useHeaderHeight();
 
   if (isProfileLoading || areFleetsLoading) {
-    return <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando flotillas"} />;
+    return (
+      <>
+        <Stack.Screen
+          options={{
+            title: "Cargando...",
+            headerRight: undefined,
+            headerLargeTitle: false,
+          }}
+        />
+        <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando flotillas"} />
+      </>
+    );
   }
 
   if (!profile) {
@@ -101,7 +112,7 @@ export default function Index() {
     <>
       <Stack.Screen
         options={{
-          headerLargeTitle: false,
+          headerLargeTitle: true,
           title: fleet.title,
           headerRight: () => (
             <ActionButtonGroup>

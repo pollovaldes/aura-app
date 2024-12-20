@@ -79,7 +79,7 @@ const stylesheet = createStyleSheet((theme) => ({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 12,
+    paddingVertical: 9,
     paddingHorizontal: 16,
     backgroundColor: theme.ui.colors.card,
     borderBottomWidth: 0.5,
