@@ -1,17 +1,15 @@
-import { Redirect, Slot, Tabs, usePathname } from "expo-router";
-import { Platform, View, useWindowDimensions } from "react-native";
-import Sidebar from "../../components/sidebar/Sidebar";
-import ListItem from "../../components/sidebar/ListItem";
-import { Bell, Boxes, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { useSessionContext } from "@/context/SessionContext";
-import useProfile from "@/hooks/useProfile";
-import { VehiclesContextProvider } from "@/context/VehiclesContext";
-import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import { supabase } from "@/lib/supabase";
+import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import { ProfileImageProvider } from "@/context/ProfileImageContext";
+import { useSessionContext } from "@/context/SessionContext";
 import { UsersContextProvider } from "@/context/UsersContext";
+import { VehiclesContextProvider } from "@/context/VehiclesContext";
+import useProfile from "@/hooks/useProfile";
+import { supabase } from "@/lib/supabase";
+import { Redirect, Tabs, usePathname } from "expo-router";
+import { Bell, Boxes, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
+import { Platform, View, useWindowDimensions } from "react-native";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function HomeLayout() {
   const { styles } = useStyles(stylesheet);
@@ -50,7 +48,6 @@ export default function HomeLayout() {
     return <Redirect href="/profile" />;
   }
 
-  // Determine tab visibility based on role and registration status
   const isAdminOrOwner = profile.role === "ADMIN" || profile.role === "OWNER";
   const isBannedOrNoRole = profile.role === "BANNED" || profile.role === "NO_ROLE";
 
@@ -61,14 +58,6 @@ export default function HomeLayout() {
     notifications: isBannedOrNoRole ? null : profile.is_fully_registered ? undefined : null,
   };
 
-  const mayShowListItem = {
-    vehicles: isBannedOrNoRole ? null : profile.is_fully_registered ? "vehicles" : null,
-    users: isBannedOrNoRole ? null : isAdminOrOwner && profile.is_fully_registered ? "users" : null,
-    fleets: isBannedOrNoRole ? null : profile.is_fully_registered ? "fleets" : null,
-    notifications: isBannedOrNoRole ? null : profile.is_fully_registered ? "notifications" : null,
-  };
-
-  // Render UI based on the screen width (responsive design)
   return (
     <VehiclesContextProvider>
       <UsersContextProvider>
@@ -77,9 +66,9 @@ export default function HomeLayout() {
             screenOptions={{
               headerShown: false,
               tabBarPosition: width > 800 ? "left" : "bottom",
-              tabBarVariant: width > 800 ? "material" : "uikit",
+              tabBarVariant: Platform.OS === "web" && width > 800 ? "material" : "uikit",
               animation: Platform.OS === "web" ? "none" : "fade",
-              tabBarLabelPosition: "below-icon",
+              tabBarLabelPosition: Platform.OS === "web" && width > 800 ? "below-icon" : "below-icon",
             }}
           >
             <Tabs.Screen
