@@ -327,6 +327,42 @@ export type Database = {
           },
         ]
       }
+      user_fleet_add_request: {
+        Row: {
+          fleet_to_be_added: string | null
+          reason: string | null
+          request_date: string | null
+          request_id: string
+          status:
+            | Database["public"]["Enums"]["user_fleet_add_request_status"]
+            | null
+          who_requests: string
+          who_will_be_added: string | null
+        }
+        Insert: {
+          fleet_to_be_added?: string | null
+          reason?: string | null
+          request_date?: string | null
+          request_id?: string
+          status?:
+            | Database["public"]["Enums"]["user_fleet_add_request_status"]
+            | null
+          who_requests: string
+          who_will_be_added?: string | null
+        }
+        Update: {
+          fleet_to_be_added?: string | null
+          reason?: string | null
+          request_date?: string | null
+          request_id?: string
+          status?:
+            | Database["public"]["Enums"]["user_fleet_add_request_status"]
+            | null
+          who_requests?: string
+          who_will_be_added?: string | null
+        }
+        Relationships: []
+      }
       vehicle_documentation_sheet: {
         Row: {
           description: string | null
@@ -623,6 +659,11 @@ export type Database = {
         | "BREAK"
         | "REFUELING"
         | "OTHER"
+      user_fleet_add_request_status:
+        | "PENDING_REVISION"
+        | "IN_REVISION"
+        | "DENIED"
+        | "ACCEPTED"
     }
     CompositeTypes: {
       [_ in never]: never

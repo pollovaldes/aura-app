@@ -71,16 +71,17 @@ export default function Index() {
       <Stack.Screen
         options={{
           title: "Notificaciones",
-          headerLargeTitle: false,
+          headerLargeTitle: true,
           headerRight: undefined,
+          headerSearchBarOptions: {
+            placeholder: "Buscar notificación",
+            hideWhenScrolling: false,
+          },
         }}
       />
 
-      <View style={styles.filterContainer}>
-        <FilterSelector options={FILTER_OPTIONS} selected={selectedFilter} onChange={setSelectedFilter} />
-      </View>
-
       <FlatList
+        contentInsetAdjustmentBehavior="automatic"
         refreshControl={<RefreshControl refreshing={isProfileLoading} onRefresh={fetchProfile} />}
         style={styles.container}
         data={filteredData}
@@ -91,6 +92,11 @@ export default function Index() {
           </View>
         )}
         ListEmptyComponent={<Text style={styles.emptyText}>No hay resultados disponibles</Text>}
+        ListHeaderComponent={
+          <View style={styles.filterContainer}>
+            <FilterSelector options={FILTER_OPTIONS} selected={selectedFilter} onChange={setSelectedFilter} />
+          </View>
+        }
       />
     </>
   );

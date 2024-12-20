@@ -173,83 +173,57 @@ export default function Index() {
           title: "Administrar personas",
           headerRight: undefined,
           headerLargeTitle: false,
+          headerSearchBarOptions: {
+            placeholder: "Buscar",
+            hideWhenScrolling: false,
+          },
         }}
       />
-      <View style={[{ marginTop: Platform.OS === "ios" ? headerHeight + 0 : 6 }]}>
-        <SegmentedControl
-          values={["Personas en esta flotilla", "Todas las personas"]}
-          selectedIndex={currentTabIndex}
-          onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
-          style={styles.segmentedControl}
-        />
-      </View>
 
-      {currentTabIndex === 0 ? (
-        <FlatList
-          contentInsetAdjustmentBehavior="automatic"
-          data={fleet.users}
-          keyExtractor={(item) => item.id}
-          refreshing={areFleetsLoading || isProfileLoading}
-          onRefresh={() => {
-            fetchFleets();
-            fetchProfile();
-          }}
-          style={{ marginBottom: 36 }}
-          renderItem={({ item }) => (
-            <SimpleList
-              hideChevron
-              leading={<UserThumbnail userId={item.id.toString()} size={60} />}
-              content={
-                <Text style={styles.listText}>
-                  {`${capitalizeWords(item.name)} ${capitalizeWords(item.father_last_name)} ${capitalizeWords(item.mother_last_name)}`}
-                </Text>
-              }
-              trailing={
-                <FormButton
-                  title="Eliminar"
-                  buttonType="danger"
-                  onPress={() => {
-                    console.log("Eliminar");
-                  }}
-                />
-              }
-            />
-          )}
-          ListEmptyComponent={
-            <View style={{ marginTop: 100 }}>
-              <EmptyScreen caption="Esta flotilla no tiene personas" />
-            </View>
-          }
-        />
-      ) : (
-        <FlatList
-          refreshing={usersAreLoading}
-          onRefresh={fetchUsers}
-          contentInsetAdjustmentBehavior="automatic"
-          data={users}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <SimpleList
-              hideChevron
-              leading={<UserThumbnail userId={item.id.toString()} size={60} />}
-              content={
-                <Text style={styles.listText}>
-                  {`${capitalizeWords(item.name)} ${capitalizeWords(item.father_last_name)} ${capitalizeWords(item.mother_last_name)}`}
-                </Text>
-              }
-              trailing={
-                <FormButton
-                  title="Agregar"
-                  icon={() => <Plus size={18} color={styles.buttonIcon.color} />}
-                  onPress={() => {
-                    console.log("Agregar");
-                  }}
-                />
-              }
-            />
-          )}
-        />
-      )}
+      <FlatList
+        contentInsetAdjustmentBehavior="automatic"
+        data={currentTabIndex === 0 ? fleet.users : users}
+        keyExtractor={(item) => item.id}
+        refreshing={areFleetsLoading || isProfileLoading}
+        onRefresh={() => {
+          fetchFleets();
+          fetchProfile();
+        }}
+        style={{ marginBottom: 36 }}
+        renderItem={({ item }) => (
+          <SimpleList
+            hideChevron
+            leading={<UserThumbnail userId={item.id.toString()} size={60} />}
+            content={
+              <Text style={styles.listText}>
+                {`${capitalizeWords(item.name)} ${capitalizeWords(item.father_last_name)} ${capitalizeWords(item.mother_last_name)}`}
+              </Text>
+            }
+            trailing={
+              <FormButton
+                title="Eliminar"
+                buttonType="danger"
+                onPress={() => {
+                  console.log("Eliminar");
+                }}
+              />
+            }
+          />
+        )}
+        ListHeaderComponent={
+          <SegmentedControl
+            values={["Personas en esta flotilla", "Todas las personas"]}
+            selectedIndex={currentTabIndex}
+            onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
+            style={styles.segmentedControl}
+          />
+        }
+        ListEmptyComponent={
+          <View style={{ marginTop: 100 }}>
+            <EmptyScreen caption="Esta flotilla no tiene personas" />
+          </View>
+        }
+      />
     </>
   );
 }

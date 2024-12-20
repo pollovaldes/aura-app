@@ -76,6 +76,10 @@ export default function Index() {
 
       <Stack.Screen
         options={{
+          headerSearchBarOptions: {
+            placeholder: "Buscar flotilla",
+            hideWhenScrolling: false,
+          },
           headerRight: () => (
             <ActionButtonGroup>
               <ActionButton Icon={Plus} onPress={() => setActiveModal("add_fleet")} show={canAddFleet} />
