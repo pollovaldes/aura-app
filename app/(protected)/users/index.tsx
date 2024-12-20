@@ -1,16 +1,14 @@
-import { Text, FlatList } from "react-native";
-import useUsers from "@/hooks/peopleHooks/useUsers";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { useEffect, useState } from "react";
-import { ChevronRight } from "lucide-react-native";
-import { useSearch } from "@/context/SearchContext";
-import React from "react";
-import useProfile from "@/hooks/useProfile";
-import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
-import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
+import ErrorScreen from "@/components/dataStates/ErrorScreen";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import UserThumbnail from "@/components/people/UserThumbnail";
 import { SimpleList } from "@/components/simpleList/SimpleList";
+import { useSearch } from "@/context/SearchContext";
+import useUsers from "@/hooks/peopleHooks/useUsers";
+import useProfile from "@/hooks/useProfile";
+import React, { useEffect, useState } from "react";
+import { FlatList, Text } from "react-native";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function UsersList() {
   const { profile, isProfileLoading, fetchProfile } = useProfile();
@@ -82,11 +80,10 @@ export default function UsersList() {
           href={`/users/${item.id}`}
           leading={<UserThumbnail userId={item.id.toString()} size={60} />}
           content={
-            <Text style={styles.itemText}>
+            <Text style={styles.listText}>
               {`${capitalizeWords(item.name)} ${capitalizeWords(item.father_last_name)} ${capitalizeWords(item.mother_last_name)}`}
             </Text>
           }
-          trailing={<ChevronRight color={styles.chevron.color} />}
         />
       )}
     />
@@ -94,46 +91,11 @@ export default function UsersList() {
 }
 
 const stylesheet = createStyleSheet((theme) => ({
-  container: {
-    justifyContent: "space-between",
-    flexDirection: "row",
-    alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: theme.ui.colors.border,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  contentContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
-  imageContainer: {
-    padding: 12,
-  },
-  image: {
-    borderRadius: 6,
-    width: 50,
-    height: 50,
-  },
-  itemText: {
+  listText: {
     fontSize: 18,
     paddingLeft: 10,
     color: theme.textPresets.main,
     flexShrink: 1,
     marginRight: 18,
-  },
-  plusIcon: {
-    fontSize: 16,
-    color: theme.headerButtons.color,
-  },
-  chevron: {
-    color: theme.textPresets.subtitle,
-  },
-  chevronView: {
-    paddingRight: 12,
   },
 }));

@@ -125,7 +125,6 @@ export default function VehicleList() {
                 </Text>
               </>
             }
-            trailing={<ChevronRight color={styles.chevron.color} />}
           />
         )}
         ListEmptyComponent={<EmptyScreen caption="Ningún vehículo por aquí" />}
@@ -144,9 +143,6 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   itemDetails: {
     fontSize: 15,
-    color: theme.textPresets.subtitle,
-  },
-  chevron: {
     color: theme.textPresets.subtitle,
   },
 }));

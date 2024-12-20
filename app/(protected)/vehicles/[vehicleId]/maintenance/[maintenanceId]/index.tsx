@@ -172,18 +172,18 @@ export default function maintenanceId() {
   const statesConfig = {
     IN_REVISION: {
       text: "En revisión",
-      backgroundColor: "#e3f2fd", // Azul claro
-      textColor: "#1e88e5", // Azul
+      backgroundColor: "#e3f2fd",
+      textColor: "#1e88e5",
     },
     PENDING_REVISION: {
       text: "Recibido",
-      backgroundColor: "#fff3e0", // Naranja claro
-      textColor: "#ef6c00", // Naranja
+      backgroundColor: "#fff3e0",
+      textColor: "#ef6c00",
     },
     SOLVED: {
       text: "Resuelto",
-      backgroundColor: "#e8f5e9", // Verde claro
-      textColor: "#2e7d32", // Verde
+      backgroundColor: "#e8f5e9",
+      textColor: "#2e7d32",
     },
   };
 
@@ -191,11 +191,11 @@ export default function maintenanceId() {
     const date = new Date(dateString);
 
     const day = date.getDate();
-    const month = date.toLocaleString("es", { month: "long" }); // Get month in Spanish
+    const month = date.toLocaleString("es", { month: "long" });
     const year = date.getFullYear();
 
-    const hours = date.getHours().toString().padStart(2, "0"); // Add leading zero
-    const minutes = date.getMinutes().toString().padStart(2, "0"); // Add leading zero
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
 
     return `${prefix}${day} de ${month} del ${year} a las ${hours}:${minutes} horas`;
   }
@@ -216,23 +216,23 @@ export default function maintenanceId() {
           style={[styles.segmentedControl, {}]}
         />
       </View>
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        refreshControl={
-          <RefreshControl
-            refreshing={
-              vehiclesAreLoading || areMaintenanceRecordsLoading || isProfileLoading || areMaintenanceDocumentsLoading
-            }
-            onRefresh={() => {
-              fetchVehicles();
-              fetchProfile();
-              fetchMaintenance();
-              fetchMaintenanceDocuments();
-            }}
-          />
-        }
-      >
-        {currentTabIndex === 0 && (
+      {currentTabIndex === 0 && (
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          refreshControl={
+            <RefreshControl
+              refreshing={
+                vehiclesAreLoading || areMaintenanceRecordsLoading || isProfileLoading || areMaintenanceDocumentsLoading
+              }
+              onRefresh={() => {
+                fetchVehicles();
+                fetchProfile();
+                fetchMaintenance();
+                fetchMaintenanceDocuments();
+              }}
+            />
+          }
+        >
           <View style={styles.groupedListsContainer}>
             <GroupedList>
               <Row
@@ -312,38 +312,55 @@ export default function maintenanceId() {
               <Row title="Eliminar solicitud" icon={Trash} backgroundColor={colorPalette.red[500]} />
             </GroupedList>
           </View>
-        )}
-        {currentTabIndex === 1 && (
-          <FlatList
-            refreshing={vehiclesAreLoading || isProfileLoading}
-            onRefresh={() => {
-              fetchVehicles();
-              fetchProfile();
-            }}
-            contentInsetAdjustmentBehavior="automatic"
-            data={maintenanceDocuments}
-            keyExtractor={(item) => item.document_id}
-            renderItem={({ item }) => (
-              <SimpleList
-                relativeToDirectory
-                href={`./${item.document_id}`}
-                content={
-                  <View style={{ flexDirection: "column" }}>
-                    <Text style={styles.itemTitle}>{item.title}</Text>
-                    <Text style={styles.itemSubtitle}>{formatDate(item.created_at, "Creado el ")}</Text>
-                    <Text style={styles.itemSubtitle}>
-                      {item.description ? item.description : "No se proveyó ninguna descripción."}
-                    </Text>
-                  </View>
-                }
-                trailing={<ChevronRight color={styles.chevron.color} />}
-              />
-            )}
-            ListEmptyComponent={<EmptyScreen caption="No hay documentos para este vehículo." />}
-          />
-        )}
+        </ScrollView>
+      )}
 
-        {currentTabIndex === 2 && (
+      {currentTabIndex === 1 && (
+        <FlatList
+          refreshing={vehiclesAreLoading || isProfileLoading}
+          onRefresh={() => {
+            fetchVehicles();
+            fetchProfile();
+          }}
+          contentInsetAdjustmentBehavior="automatic"
+          data={maintenanceDocuments}
+          keyExtractor={(item) => item.document_id}
+          renderItem={({ item }) => (
+            <SimpleList
+              relativeToDirectory
+              href={`./${item.document_id}`}
+              content={
+                <View style={{ flexDirection: "column" }}>
+                  <Text style={styles.itemTitle}>{item.title ? item.title : "No se proveyó ningún título."}</Text>
+                  <Text style={styles.itemSubtitle}>{formatDate(item.created_at, "Creado el ")}</Text>
+                  <Text style={styles.itemSubtitle}>
+                    {item.description ? item.description : "No se proveyó ninguna descripción."}
+                  </Text>
+                </View>
+              }
+            />
+          )}
+          ListEmptyComponent={<EmptyScreen caption="No hay documentos para este vehículo." />}
+        />
+      )}
+
+      {currentTabIndex === 2 && (
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          refreshControl={
+            <RefreshControl
+              refreshing={
+                vehiclesAreLoading || areMaintenanceRecordsLoading || isProfileLoading || areMaintenanceDocumentsLoading
+              }
+              onRefresh={() => {
+                fetchVehicles();
+                fetchProfile();
+                fetchMaintenance();
+                fetchMaintenanceDocuments();
+              }}
+            />
+          }
+        >
           <View style={styles.groupedListsContainer}>
             <GroupedList>
               <Row
@@ -354,8 +371,8 @@ export default function maintenanceId() {
               />
             </GroupedList>
           </View>
-        )}
-      </ScrollView>
+        </ScrollView>
+      )}
     </>
   );
 }
@@ -390,9 +407,6 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   itemSubtitle: {
     fontSize: 15,
-    color: theme.textPresets.subtitle,
-  },
-  chevron: {
     color: theme.textPresets.subtitle,
   },
 }));

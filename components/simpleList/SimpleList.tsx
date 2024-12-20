@@ -2,12 +2,14 @@ import React, { ReactNode, useState } from "react";
 import { Pressable, View } from "react-native";
 import { Link, LinkProps } from "expo-router";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { ChevronRight } from "lucide-react-native";
 
 interface SimpleListProps extends Partial<LinkProps> {
   href?: string; // Optional href
   leading?: ReactNode;
   content?: ReactNode;
   trailing?: ReactNode;
+  hideChevron?: boolean;
 }
 
 export const SimpleList: React.FC<SimpleListProps> = ({
@@ -15,7 +17,8 @@ export const SimpleList: React.FC<SimpleListProps> = ({
   leading,
   content,
   trailing,
-  ...linkProps // Capture additional props for the Link
+  hideChevron,
+  ...linkProps
 }) => {
   const { styles } = useStyles(stylesheet);
   const [isHovered, setIsHovered] = useState(false);
@@ -32,6 +35,7 @@ export const SimpleList: React.FC<SimpleListProps> = ({
         {leading && <View style={styles.leading}>{leading}</View>}
         {content && <View style={styles.content}>{content}</View>}
         {trailing && <View style={styles.trailing}>{trailing}</View>}
+        {!hideChevron && <ChevronRight color={styles.chevron.color} />}
       </View>
     </Pressable>
   );
@@ -70,5 +74,8 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   trailing: {
     marginLeft: 12,
+  },
+  chevron: {
+    color: theme.textPresets.subtitle,
   },
 }));

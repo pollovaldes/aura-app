@@ -102,7 +102,6 @@ export default function Index() {
                 <Text style={styles.itemSubtitle}>{item.description}</Text>
               </View>
             }
-            trailing={<ChevronRight color={styles.chevron.color} />}
           />
         )}
         ListEmptyComponent={<EmptyScreen caption="Parece ser que no tienes flotillas asignadas" />}
@@ -135,9 +134,6 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   itemSubtitle: {
     fontSize: 15,
-    color: theme.textPresets.subtitle,
-  },
-  chevron: {
     color: theme.textPresets.subtitle,
   },
 }));

@@ -183,7 +183,6 @@ export default function Index() {
                 </Text>
               </View>
             }
-            trailing={<ChevronRight color={styles.chevron.color} />}
           />
         )}
         ListEmptyComponent={<EmptyScreen caption="No hay documentos para este vehículo." />}
@@ -234,9 +233,6 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   itemSubtitle: {
     fontSize: 15,
-    color: theme.textPresets.subtitle,
-  },
-  chevron: {
     color: theme.textPresets.subtitle,
   },
 }));

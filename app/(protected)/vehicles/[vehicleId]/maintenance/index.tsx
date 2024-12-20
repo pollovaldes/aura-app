@@ -28,8 +28,7 @@ export default function MaintenanceRequests() {
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
   const { profile, isProfileLoading, fetchProfile } = useProfile();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
-  const { maintenanceRecords, areMaintenanceRecordsLoading, fetchMaintenance } =
-    useMaintenance(vehicleId);
+  const { maintenanceRecords, areMaintenanceRecordsLoading, fetchMaintenance } = useMaintenance(vehicleId);
   const headerHeight = useHeaderHeight();
 
   const closeModal = () => setActiveModal(null);
@@ -156,11 +155,7 @@ export default function MaintenanceRequests() {
           headerLargeTitle: false,
           headerRight: () => (
             <ActionButtonGroup>
-              <ActionButton
-                Icon={Plus}
-                onPress={() => setActiveModal("create_maintenance_record")}
-                show={canEdit}
-              />
+              <ActionButton Icon={Plus} onPress={() => setActiveModal("create_maintenance_record")} show={canEdit} />
             </ActionButtonGroup>
           ),
         }}
@@ -169,13 +164,8 @@ export default function MaintenanceRequests() {
       <SegmentedControl
         values={["Todo", "Recibidos", "En revisión", "Resueltas"]}
         selectedIndex={currentTabIndex}
-        onChange={(event) =>
-          setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)
-        }
-        style={[
-          styles.segmentedControl,
-          { marginTop: Platform.OS === "ios" ? headerHeight + 6 : 6 },
-        ]}
+        onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
+        style={[styles.segmentedControl, { marginTop: Platform.OS === "ios" ? headerHeight + 6 : 6 }]}
       />
 
       <FlatList
@@ -202,12 +192,9 @@ export default function MaintenanceRequests() {
                 </Text>
               </>
             }
-            trailing={<ChevronRight color={styles.chevron.color} />}
           />
         )}
-        ListEmptyComponent={() => (
-          <EmptyScreen caption="No hay solicitudes de mantenimiento con este filtro" />
-        )}
+        ListEmptyComponent={() => <EmptyScreen caption="No hay solicitudes de mantenimiento con este filtro" />}
         refreshing={vehiclesAreLoading || areMaintenanceRecordsLoading}
         onRefresh={() => {
           fetchVehicles();
@@ -246,8 +233,5 @@ const stylesheet = createStyleSheet((theme) => ({
   subtitle: {
     color: theme.textPresets.subtitle,
     fontSize: 15,
-  },
-  chevron: {
-    color: theme.textPresets.subtitle,
   },
 }));
