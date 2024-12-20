@@ -11,58 +11,81 @@ export type Database = {
     Tables: {
       fleets: {
         Row: {
-          description: string | null
+          description: string
           id: string
           title: string
         }
         Insert: {
-          description?: string | null
+          description: string
           id?: string
           title: string
         }
         Update: {
-          description?: string | null
+          description?: string
           id?: string
           title?: string
         }
         Relationships: []
       }
-      fleets_users_vehicles: {
+      fleets_users: {
         Row: {
           fleet_id: string
-          id: string
+          relation_id: number
           user_id: string
-          vehicle_id: string
         }
         Insert: {
           fleet_id: string
-          id?: string
+          relation_id?: number
           user_id: string
-          vehicle_id: string
         }
         Update: {
           fleet_id?: string
-          id?: string
+          relation_id?: number
           user_id?: string
-          vehicle_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "fleets_users_vehicles_fleet_id_fkey"
+            foreignKeyName: "fleets_users_fleet_id_fkey"
             columns: ["fleet_id"]
             isOneToOne: false
             referencedRelation: "fleets"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "fleets_users_vehicles_user_id_fkey"
+            foreignKeyName: "fleets_users_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+        ]
+      }
+      fleets_vehicles: {
+        Row: {
+          fleet_id: string
+          relation_id: string
+          vehicle_id: string
+        }
+        Insert: {
+          fleet_id: string
+          relation_id?: string
+          vehicle_id: string
+        }
+        Update: {
+          fleet_id?: string
+          relation_id?: string
+          vehicle_id?: string
+        }
+        Relationships: [
           {
-            foreignKeyName: "fleets_users_vehicles_vehicle_id_fkey"
+            foreignKeyName: "fleets_vehicles_fleet_id_fkey"
+            columns: ["fleet_id"]
+            isOneToOne: false
+            referencedRelation: "fleets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fleets_vehicles_vehicle_id_fkey"
             columns: ["vehicle_id"]
             isOneToOne: false
             referencedRelation: "vehicles"

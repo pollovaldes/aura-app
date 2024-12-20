@@ -9,11 +9,12 @@ import { SimpleList } from "@/components/simpleList/SimpleList";
 import VehicleThumbnail from "@/components/vehicles/TruckThumbnail";
 import { useFleets } from "@/hooks/useFleets";
 import useProfile from "@/hooks/useProfile";
+import { Profile, Vehicle } from "@/types/globalTypes";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
-import { FlatList, Platform, Text, View } from "react-native";
+import { FlatList, Platform, Text } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function Index() {
@@ -135,126 +136,84 @@ export default function Index() {
           ),
         }}
       />
-      <View style={[styles.container, { marginTop: Platform.OS === "ios" ? headerHeight : 6 }]}>
-        <SegmentedControl
-          values={["Personas", "Vehículos"]}
-          selectedIndex={currentTabIndex}
-          onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
-          style={styles.segmentedControl}
-        />
-      </View>
-
-      {currentTabIndex === 0 ? (
-        <FlatList
-          contentInsetAdjustmentBehavior="automatic"
-          data={fleet.users}
-          keyExtractor={(item) => item.id}
-          refreshing={areFleetsLoading || isProfileLoading}
-          onRefresh={() => {
-            fetchFleets();
-            fetchProfile();
-          }}
-          style={styles.flatList}
-          renderItem={({ item }) => (
+      <FlatList
+        contentInsetAdjustmentBehavior="automatic"
+        data={currentTabIndex === 0 ? (fleet.users as Profile[]) : (fleet.vehicles as Vehicle[])}
+        keyExtractor={(item) => item.id}
+        refreshing={areFleetsLoading || isProfileLoading}
+        onRefresh={() => {
+          fetchFleets();
+          fetchProfile();
+        }}
+        ListHeaderComponent={
+          <SegmentedControl
+            values={["Personas", "Vehículos"]}
+            selectedIndex={currentTabIndex}
+            onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
+            style={styles.segmentedControl}
+          />
+        }
+        style={styles.list}
+        renderItem={({ item }) =>
+          currentTabIndex === 0 ? (
             <SimpleList
-              leading={<UserThumbnail userId={item.id.toString()} size={60} />}
+              leading={<UserThumbnail userId={(item as Profile).id.toString()} size={60} />}
               content={
-                <Text style={styles.itemText}>
-                  {`${capitalizeWords(item.name)} ${capitalizeWords(item.father_last_name)} ${capitalizeWords(item.mother_last_name)}`}
+                <Text style={styles.userText}>
+                  {`${capitalizeWords((item as Profile).name)} ${capitalizeWords(
+                    (item as Profile).father_last_name
+                  )} ${capitalizeWords((item as Profile).mother_last_name)}`}
                 </Text>
               }
             />
-          )}
-          ListEmptyComponent={<EmptyScreen caption="No hay personas en esta flotilla" />}
-        />
-      ) : (
-        <FlatList
-          contentInsetAdjustmentBehavior="automatic"
-          data={fleet.vehicles}
-          keyExtractor={(item) => item.id}
-          refreshing={areFleetsLoading || isProfileLoading}
-          onRefresh={() => {
-            fetchFleets();
-            fetchProfile();
-          }}
-          style={styles.flatList}
-          renderItem={({ item }) => (
+          ) : (
             <SimpleList
-              leading={<VehicleThumbnail vehicleId={item.id} />}
+              leading={<VehicleThumbnail vehicleId={(item as Vehicle).id} />}
               content={
                 <>
-                  <Text style={styles.itemTitle}>{`${item.brand} ${item.sub_brand} (${item.year})`}</Text>
-                  <Text style={styles.itemDetails}>
-                    {`Placa: ${item.plate}\nNúmero económico: ${item.economic_number}`}
-                  </Text>
+                  <Text
+                    style={styles.vehicleTitle}
+                  >{`${(item as Vehicle).brand} ${(item as Vehicle).sub_brand} (${(item as Vehicle).year})`}</Text>
+                  <Text
+                    style={styles.vehicleDetails}
+                  >{`Placa: ${(item as Vehicle).plate}\nNúmero económico: ${(item as Vehicle).economic_number}`}</Text>
                 </>
               }
             />
-          )}
-          ListEmptyComponent={<EmptyScreen caption="No hay vehículos en esta flotilla" />}
-        />
-      )}
+          )
+        }
+        ListEmptyComponent={
+          <EmptyScreen
+            caption={currentTabIndex === 0 ? "No hay personas en esta flotilla" : "No hay vehículos en esta flotilla"}
+          />
+        }
+      />
     </>
   );
 }
 
 const stylesheet = createStyleSheet((theme) => ({
-  flatList: {
+  list: {
     marginBottom: 36,
-  },
-  container: {
-    marginTop: theme.marginsComponents.section,
   },
   segmentedControl: {
     width: "97%",
     margin: "auto",
     marginVertical: 6,
   },
-  rowContainer: {
-    justifyContent: "space-between",
-    flexDirection: "row",
-    alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: theme.ui.colors.border,
-    paddingVertical: 10,
-  },
-  contentContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
-  imageContainer: {
-    padding: 12,
-  },
-  itemText: {
+  userText: {
     fontSize: 18,
     paddingLeft: 10,
     color: theme.textPresets.main,
     flexShrink: 1,
     marginRight: 18,
   },
-  boldText: {
-    fontWeight: "bold",
-  },
-  chevronView: {
-    paddingRight: 12,
-  },
-  plusIcon: {
-    fontSize: 16,
-    color: theme.headerButtons.color,
-  },
-  emptyStateContainer: {
-    marginTop: 100,
-  },
-  chevron: {
-    color: theme.textPresets.subtitle,
-  },
-  itemTitle: {
+  vehicleTitle: {
     fontWeight: "bold",
     fontSize: 18,
     color: theme.textPresets.main,
   },
-  itemDetails: {
+  vehicleDetails: {
     fontSize: 15,
     color: theme.textPresets.subtitle,
   },

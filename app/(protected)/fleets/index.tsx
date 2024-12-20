@@ -9,7 +9,7 @@ import { SimpleList } from "@/components/simpleList/SimpleList";
 import { useFleets } from "@/hooks/useFleets";
 import useProfile from "@/hooks/useProfile";
 import { Stack } from "expo-router";
-import { ChevronRight, Plus } from "lucide-react-native";
+import { Plus } from "lucide-react-native";
 import React, { useState } from "react";
 import { FlatList, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";

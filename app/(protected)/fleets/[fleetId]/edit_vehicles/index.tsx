@@ -141,11 +141,7 @@ export default function Index() {
         renderItem={({ item }) => (
           <View style={styles.container}>
             <GroupedList>
-              <Row
-                title={item.name}
-                icon={Boxes}
-                backgroundColor={colorPalette.cyan[500]}
-              />
+              <Row title={item.name} icon={Boxes} backgroundColor={colorPalette.cyan[500]} />
               <Row disabled title="" onPress={() => {}} hideChevron>
                 <Text style={styles.description}>{item.father_last_name}</Text>
               </Row>

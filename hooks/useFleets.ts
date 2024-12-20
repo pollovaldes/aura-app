@@ -8,17 +8,16 @@ export function useFleets(fleet_id?: string) {
 
   const fetchFleetsUserVehicles = async () => {
     let query = supabase.from("fleets").select(`
-    *,
-    fleets_users_vehicles (
       *,
-      profiles (
-        *
+      fleets_users (
+        *,
+        profiles (*)
       ),
-      vehicles (
-        *
+      fleets_vehicles (
+        *,
+        vehicles (*)
       )
-    )
-  `);
+    `);
 
     if (fleet_id) {
       query = query.eq("id", fleet_id);
@@ -40,11 +39,12 @@ export function useFleets(fleet_id?: string) {
 
     // Map the returned data into our Fleet structure
     const fleetsWithDetails: Fleet[] = normalizedFleetsData.map((fleet) => {
-      const relations = fleet.fleets_users_vehicles ?? [];
+      const userRelations = fleet.fleets_users ?? [];
+      const vehicleRelations = fleet.fleets_vehicles ?? [];
 
-      const users = relations.map((r) => r.profiles).filter((p): p is Profile => p !== null);
+      const users = userRelations.map((r) => r.profiles).filter((p): p is Profile => p !== null);
 
-      const vehicles = relations.map((r) => r.vehicles).filter((v): v is Vehicle => v !== null);
+      const vehicles = vehicleRelations.map((r) => r.vehicles).filter((v): v is Vehicle => v !== null);
 
       return {
         ...fleet,

@@ -66,8 +66,8 @@ export default function HomeLayout() {
           <Tabs
             screenOptions={{
               headerShown: false,
-              tabBarPosition: width >= 800 ? "left" : "bottom",
-              tabBarVariant: width >= 800 ? "material" : "uikit",
+              tabBarPosition: width >= 750 ? "left" : "bottom",
+              tabBarVariant: width >= 750 ? "material" : "uikit",
               tabBarLabelPosition: "below-icon", // Always "below-icon"
             }}
           >

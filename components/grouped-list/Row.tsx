@@ -6,7 +6,7 @@ import { LucideProps } from "lucide-react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 interface RowProps {
-  title?: string;
+  title?: string | null;
   caption?: string | ReactNode;
   icon?: React.ComponentType<Partial<LucideProps>>;
   backgroundColor?: string;
