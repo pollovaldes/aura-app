@@ -23,6 +23,7 @@ const stylesheet = createStyleSheet((theme) => ({
     alignItems: "center",
     gap: 6,
     paddingHorizontal: 12,
+    margin: 50,
   },
   text: {
     fontSize: 16,

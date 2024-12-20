@@ -1,16 +1,5 @@
-import {
-  View,
-  ScrollView,
-  RefreshControl,
-  Pressable,
-  Text,
-} from "react-native";
-import {
-  router,
-  Stack,
-  useFocusEffect,
-  useLocalSearchParams,
-} from "expo-router";
+import { View, ScrollView, RefreshControl, Pressable, Text, FlatList } from "react-native";
+import { router, Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
@@ -20,7 +9,7 @@ import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import useProfile from "@/hooks/useProfile";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
 import useDocuments from "@/hooks/useDocuments";
-import { Plus } from "lucide-react-native";
+import { ChevronRight, Plus } from "lucide-react-native";
 import Modal from "@/components/Modal/Modal";
 import { useCallback, useState } from "react";
 import AddDocument from "@/components/vehicles/modals/AddDocument";
@@ -29,6 +18,7 @@ import React from "react";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
+import { SimpleList } from "@/components/simpleList/SimpleList";
 
 type ModalType = "add_document" | null;
 
@@ -44,7 +34,7 @@ export default function Index() {
   useFocusEffect(
     useCallback(() => {
       fetchDocuments();
-    }, []),
+    }, [])
   );
 
   if (isProfileLoading || vehiclesAreLoading || areDocumentsLoading) {
@@ -59,11 +49,7 @@ export default function Index() {
         />
         <FetchingIndicator
           caption={
-            isProfileLoading
-              ? "Cargando perfil"
-              : vehiclesAreLoading
-                ? "Cargando vehículos"
-                : "Cargando documentos"
+            isProfileLoading ? "Cargando perfil" : vehiclesAreLoading ? "Cargando vehículos" : "Cargando documentos"
           }
         />
       </>
@@ -148,9 +134,7 @@ export default function Index() {
     );
   }
 
-  const associatedDocuments = documents.filter(
-    (doc) => doc.vehicle_id === vehicleId,
-  );
+  const associatedDocuments = documents.filter((doc) => doc.vehicle_id === vehicleId);
 
   const canEdit = profile.role === "ADMIN" || profile.role === "OWNER";
 
@@ -161,11 +145,7 @@ export default function Index() {
           <Text style={styles.closeButton} onPress={closeModal}>
             Cerrar
           </Text>
-          <AddDocument
-            closeModal={closeModal}
-            vehicle={vehicle}
-            refreshDocuments={fetchDocuments}
-          />
+          <AddDocument closeModal={closeModal} vehicle={vehicle} refreshDocuments={fetchDocuments} />
         </View>
       </Modal>
 
@@ -175,57 +155,39 @@ export default function Index() {
           headerLargeTitle: false,
           headerRight: () => (
             <ActionButtonGroup>
-              <ActionButton
-                Icon={Plus}
-                onPress={() => setActiveModal("add_document")}
-                show={canEdit}
-              />
+              <ActionButton Icon={Plus} onPress={() => setActiveModal("add_document")} show={canEdit} />
             </ActionButtonGroup>
           ),
         }}
       />
 
-      {associatedDocuments.length === 0 ? (
-        <EmptyScreen
-          caption={`No hay documentos para \neste vehículo`}
-          buttonCaption="Reintentar"
-          retryFunction={fetchDocuments}
-        />
-      ) : (
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          refreshControl={
-            <RefreshControl
-              refreshing={vehiclesAreLoading || isProfileLoading}
-              onRefresh={() => {
-                fetchVehicles();
-                fetchProfile();
-                fetchDocuments();
-              }}
-            />
-          }
-        >
-          <View style={styles.container}>
-            <GroupedList
-              header="Documentos"
-              footer="Solo los administradores tienen permiso para modificar o agregar documentos en la guantera digital"
-            >
-              {associatedDocuments.map((doc) => (
-                <Row
-                  key={doc.document_id}
-                  title={doc.title}
-                  caption={doc.description}
-                  onPress={() =>
-                    router.navigate(
-                      `/vehicles/[vehicleId]/documentation/${doc.document_id}`,
-                    )
-                  }
-                />
-              ))}
-            </GroupedList>
-          </View>
-        </ScrollView>
-      )}
+      <FlatList
+        refreshing={vehiclesAreLoading || isProfileLoading || areDocumentsLoading}
+        onRefresh={() => {
+          fetchVehicles();
+          fetchProfile();
+          fetchDocuments();
+        }}
+        contentInsetAdjustmentBehavior="automatic"
+        data={associatedDocuments}
+        keyExtractor={(item) => item.document_id}
+        renderItem={({ item }) => (
+          <SimpleList
+            relativeToDirectory
+            href={`./${item.document_id}`}
+            content={
+              <View style={{ flexDirection: "column" }}>
+                <Text style={styles.itemTitle}>{item.title}</Text>
+                <Text style={styles.itemSubtitle}>
+                  {item.description ? item.description : "No se proveyó ninguna descripción."}
+                </Text>
+              </View>
+            }
+            trailing={<ChevronRight color={styles.chevron.color} />}
+          />
+        )}
+        ListEmptyComponent={<EmptyScreen caption="No hay documentos para este vehículo." />}
+      />
     </>
   );
 }
@@ -264,5 +226,17 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.headerButtons.color,
     fontSize: 18,
     textAlign: "right",
+  },
+  itemTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: theme.textPresets.main,
+  },
+  itemSubtitle: {
+    fontSize: 15,
+    color: theme.textPresets.subtitle,
+  },
+  chevron: {
+    color: theme.textPresets.subtitle,
   },
 }));

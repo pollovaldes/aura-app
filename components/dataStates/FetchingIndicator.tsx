@@ -11,12 +11,7 @@ export function FetchingIndicator({ caption }: LoadingScreenType) {
   const headerHeight = useHeaderHeight();
 
   return (
-    <View
-      style={[
-        styles.container,
-        { paddingTop: Platform.OS === "ios" ? headerHeight : 0 },
-      ]}
-    >
+    <View style={[styles.container, { paddingTop: Platform.OS === "ios" ? headerHeight : 0 }]}>
       <ActivityIndicator />
       <Text style={styles.text}>{caption}</Text>
     </View>
@@ -32,6 +27,7 @@ const stylesheet = createStyleSheet((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     gap: 12,
+    margin: 50,
   },
   text: {
     fontSize: 16,

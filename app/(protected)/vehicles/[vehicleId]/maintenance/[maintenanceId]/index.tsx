@@ -9,21 +9,15 @@ import SegmentedControl from "@react-native-segmented-control/segmented-control"
 import { useHeaderHeight } from "@react-navigation/elements";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
-import { Platform, RefreshControl, ScrollView, Text, View } from "react-native";
+import { FlatList, Platform, RefreshControl, ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { colorPalette } from "@/style/themes";
-import {
-  CircleHelp,
-  File,
-  Info,
-  MessageCirclePlus,
-  RefreshCcw,
-  Trash,
-} from "lucide-react-native";
+import { ChevronRight, CircleHelp, File, Info, MessageCirclePlus, RefreshCcw, Trash } from "lucide-react-native";
 import StatusChip from "@/components/General/StatusChip";
 import useMaintenanceDocuments from "@/hooks/useMaintenanceDocuments";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
+import { SimpleList } from "@/components/simpleList/SimpleList";
 
 export default function maintenanceId() {
   const { styles } = useStyles(stylesheet);
@@ -34,25 +28,19 @@ export default function maintenanceId() {
 
   const { maintenanceId } = useLocalSearchParams<{ maintenanceId: string }>();
 
-  const { maintenanceRecords, areMaintenanceRecordsLoading, fetchMaintenance } =
-    useMaintenance(undefined, maintenanceId);
+  const { maintenanceRecords, areMaintenanceRecordsLoading, fetchMaintenance } = useMaintenance(
+    undefined,
+    maintenanceId
+  );
 
-  const {
-    areMaintenanceDocumentsLoading,
-    fetchMaintenanceDocuments,
-    maintenanceDocuments,
-  } = useMaintenanceDocuments(maintenanceId);
+  const { areMaintenanceDocumentsLoading, fetchMaintenanceDocuments, maintenanceDocuments } =
+    useMaintenanceDocuments(maintenanceId);
 
   const headerHeight = useHeaderHeight();
 
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
-  if (
-    isProfileLoading ||
-    vehiclesAreLoading ||
-    areMaintenanceRecordsLoading ||
-    areMaintenanceDocumentsLoading
-  ) {
+  if (isProfileLoading || vehiclesAreLoading || areMaintenanceRecordsLoading || areMaintenanceDocumentsLoading) {
     return (
       <>
         <Stack.Screen
@@ -179,10 +167,7 @@ export default function maintenanceId() {
     );
   }
 
-  const canEdit =
-    profile.role === "ADMIN" ||
-    profile.role === "OWNER" ||
-    profile.role === "DRIVER";
+  const canEdit = profile.role === "ADMIN" || profile.role === "OWNER" || profile.role === "DRIVER";
 
   const statesConfig = {
     IN_REVISION: {
@@ -223,15 +208,11 @@ export default function maintenanceId() {
           headerLargeTitle: false,
         }}
       />
-      <View
-        style={[{ marginTop: Platform.OS === "ios" ? headerHeight + 0 : 6 }]}
-      >
+      <View style={[{ marginTop: Platform.OS === "ios" ? headerHeight + 0 : 6 }]}>
         <SegmentedControl
           values={["General", "Archivos y medios", "Actualizaciones"]}
           selectedIndex={currentTabIndex}
-          onChange={(event) =>
-            setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)
-          }
+          onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
           style={[styles.segmentedControl, {}]}
         />
       </View>
@@ -240,10 +221,7 @@ export default function maintenanceId() {
         refreshControl={
           <RefreshControl
             refreshing={
-              vehiclesAreLoading ||
-              areMaintenanceRecordsLoading ||
-              isProfileLoading ||
-              areMaintenanceDocumentsLoading
+              vehiclesAreLoading || areMaintenanceRecordsLoading || isProfileLoading || areMaintenanceDocumentsLoading
             }
             onRefresh={() => {
               fetchVehicles();
@@ -259,12 +237,7 @@ export default function maintenanceId() {
             <GroupedList>
               <Row
                 title="Estatus de la solicitud"
-                trailing={
-                  <StatusChip
-                    status={record.status}
-                    statesConfig={statesConfig}
-                  />
-                }
+                trailing={<StatusChip status={record.status} statesConfig={statesConfig} />}
                 icon={CircleHelp}
                 backgroundColor={colorPalette.orange[500]}
               />
@@ -292,9 +265,7 @@ export default function maintenanceId() {
               <Row
                 title="vehículo al que se le solicitó"
                 caption={`${vehicle.brand} ${vehicle.sub_brand} (${vehicle.year})\n`.trim()}
-                onPress={() =>
-                  router.push(`/vehicles/${vehicle.id}/technical_sheet/`)
-                }
+                onPress={() => router.push(`/vehicles/${vehicle.id}/technical_sheet/`)}
               />
               <Row
                 title="Quien solicitó"
@@ -319,8 +290,7 @@ export default function maintenanceId() {
                 <Row
                   title="Quien resolvió"
                   onPress={() => {
-                    record.resolved_by &&
-                      router.push(`/users/${record.resolved_by.id}/`);
+                    record.resolved_by && router.push(`/users/${record.resolved_by.id}/`);
                   }}
                   hideChevron={record.resolved_by ? false : true}
                   caption={
@@ -338,60 +308,39 @@ export default function maintenanceId() {
                 icon={RefreshCcw}
                 backgroundColor={colorPalette.green[500]}
               />
-              <Row
-                title="Agregar comentario"
-                icon={MessageCirclePlus}
-                backgroundColor={colorPalette.neutral[500]}
-              />
-              <Row
-                title="Eliminar solicitud"
-                icon={Trash}
-                backgroundColor={colorPalette.red[500]}
-              />
+              <Row title="Agregar comentario" icon={MessageCirclePlus} backgroundColor={colorPalette.neutral[500]} />
+              <Row title="Eliminar solicitud" icon={Trash} backgroundColor={colorPalette.red[500]} />
             </GroupedList>
           </View>
         )}
         {currentTabIndex === 1 && (
-          <>
-            {maintenanceDocuments.length === 0 ? (
-              <View style={{ marginTop: 36 }}>
-                <EmptyScreen
-                  caption="No se han adjuntado archivos a esta solicitud"
-                  buttonCaption="Reintentar"
-                  retryFunction={fetchMaintenanceDocuments}
-                />
-              </View>
-            ) : (
-              <View style={styles.groupedListsContainer}>
-                {maintenanceDocuments.map((document) => (
-                  <GroupedList
-                    key={document.document_id}
-                    header={`Creado ${formatDate(document.created_at, "el")}`}
-                  >
-                    <Row
-                      title={
-                        document.title ? document.title : document.document_id
-                      }
-                      icon={File}
-                      backgroundColor={colorPalette.green[500]}
-                      onPress={() =>
-                        router.navigate(
-                          `/vehicles/${document.vehicle_id}/maintenance/${document.maintenance_id}/${document.document_id}/`,
-                        )
-                      }
-                    />
-                    <Row>
-                      <Text style={styles.haderDescription}>
-                        {document.description
-                          ? document.description
-                          : "No se proveyó ninguna descripción para este documento."}
-                      </Text>
-                    </Row>
-                  </GroupedList>
-                ))}
-              </View>
+          <FlatList
+            refreshing={vehiclesAreLoading || isProfileLoading}
+            onRefresh={() => {
+              fetchVehicles();
+              fetchProfile();
+            }}
+            contentInsetAdjustmentBehavior="automatic"
+            data={maintenanceDocuments}
+            keyExtractor={(item) => item.document_id}
+            renderItem={({ item }) => (
+              <SimpleList
+                relativeToDirectory
+                href={`./${item.document_id}`}
+                content={
+                  <View style={{ flexDirection: "column" }}>
+                    <Text style={styles.itemTitle}>{item.title}</Text>
+                    <Text style={styles.itemSubtitle}>{formatDate(item.created_at, "Creado el ")}</Text>
+                    <Text style={styles.itemSubtitle}>
+                      {item.description ? item.description : "No se proveyó ninguna descripción."}
+                    </Text>
+                  </View>
+                }
+                trailing={<ChevronRight color={styles.chevron.color} />}
+              />
             )}
-          </>
+            ListEmptyComponent={<EmptyScreen caption="No hay documentos para este vehículo." />}
+          />
         )}
 
         {currentTabIndex === 2 && (
@@ -433,5 +382,17 @@ const stylesheet = createStyleSheet((theme) => ({
     marginHorizontal: 12,
     marginVertical: 12,
     color: theme.textPresets.main,
+  },
+  itemTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: theme.textPresets.main,
+  },
+  itemSubtitle: {
+    fontSize: 15,
+    color: theme.textPresets.subtitle,
+  },
+  chevron: {
+    color: theme.textPresets.subtitle,
   },
 }));

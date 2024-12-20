@@ -9,11 +9,7 @@ type UnauthorizedScreenType = {
   retryFunction: () => void;
 };
 
-export default function UnauthorizedScreen({
-  caption,
-  retryFunction,
-  buttonCaption,
-}: UnauthorizedScreenType) {
+export default function UnauthorizedScreen({ caption, retryFunction, buttonCaption }: UnauthorizedScreenType) {
   const { styles } = useStyles(stylesheet);
 
   return (
@@ -35,6 +31,7 @@ const stylesheet = createStyleSheet((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 12,
+    margin: 50,
   },
   content: {
     gap: 20,

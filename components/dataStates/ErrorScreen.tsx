@@ -9,11 +9,7 @@ type ErrorScreenType = {
   retryFunction: () => void;
 };
 
-export default function ErrorScreen({
-  caption,
-  retryFunction,
-  buttonCaption,
-}: ErrorScreenType) {
+export default function ErrorScreen({ caption, retryFunction, buttonCaption }: ErrorScreenType) {
   const { styles } = useStyles(stylesheet);
 
   return (
@@ -35,6 +31,7 @@ const stylesheet = createStyleSheet((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 12,
+    margin: 50,
   },
   content: {
     gap: 20,

@@ -34,7 +34,7 @@ export default function UsersList() {
       const filtered = users.filter((user) =>
         `${user.name} ${user.father_last_name} ${user.mother_last_name}`
           .toLowerCase()
-          .includes(searchQuery.toLowerCase()),
+          .includes(searchQuery.toLowerCase())
       );
       setFilteredUsers(filtered);
     } else {
@@ -43,11 +43,7 @@ export default function UsersList() {
   }, [searchQuery, users]);
 
   if (usersAreLoading || isProfileLoading) {
-    return (
-      <FetchingIndicator
-        caption={usersAreLoading ? "Cargando usuarios" : "Cargando perfil"}
-      />
-    );
+    return <FetchingIndicator caption={usersAreLoading ? "Cargando usuarios" : "Cargando perfil"} />;
   }
 
   if (!profile) {

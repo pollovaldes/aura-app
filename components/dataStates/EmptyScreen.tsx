@@ -9,11 +9,7 @@ type EmptyScreenType = {
   retryFunction?: () => void;
 };
 
-export default function EmptyScreen({
-  caption,
-  buttonCaption,
-  retryFunction,
-}: EmptyScreenType) {
+export default function EmptyScreen({ caption, buttonCaption, retryFunction }: EmptyScreenType) {
   const { styles } = useStyles(stylesheet);
 
   return (
@@ -23,9 +19,7 @@ export default function EmptyScreen({
           <Rabbit color={styles.icon.color} size={35} />
           <Text style={styles.text}>{caption}</Text>
         </View>
-        {buttonCaption && retryFunction && (
-          <FormButton title={buttonCaption} onPress={retryFunction} />
-        )}
+        {buttonCaption && retryFunction && <FormButton title={buttonCaption} onPress={retryFunction} />}
       </View>
     </View>
   );
@@ -37,6 +31,7 @@ const stylesheet = createStyleSheet((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 12,
+    margin: 50,
   },
   content: {
     gap: 20,
