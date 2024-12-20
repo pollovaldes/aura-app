@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FlatList, Text } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Stack } from "expo-router";
-import { ChevronRight, Download, Plus } from "lucide-react-native";
+import { Download, Plus } from "lucide-react-native";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
@@ -23,7 +23,7 @@ export default function VehicleList() {
   const headerRight = () => {
     return (
       <ActionButtonGroup>
-        <ActionButton onPress={handleDownloadCsv} Icon={Download} />
+        <ActionButton onPress={() => {}} Icon={Download} />
         <ActionButton onPress={() => setIsModalVisible(true)} Icon={Plus} show={canEdit} />
       </ActionButtonGroup>
     );
@@ -90,14 +90,6 @@ export default function VehicleList() {
       </>
     );
   }
-
-  const handleDownloadCsv = async () => {
-    try {
-      console.log("Exporting CSV...");
-    } catch (error) {
-      console.error("Error downloading CSV:", error);
-    }
-  };
 
   return (
     <>

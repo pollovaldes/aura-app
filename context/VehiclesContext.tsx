@@ -1,7 +1,5 @@
-import { Database } from "@/types/database.types";
+import { Vehicle } from "@/types/globalTypes";
 import { createContext, ReactNode, useState, Dispatch, SetStateAction } from "react";
-
-type Vehicle = Database["public"]["Tables"]["vehicles"]["Row"];
 
 interface VehiclesContextType {
   vehicles: Vehicle[] | null;
