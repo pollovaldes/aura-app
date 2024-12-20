@@ -14,7 +14,6 @@ export default function Index() {
   const { profile, isProfileLoading, fetchProfile } = useProfile();
   const headerHeight = useHeaderHeight();
 
-  // Define filter options
   const FILTER_OPTIONS = [
     { key: "todo", label: "Todo" },
     { key: "mantenimiento", label: "Mantenimiento" },
@@ -24,7 +23,6 @@ export default function Index() {
     { key: "reportes", label: "Reportes de error" },
   ];
 
-  // Sample data for FlatList
   const DATA = [
     { id: "1", category: "mantenimiento", title: "Cambio de aceite" },
     { id: "2", category: "gasolina", title: "Recarga de gasolina" },
@@ -32,11 +30,7 @@ export default function Index() {
     { id: "4", category: "ayuda", title: "Solicitar soporte" },
   ];
 
-  // Filter data based on selected option
-  const filteredData =
-    selectedFilter === "todo"
-      ? DATA
-      : DATA.filter((item) => item.category === selectedFilter);
+  const filteredData = selectedFilter === "todo" ? DATA : DATA.filter((item) => item.category === selectedFilter);
 
   if (isProfileLoading) {
     return (
@@ -48,9 +42,7 @@ export default function Index() {
             headerRight: undefined,
           }}
         />
-        <FetchingIndicator
-          caption={isProfileLoading ? "Cargando perfil" : "Cargando sesión"}
-        />
+        <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando sesión"} />
       </>
     );
   }
@@ -84,13 +76,12 @@ export default function Index() {
         }}
       />
 
+      <View style={styles.filterContainer}>
+        <FilterSelector options={FILTER_OPTIONS} selected={selectedFilter} onChange={setSelectedFilter} />
+      </View>
+
       <FlatList
-        refreshControl={
-          <RefreshControl
-            refreshing={isProfileLoading}
-            onRefresh={fetchProfile}
-          />
-        }
+        refreshControl={<RefreshControl refreshing={isProfileLoading} onRefresh={fetchProfile} />}
         style={styles.container}
         data={filteredData}
         keyExtractor={(item) => item.id}
@@ -99,18 +90,7 @@ export default function Index() {
             <Text style={styles.itemText}>{item.title}</Text>
           </View>
         )}
-        ListEmptyComponent={
-          <Text style={styles.emptyText}>No hay resultados disponibles</Text>
-        }
-        ListHeaderComponent={() => (
-          <View style={styles.filterContainer}>
-            <FilterSelector
-              options={FILTER_OPTIONS}
-              selected={selectedFilter}
-              onChange={setSelectedFilter}
-            />
-          </View>
-        )}
+        ListEmptyComponent={<Text style={styles.emptyText}>No hay resultados disponibles</Text>}
       />
     </>
   );
