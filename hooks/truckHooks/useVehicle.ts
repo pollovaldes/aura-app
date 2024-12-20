@@ -13,7 +13,7 @@ export default function useVehicle() {
     if (error) {
       setVehicles(null);
       setVehiclesAreLoading(false);
-      return;
+      throw error;
     }
 
     setVehicles(data);

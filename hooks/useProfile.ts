@@ -1,63 +1,70 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
 import { useSessionContext } from "@/context/SessionContext";
+import { supabase } from "@/lib/supabase";
+import { Profile } from "@/types/globalTypes";
 import { router } from "expo-router";
-import { User } from "@/types/User";
+import { useEffect, useState } from "react";
 
 export default function useProfile() {
-  const { session, isLoading: isSessionLoading } = useSessionContext();
-  const [profile, setProfile] = useState<User | null>(null);
+  const { session, isLoading: sessionIsLoading } = useSessionContext(); // Use session context
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [isProfileLoading, setIsProfileLoading] = useState<boolean>(false);
 
   const fetchProfile = async () => {
-    setIsProfileLoading(true);
-    const { data: profileData, error } = await supabase
-      .from("profiles")
-      .select(
-        "id, name, father_last_name, mother_last_name, position, role, is_fully_registered, birthday",
-      )
-      .eq("id", session?.user.id)
-      .single();
-
-    if (profileData) {
-      setProfile(profileData as User);
+    if (!session || !session.user) {
+      setProfile(null);
+      return;
     }
+
+    setIsProfileLoading(true);
+
+    const { data, error } = await supabase.from("profiles").select("*").eq("id", session.user.id).single();
+
+    if (error) {
+      console.error("Error fetching profile:", error);
+      setProfile(null);
+      setIsProfileLoading(false);
+      return;
+    }
+
+    setProfile(data);
 
     setIsProfileLoading(false);
-
-    if (error || !profileData) {
-      setProfile(null);
-      throw error;
-    }
   };
 
   useEffect(() => {
-    if (!isSessionLoading && session?.user?.id) {
-      fetchProfile();
-
-      // Subscribe to profile updates in real-time
-      const profileSubscription = supabase
-        .channel("public:profiles")
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "profiles",
-            filter: `id=eq.${session.user.id}`,
-          },
-          (payload) => {
-            console.log("Change received!", payload);
-            router.replace("/");
-          },
-        )
-        .subscribe();
-
-      return () => {
-        supabase.removeChannel(profileSubscription);
-      };
+    if (sessionIsLoading) {
+      return;
     }
-  }, [session, isSessionLoading]);
+
+    if (!session || !session.user) {
+      console.error("No session or user found");
+      setProfile(null);
+      return;
+    }
+
+    fetchProfile();
+
+    const profileSubscription = supabase
+      .channel("public:profiles")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "profiles",
+          filter: `id=eq.${session.user.id}`,
+        },
+        (payload) => {
+          console.log("Profile change received:", payload);
+          router.replace("/");
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(profileSubscription);
+    };
+  }, [session, sessionIsLoading]);
 
   return {
     isProfileLoading,
