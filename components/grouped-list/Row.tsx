@@ -37,13 +37,12 @@ const Row = ({
   show = true,
 }: RowProps) => {
   const { styles, breakpoint } = useStyles(stylesheet);
-  const isWide = breakpoint === "wide";
   const [isHovered, setIsHovered] = useState(false);
 
   if (!show) return;
 
   if (children) {
-    return <View style={[styles.container, isWide && styles.containerWide, style]}>{children}</View>;
+    return <View style={[styles.container, style]}>{children}</View>;
   }
 
   return (
@@ -54,7 +53,6 @@ const Row = ({
       onHoverOut={() => hasTouchableFeedback && setIsHovered(false)}
       style={({ pressed }) => [
         styles.container,
-        isWide && styles.containerWide,
         style,
         { opacity: disabled ? 0.6 : 1 },
         hasTouchableFeedback && isHovered && styles.containerHovered,

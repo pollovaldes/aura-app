@@ -9,18 +9,11 @@ interface GroupedListProps {
   containerStyle?: StyleProp<ViewStyle>;
 }
 
-const GroupedList = ({
-  header,
-  footer,
-  children,
-  containerStyle,
-}: GroupedListProps) => {
+const GroupedList = ({ header, footer, children, containerStyle }: GroupedListProps) => {
   // Filter rows to include only visible ones
   const rows = Children.toArray(children).filter(
     (child) =>
-      child !== null &&
-      React.isValidElement(child) &&
-      (child.props.show === undefined || child.props.show === true), // Include rows without `show` or with `show={true}`
+      child !== null && React.isValidElement(child) && (child.props.show === undefined || child.props.show === true) // Include rows without `show` or with `show={true}`
   );
   const rowsCount = rows.length;
 
@@ -36,12 +29,8 @@ const GroupedList = ({
     return styles.middle; // Middle item
   };
 
-  const isWide = breakpoint === "wide";
-
   return (
-    <View
-      style={[styles.container, isWide && styles.containerWide, containerStyle]}
-    >
+    <View style={[styles.container, containerStyle]}>
       {header && (
         <View style={styles.header}>
           <Text style={styles.headerText}>{header.toUpperCase()}</Text>
@@ -49,8 +38,8 @@ const GroupedList = ({
       )}
       {rows.map((row, index) =>
         React.cloneElement(row as React.ReactElement, {
-          style: isWide ? styles.rowWide : getRowStyle(index), // Apply styles
-        }),
+          style: getRowStyle(index), // Apply styles
+        })
       )}
       {footer && (
         <View style={styles.footer}>
@@ -64,12 +53,6 @@ const GroupedList = ({
 const stylesheet = createStyleSheet((theme) => ({
   container: {
     paddingHorizontal: 16,
-  },
-  containerWide: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 16,
-    justifyContent: "space-between",
   },
   header: {
     marginBottom: 10,
@@ -102,10 +85,6 @@ const stylesheet = createStyleSheet((theme) => ({
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
     borderBottomWidth: 0,
-  },
-  rowWide: {
-    width: "48%",
-    borderRadius: 10,
   },
 }));
 
