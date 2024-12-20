@@ -3,7 +3,6 @@ import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
-import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import UserThumbnail from "@/components/people/UserThumbnail";
 import { SimpleList } from "@/components/simpleList/SimpleList";
@@ -12,10 +11,9 @@ import { useFleets } from "@/hooks/useFleets";
 import useProfile from "@/hooks/useProfile";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { useHeaderHeight } from "@react-navigation/elements";
-import { Link, router, Stack, useLocalSearchParams } from "expo-router";
-import { ChevronRight } from "lucide-react-native";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
-import { FlatList, Platform, Pressable, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Platform, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function Index() {

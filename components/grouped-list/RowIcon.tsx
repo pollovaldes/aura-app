@@ -22,28 +22,21 @@ const RowIcon = ({ icon: Icon, backgroundColor = "#ffffff" }: RowIconProps) => {
 const getStyles = (backgroundColor: string) =>
   StyleSheet.create({
     container: {
-      width: 32,
-      height: 32,
-      borderRadius: 8,
+      width: 28,
+      height: 28,
+      borderRadius: 6,
       justifyContent: "center",
       alignItems: "center",
       backgroundColor,
       marginRight: 12,
-      ...Platform.select({
-        web: {
-          width: 28,
-          height: 28,
-          borderRadius: 6,
-        },
-      }),
     },
     icon: {
       fontSize: Platform.select({
-        ios: 23,
-        android: 23,
-        web: 20,
+        ios: 22,
+        android: 22,
+        web: 22,
       }),
-      color: "#FFFFFF", // Fixed white color
+      color: "#FFFFFF",
     },
   });
 

@@ -1,12 +1,5 @@
 import React, { ReactNode, useState } from "react";
-import {
-  View,
-  Text,
-  Pressable,
-  ActivityIndicator,
-  StyleProp,
-  ViewStyle,
-} from "react-native";
+import { View, Text, Pressable, ActivityIndicator, StyleProp, ViewStyle } from "react-native";
 import RowIcon from "./RowIcon";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LucideProps } from "lucide-react-native";
@@ -50,11 +43,7 @@ const Row = ({
   if (!show) return;
 
   if (children) {
-    return (
-      <View style={[styles.container, isWide && styles.containerWide, style]}>
-        {children}
-      </View>
-    );
+    return <View style={[styles.container, isWide && styles.containerWide, style]}>{children}</View>;
   }
 
   return (
@@ -75,20 +64,14 @@ const Row = ({
       {icon && <RowIcon icon={icon} backgroundColor={backgroundColor} />}
       <View style={styles.textContainer}>
         <Text style={styles.title}>{title}</Text>
-        {caption && (
-          <Text style={styles.caption}>
-            {typeof caption === "string" ? caption : caption}
-          </Text>
-        )}
+        {caption && <Text style={styles.caption}>{typeof caption === "string" ? caption : caption}</Text>}
       </View>
       {isLoading ? (
         <ActivityIndicator />
       ) : trailing ? (
         <View>{trailing}</View>
       ) : (
-        !hideChevron && (
-          <MaterialIcons name="chevron-right" size={24} color="#c4c4c7" />
-        )
+        !hideChevron && <MaterialIcons name="chevron-right" size={24} color="#c4c4c7" />
       )}
     </Pressable>
   );
