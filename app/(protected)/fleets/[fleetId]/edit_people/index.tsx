@@ -7,7 +7,7 @@ import { ChevronRight, Plus } from "lucide-react-native";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import { Link, Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
-import { useHeaderHeight } from "@react-navigation/elements";
+import { Header, useHeaderHeight } from "@react-navigation/elements";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import UserThumbnail from "@/components/people/UserThumbnail";
@@ -16,6 +16,7 @@ import React from "react";
 import { useFleets } from "@/hooks/useFleets";
 import { SimpleList } from "@/components/simpleList/SimpleList";
 import { FormButton } from "@/components/Form/FormButton";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
@@ -24,6 +25,7 @@ export default function Index() {
   const { areFleetsLoading, fetchFleets, fleets } = useFleets(fleetId);
   const { users, usersAreLoading, fetchUsers } = useUsers();
   const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
   const capitalizeWords = (text: string | null | undefined): string => {
@@ -171,11 +173,10 @@ export default function Index() {
       <Stack.Screen
         options={{
           title: "Administrar personas",
-          headerRight: undefined,
           headerLargeTitle: false,
           headerSearchBarOptions: {
             placeholder: "Buscar",
-            hideWhenScrolling: false,
+            hideWhenScrolling: true,
           },
         }}
       />
@@ -210,6 +211,11 @@ export default function Index() {
             }
           />
         )}
+        ListEmptyComponent={
+          <View style={{ marginTop: 100 }}>
+            <EmptyScreen caption="Esta flotilla no tiene personas" />
+          </View>
+        }
         ListHeaderComponent={
           <SegmentedControl
             values={["Personas en esta flotilla", "Todas las personas"]}
@@ -217,11 +223,6 @@ export default function Index() {
             onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
             style={styles.segmentedControl}
           />
-        }
-        ListEmptyComponent={
-          <View style={{ marginTop: 100 }}>
-            <EmptyScreen caption="Esta flotilla no tiene personas" />
-          </View>
         }
       />
     </>
