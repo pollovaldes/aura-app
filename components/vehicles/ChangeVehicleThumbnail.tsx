@@ -1,15 +1,6 @@
 // components/vehicles/ChangeVehicleImages.tsx
 import React from "react";
-import {
-  View,
-  Text,
-  Alert,
-  Modal,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Text, Alert, Modal, ScrollView, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { FormButton } from "@/components/Form/FormButton"; // Asegúrate de que la ruta es correcta
 import { Vehicle } from "@/types/Vehicle";
 
@@ -42,38 +33,30 @@ export default function ChangeVehicleImageModal({
   };
 
   const handleDeleteProfileImage = () => {
-    Alert.alert(
-      "Confirmación",
-      "¿Estás seguro de que deseas eliminar la foto de perfil?",
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Eliminar",
-          style: "destructive",
-          onPress: async () => {
-            await deleteThumbnail(vehicle.id);
-            closeModal();
-          },
+    Alert.alert("Confirmación", "¿Estás seguro de que deseas eliminar la foto de perfil?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Eliminar",
+        style: "destructive",
+        onPress: async () => {
+          await deleteThumbnail(vehicle.id);
+          closeModal();
         },
-      ],
-    );
+      },
+    ]);
   };
 
   const handleDeleteGalleryImage = (fileName: string) => {
-    Alert.alert(
-      "Confirmación",
-      "¿Estás seguro de que deseas eliminar esta foto de la galería?",
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Eliminar",
-          style: "destructive",
-          onPress: async () => {
-            await deletePhotoFromGalley(vehicle.id, fileName);
-          },
+    Alert.alert("Confirmación", "¿Estás seguro de que deseas eliminar esta foto de la galería?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Eliminar",
+        style: "destructive",
+        onPress: async () => {
+          await deletePhotoFromGalley(vehicle.id, fileName);
         },
-      ],
-    );
+      },
+    ]);
   };
 
   return (
@@ -86,24 +69,15 @@ export default function ChangeVehicleImageModal({
         <View style={styles.section}>
           {vehicle.thumbnail ? (
             <View style={styles.imageContainer}>
-              <Image
-                source={{ uri: vehicle.thumbnail }}
-                style={styles.profileImage}
-              />
-              <TouchableOpacity
-                onPress={handleDeleteProfileImage}
-                style={styles.deleteButton}
-              >
+              <Image source={{ uri: vehicle.thumbnail }} style={styles.profileImage} />
+              <TouchableOpacity onPress={handleDeleteProfileImage} style={styles.deleteButton}>
                 <Text style={{ color: "red" }}>Eliminar Foto de Perfil</Text>
               </TouchableOpacity>
             </View>
           ) : (
             <Text>No hay foto de perfil.</Text>
           )}
-          <FormButton
-            title="Elegir nueva foto de perfil"
-            onPress={handleSelectImage}
-          />
+          <FormButton title="Elegir nueva foto de perfil" onPress={handleSelectImage} />
         </View>
       </ScrollView>
     </Modal>

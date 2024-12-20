@@ -1,24 +1,20 @@
-import { View, ScrollView, RefreshControl, Pressable, Text, FlatList } from "react-native";
-import { router, Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
-import GroupedList from "@/components/grouped-list/GroupedList";
-import Row from "@/components/grouped-list/Row";
-import LoadingScreen from "@/components/dataStates/LoadingScreen";
+import { ActionButton } from "@/components/actionButton/ActionButton";
+import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
+import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
-import useProfile from "@/hooks/useProfile";
+import Modal from "@/components/Modal/Modal";
+import { SimpleList } from "@/components/simpleList/SimpleList";
+import AddDocument from "@/components/vehicles/modals/AddDocument";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
 import useDocuments from "@/hooks/useDocuments";
-import { ChevronRight, Plus } from "lucide-react-native";
-import Modal from "@/components/Modal/Modal";
-import { useCallback, useState } from "react";
-import AddDocument from "@/components/vehicles/modals/AddDocument";
-import EmptyScreen from "@/components/dataStates/EmptyScreen";
-import React from "react";
-import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
-import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
-import { ActionButton } from "@/components/actionButton/ActionButton";
-import { SimpleList } from "@/components/simpleList/SimpleList";
+import useProfile from "@/hooks/useProfile";
+import { Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { Plus } from "lucide-react-native";
+import React, { useCallback, useState } from "react";
+import { FlatList, Text, View } from "react-native";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 type ModalType = "add_document" | null;
 

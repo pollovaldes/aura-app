@@ -8,7 +8,8 @@ import useProfile from "@/hooks/useProfile";
 import { supabase } from "@/lib/supabase";
 import { Redirect, Tabs, usePathname } from "expo-router";
 import { Bell, Boxes, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
-import { Platform, View, useWindowDimensions } from "react-native";
+import { useState } from "react";
+import { View, useWindowDimensions } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function HomeLayout() {

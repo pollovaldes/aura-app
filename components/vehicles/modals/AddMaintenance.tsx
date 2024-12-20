@@ -3,8 +3,6 @@ import { FormButton } from "@/components/Form/FormButton";
 import FormInput from "@/components/Form/FormInput";
 import FilePickerMenu from "@/components/maintenance/filePickerMenu";
 import { supabase } from "@/lib/supabase";
-import { User } from "@/types/User";
-import { Vehicle } from "@/types/Vehicle";
 import { DocumentPickerAsset } from "expo-document-picker";
 import { ArrowUpFromLine, File, Plus, Trash2, X } from "lucide-react-native";
 import { useState } from "react";
@@ -16,12 +14,13 @@ import * as FileSystem from "expo-file-system";
 import * as Crypto from "expo-crypto";
 import { decode } from "base64-arraybuffer";
 import { router } from "expo-router";
+import { Profile, Vehicle } from "@/types/globalTypes";
 
 interface addMaintenanceModalProps {
   closeModal: () => void;
   fetchMaintenance: () => void;
   vehicle: Vehicle;
-  profile: User;
+  profile: Profile;
 }
 
 interface FileItem {
@@ -32,12 +31,7 @@ interface FileItem {
   created_at: string;
 }
 
-export default function AddMaintenance({
-  closeModal,
-  vehicle,
-  profile,
-  fetchMaintenance,
-}: addMaintenanceModalProps) {
+export default function AddMaintenance({ closeModal, vehicle, profile, fetchMaintenance }: addMaintenanceModalProps) {
   const { styles } = useStyles(stylesheet);
   const vehicleTitle = `${vehicle.brand ?? ""} ${vehicle.sub_brand ?? ""} (${vehicle.year ?? ""})`;
   const fullName = `${profile.name} ${profile.father_last_name} ${profile.mother_last_name}`;
@@ -73,19 +67,11 @@ export default function AddMaintenance({
   };
 
   const updateFileDescription = (localId: string, description: string) => {
-    setFileViews((prev) =>
-      prev.map((file) =>
-        file.localId === localId ? { ...file, description } : file,
-      ),
-    );
+    setFileViews((prev) => prev.map((file) => (file.localId === localId ? { ...file, description } : file)));
   };
 
   const updateFileTitle = (localId: string, title: string) => {
-    setFileViews((prev) =>
-      prev.map((file) =>
-        file.localId === localId ? { ...file, title } : file,
-      ),
-    );
+    setFileViews((prev) => prev.map((file) => (file.localId === localId ? { ...file, title } : file)));
   };
 
   // ================== File picker ==================
@@ -93,14 +79,12 @@ export default function AddMaintenance({
   const uploadDocumentToStorage = async (
     localId: string,
     maintenanceId: string,
-    documentId: string,
+    documentId: string
   ): Promise<boolean> => {
     const file = fileViews.find((file) => file.localId === localId);
 
     if (!file || !file.document) {
-      alert(
-        `No se puede subir el archivo con id: ${localId} porque no se ha seleccionado ninguno`,
-      );
+      alert(`No se puede subir el archivo con id: ${localId} porque no se ha seleccionado ninguno`);
       return false;
     }
 
@@ -133,9 +117,7 @@ export default function AddMaintenance({
     console.log("Data: ", data);
 
     if (error) {
-      alert(
-        `Error subiendo archivo con id: ${localId}\nMensaje de error: ${error.message}`,
-      );
+      alert(`Error subiendo archivo con id: ${localId}\nMensaje de error: ${error.message}`);
       return false;
     }
 
@@ -147,7 +129,7 @@ export default function AddMaintenance({
     issued_by: string,
     issued_datetime: string,
     title: string,
-    description: string,
+    description: string
   ) => {
     setIsUploading(true);
 
@@ -185,16 +167,12 @@ export default function AddMaintenance({
 
         if (tableError && !tableData) {
           alert(
-            `Ocurrió un error al agregar el documento \n–––– Detalles del error ––––\n\nMensaje de error: ${tableError.message}\n\nCódigo de error: ${tableError.code}\n\nDetalles: ${tableError.details}\n\nSugerencia: ${tableError.hint}`,
+            `Ocurrió un error al agregar el documento \n–––– Detalles del error ––––\n\nMensaje de error: ${tableError.message}\n\nCódigo de error: ${tableError.code}\n\nDetalles: ${tableError.details}\n\nSugerencia: ${tableError.hint}`
           );
           return;
         }
 
-        const success = await uploadDocumentToStorage(
-          file.localId,
-          maintenanceId,
-          tableData[0].document_id,
-        );
+        const success = await uploadDocumentToStorage(file.localId, maintenanceId, tableData[0].document_id);
 
         if (!success) {
           const { error } = await supabase
@@ -238,32 +216,20 @@ export default function AddMaintenance({
       if (result.canceled) {
         alert("La selección de imagen fue cancelada");
 
-        setFileViews((prev) =>
-          prev.map((file) =>
-            file.localId === localId ? { ...file, document: null } : file,
-          ),
-        );
+        setFileViews((prev) => prev.map((file) => (file.localId === localId ? { ...file, document: null } : file)));
 
         return;
       }
 
       if (result.assets) {
         setFileViews((prev) =>
-          prev.map((file) =>
-            file.localId === localId
-              ? { ...file, document: result.assets[0] }
-              : file,
-          ),
+          prev.map((file) => (file.localId === localId ? { ...file, document: result.assets[0] } : file))
         );
 
         //IMAGES
         console.log(result.assets[0]);
       } else {
-        setFileViews((prev) =>
-          prev.map((file) =>
-            file.localId === localId ? { ...file, document: null } : file,
-          ),
-        );
+        setFileViews((prev) => prev.map((file) => (file.localId === localId ? { ...file, document: null } : file)));
       }
     } else if (key === "file" || key === "web") {
       const result = await DocumentPicker.getDocumentAsync({
@@ -274,31 +240,19 @@ export default function AddMaintenance({
       if (result.canceled) {
         alert("La selección de archivo fue cancelada");
 
-        setFileViews((prev) =>
-          prev.map((file) =>
-            file.localId === localId ? { ...file, document: null } : file,
-          ),
-        );
+        setFileViews((prev) => prev.map((file) => (file.localId === localId ? { ...file, document: null } : file)));
 
         return;
       }
 
       if (result.assets) {
         setFileViews((prev) =>
-          prev.map((file) =>
-            file.localId === localId
-              ? { ...file, document: result.assets[0] }
-              : file,
-          ),
+          prev.map((file) => (file.localId === localId ? { ...file, document: result.assets[0] } : file))
         );
         //FILES
         console.log(result.assets[0]);
       } else {
-        setFileViews((prev) =>
-          prev.map((file) =>
-            file.localId === localId ? { ...file, document: null } : file,
-          ),
-        );
+        setFileViews((prev) => prev.map((file) => (file.localId === localId ? { ...file, document: null } : file)));
       }
     }
   };
@@ -319,11 +273,7 @@ export default function AddMaintenance({
           placeholder={vehicleTitle}
           editable={false}
         />
-        <FormInput
-          description="Quien solicita el mantenimiento:"
-          placeholder={fullName}
-          editable={false}
-        />
+        <FormInput description="Quien solicita el mantenimiento:" placeholder={fullName} editable={false} />
       </View>
       <View style={styles.group}>
         <FormTitle title={"Información general"} />
@@ -343,9 +293,7 @@ export default function AddMaintenance({
       </View>
       <View style={styles.group}>
         <FormTitle title={"Agregar archivos"} />
-        <Text style={styles.subtitle}>
-          Adjunta imágenes o videos que respalden tu solicitud de ser necesario
-        </Text>
+        <Text style={styles.subtitle}>Adjunta imágenes o videos que respalden tu solicitud de ser necesario</Text>
         {fileViews.map((item) => (
           <View key={item.localId} style={styles.fileContainer}>
             <View style={styles.twoPaneContainer}>
@@ -361,11 +309,7 @@ export default function AddMaintenance({
                       title="Seleccionar archivo"
                       isDisabled={isUploading}
                       onPress={() => {}}
-                      icon={() => (
-                        <ArrowUpFromLine
-                          color={styles.selectFileButtonIcon.color}
-                        />
-                      )}
+                      icon={() => <ArrowUpFromLine color={styles.selectFileButtonIcon.color} />}
                     />
                   }
                 />
@@ -376,11 +320,7 @@ export default function AddMaintenance({
                   title="Seleccionar archivo"
                   isDisabled={isUploading}
                   onPress={() => handleSelectFile("web", item.localId)}
-                  icon={() => (
-                    <ArrowUpFromLine
-                      color={styles.selectFileButtonIcon.color}
-                    />
-                  )}
+                  icon={() => <ArrowUpFromLine color={styles.selectFileButtonIcon.color} />}
                 />
               )}
               {item.document && (
@@ -390,11 +330,7 @@ export default function AddMaintenance({
                       disabled={isUploading}
                       onPress={() =>
                         setFileViews((prev) =>
-                          prev.map((file) =>
-                            file.localId === item.localId
-                              ? { ...file, document: null }
-                              : file,
-                          ),
+                          prev.map((file) => (file.localId === item.localId ? { ...file, document: null } : file))
                         )
                       }
                     >
@@ -410,19 +346,14 @@ export default function AddMaintenance({
                         width: "75%",
                       }}
                     >
-                      <Text
-                        style={styles.fileText}
-                        ellipsizeMode="middle"
-                        numberOfLines={2}
-                      >
+                      <Text style={styles.fileText} ellipsizeMode="middle" numberOfLines={2}>
                         {item.document && "name" in item.document
                           ? item.document.name
                           : "Archivo seleccionado desde la galería"}
                       </Text>
                       <Text style={styles.fileSubtitle}>
                         {item.document && "size" in item.document
-                          ? ((item.document.size ?? 0) / 1000000).toFixed(2) +
-                            " MB"
+                          ? ((item.document.size ?? 0) / 1000000).toFixed(2) + " MB"
                           : item.document.mimeType}
                       </Text>
                     </View>
@@ -441,9 +372,7 @@ export default function AddMaintenance({
                 multiline
                 editable={!isUploading}
                 value={item.description}
-                onChangeText={(text) =>
-                  updateFileDescription(item.localId, text)
-                }
+                onChangeText={(text) => updateFileDescription(item.localId, text)}
               />
             </View>
             <View style={styles.deleteButtonContainer}>
@@ -470,23 +399,12 @@ export default function AddMaintenance({
           title="Enviar solicitud"
           isLoading={isUploading}
           onPress={() =>
-            uploadRequest(
-              vehicle.id,
-              profile.id,
-              new Date().toISOString(),
-              requestTitle,
-              requestDescription,
-            )
+            uploadRequest(vehicle.id, profile.id, new Date().toISOString(), requestTitle, requestDescription)
           }
           isDisabled={isUploading}
         />
-        <Text style={styles.subtitle}>
-          {isUploading && "Subiendo solicitud, no cierres la app ni el diálogo"}
-        </Text>
-        <Text style={styles.subtitle}>
-          {currentUploadingFile &&
-            `Actualmente subiendo: ${currentUploadingFile}`}
-        </Text>
+        <Text style={styles.subtitle}>{isUploading && "Subiendo solicitud, no cierres la app ni el diálogo"}</Text>
+        <Text style={styles.subtitle}>{currentUploadingFile && `Actualmente subiendo: ${currentUploadingFile}`}</Text>
       </View>
     </View>
   );

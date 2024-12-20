@@ -164,15 +164,11 @@ export default function Index() {
           headerLargeTitle: false,
         }}
       />
-      <View
-        style={[{ marginTop: Platform.OS === "ios" ? headerHeight + 0 : 6 }]}
-      >
+      <View style={[{ marginTop: Platform.OS === "ios" ? headerHeight + 0 : 6 }]}>
         <SegmentedControl
           values={["Personas en esta flotilla", "Todas las personas"]}
           selectedIndex={currentTabIndex}
-          onChange={(event) =>
-            setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)
-          }
+          onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
           style={styles.segmentedControl}
         />
       </View>

@@ -1,23 +1,17 @@
 // ChangeImageModal.tsx
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Platform,
-} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Platform } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "@/components/Form/FormButton";
 import { supabase } from "@/lib/supabase";
-import { Vehicle } from "@/types/Vehicle";
 import FormInput from "@/components/Form/FormInput";
 import { ArrowUpFromLine, File, Plus, X } from "lucide-react-native";
 import { DocumentPickerAsset } from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import { decode } from "base64-arraybuffer";
 import * as DocumentPicker from "expo-document-picker";
+import { Vehicle } from "@/types/globalTypes";
 
 interface AddDocumentModalProps {
   closeModal: () => void;
@@ -25,11 +19,7 @@ interface AddDocumentModalProps {
   vehicle: Vehicle;
 }
 
-export default function AddDocument({
-  closeModal,
-  refreshDocuments,
-  vehicle,
-}: AddDocumentModalProps) {
+export default function AddDocument({ closeModal, refreshDocuments, vehicle }: AddDocumentModalProps) {
   const { styles } = useStyles(stylesheet);
   const [documentTitle, setDocumentTitle] = useState("");
   const [documentDescription, setDocumentDescription] = useState("");
@@ -56,9 +46,7 @@ export default function AddDocument({
 
   const uploadDocument = async (documentId: string): Promise<boolean> => {
     if (!document) {
-      alert(
-        "No se puede subir el archivo porque no se ha seleccionado ninguno",
-      );
+      alert("No se puede subir el archivo porque no se ha seleccionado ninguno");
       return false;
     }
 
@@ -77,15 +65,13 @@ export default function AddDocument({
       return false;
     }
 
-    const { data, error } = await supabase.storage
-      .from("documents")
-      .upload(`${vehicle.id}/${documentId}`, fileData, {
-        contentType: document.mimeType,
-      });
+    const { data, error } = await supabase.storage.from("documents").upload(`${vehicle.id}/${documentId}`, fileData, {
+      contentType: document.mimeType,
+    });
 
     if (error) {
       alert(
-        `Ocurrió un error al subir el archivo \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}`,
+        `Ocurrió un error al subir el archivo \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}`
       );
       return false;
     }
@@ -108,7 +94,7 @@ export default function AddDocument({
 
     if (error && !data) {
       alert(
-        `Ocurrió un error al agregar el documento \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}\n\nCódigo de error: ${error.code}\n\nDetalles: ${error.details}\n\nSugerencia: ${error.hint}`,
+        `Ocurrió un error al agregar el documento \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}\n\nCódigo de error: ${error.code}\n\nDetalles: ${error.details}\n\nSugerencia: ${error.hint}`
       );
       return;
     }
@@ -131,9 +117,7 @@ export default function AddDocument({
     <View style={styles.section}>
       <View style={styles.group}>
         <FormTitle title="Agregar un nuevo documento" />
-        <Text style={styles.subtitle}>
-          Llena los campos para agregar un nuevo documento a este vehículo.
-        </Text>
+        <Text style={styles.subtitle}>Llena los campos para agregar un nuevo documento a este vehículo.</Text>
       </View>
       <View style={styles.group}>
         <FormInput
@@ -177,16 +161,10 @@ export default function AddDocument({
                   width: "75%",
                 }}
               >
-                <Text
-                  style={styles.fileText}
-                  ellipsizeMode="middle"
-                  numberOfLines={2}
-                >
+                <Text style={styles.fileText} ellipsizeMode="middle" numberOfLines={2}>
                   {document.name}
                 </Text>
-                <Text style={styles.fileSubtitle}>
-                  {((document.size ?? 0) / 1000000).toFixed(2)} MB
-                </Text>
+                <Text style={styles.fileSubtitle}>{((document.size ?? 0) / 1000000).toFixed(2)} MB</Text>
               </View>
             </View>
           </View>
@@ -199,9 +177,7 @@ export default function AddDocument({
           isLoading={isUploading}
           isDisabled={!document || documentTitle === ""}
         />
-        <Text style={styles.subtitle}>
-          {isUploading && "Subiendo archivo, no cierres la app"}
-        </Text>
+        <Text style={styles.subtitle}>{isUploading && "Subiendo archivo, no cierres la app"}</Text>
       </View>
     </View>
   );
