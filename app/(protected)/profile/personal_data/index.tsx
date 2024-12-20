@@ -87,8 +87,18 @@ export default function Index() {
 
   useEffect(() => {
     if (profile) {
-      const [year, month, day] = profile.birthday.split("-").map(Number);
-      const birthdayInMexicoCity = new Date(Date.UTC(year, month - 1, day));
+      let birthdayInMexicoCity;
+
+      if (profile.birthday) {
+        const [year, month, day] = profile.birthday.split("-").map(Number);
+        birthdayInMexicoCity = new Date(Date.UTC(year, month - 1, day));
+      } else {
+        // Generate a random date between 1970 and 2000 as an example
+        const randomYear = Math.floor(Math.random() * (2000 - 1970 + 1)) + 1970;
+        const randomMonth = Math.floor(Math.random() * 12); // 0 to 11
+        const randomDay = Math.floor(Math.random() * 28) + 1; // 1 to 28 to avoid edge cases
+        birthdayInMexicoCity = new Date(Date.UTC(randomYear, randomMonth, randomDay));
+      }
 
       setName(profile.name || "");
       setFatherLastName(profile.father_last_name || "");

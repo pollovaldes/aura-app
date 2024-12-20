@@ -70,42 +70,6 @@ export type Database = {
           },
         ]
       }
-      follow_relationships: {
-        Row: {
-          created_at: string | null
-          followee_id: string | null
-          follower_id: string | null
-          id: string
-        }
-        Insert: {
-          created_at?: string | null
-          followee_id?: string | null
-          follower_id?: string | null
-          id?: string
-        }
-        Update: {
-          created_at?: string | null
-          followee_id?: string | null
-          follower_id?: string | null
-          id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "follow_relationships_followee_id_fkey"
-            columns: ["followee_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "follow_relationships_follower_id_fkey"
-            columns: ["follower_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       gasoline_loads: {
         Row: {
           amount: number
@@ -227,44 +191,13 @@ export type Database = {
           },
         ]
       }
-      notifications: {
-        Row: {
-          content: string | null
-          created_at: string
-          id: number
-          read: boolean | null
-          user_id: string
-        }
-        Insert: {
-          content?: string | null
-          created_at?: string
-          id?: number
-          read?: boolean | null
-          user_id?: string
-        }
-        Update: {
-          content?: string | null
-          created_at?: string
-          id?: number
-          read?: boolean | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "notifications_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       profiles: {
         Row: {
           birthday: string | null
           father_last_name: string | null
           id: string
           is_fully_registered: boolean
+          is_super_admin: boolean
           mother_last_name: string | null
           name: string | null
           position: string | null
@@ -275,6 +208,7 @@ export type Database = {
           father_last_name?: string | null
           id: string
           is_fully_registered?: boolean
+          is_super_admin?: boolean
           mother_last_name?: string | null
           name?: string | null
           position?: string | null
@@ -285,6 +219,7 @@ export type Database = {
           father_last_name?: string | null
           id?: string
           is_fully_registered?: boolean
+          is_super_admin?: boolean
           mother_last_name?: string | null
           name?: string | null
           position?: string | null
@@ -329,52 +264,31 @@ export type Database = {
       }
       user_fleet_add_request: {
         Row: {
-          fleet_to_be_added: string | null
-          notification_category: Database["public"]["Enums"]["notification_category"]
-          notification_created_at: string
-          notification_description: string
-          notification_read: boolean
-          notification_title: string
-          reason: string | null
-          request_date: string | null
+          created_at: string
+          fleet_to_be_added: string
+          reason: string
           request_id: string
-          status:
-            | Database["public"]["Enums"]["user_fleet_add_request_status"]
-            | null
+          status: Database["public"]["Enums"]["user_fleet_add_request_status"]
           who_requests: string
-          who_will_be_added: string | null
+          who_will_be_added: string
         }
         Insert: {
-          fleet_to_be_added?: string | null
-          notification_category: Database["public"]["Enums"]["notification_category"]
-          notification_created_at: string
-          notification_description: string
-          notification_read?: boolean
-          notification_title: string
-          reason?: string | null
-          request_date?: string | null
+          created_at: string
+          fleet_to_be_added: string
+          reason: string
           request_id?: string
-          status?:
-            | Database["public"]["Enums"]["user_fleet_add_request_status"]
-            | null
+          status?: Database["public"]["Enums"]["user_fleet_add_request_status"]
           who_requests: string
-          who_will_be_added?: string | null
+          who_will_be_added: string
         }
         Update: {
-          fleet_to_be_added?: string | null
-          notification_category?: Database["public"]["Enums"]["notification_category"]
-          notification_created_at?: string
-          notification_description?: string
-          notification_read?: boolean
-          notification_title?: string
-          reason?: string | null
-          request_date?: string | null
+          created_at?: string
+          fleet_to_be_added?: string
+          reason?: string
           request_id?: string
-          status?:
-            | Database["public"]["Enums"]["user_fleet_add_request_status"]
-            | null
+          status?: Database["public"]["Enums"]["user_fleet_add_request_status"]
           who_requests?: string
-          who_will_be_added?: string | null
+          who_will_be_added?: string
         }
         Relationships: []
       }
