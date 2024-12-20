@@ -3,7 +3,8 @@ import { Pressable, View } from "react-native";
 import { Link, LinkProps } from "expo-router";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
-interface SimpleListProps extends LinkProps {
+interface SimpleListProps extends Partial<LinkProps> {
+  href?: string; // Optional href
   leading?: ReactNode;
   content?: ReactNode;
   trailing?: ReactNode;
@@ -20,28 +21,30 @@ export const SimpleList: React.FC<SimpleListProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
 
-  return (
-    <Link href={href} asChild {...linkProps}>
-      <Pressable
-        onHoverIn={() => setIsHovered(true)}
-        onHoverOut={() => setIsHovered(false)}
-        onPressIn={() => setIsPressed(true)}
-        onPressOut={() => setIsPressed(false)}
-      >
-        <View
-          style={[
-            styles.container,
-            isHovered && styles.containerHovered,
-            isPressed && styles.containerPressed,
-          ]}
-        >
-          {leading && <View style={styles.leading}>{leading}</View>}
-          {content && <View style={styles.content}>{content}</View>}
-          {trailing && <View style={styles.trailing}>{trailing}</View>}
-        </View>
-      </Pressable>
-    </Link>
+  const renderPressable = () => (
+    <Pressable
+      onHoverIn={() => setIsHovered(true)}
+      onHoverOut={() => setIsHovered(false)}
+      onPressIn={() => setIsPressed(true)}
+      onPressOut={() => setIsPressed(false)}
+    >
+      <View style={[styles.container, isHovered && styles.containerHovered, isPressed && styles.containerPressed]}>
+        {leading && <View style={styles.leading}>{leading}</View>}
+        {content && <View style={styles.content}>{content}</View>}
+        {trailing && <View style={styles.trailing}>{trailing}</View>}
+      </View>
+    </Pressable>
   );
+
+  if (href) {
+    return (
+      <Link href={href} asChild {...linkProps}>
+        {renderPressable()}
+      </Link>
+    );
+  }
+
+  return renderPressable();
 };
 
 const stylesheet = createStyleSheet((theme) => ({

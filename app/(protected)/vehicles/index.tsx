@@ -128,9 +128,7 @@ export default function VehicleList() {
             trailing={<ChevronRight color={styles.chevron.color} />}
           />
         )}
-        ListEmptyComponent={
-          <EmptyScreen caption="Ningún vehículo por aquí" buttonCaption="Actualizar" retryFunction={fetchVehicles} />
-        }
+        ListEmptyComponent={<EmptyScreen caption="Ningún vehículo por aquí" />}
       />
 
       <AddVehicleComponent visible={isModalVisible} onClose={() => setIsModalVisible(false)} />

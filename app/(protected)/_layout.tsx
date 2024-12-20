@@ -67,7 +67,6 @@ export default function HomeLayout() {
               headerShown: false,
               tabBarPosition: width > 800 ? "left" : "bottom",
               tabBarVariant: Platform.OS === "web" && width > 800 ? "material" : "uikit",
-              animation: Platform.OS === "web" ? "none" : "fade",
               tabBarLabelPosition: Platform.OS === "web" && width > 800 ? "below-icon" : "below-icon",
             }}
           >

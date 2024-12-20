@@ -1,28 +1,22 @@
-import {
-  FlatList,
-  Platform,
-  Pressable,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
-import useProfile from "@/hooks/useProfile";
-import LoadingScreen from "@/components/dataStates/LoadingScreen";
-import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import { ChevronRight, Plus } from "lucide-react-native";
+import { ActionButton } from "@/components/actionButton/ActionButton";
+import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
-import { Link, router, Stack, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
-import { useHeaderHeight } from "@react-navigation/elements";
-import SegmentedControl from "@react-native-segmented-control/segmented-control";
+import ErrorScreen from "@/components/dataStates/ErrorScreen";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
+import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import UserThumbnail from "@/components/people/UserThumbnail";
+import { SimpleList } from "@/components/simpleList/SimpleList";
 import VehicleThumbnail from "@/components/vehicles/TruckThumbnail";
-import React from "react";
 import { useFleets } from "@/hooks/useFleets";
-import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
-import { ActionButton } from "@/components/actionButton/ActionButton";
+import useProfile from "@/hooks/useProfile";
+import SegmentedControl from "@react-native-segmented-control/segmented-control";
+import { useHeaderHeight } from "@react-navigation/elements";
+import { Link, router, Stack, useLocalSearchParams } from "expo-router";
+import { ChevronRight } from "lucide-react-native";
+import React, { useState } from "react";
+import { FlatList, Platform, Pressable, Text, TouchableOpacity, View } from "react-native";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function Index() {
   const { styles } = useStyles(stylesheet);
@@ -32,19 +26,8 @@ export default function Index() {
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
   const headerHeight = useHeaderHeight();
 
-  if (isProfileLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-        <LoadingScreen caption="Cargando perfil" />
-      </>
-    );
+  if (isProfileLoading || areFleetsLoading) {
+    return <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando flotillas"} />;
   }
 
   if (!profile) {
@@ -62,21 +45,6 @@ export default function Index() {
           buttonCaption="Reintentar"
           retryFunction={fetchProfile}
         />
-      </>
-    );
-  }
-
-  if (areFleetsLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-        <LoadingScreen caption="Cargando flotillas" />
       </>
     );
   }
@@ -119,6 +87,15 @@ export default function Index() {
     );
   }
 
+  const capitalizeWords = (text: string | null | undefined): string => {
+    if (!text) return "";
+    return text
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
   const canAddFleet = profile.role === "ADMIN" || profile.role === "OWNER";
   const fleet = fleets[0];
 
@@ -149,18 +126,11 @@ export default function Index() {
           ),
         }}
       />
-      <View
-        style={[
-          styles.container,
-          { marginTop: Platform.OS === "ios" ? headerHeight : 6 },
-        ]}
-      >
+      <View style={[styles.container, { marginTop: Platform.OS === "ios" ? headerHeight : 6 }]}>
         <SegmentedControl
           values={["Personas", "Vehículos"]}
           selectedIndex={currentTabIndex}
-          onChange={(event) =>
-            setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)
-          }
+          onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
           style={styles.segmentedControl}
         />
       </View>
@@ -177,40 +147,16 @@ export default function Index() {
           }}
           style={styles.flatList}
           renderItem={({ item }) => (
-            <Link href={`/users/${item.id}?showModal=true`} asChild>
-              <Pressable>
-                <View style={styles.rowContainer}>
-                  <View style={styles.contentContainer}>
-                    <View style={styles.imageContainer}>
-                      <UserThumbnail userId={item.id} size={60} />
-                    </View>
-                    <Text style={styles.itemText}>
-                      {`${item.name} ${item.father_last_name} ${item.mother_last_name}`}
-                    </Text>
-                  </View>
-                  <View style={styles.chevronView}>
-                    <ChevronRight color={styles.chevron.color} />
-                  </View>
-                </View>
-              </Pressable>
-            </Link>
+            <SimpleList
+              leading={<UserThumbnail userId={item.id.toString()} size={60} />}
+              content={
+                <Text style={styles.itemText}>
+                  {`${capitalizeWords(item.name)} ${capitalizeWords(item.father_last_name)} ${capitalizeWords(item.mother_last_name)}`}
+                </Text>
+              }
+            />
           )}
-          ListEmptyComponent={
-            <View style={styles.emptyStateContainer}>
-              <EmptyScreen
-                caption="No hay personas en esta flotilla"
-                buttonCaption="Añadir personas"
-                retryFunction={
-                  canAddFleet
-                    ? () =>
-                        router.push("./edit_people", {
-                          relativeToDirectory: true,
-                        })
-                    : undefined
-                }
-              />
-            </View>
-          }
+          ListEmptyComponent={<EmptyScreen caption="No hay personas en esta flotilla" />}
         />
       ) : (
         <FlatList
@@ -224,47 +170,19 @@ export default function Index() {
           }}
           style={styles.flatList}
           renderItem={({ item }) => (
-            <Link
-              href={{ pathname: `/vehicles/${item.id}?showModal=true` }}
-              asChild
-            >
-              <TouchableOpacity>
-                <View style={styles.rowContainer}>
-                  <View style={styles.contentContainer}>
-                    <View style={styles.imageContainer}>
-                      <VehicleThumbnail vehicleId={item.id} />
-                    </View>
-                    <Text style={styles.itemText}>
-                      <Text style={styles.boldText}>
-                        {`${item.brand} ${item.sub_brand} (${item.year})\n`}
-                      </Text>
-                      {`Placa: ${item.plate}\n`}
-                      {`Número económico: ${item.economic_number}\n`}
-                    </Text>
-                  </View>
-                  <View style={styles.chevronView}>
-                    <ChevronRight color={styles.chevron.color} />
-                  </View>
-                </View>
-              </TouchableOpacity>
-            </Link>
+            <SimpleList
+              leading={<VehicleThumbnail vehicleId={item.id} />}
+              content={
+                <>
+                  <Text style={styles.itemTitle}>{`${item.brand} ${item.sub_brand} (${item.year})`}</Text>
+                  <Text style={styles.itemDetails}>
+                    {`Placa: ${item.plate}\nNúmero económico: ${item.economic_number}`}
+                  </Text>
+                </>
+              }
+            />
           )}
-          ListEmptyComponent={
-            <View style={styles.emptyStateContainer}>
-              <EmptyScreen
-                caption="No hay vehículos en esta flotilla"
-                buttonCaption="Añadir vehículos"
-                retryFunction={
-                  canAddFleet
-                    ? () =>
-                        router.push("./edit_vehicles", {
-                          relativeToDirectory: true,
-                        })
-                    : undefined
-                }
-              />
-            </View>
-          }
+          ListEmptyComponent={<EmptyScreen caption="No hay vehículos en esta flotilla" />}
         />
       )}
     </>
@@ -320,6 +238,15 @@ const stylesheet = createStyleSheet((theme) => ({
     marginTop: 100,
   },
   chevron: {
+    color: theme.textPresets.subtitle,
+  },
+  itemTitle: {
+    fontWeight: "bold",
+    fontSize: 18,
+    color: theme.textPresets.main,
+  },
+  itemDetails: {
+    fontSize: 15,
     color: theme.textPresets.subtitle,
   },
 }));
