@@ -31,7 +31,9 @@ export const SimpleList: React.FC<SimpleListProps> = ({
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}
     >
-      <View style={[styles.container, isHovered && styles.containerHovered, isPressed && styles.containerPressed]}>
+      <View
+        style={[styles.container, isHovered && styles.containerHovered, href && isPressed && styles.containerPressed]}
+      >
         {leading && <View style={styles.leading}>{leading}</View>}
         {content && <View style={styles.content}>{content}</View>}
         {trailing && <View style={styles.trailing}>{trailing}</View>}

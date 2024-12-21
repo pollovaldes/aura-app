@@ -2,11 +2,13 @@ import { supabase } from "@/lib/supabase";
 import { Fleet, Profile, Vehicle } from "@/types/globalTypes";
 import { useEffect, useState } from "react";
 
-export function useFleets(fleet_id?: string) {
+export function useFleets(fleetId?: string) {
   const [fleets, setFleets] = useState<Fleet[] | null>(null);
-  const [areFleetsLoading, setAreFleetsLoading] = useState(false);
+  const [areFleetsLoading, setAreFleetsLoading] = useState<boolean>(false);
 
-  const fetchFleetsUserVehicles = async () => {
+  const fetchFleets = async () => {
+    setAreFleetsLoading(true);
+
     let query = supabase.from("fleets").select(`
       *,
       fleets_users (
@@ -19,32 +21,32 @@ export function useFleets(fleet_id?: string) {
       )
     `);
 
-    if (fleet_id) {
-      query = query.eq("id", fleet_id);
+    if (fleetId) {
+      query = query.eq("id", fleetId);
     }
 
     const { data, error } = await query;
 
     if (error) {
-      alert(
-        `Ocurrió un error al obtener las flotillas:\n\nMensaje de error: ${error.message}\nCódigo de error: ${error.code}\nDetalles: ${error.details}\nSugerencia: ${error.hint}`
+      console.error(
+        `Error fetching fleet records: \n\n` +
+          `Message: ${error.message}\n\n` +
+          `Code: ${error.code}\n\n` +
+          `Details: ${error.details}\n\n` +
+          `Hint: ${error.hint}`
       );
-      return null;
+      setAreFleetsLoading(false);
+      setFleets(null);
+      return;
     }
 
-    if (!data) return null;
-
-    // Normalize data in case of single query vs multiple.
-    const normalizedFleetsData = Array.isArray(data) ? data : [data];
-
-    // Map the returned data into our Fleet structure
-    const fleetsWithDetails: Fleet[] = normalizedFleetsData.map((fleet) => {
-      const userRelations = fleet.fleets_users ?? [];
-      const vehicleRelations = fleet.fleets_vehicles ?? [];
-
-      const users = userRelations.map((r) => r.profiles).filter((p): p is Profile => p !== null);
-
-      const vehicles = vehicleRelations.map((r) => r.vehicles).filter((v): v is Vehicle => v !== null);
+    const normalizedFleets: Fleet[] = data.map((fleet) => {
+      const users = (fleet.fleets_users || [])
+        .map((relation) => relation.profiles)
+        .filter((profile): profile is Profile => profile !== null);
+      const vehicles = (fleet.fleets_vehicles || [])
+        .map((relation) => relation.vehicles)
+        .filter((vehicle): vehicle is Vehicle => vehicle !== null);
 
       return {
         ...fleet,
@@ -53,19 +55,13 @@ export function useFleets(fleet_id?: string) {
       };
     });
 
-    return fleetsWithDetails;
-  };
-
-  const fetchFleets = async () => {
-    setAreFleetsLoading(true);
-    const fetchedFleets = await fetchFleetsUserVehicles();
-    setFleets(fetchedFleets);
+    setFleets(normalizedFleets);
     setAreFleetsLoading(false);
   };
 
   useEffect(() => {
     fetchFleets();
-  }, [fleet_id]);
+  }, []);
 
   return { fleets, areFleetsLoading, fetchFleets };
 }

@@ -12,7 +12,7 @@ import useProfile from "@/hooks/useProfile";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { Plus, ChevronRight } from "lucide-react-native";
+import { Plus } from "lucide-react-native";
 import { FlatList, Platform, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";

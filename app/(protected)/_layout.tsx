@@ -8,8 +8,9 @@ import useProfile from "@/hooks/useProfile";
 import { supabase } from "@/lib/supabase";
 import { Redirect, Tabs, usePathname } from "expo-router";
 import { Bell, Boxes, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
+import React from "react";
 import { useState } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { Text, View, useWindowDimensions } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function HomeLayout() {
@@ -63,54 +64,56 @@ export default function HomeLayout() {
     <VehiclesContextProvider>
       <UsersContextProvider>
         <ProfileImageProvider>
-          <Tabs
-            screenOptions={{
-              headerShown: false,
-              tabBarPosition: width >= 750 ? "left" : "bottom",
-              tabBarVariant: width >= 750 ? "material" : "uikit",
-              tabBarLabelPosition: "below-icon", // Always "below-icon"
-            }}
-          >
-            <Tabs.Screen
-              name="vehicles"
-              options={{
-                href: mayShowTab.vehicles,
-                title: "Vehículos",
-                tabBarIcon: ({ color }) => <Truck color={color} />,
+          <>
+            <Tabs
+              screenOptions={{
+                headerShown: false,
+                tabBarPosition: width >= 750 ? "left" : "bottom",
+                tabBarVariant: width >= 750 ? "material" : "uikit",
+                tabBarLabelPosition: "below-icon", // Always "below-icon"
               }}
-            />
-            <Tabs.Screen
-              name="users"
-              options={{
-                href: mayShowTab.users,
-                title: "Personas",
-                tabBarIcon: ({ color }) => <UsersRound color={color} />,
-              }}
-            />
-            <Tabs.Screen
-              name="fleets"
-              options={{
-                href: mayShowTab.fleets,
-                title: "Flotillas",
-                tabBarIcon: ({ color }) => <Boxes color={color} />,
-              }}
-            />
-            <Tabs.Screen
-              name="notifications"
-              options={{
-                href: mayShowTab.notifications,
-                title: "Notificaciones",
-                tabBarIcon: ({ color }) => <Bell color={color} />,
-              }}
-            />
-            <Tabs.Screen
-              name="profile"
-              options={{
-                title: "Perfil",
-                tabBarIcon: ({ color }) => <CircleUserRound color={color} />,
-              }}
-            />
-          </Tabs>
+            >
+              <Tabs.Screen
+                name="vehicles"
+                options={{
+                  href: mayShowTab.vehicles,
+                  title: "Vehículos",
+                  tabBarIcon: ({ color }) => <Truck color={color} />,
+                }}
+              />
+              <Tabs.Screen
+                name="users"
+                options={{
+                  href: mayShowTab.users,
+                  title: "Personas",
+                  tabBarIcon: ({ color }) => <UsersRound color={color} />,
+                }}
+              />
+              <Tabs.Screen
+                name="fleets"
+                options={{
+                  href: mayShowTab.fleets,
+                  title: "Flotillas",
+                  tabBarIcon: ({ color }) => <Boxes color={color} />,
+                }}
+              />
+              <Tabs.Screen
+                name="notifications"
+                options={{
+                  href: mayShowTab.notifications,
+                  title: "Notificaciones",
+                  tabBarIcon: ({ color }) => <Bell color={color} />,
+                }}
+              />
+              <Tabs.Screen
+                name="profile"
+                options={{
+                  title: "Perfil",
+                  tabBarIcon: ({ color }) => <CircleUserRound color={color} />,
+                }}
+              />
+            </Tabs>
+          </>
         </ProfileImageProvider>
       </UsersContextProvider>
     </VehiclesContextProvider>

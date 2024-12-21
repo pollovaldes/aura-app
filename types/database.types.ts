@@ -206,6 +206,20 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "maintenance_issued_by_fkey"
+            columns: ["issued_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_resolved_by_fkey"
+            columns: ["resolved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "maintenance_vehicle_id_fkey"
             columns: ["vehicle_id"]
             isOneToOne: false

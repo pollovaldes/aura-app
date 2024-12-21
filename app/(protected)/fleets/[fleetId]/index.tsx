@@ -14,7 +14,7 @@ import SegmentedControl from "@react-native-segmented-control/segmented-control"
 import { useHeaderHeight } from "@react-navigation/elements";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
-import { FlatList, Platform, Text } from "react-native";
+import { FlatList, Platform, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function Index() {
@@ -109,6 +109,23 @@ export default function Index() {
   const canAddFleet = profile.role === "ADMIN" || profile.role === "OWNER";
   const fleet = fleets[0];
 
+  const getRoleLabel = (role: string) => {
+    switch (role) {
+      case "ADMIN":
+        return "Administrador";
+      case "DRIVER":
+        return "Conductor";
+      case "BANNED":
+        return "Bloqueado";
+      case "NO_ROLE":
+        return "Sin rol";
+      case "OWNER":
+        return "Dueño";
+      default:
+        return "Indefinido";
+    }
+  };
+
   return (
     <>
       <Stack.Screen
@@ -157,17 +174,22 @@ export default function Index() {
         renderItem={({ item }) =>
           currentTabIndex === 0 ? (
             <SimpleList
+              hideChevron
               leading={<UserThumbnail userId={(item as Profile).id.toString()} size={60} />}
               content={
-                <Text style={styles.userText}>
-                  {`${capitalizeWords((item as Profile).name)} ${capitalizeWords(
-                    (item as Profile).father_last_name
-                  )} ${capitalizeWords((item as Profile).mother_last_name)}`}
-                </Text>
+                <View>
+                  <Text style={styles.userText}>
+                    {`${capitalizeWords((item as Profile).name)} ${capitalizeWords(
+                      (item as Profile).father_last_name
+                    )} ${capitalizeWords((item as Profile).mother_last_name)}`}
+                  </Text>
+                  <Text style={styles.userTextSubtitle}>{getRoleLabel(item.role)}</Text>
+                </View>
               }
             />
           ) : (
             <SimpleList
+              hideChevron
               leading={<VehicleThumbnail vehicleId={(item as Vehicle).id} />}
               content={
                 <>
@@ -203,10 +225,11 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   userText: {
     fontSize: 18,
-    paddingLeft: 10,
     color: theme.textPresets.main,
-    flexShrink: 1,
-    marginRight: 18,
+  },
+  userTextSubtitle: {
+    fontSize: 15,
+    color: theme.textPresets.subtitle,
   },
   vehicleTitle: {
     fontWeight: "bold",
