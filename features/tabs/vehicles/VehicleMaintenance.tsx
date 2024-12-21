@@ -13,7 +13,7 @@ import SegmentedControl from "@react-native-segmented-control/segmented-control"
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { Plus } from "lucide-react-native";
-import { FlatList, Platform, Text, View } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
@@ -29,7 +29,6 @@ export default function VehicleMaintenance() {
   const { profile, isProfileLoading, fetchProfile } = useProfile();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const { maintenanceRecords, areMaintenanceRecordsLoading, fetchMaintenance } = useMaintenance(vehicleId);
-  const headerHeight = useHeaderHeight();
 
   const closeModal = () => setActiveModal(null);
 
@@ -161,14 +160,8 @@ export default function VehicleMaintenance() {
         }}
       />
 
-      <SegmentedControl
-        values={["Todo", "Recibidos", "En revisión", "Resueltas"]}
-        selectedIndex={currentTabIndex}
-        onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
-        style={[styles.segmentedControl, { marginTop: Platform.OS === "ios" ? headerHeight + 6 : 6 }]}
-      />
-
       <FlatList
+        contentInsetAdjustmentBehavior="automatic"
         data={filteredMaintenanceRecords}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
@@ -195,6 +188,14 @@ export default function VehicleMaintenance() {
             }
           />
         )}
+        ListHeaderComponent={
+          <SegmentedControl
+            values={["Todo", "Recibidos", "En revisión", "Resueltas"]}
+            selectedIndex={currentTabIndex}
+            onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
+            style={styles.segmentedControl}
+          />
+        }
         ListEmptyComponent={() => <EmptyScreen caption="No hay solicitudes de mantenimiento con este filtro" />}
         refreshing={vehiclesAreLoading || areMaintenanceRecordsLoading}
         onRefresh={() => {

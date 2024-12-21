@@ -172,7 +172,7 @@ export default function FleetDetails() {
         renderItem={({ item }) =>
           currentTabIndex === 0 ? (
             <SimpleList
-              hideChevron
+              href={`/tab/user_details/${item.id}`}
               leading={<UserThumbnail userId={(item as Profile).id.toString()} size={60} />}
               content={
                 <View>
@@ -187,7 +187,7 @@ export default function FleetDetails() {
             />
           ) : (
             <SimpleList
-              hideChevron
+              href={`/tab/vehicle_details/${item.id}`}
               leading={<VehicleThumbnail vehicleId={(item as Vehicle).id} />}
               content={
                 <>

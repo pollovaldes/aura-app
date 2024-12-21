@@ -61,62 +61,54 @@ export default function HomeLayout() {
   };
 
   return (
-    <VehiclesContextProvider>
-      <UsersContextProvider>
-        <ProfileImageProvider>
-          <>
-            <Tabs
-              screenOptions={{
-                headerShown: false,
-                tabBarPosition: width >= 750 ? "left" : "bottom",
-                tabBarVariant: width >= 750 ? "material" : "uikit",
-                tabBarLabelPosition: "below-icon", // Always "below-icon"
-              }}
-            >
-              <Tabs.Screen
-                name="vehicles"
-                options={{
-                  href: mayShowTab.vehicles,
-                  title: "Vehículos",
-                  tabBarIcon: ({ color }) => <Truck color={color} />,
-                }}
-              />
-              <Tabs.Screen
-                name="users"
-                options={{
-                  href: mayShowTab.users,
-                  title: "Personas",
-                  tabBarIcon: ({ color }) => <UsersRound color={color} />,
-                }}
-              />
-              <Tabs.Screen
-                name="fleets"
-                options={{
-                  href: mayShowTab.fleets,
-                  title: "Flotillas",
-                  tabBarIcon: ({ color }) => <Boxes color={color} />,
-                }}
-              />
-              <Tabs.Screen
-                name="notifications"
-                options={{
-                  href: mayShowTab.notifications,
-                  title: "Notificaciones",
-                  tabBarIcon: ({ color }) => <Bell color={color} />,
-                }}
-              />
-              <Tabs.Screen
-                name="profile"
-                options={{
-                  title: "Perfil",
-                  tabBarIcon: ({ color }) => <CircleUserRound color={color} />,
-                }}
-              />
-            </Tabs>
-          </>
-        </ProfileImageProvider>
-      </UsersContextProvider>
-    </VehiclesContextProvider>
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarPosition: width >= 750 ? "left" : "bottom",
+        tabBarVariant: width >= 750 ? "material" : "uikit",
+        tabBarLabelPosition: "below-icon", // Always "below-icon"
+      }}
+    >
+      <Tabs.Screen
+        name="vehicles"
+        options={{
+          href: mayShowTab.vehicles,
+          title: "Vehículos",
+          tabBarIcon: ({ color }) => <Truck color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="users"
+        options={{
+          href: mayShowTab.users,
+          title: "Personas",
+          tabBarIcon: ({ color }) => <UsersRound color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="fleets"
+        options={{
+          href: mayShowTab.fleets,
+          title: "Flotillas",
+          tabBarIcon: ({ color }) => <Boxes color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          href: mayShowTab.notifications,
+          title: "Notificaciones",
+          tabBarIcon: ({ color }) => <Bell color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Perfil",
+          tabBarIcon: ({ color }) => <CircleUserRound color={color} />,
+        }}
+      />
+    </Tabs>
   );
 }
 

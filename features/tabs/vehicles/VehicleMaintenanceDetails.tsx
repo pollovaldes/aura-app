@@ -208,14 +208,12 @@ export default function VehicleMaintenanceDetails() {
           headerLargeTitle: false,
         }}
       />
-      <View style={[{ marginTop: Platform.OS === "ios" ? headerHeight + 0 : 6 }]}>
-        <SegmentedControl
-          values={["General", "Archivos y medios", "Actualizaciones"]}
-          selectedIndex={currentTabIndex}
-          onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
-          style={[styles.segmentedControl, {}]}
-        />
-      </View>
+      <SegmentedControl
+        values={["General", "Archivos y medios", "Actualizaciones"]}
+        selectedIndex={currentTabIndex}
+        onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
+        style={[styles.segmentedControl, {}]}
+      />
       {currentTabIndex === 0 && (
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
@@ -263,14 +261,14 @@ export default function VehicleMaintenanceDetails() {
                 hideChevron
               />
               <Row
-                title="vehículo al que se le solicitó"
+                title="Vehículo al que se le solicitó"
                 caption={`${vehicle.brand} ${vehicle.sub_brand} (${vehicle.year})\n`.trim()}
-                onPress={() => router.push(`/vehicles/${vehicle.id}/technical_sheet/`)}
+                onPress={() => router.push(`/tab/vehicle_details/${vehicle.id}`)}
               />
               <Row
                 title="Quien solicitó"
                 onPress={() => {
-                  router.push(`/users/${record.issued_by.id}/`);
+                  router.push(`/tab/user_details/${record.issued_by.id}`);
                 }}
                 caption={`${record.issued_by.name} ${record.issued_by.father_last_name} ${record.issued_by.mother_last_name}`.trim()}
               />
@@ -290,7 +288,7 @@ export default function VehicleMaintenanceDetails() {
                 <Row
                   title="Quien resolvió"
                   onPress={() => {
-                    record.resolved_by && router.push(`/users/${record.resolved_by.id}/`);
+                    record.resolved_by && router.push(`/tab/user_details/${record.resolved_by.id}`);
                   }}
                   hideChevron={record.resolved_by ? false : true}
                   caption={

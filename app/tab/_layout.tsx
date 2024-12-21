@@ -1,10 +1,19 @@
+import { ProfileImageProvider } from "@/context/ProfileImageContext";
+import { UsersContextProvider } from "@/context/UsersContext";
+import { VehiclesContextProvider } from "@/context/VehiclesContext";
 import { Stack } from "expo-router";
 
 export default function Layout() {
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="(details)/index" options={{ presentation: "modal" }} />
-    </Stack>
+    <VehiclesContextProvider>
+      <UsersContextProvider>
+        <ProfileImageProvider>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="(details)" options={{ presentation: "modal", headerShown: false }} />
+          </Stack>
+        </ProfileImageProvider>
+      </UsersContextProvider>
+    </VehiclesContextProvider>
   );
 }

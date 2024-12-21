@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { router, Stack, useLocalSearchParams, useNavigation } from "expo-router";
+import React, { useState } from "react";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { View, Image, ScrollView, RefreshControl, Text, Platform, Alert } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
@@ -21,24 +21,13 @@ import { ActionButton } from "@/components/actionButton/ActionButton";
 type ModalType = "change_cover_image" | null;
 
 export default function VehicleDetails() {
-  const navigation = useNavigation();
-  const { showModal } = useLocalSearchParams();
   const { styles } = useStyles(stylesheet);
-
   const { vehicles, fetchVehicles, vehiclesAreLoading } = useVehicle();
   const { profile, isProfileLoading, fetchProfile } = useProfile();
   const { deleteThumbnail, selectThumbnail } = useVehicleThumbnail();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
-
   const [activeModal, setActiveModal] = useState<ModalType>(null);
-
   const closeModal = () => setActiveModal(null);
-
-  useEffect(() => {
-    navigation.setOptions({
-      presentation: showModal === "true" ? "modal" : "card",
-    });
-  }, [showModal]);
 
   if (isProfileLoading || vehiclesAreLoading) {
     return (
