@@ -7,7 +7,7 @@ import { VehiclesContextProvider } from "@/context/VehiclesContext";
 import useProfile from "@/hooks/useProfile";
 import { supabase } from "@/lib/supabase";
 import { Redirect, Tabs, usePathname } from "expo-router";
-import { Bell, Boxes, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
+import { Bell, Boxes, CircleUserRound, Layers, Truck, UsersRound } from "lucide-react-native";
 import React from "react";
 import { useState } from "react";
 import { Text, View, useWindowDimensions } from "react-native";

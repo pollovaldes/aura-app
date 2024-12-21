@@ -1,32 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {
-  router,
-  Stack,
-  useLocalSearchParams,
-  useNavigation,
-} from "expo-router";
-import {
-  View,
-  Image,
-  ScrollView,
-  RefreshControl,
-  Text,
-  Platform,
-  Alert,
-} from "react-native";
+import { router, Stack, useLocalSearchParams, useNavigation } from "expo-router";
+import { View, Image, ScrollView, RefreshControl, Text, Platform, Alert } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
-import {
-  BookOpen,
-  Boxes,
-  Clipboard,
-  Fuel,
-  Images,
-  Trash,
-  Waypoints,
-  Wrench,
-} from "lucide-react-native";
+import { BookOpen, Boxes, Clipboard, Fuel, Images, Trash, Waypoints, Wrench } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
@@ -67,9 +45,7 @@ export default function VehicleDetail() {
             headerLargeTitle: false,
           }}
         />
-        <FetchingIndicator
-          caption={isProfileLoading ? "Cargando perfil" : "Cargando vehículos"}
-        />
+        <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando vehículos"} />
       </>
     );
   }
@@ -104,9 +80,7 @@ export default function VehicleDetail() {
   if (!vehicle) {
     return (
       <>
-        <Stack.Screen
-          options={{ title: "Recurso inaccesible", headerLargeTitle: false }}
-        />
+        <Stack.Screen options={{ title: "Recurso inaccesible", headerLargeTitle: false }} />
         <UnauthorizedScreen
           caption="No tienes acceso a este recurso."
           buttonCaption="Reintentar"
@@ -129,15 +103,10 @@ export default function VehicleDetail() {
           text: "Eliminar",
           style: "destructive",
           onPress: async () => {
-            const { error } = await supabase
-              .from("vehicles")
-              .delete()
-              .eq("id", vehicleId);
+            const { error } = await supabase.from("vehicles").delete().eq("id", vehicleId);
 
             if (error) {
-              alert(
-                "Ocurrió un error al eliminar el vehículo\n" + error.message,
-              );
+              alert("Ocurrió un error al eliminar el vehículo\n" + error.message);
               return;
             }
 
@@ -145,7 +114,7 @@ export default function VehicleDetail() {
             router.back();
           },
         },
-      ],
+      ]
     );
   };
 
@@ -201,33 +170,23 @@ export default function VehicleDetail() {
               </View>
             )}
             <View style={styles.overlay}>
-              {vehicle.thumbnail && (
-                <Text style={styles.imageText}>{vehicleTitle}</Text>
-              )}
+              {vehicle.thumbnail && <Text style={styles.imageText}>{vehicleTitle}</Text>}
             </View>
           </View>
           <View style={styles.groupedListContainer}>
             <GroupedList header="Consulta general">
-              <Row
-                title="Galería"
-                icon={Images}
-                backgroundColor={colorPalette.cyan[500]}
-              />
+              <Row title="Galería" icon={Images} backgroundColor={colorPalette.cyan[500]} />
               <Row
                 title="Ficha técnica"
-                onPress={() =>
-                  router.navigate(`/vehicles/${vehicleId}/technical_sheet`)
-                }
+                onPress={() => router.push(`./technical_sheet`, { relativeToDirectory: true })}
                 icon={Clipboard}
                 backgroundColor={colorPalette.green[500]}
               />
               <Row
                 title="Guantera digital"
+                onPress={() => router.push(`./documentation`, { relativeToDirectory: true })}
                 icon={BookOpen}
                 backgroundColor={colorPalette.orange[500]}
-                onPress={() =>
-                  router.navigate(`/vehicles/${vehicleId}/documentation`)
-                }
               />
             </GroupedList>
           </View>
@@ -235,33 +194,23 @@ export default function VehicleDetail() {
             <GroupedList header="Acciones">
               <Row
                 title="Mantenimiento"
+                onPress={() => router.push(`./maintenance`, { relativeToDirectory: true })}
                 icon={Wrench}
                 backgroundColor={colorPalette.cyan[500]}
-                onPress={() =>
-                  router.navigate(`/vehicles/${vehicleId}/maintenance`)
-                }
               />
               <Row
                 title="Cargas de gasolina"
+                onPress={() => router.push(`./gasoline_history`, { relativeToDirectory: true })}
                 icon={Fuel}
                 backgroundColor={colorPalette.red[500]}
-                onPress={() =>
-                  router.navigate(`/vehicles/${vehicleId}/gasoline_history`)
-                }
               />
-              <Row
-                title="Rutas"
-                icon={Waypoints}
-                backgroundColor={colorPalette.sky[500]}
-              />
+              <Row title="Rutas" icon={Waypoints} backgroundColor={colorPalette.sky[500]} />
               <Row
                 title="Administrar flotillas"
+                onPress={() => router.push(`./manage_fleets`, { relativeToDirectory: true })}
                 icon={Boxes}
                 backgroundColor={colorPalette.lime[500]}
-                onPress={() =>
-                  router.navigate(`/vehicles/${vehicleId}/manage_fleets`)
-                }
-                show={canEditVehicle} // Added back
+                show={canEditVehicle}
               />
             </GroupedList>
           </View>
@@ -272,7 +221,7 @@ export default function VehicleDetail() {
                 icon={Trash}
                 backgroundColor={colorPalette.red[500]}
                 onPress={() => deleteVehicle()}
-                show={canEditVehicle} // Added back
+                show={canEditVehicle}
               />
             </GroupedList>
           </View>

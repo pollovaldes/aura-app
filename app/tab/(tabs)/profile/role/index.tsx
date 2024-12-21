@@ -24,9 +24,7 @@ export default function Index() {
             headerRight: undefined,
           }}
         />
-        <FetchingIndicator
-          caption={isProfileLoading ? "Cargando perfil" : "Cargando sesión"}
-        />
+        <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando sesión"} />
       </>
     );
   }
@@ -95,26 +93,19 @@ export default function Index() {
       />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        refreshControl={
-          <RefreshControl
-            refreshing={isProfileLoading}
-            onRefresh={fetchProfile}
-          />
-        }
+        refreshControl={<RefreshControl refreshing={isProfileLoading} onRefresh={fetchProfile} />}
       >
         <View style={styles.container}>
           <View style={styles.dateContainer}>
             <Text style={styles.text}>{getRoleLabel(profile.role)}</Text>
-            <Text style={styles.subtitle}>
-              {getRoleDescription(profile.role)}
-            </Text>
+            <Text style={styles.subtitle}>{getRoleDescription(profile.role)}</Text>
           </View>
           <GroupedList>
             <Row
               title="Cambio de rol"
               icon={UserRoundPen}
               backgroundColor={colorPalette.cyan[500]}
-              onPress={() => router.push("/profile/role/change")}
+              onPress={() => router.push("./change", { relativeToDirectory: true })}
             />
           </GroupedList>
 

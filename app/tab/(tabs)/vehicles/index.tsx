@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { FlatList, Text } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { Stack } from "expo-router";
-import { Download, Plus } from "lucide-react-native";
+import { router, Stack } from "expo-router";
+import { Download, Layers, Plus } from "lucide-react-native";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
@@ -23,6 +23,7 @@ export default function VehicleList() {
   const headerRight = () => {
     return (
       <ActionButtonGroup>
+        <ActionButton onPress={() => router.push("/tab")} Icon={Layers} />
         <ActionButton onPress={() => {}} Icon={Download} />
         <ActionButton onPress={() => setIsModalVisible(true)} Icon={Plus} show={canEdit} />
       </ActionButtonGroup>
@@ -107,7 +108,8 @@ export default function VehicleList() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <SimpleList
-            href={`/vehicles/${item.id}`}
+            relativeToDirectory
+            href={`./${item.id}`}
             leading={<VehicleThumbnail vehicleId={item.id} />}
             content={
               <>

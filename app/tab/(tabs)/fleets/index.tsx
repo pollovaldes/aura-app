@@ -99,7 +99,8 @@ export default function Index() {
         }}
         renderItem={({ item }) => (
           <SimpleList
-            href={`/fleets/${item.id}`}
+            relativeToDirectory
+            href={`./${item.id}`}
             content={
               <View style={{ flexDirection: "column" }}>
                 <Text style={styles.itemTitle}>{item.title}</Text>

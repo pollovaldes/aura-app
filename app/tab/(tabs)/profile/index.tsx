@@ -24,11 +24,7 @@ export default function Profile() {
   const { profile, isProfileLoading, fetchProfile } = useProfile();
 
   if (isProfileLoading || isSessionLoading) {
-    return (
-      <FetchingIndicator
-        caption={isProfileLoading ? "Cargando perfil" : "Cargando sesión"}
-      />
-    );
+    return <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando sesión"} />;
   }
 
   if (!profile) {
@@ -55,12 +51,7 @@ export default function Profile() {
     <>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        refreshControl={
-          <RefreshControl
-            refreshing={isProfileLoading}
-            onRefresh={fetchProfile}
-          />
-        }
+        refreshControl={<RefreshControl refreshing={isProfileLoading} onRefresh={fetchProfile} />}
       >
         <View style={styles.container}>
           {profile.is_fully_registered && (
@@ -76,12 +67,8 @@ export default function Profile() {
           >
             <Row
               title="Datos personales"
-              caption={
-                profile.is_fully_registered ? "Completo" : "Sin completar ⚠️"
-              }
-              onPress={() =>
-                router.push("./personal_data", { relativeToDirectory: true })
-              }
+              caption={profile.is_fully_registered ? "Completo" : "Sin completar ⚠️"}
+              onPress={() => router.push("./personal_data", { relativeToDirectory: true })}
             />
             <Row
               title="Rol"
@@ -101,9 +88,7 @@ export default function Profile() {
                     return "Indefinido";
                 }
               })()}
-              onPress={() =>
-                router.push("./role", { relativeToDirectory: true })
-              }
+              onPress={() => router.push("./role", { relativeToDirectory: true })}
             />
           </GroupedList>
           <GroupedList>
@@ -111,25 +96,19 @@ export default function Profile() {
               title="Cuenta"
               icon={User}
               backgroundColor={colorPalette.green[500]}
-              onPress={() =>
-                router.push("./account", { relativeToDirectory: true })
-              }
+              onPress={() => router.push("./account", { relativeToDirectory: true })}
             />
             <Row
               title="Tema de la aplicación"
               icon={Moon}
               backgroundColor={colorPalette.neutral[500]}
-              onPress={() =>
-                router.push("./theme", { relativeToDirectory: true })
-              }
+              onPress={() => router.push("./theme", { relativeToDirectory: true })}
             />
             <Row
               title="Notificaciones"
               icon={Bell}
               backgroundColor={colorPalette.red[500]}
-              onPress={() =>
-                router.push("./notifications", { relativeToDirectory: true })
-              }
+              onPress={() => router.push("./notifications", { relativeToDirectory: true })}
             />
           </GroupedList>
 
@@ -138,26 +117,17 @@ export default function Profile() {
               title="Sobre Aura"
               icon={Info}
               backgroundColor={colorPalette.cyan[500]}
-              onPress={() =>
-                router.push("./about", { relativeToDirectory: true })
-              }
+              onPress={() => router.push("./about", { relativeToDirectory: true })}
             />
             <Row
               title="Reportar un problema"
               icon={Bug}
               backgroundColor={colorPalette.orange[500]}
-              onPress={() =>
-                router.push("./report", { relativeToDirectory: true })
-              }
+              onPress={() => router.push("./report", { relativeToDirectory: true })}
             />
           </GroupedList>
           <GroupedList>
-            <Row
-              title="Cerrar sesión"
-              icon={LogOut}
-              backgroundColor={colorPalette.red[500]}
-              onPress={signOut}
-            />
+            <Row title="Cerrar sesión" icon={LogOut} backgroundColor={colorPalette.red[500]} onPress={signOut} />
           </GroupedList>
           <View style={styles.termsAndPrivacy}>
             <TermsAndPrivacy />

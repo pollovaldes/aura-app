@@ -23,7 +23,6 @@ export default function Index() {
   const { fleetId } = useLocalSearchParams<{ fleetId: string }>();
   const { areFleetsLoading, fetchFleets, fleets } = useFleets(fleetId);
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
-  const headerHeight = useHeaderHeight();
 
   if (isProfileLoading || areFleetsLoading) {
     return (

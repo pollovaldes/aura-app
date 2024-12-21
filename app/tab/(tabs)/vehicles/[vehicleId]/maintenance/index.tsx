@@ -173,7 +173,8 @@ export default function MaintenanceRequests() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <SimpleList
-            href={`/vehicles/${vehicleId}/maintenance/${item.id}`}
+            relativeToDirectory
+            href={`./${item.id}`}
             leading={
               <>
                 <StatusChip status={item.status} statesConfig={statesConfig} />

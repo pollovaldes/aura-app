@@ -77,7 +77,8 @@ export default function UsersList() {
       keyExtractor={(item) => item.id.toString()}
       renderItem={({ item }) => (
         <SimpleList
-          href={`/users/${item.id}`}
+          relativeToDirectory
+          href={`./${item.id}`}
           leading={<UserThumbnail userId={item.id.toString()} size={60} />}
           content={
             <Text style={styles.listText}>
