@@ -123,7 +123,8 @@ export default function VehicleDetail() {
       <Stack.Screen
         options={{
           headerLargeTitle: false,
-          title: "",
+          title: vehicleTitle,
+          headerTitleStyle: { color: "transparent", fontSize: 0.1 },
           headerRight: () => (
             <ActionButtonGroup>
               <ActionButton

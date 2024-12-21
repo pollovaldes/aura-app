@@ -2,6 +2,7 @@ import { FormButton } from "@/components/Form/FormButton";
 import FormInput from "@/components/Form/FormInput";
 import { supabase } from "@/lib/supabase";
 import { router } from "expo-router";
+import React from "react";
 import { useState } from "react";
 import { TextInput } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -23,7 +24,7 @@ export default function SignIn() {
     if (error) {
       alert(error.message);
     } else {
-      router.replace("/vehicles");
+      router.push("/tab/vehicles");
     }
     setLoading(false);
   }
@@ -49,11 +50,7 @@ export default function SignIn() {
         secureTextEntry={true}
         onChangeText={setPassword}
       />
-      <FormButton
-        title="Continuar"
-        onPress={() => signInWithEmail()}
-        isLoading={loading}
-      />
+      <FormButton title="Continuar" onPress={() => signInWithEmail()} isLoading={loading} />
     </>
   );
 }
