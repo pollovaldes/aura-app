@@ -1,14 +1,6 @@
 import { Stack, useLocalSearchParams } from "expo-router";
 import React, { useState, useMemo } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  RefreshControl,
-  Alert,
-  Platform,
-  Pressable,
-} from "react-native";
+import { View, Text, FlatList, RefreshControl, Alert, Platform, Pressable } from "react-native";
 import useAllGasolineLoads from "@/hooks/GasolineDataTest/useAllGasolineLoadHistory";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
@@ -63,7 +55,7 @@ function formatDate(dateString: string) {
   return `${day} de ${month} del ${year} a las ${hours}:${minutes} horas`;
 }
 
-export default function GasolineLoadHistory() {
+export default function VehicleGasolineHistory() {
   const { styles } = useStyles(stylesheet);
   const headerHeight = useHeaderHeight();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
@@ -72,8 +64,7 @@ export default function GasolineLoadHistory() {
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [dateFilter, setDateFilter] = useState<DateFilter>("all");
 
-  const { allGasolineLoads, loading, error, refetch } =
-    useAllGasolineLoads(vehicleId);
+  const { allGasolineLoads, loading, error, refetch } = useAllGasolineLoads(vehicleId);
 
   const closeModal = () => setActiveModal(null);
 
@@ -135,21 +126,13 @@ export default function GasolineLoadHistory() {
         <View style={styles.section}>
           <View style={styles.group}>
             <FormTitle title="Filtrar por fecha" />
-            <Text style={styles.subtitle}>
-              Selecciona un rango de fechas para filtrar el historial
-            </Text>
+            <Text style={styles.subtitle}>Selecciona un rango de fechas para filtrar el historial</Text>
           </View>
           <View style={styles.group}>
             {["all", "week", "month"].map((filter) => (
               <FormButton
                 key={filter}
-                title={
-                  filter === "all"
-                    ? "Todos los registros"
-                    : filter === "week"
-                      ? "Última semana"
-                      : "Último mes"
-                }
+                title={filter === "all" ? "Todos los registros" : filter === "week" ? "Última semana" : "Último mes"}
                 onPress={() => {
                   setDateFilter(filter as DateFilter);
                   closeModal();
@@ -166,11 +149,7 @@ export default function GasolineLoadHistory() {
     return (
       <>
         <Stack.Screen options={{ title: "Error" }} />
-        <ErrorScreen
-          caption="ID de vehículo no encontrado"
-          buttonCaption="Regresar"
-          retryFunction={onRefresh}
-        />
+        <ErrorScreen caption="ID de vehículo no encontrado" buttonCaption="Regresar" retryFunction={onRefresh} />
       </>
     );
   }
@@ -214,13 +193,8 @@ export default function GasolineLoadHistory() {
       <SegmentedControl
         values={["Todos", "Pendientes", "Aprobados", "Rechazados"]}
         selectedIndex={currentTabIndex}
-        onChange={(event) =>
-          setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)
-        }
-        style={[
-          styles.segmentedControl,
-          { marginTop: Platform.OS === "ios" ? headerHeight + 6 : 6 },
-        ]}
+        onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
+        style={[styles.segmentedControl, { marginTop: Platform.OS === "ios" ? headerHeight + 6 : 6 }]}
       />
       <View style={styles.safeContainer}>
         <FlatList
@@ -231,13 +205,8 @@ export default function GasolineLoadHistory() {
             <View style={styles.container}>
               <View style={styles.contentContainer}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <StatusChip
-                    status={item.status}
-                    statesConfig={statesConfig}
-                  />
-                  <Text style={styles.title}>
-                    ${item.amount.toFixed(2)} MXN
-                  </Text>
+                  <StatusChip status={item.status} statesConfig={statesConfig} />
+                  <Text style={styles.title}>${item.amount.toFixed(2)} MXN</Text>
                 </View>
                 <View>
                   <Text style={styles.subtitle}>
@@ -251,12 +220,7 @@ export default function GasolineLoadHistory() {
             </View>
           )}
           refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={["#1976d2"]}
-              tintColor="#1976d2"
-            />
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#1976d2"]} tintColor="#1976d2" />
           }
           ListEmptyComponent={() => (
             <View style={{ height: 250 }}>

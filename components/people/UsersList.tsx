@@ -1,13 +1,7 @@
-import {
-  View,
-  Text,
-  FlatList,
-  Pressable,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import useUsers from "@/hooks/peopleHooks/useUsers";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { Link, Redirect } from "expo-router";
+import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { ChevronRight } from "lucide-react-native";
 import { useSearch } from "@/context/SearchContext";
@@ -40,7 +34,7 @@ export default function UsersList() {
       const filtered = users.filter((user) =>
         `${user.name} ${user.father_last_name} ${user.mother_last_name}`
           .toLowerCase()
-          .includes(searchQuery.toLowerCase()),
+          .includes(searchQuery.toLowerCase())
       );
       setFilteredUsers(filtered);
     } else {
@@ -88,7 +82,7 @@ export default function UsersList() {
       data={filteredUsers}
       keyExtractor={(item) => item.id.toString()}
       renderItem={({ item }) => (
-        <Link href={{ pathname: `/users/${item.id}` }} asChild>
+        <Link href={{ pathname: `./${item.id}` }} asChild relativeToDirectory>
           <TouchableOpacity>
             <View style={styles.container}>
               <View style={styles.contentContainer}>

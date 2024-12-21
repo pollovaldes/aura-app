@@ -48,9 +48,7 @@ const GasolineHistoryContent = React.memo(
     const [selectedView, setSelectedView] = useState(0); // 0 for weekly, 1 for monthly
 
     const handleHistoryPress = useCallback(() => {
-      router.push(
-        `/vehicles/${vehicleId}/gasoline_history/GasolineLoadHistory`,
-      ); // !Cambiar ruta o eliminar una de las dos gasolinas
+      router.push(`./GasolineLoadHistory`, { relativeToDirectory: true }); // !Cambiar ruta o eliminar una de las dos gasolinas
     }, [vehicleId, router]);
 
     return (
@@ -66,9 +64,7 @@ const GasolineHistoryContent = React.memo(
         <SegmentedControl
           values={["Semanal", "Mensual"]}
           selectedIndex={selectedView}
-          onChange={(event) =>
-            setSelectedView(event.nativeEvent.selectedSegmentIndex)
-          }
+          onChange={(event) => setSelectedView(event.nativeEvent.selectedSegmentIndex)}
           style={styles.segmentedControl}
         />
 
@@ -84,10 +80,10 @@ const GasolineHistoryContent = React.memo(
         </Pressable>
       </View>
     );
-  },
+  }
 );
 
-export default function GasolineHistory() {
+export default function VehicleGasoline() {
   const { styles } = useStyles(stylesheet);
   const router = useRouter();
 
@@ -105,12 +101,9 @@ export default function GasolineHistory() {
   // Find the vehicle
   const vehicle = vehicles?.find((Vehicle) => Vehicle.id === vehicleId);
 
-  const {
-    gasolineStatus,
-    isGasolineStatusLoading,
-    fetchGasolineStatus,
-    updateGasolineThreshold,
-  } = useGasolineStatus(vehicle?.id); // TODO arreglar todos los pdos de supabase
+  const { gasolineStatus, isGasolineStatusLoading, fetchGasolineStatus, updateGasolineThreshold } = useGasolineStatus(
+    vehicle?.id
+  ); // TODO arreglar todos los pdos de supabase
 
   const isAdmin = profile?.role === "ADMIN" || profile?.role === "OWNER";
 
@@ -118,11 +111,7 @@ export default function GasolineHistory() {
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      await Promise.all([
-        fetchGasolineStatus(),
-        fetchProfile(),
-        fetchVehicles(),
-      ]);
+      await Promise.all([fetchGasolineStatus(), fetchProfile(), fetchVehicles()]);
     } catch (error) {
       console.error("Error refreshing data:", error);
     } finally {
@@ -218,12 +207,7 @@ export default function GasolineHistory() {
             />
           }
           refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={["#1976d2"]}
-              tintColor="#1976d2"
-            />
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#1976d2"]} tintColor="#1976d2" />
           }
         />
       )}
