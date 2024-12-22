@@ -1,7 +1,10 @@
+import { ActionButton } from "@/components/actionButton/ActionButton";
+import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ProfileImageProvider } from "@/context/ProfileImageContext";
 import { UsersContextProvider } from "@/context/UsersContext";
 import { VehiclesContextProvider } from "@/context/VehiclesContext";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
+import React from "react";
 
 export default function Layout() {
   return (
@@ -10,7 +13,14 @@ export default function Layout() {
         <ProfileImageProvider>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="(details)" options={{ presentation: "modal", headerShown: false }} />
+            <Stack.Screen
+              name="(details)"
+              options={{
+                presentation: "modal",
+                gestureEnabled: false,
+                headerShown: false,
+              }}
+            />
           </Stack>
         </ProfileImageProvider>
       </UsersContextProvider>

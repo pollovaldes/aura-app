@@ -28,8 +28,10 @@ export default function Index(): JSX.Element {
   const zoomFactor = latitude && longitude ? 0.01 / zoom : 180;
   const mapUrl =
     latitude && longitude
-      ? `https://www.openstreetmap.org/export/embed.html?bbox=${longitude - zoomFactor}%2C${latitude - zoomFactor}%2C${longitude + zoomFactor}%2C${latitude + zoomFactor}&layer=mapnik&marker=${latitude}%2C${longitude}`
-      : `https://www.openstreetmap.org/export/embed.html?bbox=-180%2C-90%2C180%2C90&layer=mapnik`;
+      ? `https://www.openstreetmap.org/export/embed.html?bbox=${longitude - zoomFactor}%2C${latitude - zoomFactor}%2C${longitude + zoomFactor}%2C${latitude + zoomFactor}&layer=carto-dark&marker=${latitude}%2C${longitude}`
+      : `https://www.openstreetmap.org/export/embed.html?bbox=-180%2C-90%2C180%2C90&layer=carto-dark`;
+
+  console.log(mapUrl);
 
   const showToast = (title: string, caption: string) => {
     Toast.show({
@@ -69,7 +71,7 @@ export default function Index(): JSX.Element {
       const location = await Location.getCurrentPositionAsync({});
       setLatitude(location.coords.latitude);
       setLongitude(location.coords.longitude);
-      setZoom(15);
+      setZoom(10);
       await getAddressFromCoordinates(location.coords.latitude, location.coords.longitude);
       setIsLocationLoading(false);
     } catch (error: unknown) {
@@ -113,7 +115,7 @@ export default function Index(): JSX.Element {
               ) : locationError ? (
                 <Text style={styles.subtitle}>{locationError.message}</Text>
               ) : (
-                <Text style={styles.subtitle}>Esta es tu ubicación en el mapa.</Text>
+                <Text style={styles.subtitle}>Tu ubicación actual</Text>
               )}
             </View>
 
