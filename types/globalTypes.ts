@@ -14,3 +14,18 @@ export type Maintenance = MaintenanceRow & {
   issued_by: Profile | null;
   resolved_by: Profile | null;
 };
+
+export type RouteEvent = Database["public"]["Tables"]["route_events"]["Row"];
+export type BreakEvent = Database["public"]["Tables"]["break_events"]["Row"];
+export type EmergencyEvent = Database["public"]["Tables"]["emergency_events"]["Row"];
+export type OtherEvent = Database["public"]["Tables"]["other_events"]["Row"];
+export type RefuelingEvent = Database["public"]["Tables"]["refueling_events"]["Row"];
+
+export type RouteRow = Database["public"]["Tables"]["routes"]["Row"];
+export type Route = RouteRow & {
+  routeEvents: RouteEvent[];
+  breakEvents: BreakEvent[];
+  emergencyEvents: EmergencyEvent[];
+  otherEvents: OtherEvent[];
+  refuelingEvents: RefuelingEvent[];
+};
