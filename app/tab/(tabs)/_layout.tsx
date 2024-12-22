@@ -1,16 +1,12 @@
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
-import { ProfileImageProvider } from "@/context/ProfileImageContext";
 import { useSessionContext } from "@/context/SessionContext";
-import { UsersContextProvider } from "@/context/UsersContext";
-import { VehiclesContextProvider } from "@/context/VehiclesContext";
 import useProfile from "@/hooks/useProfile";
 import { supabase } from "@/lib/supabase";
 import { Redirect, Tabs, usePathname } from "expo-router";
-import { Bell, Boxes, CircleUserRound, Layers, Truck, UsersRound } from "lucide-react-native";
+import { Bell, Boxes, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
 import React from "react";
-import { useState } from "react";
-import { Text, View, useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function HomeLayout() {
@@ -47,7 +43,7 @@ export default function HomeLayout() {
   const requiresProfileCompletion = !profile.is_fully_registered && !path.includes("/profile");
 
   if (requiresProfileCompletion) {
-    return <Redirect href="/profile" />;
+    return <Redirect href="/tab/profile" />;
   }
 
   const isAdminOrOwner = profile.role === "ADMIN" || profile.role === "OWNER";

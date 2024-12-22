@@ -11,5 +11,6 @@ const stylesheet = createStyleSheet(() => ({
   container: {
     flexDirection: "row",
     alignItems: "center",
+    padding: 5,
   },
 }));

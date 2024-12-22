@@ -194,7 +194,7 @@ export default function VehicleDetails() {
                 backgroundColor={colorPalette.cyan[500]}
               />
               <Row
-                title="Cargas de gasolina"
+                title="Combustible"
                 onPress={() => router.push(`./gasoline`, { relativeToDirectory: true })}
                 icon={Fuel}
                 backgroundColor={colorPalette.red[500]}

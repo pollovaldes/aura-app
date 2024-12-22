@@ -229,6 +229,8 @@ PODS:
     - Yoga
   - ExpoAsset (11.0.1):
     - ExpoModulesCore
+  - ExpoClipboard (7.0.0):
+    - ExpoModulesCore
   - ExpoCrypto (14.0.1):
     - ExpoModulesCore
   - ExpoDocumentPicker (13.0.1):
@@ -1980,6 +1982,7 @@ DEPENDENCIES:
   - expo-dev-menu (from `../node_modules/expo-dev-menu`)
   - expo-dev-menu-interface (from `../node_modules/expo-dev-menu-interface/ios`)
   - ExpoAsset (from `../node_modules/expo-asset/ios`)
+  - ExpoClipboard (from `../node_modules/expo-clipboard/ios`)
   - ExpoCrypto (from `../node_modules/expo-crypto/ios`)
   - ExpoDocumentPicker (from `../node_modules/expo-document-picker/ios`)
   - ExpoFileSystem (from `../node_modules/expo-file-system/ios`)
@@ -2108,6 +2111,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-dev-menu-interface/ios"
   ExpoAsset:
     :path: "../node_modules/expo-asset/ios"
+  ExpoClipboard:
+    :path: "../node_modules/expo-clipboard/ios"
   ExpoCrypto:
     :path: "../node_modules/expo-crypto/ios"
   ExpoDocumentPicker:
@@ -2306,6 +2311,7 @@ SPEC CHECKSUMS:
   expo-dev-menu: 3c09f402ac39257bf6cd4ed4f48478020b56838e
   expo-dev-menu-interface: 1495ca112a4961f9fbaf586ae952faaafdbd967b
   ExpoAsset: 8138f2a9ec55ae1ad7c3871448379f7d97692d15
+  ExpoClipboard: 166ca8c13ca1041f5ba619a211f59427ab5da8a7
   ExpoCrypto: 8465f71eb3798c194c0a509d4a76e5c429656d83
   ExpoDocumentPicker: 4a89fd8a0cb90010214a416c858d7dece1c1eb10
   ExpoFileSystem: cc31b7a48031ab565f9eb5c2b61aa08d774a271a
