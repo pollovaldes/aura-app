@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
@@ -21,9 +21,9 @@ export default function AuthCard({ children }: AuthCardProps) {
       }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <ScrollView contentContainerStyle={styles.contentContainer}>
-        {children}
-      </ScrollView>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView contentContainerStyle={styles.contentContainer}>{children}</ScrollView>
+      </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
 }

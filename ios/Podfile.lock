@@ -249,6 +249,8 @@ PODS:
     - ExpoModulesCore
   - ExpoLinking (7.0.2):
     - ExpoModulesCore
+  - ExpoLocation (18.0.4):
+    - ExpoModulesCore
   - ExpoModulesCore (2.0.3):
     - DoubleConversion
     - glog
@@ -1992,6 +1994,7 @@ DEPENDENCIES:
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - ExpoLinearGradient (from `../node_modules/expo-linear-gradient/ios`)
   - ExpoLinking (from `../node_modules/expo-linking/ios`)
+  - ExpoLocation (from `../node_modules/expo-location/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - ExpoSharing (from `../node_modules/expo-sharing/ios`)
   - ExpoSplashScreen (from `../node_modules/expo-splash-screen/ios`)
@@ -2131,6 +2134,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-linear-gradient/ios"
   ExpoLinking:
     :path: "../node_modules/expo-linking/ios"
+  ExpoLocation:
+    :path: "../node_modules/expo-location/ios"
   ExpoModulesCore:
     :path: "../node_modules/expo-modules-core"
   ExpoSharing:
@@ -2321,6 +2326,7 @@ SPEC CHECKSUMS:
   ExpoKeepAwake: 783e68647b969b210a786047c3daa7b753dcac1f
   ExpoLinearGradient: 7ca3b1d1625a1ab85c129abce4a3cdc78a9500a3
   ExpoLinking: 05ab69d3b5b1b0600d6a1a043d8d1ea3bb61a71a
+  ExpoLocation: f13126dee9bf4c1499eb16b64f15afe9da9403f5
   ExpoModulesCore: 2d1df04dc27f91d8b383c0ec7f1d121e3d9b7f68
   ExpoSharing: 39a198e64bf522948fe60e270e49a0c7757912c1
   ExpoSplashScreen: aa5c5eba706a5686b91861b53ced2996f1dd080d
@@ -2328,10 +2334,10 @@ SPEC CHECKSUMS:
   ExpoWebBrowser: f08aaf1c8a02af8a768d83793186cb6d2c69f529
   EXUpdatesInterface: 1dcebac98ac5dad4289e6ff2bd5616822e894397
   FBLazyVector: 1bf99bb46c6af9a2712592e707347315f23947aa
-  fmt: fad7775865bb4340e98e10997c965fd61b3c749e
-  glog: 94308668c25e8ccac76f853cda1931c7aa3f5fae
-  hermes-engine: d636491d67c8a651ddaab0a13bfc4f22ebf17d97
-  RCT-Folly: aac5a2e8a7b6b8108945e58a66d08f78b800a1ea
+  fmt: 10c6e61f4be25dc963c36bd73fc7b1705fe975be
+  glog: 08b301085f15bcbb6ff8632a8ebaf239aae04e6a
+  hermes-engine: 06a9c6900587420b90accc394199527c64259db4
+  RCT-Folly: bf5c0376ffe4dd2cf438dcf86db385df9fdce648
   RCTDeprecation: fb7d408617e25d7f537940000d766d60149c5fea
   RCTRequired: 9aaf0ffcc1f41f0c671af863970ef25c422a9920
   RCTTypeSafety: e9a6e7d48184646eb0610295b74c0dd02768cbb2

@@ -49,9 +49,7 @@ function AddVehicleComponent({ visible, onClose }: AddVehicleComponentProps) {
         <View style={styles.section}>
           <View style={styles.group}>
             <FormTitle title="Registra un nuevo vehículo" />
-            <Text style={styles.subtitle}>
-              Ingresa los datos del vehículo a continuación
-            </Text>
+            <Text style={styles.subtitle}>Ingresa los datos del vehículo a continuación</Text>
           </View>
           <View style={styles.group}>
             <FormInput
@@ -107,11 +105,7 @@ function AddVehicleComponent({ visible, onClose }: AddVehicleComponentProps) {
             />
           </View>
           <View style={styles.group}>
-            <FormButton
-              title="Registrar"
-              onPress={createVehicle}
-              isLoading={loading}
-            />
+            <FormButton title="Registrar" onPress={createVehicle} isLoading={loading} />
           </View>
         </View>
       </View>

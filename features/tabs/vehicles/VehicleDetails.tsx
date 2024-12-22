@@ -199,7 +199,12 @@ export default function VehicleDetails() {
                 icon={Fuel}
                 backgroundColor={colorPalette.red[500]}
               />
-              <Row title="Rutas" icon={Waypoints} backgroundColor={colorPalette.sky[500]} />
+              <Row
+                title="Rutas"
+                onPress={() => router.push(`./routes`, { relativeToDirectory: true })}
+                icon={Waypoints}
+                backgroundColor={colorPalette.sky[500]}
+              />
               <Row
                 title="Administrar flotillas"
                 onPress={() => router.push(`./manage_fleets`, { relativeToDirectory: true })}

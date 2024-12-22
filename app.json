@@ -38,6 +38,12 @@
           },
           "imageWidth": 700
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Permitir que $(PRODUCT_NAME) use tu ubicación."
+        }
       ]
     ],
     "extra": {
