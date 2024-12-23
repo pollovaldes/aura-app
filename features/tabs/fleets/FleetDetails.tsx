@@ -173,7 +173,7 @@ export default function FleetDetails() {
           currentTabIndex === 0 ? (
             <SimpleList
               relativeToDirectory
-              href={`./${item.id}`}
+              href={`/tab/user_details/${item.id}`}
               leading={<UserThumbnail userId={item.id} size={60} />}
               content={
                 <>
