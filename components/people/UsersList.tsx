@@ -1,30 +1,18 @@
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { Text, FlatList } from "react-native";
 import useUsers from "@/hooks/peopleHooks/useUsers";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { Link } from "expo-router";
-import { useEffect, useState } from "react";
-import { ChevronRight } from "lucide-react-native";
 import React from "react";
 import useProfile from "@/hooks/useProfile";
 import LoadingScreen from "../dataStates/LoadingScreen";
 import ErrorScreen from "../dataStates/ErrorScreen";
-import EmptyScreen from "../dataStates/EmptyScreen";
 import UserThumbnail from "./UserThumbnail";
+import { SimpleList } from "../simpleList/SimpleList";
+import EmptyScreen from "../dataStates/EmptyScreen";
 
 export default function UsersList() {
   const { profile, isProfileLoading, fetchProfile } = useProfile();
   const { styles } = useStyles(stylesheet);
   const { users, usersAreLoading, fetchUsers } = useUsers();
-  const [filteredUsers, setFilteredUsers] = useState(users);
-
-  const capitalizeWords = (text: string | null | undefined): string => {
-    if (!text) return "";
-    return text
-      .toLowerCase()
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
 
   if (usersAreLoading) {
     return <LoadingScreen caption="Cargando usuarios" />;
@@ -54,81 +42,33 @@ export default function UsersList() {
     );
   }
 
-  if (filteredUsers?.length === 0) {
-    return <EmptyScreen caption="Ningún resultado" />;
-  }
-
   return (
     <FlatList
       refreshing={usersAreLoading}
       onRefresh={fetchUsers}
       contentInsetAdjustmentBehavior="automatic"
-      data={filteredUsers}
+      data={users}
       keyExtractor={(item) => item.id.toString()}
       renderItem={({ item }) => (
-        <Link href={{ pathname: `./${item.id}` }} asChild relativeToDirectory>
-          <TouchableOpacity>
-            <View style={styles.container}>
-              <View style={styles.contentContainer}>
-                <View style={styles.imageContainer}>
-                  <UserThumbnail userId={item.id.toString()} size={60} />
-                </View>
-                <Text
-                  style={styles.itemText}
-                >{`${capitalizeWords(item.name)} ${capitalizeWords(item.father_last_name)} ${capitalizeWords(item.mother_last_name)}`}</Text>
-              </View>
-              <View style={styles.chevronView}>
-                <ChevronRight color={styles.chevron.color} />
-              </View>
-            </View>
-          </TouchableOpacity>
-        </Link>
+        <SimpleList
+          relativeToDirectory
+          href={`./${item.id}`}
+          leading={<UserThumbnail userId={item.id} size={60} />}
+          content={<Text style={styles.Text}>{`${item.name} ${item.father_last_name} ${item.mother_last_name}`}</Text>}
+        />
       )}
+      ListEmptyComponent={<EmptyScreen caption="Ningún usuario por aquí." />}
     />
   );
 }
 
 const stylesheet = createStyleSheet((theme) => ({
-  container: {
-    justifyContent: "space-between",
-    flexDirection: "row",
-    alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: theme.ui.colors.border,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  contentContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
-  imageContainer: {
-    padding: 12,
-  },
-  image: {
-    borderRadius: 6,
-    width: 50,
-    height: 50,
-  },
-  itemText: {
+  Text: {
     fontSize: 18,
-    paddingLeft: 10,
     color: theme.textPresets.main,
-    flexShrink: 1,
-    marginRight: 18,
   },
-  plusIcon: {
-    fontSize: 16,
-    color: theme.headerButtons.color,
-  },
-  chevron: {
+  Subtitle: {
+    fontSize: 15,
     color: theme.textPresets.subtitle,
-  },
-  chevronView: {
-    paddingRight: 12,
   },
 }));

@@ -172,31 +172,29 @@ export default function FleetDetails() {
         renderItem={({ item }) =>
           currentTabIndex === 0 ? (
             <SimpleList
-              href={`/tab/user_details/${item.id}`}
-              leading={<UserThumbnail userId={(item as Profile).id.toString()} size={60} />}
+              relativeToDirectory
+              href={`./${item.id}`}
+              leading={<UserThumbnail userId={item.id} size={60} />}
               content={
-                <View>
-                  <Text style={styles.userText}>
-                    {`${capitalizeWords((item as Profile).name)} ${capitalizeWords(
-                      (item as Profile).father_last_name
-                    )} ${capitalizeWords((item as Profile).mother_last_name)}`}
-                  </Text>
+                <>
+                  <Text
+                    style={styles.userText}
+                  >{`${item.name} ${item.father_last_name} ${item.mother_last_name}`}</Text>
                   <Text style={styles.userTextSubtitle}>{getRoleLabel(item.role)}</Text>
-                </View>
+                </>
               }
             />
           ) : (
             <SimpleList
+              relativeToDirectory
               href={`/tab/vehicle_details/${item.id}`}
-              leading={<VehicleThumbnail vehicleId={(item as Vehicle).id} />}
+              leading={<VehicleThumbnail vehicleId={item.id} />}
               content={
                 <>
-                  <Text
-                    style={styles.vehicleTitle}
-                  >{`${(item as Vehicle).brand} ${(item as Vehicle).sub_brand} (${(item as Vehicle).year})`}</Text>
-                  <Text
-                    style={styles.vehicleDetails}
-                  >{`Placa: ${(item as Vehicle).plate}\nNúmero económico: ${(item as Vehicle).economic_number}`}</Text>
+                  <Text style={styles.vehicleTitle}>{`${item.brand} ${item.sub_brand} (${item.year})`}</Text>
+                  <Text style={styles.vehicleDetails}>
+                    {`Placa: ${item.plate}\nNúmero económico: ${item.economic_number}`}
+                  </Text>
                 </>
               }
             />

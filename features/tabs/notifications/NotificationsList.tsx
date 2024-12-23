@@ -12,7 +12,6 @@ export default function NotificationsList() {
   const [selectedFilter, setSelectedFilter] = useState("todo");
   const { styles } = useStyles(stylesheet);
   const { profile, isProfileLoading, fetchProfile } = useProfile();
-  const headerHeight = useHeaderHeight();
 
   const FILTER_OPTIONS = [
     { key: "todo", label: "Todo" },
@@ -33,36 +32,16 @@ export default function NotificationsList() {
   const filteredData = selectedFilter === "todo" ? DATA : DATA.filter((item) => item.category === selectedFilter);
 
   if (isProfileLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando sesión"} />
-      </>
-    );
+    return <FetchingIndicator caption={"Cargando perfil"} />;
   }
 
   if (!profile) {
     return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar tu perfil"
-          buttonCaption="Reintentar"
-          retryFunction={fetchProfile}
-        />
-      </>
+      <ErrorScreen
+        caption="Ocurrió un error al recuperar tu perfil."
+        buttonCaption="Reintentar"
+        retryFunction={fetchProfile}
+      />
     );
   }
 
@@ -71,15 +50,8 @@ export default function NotificationsList() {
       <Stack.Screen
         options={{
           title: "Notificaciones",
-          headerLargeTitle: true,
-          headerRight: undefined,
-          headerSearchBarOptions: {
-            placeholder: "Buscar notificación",
-            hideWhenScrolling: false,
-          },
         }}
       />
-
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
         refreshControl={<RefreshControl refreshing={isProfileLoading} onRefresh={fetchProfile} />}

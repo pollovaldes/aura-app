@@ -8,7 +8,7 @@ import useProfile from "@/hooks/useProfile";
 import { useSessionContext } from "@/context/SessionContext";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
-import { router } from "expo-router";
+import { router, Stack } from "expo-router";
 import React from "react";
 import { Bell, Bug, Info, LogOut, Moon, User } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
@@ -30,7 +30,7 @@ export default function Profile() {
   if (!profile) {
     return (
       <ErrorScreen
-        caption="Ocurrió un error al recuperar tu perfil"
+        caption="Ocurrió un error al recuperar tu perfil."
         buttonCaption="Reintentar"
         retryFunction={fetchProfile}
       />
@@ -40,7 +40,7 @@ export default function Profile() {
   if (!session) {
     return (
       <ErrorScreen
-        caption="Ocurrió un error al recuperar tu sesión"
+        caption="Ocurrió un error al recuperar tu sesión."
         buttonCaption="Intentar cerrar sesión"
         retryFunction={() => supabase.auth.signOut({ scope: "local" })}
       />
@@ -49,6 +49,11 @@ export default function Profile() {
 
   return (
     <>
+      <Stack.Screen
+        options={{
+          title: "Perfil",
+        }}
+      />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         refreshControl={<RefreshControl refreshing={isProfileLoading} onRefresh={fetchProfile} />}

@@ -29,35 +29,21 @@ export default function FleetsList() {
 
   if (!profile) {
     return (
-      <>
-        <Stack.Screen
-          options={{
-            headerRight: undefined,
-          }}
-        />
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar tu perfil"
-          buttonCaption="Reintentar"
-          retryFunction={fetchProfile}
-        />
-      </>
+      <ErrorScreen
+        caption="Ocurrió un error al recuperar tu perfil."
+        buttonCaption="Reintentar"
+        retryFunction={fetchProfile}
+      />
     );
   }
 
   if (!fleets) {
     return (
-      <>
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar las flotillas"
-          buttonCaption="Reintentar"
-          retryFunction={fetchFleets}
-        />
-        <Stack.Screen
-          options={{
-            headerRight: undefined,
-          }}
-        />
-      </>
+      <ErrorScreen
+        caption="Ocurrió un error al recuperar las flotillas."
+        buttonCaption="Reintentar"
+        retryFunction={fetchFleets}
+      />
     );
   }
 
@@ -76,13 +62,10 @@ export default function FleetsList() {
 
       <Stack.Screen
         options={{
-          headerSearchBarOptions: {
-            placeholder: "Buscar flotilla",
-            hideWhenScrolling: false,
-          },
+          title: "Flotillas",
           headerRight: () => (
             <ActionButtonGroup>
-              <ActionButton Icon={Plus} onPress={() => setActiveModal("add_fleet")} show={canAddFleet} />
+              <ActionButton onPress={() => setActiveModal("add_fleet")} Icon={Plus} show={canAddFleet} />
             </ActionButtonGroup>
           ),
         }}
@@ -109,7 +92,7 @@ export default function FleetsList() {
             }
           />
         )}
-        ListEmptyComponent={<EmptyScreen caption="Parece ser que no tienes flotillas asignadas" />}
+        ListEmptyComponent={<EmptyScreen caption="Ninguna flotilla por aquí." />}
       />
     </>
   );
