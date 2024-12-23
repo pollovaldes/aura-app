@@ -1,18 +1,22 @@
-import { Vehicle } from "@/types/globalTypes";
 import { createContext, ReactNode, useState, Dispatch, SetStateAction } from "react";
+import { Vehicle } from "@/types/globalTypes";
 
-interface VehiclesContextType {
+export interface VehiclesContextType {
   vehicles: Vehicle[] | null;
   setVehicles: Dispatch<SetStateAction<Vehicle[] | null>>;
-  vehiclesAreLoading: boolean;
-  setVehiclesAreLoading: Dispatch<SetStateAction<boolean>>;
+  currentPage: number;
+  setCurrentPage: Dispatch<SetStateAction<number>>;
+  hasMorePages: boolean;
+  setHasMorePages: Dispatch<SetStateAction<boolean>>;
 }
 
 const VehiclesContext = createContext<VehiclesContextType>({
   vehicles: null,
   setVehicles: (() => {}) as Dispatch<SetStateAction<Vehicle[] | null>>,
-  vehiclesAreLoading: false,
-  setVehiclesAreLoading: (() => {}) as Dispatch<SetStateAction<boolean>>,
+  currentPage: 1,
+  setCurrentPage: (() => {}) as Dispatch<SetStateAction<number>>,
+  hasMorePages: true,
+  setHasMorePages: (() => {}) as Dispatch<SetStateAction<boolean>>,
 });
 
 interface VehiclesContextProviderProps {
@@ -21,15 +25,18 @@ interface VehiclesContextProviderProps {
 
 export function VehiclesContextProvider({ children }: VehiclesContextProviderProps) {
   const [vehicles, setVehicles] = useState<Vehicle[] | null>(null);
-  const [vehiclesAreLoading, setVehiclesAreLoading] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMorePages, setHasMorePages] = useState(true);
 
   return (
     <VehiclesContext.Provider
       value={{
         vehicles,
         setVehicles,
-        vehiclesAreLoading,
-        setVehiclesAreLoading,
+        currentPage,
+        setCurrentPage,
+        hasMorePages,
+        setHasMorePages,
       }}
     >
       {children}

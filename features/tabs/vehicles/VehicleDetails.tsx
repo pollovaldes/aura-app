@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { View, Image, ScrollView, RefreshControl, Text, Platform, Alert, useWindowDimensions } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -22,7 +22,7 @@ type ModalType = "change_cover_image" | null;
 
 export default function VehicleDetails() {
   const { styles } = useStyles(stylesheet);
-  const { vehicles, fetchVehicles, vehiclesAreLoading } = useVehicle();
+  const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicle();
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
   const { deleteThumbnail, selectThumbnail } = useVehicleThumbnail();
@@ -30,9 +30,26 @@ export default function VehicleDetails() {
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
   const { width } = useWindowDimensions();
+  const [vehicleIsLoading, setVehicleIsLoading] = useState(true); // Local loading state for initial fetch
 
-  if (vehiclesAreLoading) {
-    return <FetchingIndicator caption={"Cargando vehículos"} />;
+  const fetchVehicle = async () => {
+    setVehicleIsLoading(true);
+    await fetchVehicleById(vehicleId);
+    setVehicleIsLoading(false);
+  };
+
+  const refetchVehicle = async () => {
+    setVehicleIsLoading(true);
+    await refetchVehicleById(vehicleId);
+    setVehicleIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchVehicle();
+  }, []);
+
+  if (vehicleIsLoading) {
+    return <FetchingIndicator caption={"Cargando vehículo"} />;
   }
 
   if (!vehicles) {
@@ -40,7 +57,7 @@ export default function VehicleDetails() {
       <ErrorScreen
         caption="Ocurrió un error al cargar los vehículos"
         buttonCaption="Reintentar"
-        retryFunction={fetchVehicles}
+        retryFunction={fetchVehicle}
       />
     );
   }
@@ -54,7 +71,7 @@ export default function VehicleDetails() {
         <UnauthorizedScreen
           caption="No tienes acceso a este recurso."
           buttonCaption="Reintentar"
-          retryFunction={fetchVehicles}
+          retryFunction={fetchVehicle}
         />
       </>
     );
@@ -80,7 +97,7 @@ export default function VehicleDetails() {
               return;
             }
 
-            fetchVehicles();
+            fetchVehicle();
             router.back();
           },
         },
@@ -102,7 +119,7 @@ export default function VehicleDetails() {
                 onPress={() => setActiveModal("change_cover_image")}
                 show={canEditVehicle}
               />
-              <ActionButton onPress={fetchVehicles} Icon={RotateCw} text="Actualizar" show={Platform.OS === "web"} />
+              <ActionButton onPress={refetchVehicle} Icon={RotateCw} text="Actualizar" show={Platform.OS === "web"} />
             </ActionButtonGroup>
           ),
         }}
@@ -122,7 +139,7 @@ export default function VehicleDetails() {
       </Modal>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        refreshControl={<RefreshControl refreshing={vehiclesAreLoading} onRefresh={fetchVehicles} />}
+        refreshControl={<RefreshControl refreshing={vehicleIsLoading} onRefresh={refetchVehicle} />}
       >
         <View style={styles.root}>
           <View style={styles.imageWrapper(width)}>

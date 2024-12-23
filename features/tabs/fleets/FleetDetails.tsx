@@ -147,7 +147,7 @@ export default function FleetDetails() {
             <SimpleList
               relativeToDirectory
               href={`/tab/vehicle_details/${item.id}`}
-              leading={<VehicleThumbnail vehicleId={item.id} />}
+              //leading={<VehicleThumbnail vehicleId={item.id} />}
               content={
                 <>
                   <Text style={styles.vehicleTitle}>{`${item.brand} ${item.sub_brand} (${item.year})`}</Text>

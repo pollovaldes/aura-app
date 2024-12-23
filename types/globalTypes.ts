@@ -29,3 +29,9 @@ export type Route = RouteRow & {
   otherEvents: OtherEvent[];
   refuelingEvents: RefuelingEvent[];
 };
+
+export type Image = {
+  id: string;
+  blob: Blob;
+  isLoading: boolean;
+};
