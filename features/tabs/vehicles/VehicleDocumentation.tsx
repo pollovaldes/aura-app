@@ -20,7 +20,8 @@ type ModalType = "add_document" | null;
 
 export default function VehicleDocumentation() {
   const { styles } = useStyles(stylesheet);
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
   const { documents, areDocumentsLoading, fetchDocuments } = useDocuments();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
@@ -33,79 +34,27 @@ export default function VehicleDocumentation() {
     }, [])
   );
 
-  if (isProfileLoading || vehiclesAreLoading || areDocumentsLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando...",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <FetchingIndicator
-          caption={
-            isProfileLoading ? "Cargando perfil" : vehiclesAreLoading ? "Cargando vehículos" : "Cargando documentos"
-          }
-        />
-      </>
-    );
-  }
-
-  if (!profile) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar tu perfil"
-          buttonCaption="Reintentar"
-          retryFunction={fetchProfile}
-        />
-      </>
-    );
+  if (vehiclesAreLoading || areDocumentsLoading) {
+    return <FetchingIndicator caption={vehiclesAreLoading ? "Cargando vehículos" : "Cargando documentos"} />;
   }
 
   if (vehicles === null) {
     return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Recurso inaccesible",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <ErrorScreen
-          caption={`Ocurrió un error y no \npudimos cargar los vehículos`}
-          buttonCaption="Reintentar"
-          retryFunction={fetchVehicles}
-        />
-      </>
+      <ErrorScreen
+        caption={`Ocurrió un error y no \npudimos cargar los vehículos`}
+        buttonCaption="Reintentar"
+        retryFunction={fetchVehicles}
+      />
     );
   }
 
   if (documents === null) {
     return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Recurso inaccesible",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <ErrorScreen
-          caption={`Ocurrió un error y no \npudimos cargar los documentos`}
-          buttonCaption="Reintentar"
-          retryFunction={fetchDocuments}
-        />
-      </>
+      <ErrorScreen
+        caption={`Ocurrió un error y no \npudimos cargar los documentos`}
+        buttonCaption="Reintentar"
+        retryFunction={fetchDocuments}
+      />
     );
   }
 
@@ -113,20 +62,11 @@ export default function VehicleDocumentation() {
 
   if (!vehicle) {
     return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Recurso inaccesible",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-        <UnauthorizedScreen
-          caption="No tienes acceso a este recurso."
-          buttonCaption="Reintentar"
-          retryFunction={fetchVehicles}
-        />
-      </>
+      <UnauthorizedScreen
+        caption="No tienes acceso a este recurso."
+        buttonCaption="Reintentar"
+        retryFunction={fetchVehicles}
+      />
     );
   }
 
@@ -158,10 +98,9 @@ export default function VehicleDocumentation() {
       />
 
       <FlatList
-        refreshing={vehiclesAreLoading || isProfileLoading || areDocumentsLoading}
+        refreshing={vehiclesAreLoading || areDocumentsLoading}
         onRefresh={() => {
           fetchVehicles();
-          fetchProfile();
           fetchDocuments();
         }}
         contentInsetAdjustmentBehavior="automatic"

@@ -23,49 +23,24 @@ type ModalType = "change_cover_image" | null;
 export default function VehicleDetails() {
   const { styles } = useStyles(stylesheet);
   const { vehicles, fetchVehicles, vehiclesAreLoading } = useVehicle();
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
   const { deleteThumbnail, selectThumbnail } = useVehicleThumbnail();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
 
-  if (isProfileLoading || vehiclesAreLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando...",
-            headerLargeTitle: false,
-          }}
-        />
-        <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando vehículos"} />
-      </>
-    );
-  }
-
-  if (!profile) {
-    return (
-      <>
-        <Stack.Screen options={{ title: "Error", headerLargeTitle: false }} />
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar tu perfil"
-          buttonCaption="Reintentar"
-          retryFunction={fetchProfile}
-        />
-      </>
-    );
+  if (vehiclesAreLoading) {
+    return <FetchingIndicator caption={"Cargando vehículos"} />;
   }
 
   if (!vehicles) {
     return (
-      <>
-        <Stack.Screen options={{ title: "Error", headerLargeTitle: false }} />
-        <ErrorScreen
-          caption="Ocurrió un error al cargar los vehículos"
-          buttonCaption="Reintentar"
-          retryFunction={fetchVehicles}
-        />
-      </>
+      <ErrorScreen
+        caption="Ocurrió un error al cargar los vehículos"
+        buttonCaption="Reintentar"
+        retryFunction={fetchVehicles}
+      />
     );
   }
 
@@ -122,7 +97,7 @@ export default function VehicleDetails() {
           headerRight: () => (
             <ActionButtonGroup>
               <ActionButton
-                text="Editar portada"
+                text="Cambiar portada"
                 onPress={() => setActiveModal("change_cover_image")}
                 show={canEditVehicle}
               />
@@ -145,15 +120,7 @@ export default function VehicleDetails() {
       </Modal>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        refreshControl={
-          <RefreshControl
-            refreshing={vehiclesAreLoading || isProfileLoading}
-            onRefresh={() => {
-              fetchVehicles();
-              fetchProfile();
-            }}
-          />
-        }
+        refreshControl={<RefreshControl refreshing={vehiclesAreLoading} onRefresh={fetchVehicles} />}
       >
         <View style={styles.root}>
           <View style={styles.imageWrapper}>

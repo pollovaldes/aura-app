@@ -11,7 +11,8 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 export default function NotificationsList() {
   const [selectedFilter, setSelectedFilter] = useState("todo");
   const { styles } = useStyles(stylesheet);
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
 
   const FILTER_OPTIONS = [
     { key: "todo", label: "Todo" },
@@ -31,20 +32,6 @@ export default function NotificationsList() {
 
   const filteredData = selectedFilter === "todo" ? DATA : DATA.filter((item) => item.category === selectedFilter);
 
-  if (isProfileLoading) {
-    return <FetchingIndicator caption={"Cargando perfil"} />;
-  }
-
-  if (!profile) {
-    return (
-      <ErrorScreen
-        caption="Ocurrió un error al recuperar tu perfil."
-        buttonCaption="Reintentar"
-        retryFunction={fetchProfile}
-      />
-    );
-  }
-
   return (
     <>
       <Stack.Screen
@@ -54,7 +41,6 @@ export default function NotificationsList() {
       />
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
-        refreshControl={<RefreshControl refreshing={isProfileLoading} onRefresh={fetchProfile} />}
         style={styles.container}
         data={filteredData}
         keyExtractor={(item) => item.id}

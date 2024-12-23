@@ -7,7 +7,7 @@ import useProfile from "@/hooks/useProfile";
 import { useSessionContext } from "@/context/SessionContext";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
-import { Stack, useNavigation } from "expo-router";
+import { Stack } from "expo-router";
 import React from "react";
 import Toast from "react-native-toast-message";
 import * as Clipboard from "expo-clipboard";
@@ -15,7 +15,8 @@ import * as Clipboard from "expo-clipboard";
 export default function ProfileAccountAbout() {
   const { styles } = useStyles(stylesheet);
   const { session, isLoading: isSessionLoading } = useSessionContext();
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { getGuaranteedProfile, fetchProfile } = useProfile();
+  const profile = getGuaranteedProfile();
 
   const showToast = (title: string, caption: string) => {
     Toast.show({
@@ -25,56 +26,17 @@ export default function ProfileAccountAbout() {
     });
   };
 
-  if (isProfileLoading || isSessionLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando sesión"} />
-      </>
-    );
-  }
-
-  if (!profile) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar tu perfil"
-          buttonCaption="Reintentar"
-          retryFunction={fetchProfile}
-        />
-      </>
-    );
+  if (isSessionLoading) {
+    return <FetchingIndicator caption={"Cargando sesión"} />;
   }
 
   if (!session) {
     return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar tu sesión"
-          buttonCaption="Intentar cerrar sesión"
-          retryFunction={() => supabase.auth.signOut({ scope: "local" })}
-        />
-      </>
+      <ErrorScreen
+        caption="Ocurrió un error al recuperar tu sesión"
+        buttonCaption="Intentar cerrar sesión"
+        retryFunction={() => supabase.auth.signOut({ scope: "local" })}
+      />
     );
   }
 
@@ -99,7 +61,7 @@ export default function ProfileAccountAbout() {
       />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        refreshControl={<RefreshControl refreshing={isProfileLoading || isSessionLoading} onRefresh={fetchProfile} />}
+        refreshControl={<RefreshControl refreshing={isSessionLoading} onRefresh={fetchProfile} />}
       >
         <View style={styles.container}>
           <GroupedList header="Información de la cuenta">

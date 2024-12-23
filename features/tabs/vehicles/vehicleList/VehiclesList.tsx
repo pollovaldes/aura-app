@@ -15,23 +15,13 @@ import { ActionButton } from "@/components/actionButton/ActionButton";
 import { Download, Plus } from "lucide-react-native";
 
 export default function VehiclesList() {
+  const { profile } = useProfile();
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
   const { styles } = useStyles(stylesheet);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  if (isProfileLoading || vehiclesAreLoading) {
-    return <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando vehículos"} />;
-  }
-
-  if (!profile) {
-    return (
-      <ErrorScreen
-        caption="Ocurrió un error al recuperar tu perfil."
-        buttonCaption="Reintentar"
-        retryFunction={fetchProfile}
-      />
-    );
+  if (vehiclesAreLoading) {
+    return <FetchingIndicator caption={"Cargando vehículos"} />;
   }
 
   if (!vehicles) {
@@ -61,11 +51,8 @@ export default function VehiclesList() {
       />
       <AddVehicleComponent visible={isModalVisible} onClose={() => setIsModalVisible(false)} />
       <FlatList
-        refreshing={vehiclesAreLoading || isProfileLoading}
-        onRefresh={() => {
-          fetchVehicles();
-          fetchProfile();
-        }}
+        refreshing={vehiclesAreLoading}
+        onRefresh={fetchVehicles}
         contentInsetAdjustmentBehavior="automatic"
         data={vehicles}
         keyExtractor={(item) => item.id}

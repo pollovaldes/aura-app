@@ -21,20 +21,11 @@ export default function Profile() {
   };
 
   const { session, isLoading: isSessionLoading } = useSessionContext();
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { getGuaranteedProfile, isProfileLoading, fetchProfile } = useProfile();
+  const profile = getGuaranteedProfile();
 
-  if (isProfileLoading || isSessionLoading) {
-    return <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando sesión"} />;
-  }
-
-  if (!profile) {
-    return (
-      <ErrorScreen
-        caption="Ocurrió un error al recuperar tu perfil."
-        buttonCaption="Reintentar"
-        retryFunction={fetchProfile}
-      />
-    );
+  if (isSessionLoading) {
+    return <FetchingIndicator caption={"Cargando sesión"} />;
   }
 
   if (!session) {

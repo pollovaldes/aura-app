@@ -16,30 +16,12 @@ import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 export default function UserDetails() {
   const { styles } = useStyles(stylesheet);
   const { users, usersAreLoading, fetchUsers } = useUsers();
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
   const { userId } = useLocalSearchParams<{ userId: string }>();
 
-  if (isProfileLoading || usersAreLoading) {
-    return <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando usuarios"} />;
-  }
-
-  if (!profile) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar tu perfil"
-          buttonCaption="Reintentar"
-          retryFunction={fetchProfile}
-        />
-      </>
-    );
+  if (usersAreLoading) {
+    return <FetchingIndicator caption={"Cargando usuarios"} />;
   }
 
   if (!users) {
@@ -56,14 +38,11 @@ export default function UserDetails() {
 
   if (!user) {
     return (
-      <>
-        <Stack.Screen options={{ title: "Recurso inaccesible" }} />
-        <UnauthorizedScreen
-          caption="No tienes acceso a este recurso."
-          buttonCaption="Reintentar"
-          retryFunction={fetchUsers}
-        />
-      </>
+      <UnauthorizedScreen
+        caption="No tienes acceso a este recurso."
+        buttonCaption="Reintentar"
+        retryFunction={fetchUsers}
+      />
     );
   }
 
@@ -78,15 +57,7 @@ export default function UserDetails() {
       />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        refreshControl={
-          <RefreshControl
-            refreshing={isProfileLoading || usersAreLoading}
-            onRefresh={() => {
-              fetchProfile();
-              fetchUsers();
-            }}
-          />
-        }
+        refreshControl={<RefreshControl refreshing={usersAreLoading} onRefresh={fetchUsers} />}
       >
         <View style={styles.container}>
           <GroupedList>

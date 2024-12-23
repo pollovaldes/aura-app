@@ -14,10 +14,12 @@ import { useHeaderHeight } from "@react-navigation/elements";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import { useFleets } from "@/hooks/useFleets";
 import React from "react";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 
 export default function FleetDetailsEditVehicles() {
   const { styles } = useStyles(stylesheet);
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
   const { fleetId } = useLocalSearchParams<{ fleetId: string }>();
   const { areFleetsLoading, fetchFleets, fleets } = useFleets(fleetId);
   const headerHeight = useHeaderHeight();
@@ -28,90 +30,27 @@ export default function FleetDetailsEditVehicles() {
     navigation.setOptions({ presentation: "modal" });
   }, [navigation]);
 
-  if (isProfileLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-        <LoadingScreen caption="Cargando perfil" />
-      </>
-    );
-  }
-
-  if (!profile) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar tu perfil"
-          buttonCaption="Reintentar"
-          retryFunction={fetchProfile}
-        />
-      </>
-    );
-  }
-
   if (areFleetsLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-        <LoadingScreen caption="Cargando flotillas" />
-      </>
-    );
+    return <FetchingIndicator caption="Cargando flotillas" />;
   }
 
   if (!fleets) {
     return (
-      <>
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar las flotillas"
-          buttonCaption="Reintentar"
-          retryFunction={fetchFleets}
-        />
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-      </>
+      <ErrorScreen
+        caption="Ocurrió un error al recuperar las flotillas"
+        buttonCaption="Reintentar"
+        retryFunction={fetchFleets}
+      />
     );
   }
 
   if (fleets.length === 0) {
     return (
-      <>
-        <UnauthorizedScreen
-          caption="No tienes acceso a este recurso"
-          buttonCaption="Reintentar"
-          retryFunction={fetchFleets}
-        />
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-      </>
+      <UnauthorizedScreen
+        caption="No tienes acceso a este recurso"
+        buttonCaption="Reintentar"
+        retryFunction={fetchFleets}
+      />
     );
   }
 
@@ -132,11 +71,8 @@ export default function FleetDetailsEditVehicles() {
         contentInsetAdjustmentBehavior="automatic"
         data={fleet.users}
         keyExtractor={(item) => item.id}
-        refreshing={areFleetsLoading || isProfileLoading}
-        onRefresh={() => {
-          fetchFleets();
-          fetchProfile();
-        }}
+        refreshing={areFleetsLoading}
+        onRefresh={fetchFleets}
         style={{ marginBottom: 36 }}
         renderItem={({ item }) => (
           <View style={styles.container}>

@@ -16,10 +16,12 @@ import { useFleets } from "@/hooks/useFleets";
 import { SimpleList } from "@/components/simpleList/SimpleList";
 import { FormButton } from "@/components/Form/FormButton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 
 export default function FleetDetailsEditPeople() {
   const { styles } = useStyles(stylesheet);
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
   const { fleetId } = useLocalSearchParams<{ fleetId: string }>();
   const { areFleetsLoading, fetchFleets, fleets } = useFleets(fleetId);
   const { users, usersAreLoading, fetchUsers } = useUsers();
@@ -42,124 +44,37 @@ export default function FleetDetailsEditPeople() {
     navigation.setOptions({ presentation: "modal" });
   }, [navigation]);
 
-  if (isProfileLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-        <LoadingScreen caption="Cargando perfil" />
-      </>
-    );
-  }
-
-  if (areFleetsLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-        <LoadingScreen caption="Cargando flotillas" />
-      </>
-    );
-  }
-
-  if (usersAreLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-        <LoadingScreen caption="Cargando usuarios" />
-      </>
-    );
-  }
-
-  if (!profile) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar tu perfil"
-          buttonCaption="Reintentar"
-          retryFunction={fetchProfile}
-        />
-      </>
-    );
+  if (areFleetsLoading || usersAreLoading) {
+    <FetchingIndicator caption={areFleetsLoading ? "Cargando flotillas" : "Cargando usuarios"} />;
   }
 
   if (!fleets) {
     return (
-      <>
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar las flotillas"
-          buttonCaption="Reintentar"
-          retryFunction={fetchFleets}
-        />
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-      </>
+      <ErrorScreen
+        caption="Ocurrió un error al recuperar las flotillas"
+        buttonCaption="Reintentar"
+        retryFunction={fetchFleets}
+      />
     );
   }
 
   if (!users) {
     return (
-      <>
-        <ErrorScreen
-          caption={`Ocurrió un error y no \npudimos cargar los usuarios`}
-          buttonCaption="Reintentar"
-          retryFunction={fetchUsers}
-        />
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-      </>
+      <ErrorScreen
+        caption={`Ocurrió un error y no \npudimos cargar los usuarios`}
+        buttonCaption="Reintentar"
+        retryFunction={fetchUsers}
+      />
     );
   }
 
   if (fleets.length === 0) {
     return (
-      <>
-        <UnauthorizedScreen
-          caption="No tienes acceso a este recurso"
-          buttonCaption="Reintentar"
-          retryFunction={fetchFleets}
-        />
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-      </>
+      <UnauthorizedScreen
+        caption="No tienes acceso a este recurso"
+        buttonCaption="Reintentar"
+        retryFunction={fetchFleets}
+      />
     );
   }
 
@@ -184,11 +99,8 @@ export default function FleetDetailsEditPeople() {
         contentInsetAdjustmentBehavior="automatic"
         data={currentTabIndex === 0 ? fleet.users : users}
         keyExtractor={(item) => item.id}
-        refreshing={areFleetsLoading || isProfileLoading}
-        onRefresh={() => {
-          fetchFleets();
-          fetchProfile();
-        }}
+        refreshing={areFleetsLoading}
+        onRefresh={fetchFleets}
         style={{ marginBottom: 36 }}
         renderItem={({ item }) => (
           <SimpleList

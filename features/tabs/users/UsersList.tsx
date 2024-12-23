@@ -10,22 +10,13 @@ import { FlatList, Text } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function UsersList() {
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
   const { styles } = useStyles(stylesheet);
   const { users, usersAreLoading, fetchUsers } = useUsers();
 
-  if (isProfileLoading || usersAreLoading) {
-    return <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando usuarios"} />;
-  }
-
-  if (!profile) {
-    return (
-      <ErrorScreen
-        caption="Ocurrió un error al recuperar tu perfil."
-        buttonCaption="Reintentar"
-        retryFunction={fetchProfile}
-      />
-    );
+  if (usersAreLoading) {
+    return <FetchingIndicator caption={"Cargando usuarios"} />;
   }
 
   if (!users) {

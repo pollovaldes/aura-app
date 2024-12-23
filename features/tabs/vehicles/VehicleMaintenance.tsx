@@ -26,32 +26,17 @@ export default function VehicleMaintenance() {
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const { styles } = useStyles(stylesheet);
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const { maintenanceRecords, areMaintenanceRecordsLoading, fetchMaintenance } = useMaintenance(vehicleId);
 
   const closeModal = () => setActiveModal(null);
 
-  if (isProfileLoading || vehiclesAreLoading || areMaintenanceRecordsLoading) {
+  if (vehiclesAreLoading || areMaintenanceRecordsLoading) {
     return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando...",
-            headerLargeTitle: false,
-          }}
-        />
-        <FetchingIndicator caption="Cargando datos..." />
-      </>
-    );
-  }
-
-  if (!profile) {
-    return (
-      <ErrorScreen
-        caption="Ocurrió un error al recuperar tu perfil"
-        buttonCaption="Reintentar"
-        retryFunction={fetchProfile}
+      <FetchingIndicator
+        caption={vehiclesAreLoading ? "Cargando vehículos" : "Cargando solicitudes de mantenimiento"}
       />
     );
   }
@@ -200,7 +185,6 @@ export default function VehicleMaintenance() {
         refreshing={vehiclesAreLoading || areMaintenanceRecordsLoading}
         onRefresh={() => {
           fetchVehicles();
-          fetchProfile();
           fetchMaintenance();
         }}
       />

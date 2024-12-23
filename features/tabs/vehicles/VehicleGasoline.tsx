@@ -17,6 +17,7 @@ import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import PendingGasolineLoads from "@/components/GasolineDataComponentsTest/PendingGasolineLoads";
 import MonthlyGasolineChart from "@/components/GasolineDataComponentsTest/MonthlyGasolineChart";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 
 interface GasolineHistoryContentProps {
   profile: {
@@ -92,7 +93,8 @@ export default function VehicleGasoline() {
   const [refreshing, setRefreshing] = useState(false);
 
   // Custom Hooks
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
 
@@ -111,13 +113,13 @@ export default function VehicleGasoline() {
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      await Promise.all([fetchGasolineStatus(), fetchProfile(), fetchVehicles()]);
+      await Promise.all([fetchGasolineStatus(), fetchVehicles()]);
     } catch (error) {
       console.error("Error refreshing data:", error);
     } finally {
       setRefreshing(false);
     }
-  }, [fetchGasolineStatus, fetchProfile, fetchVehicles]);
+  }, [fetchGasolineStatus, fetchVehicles]);
 
   const handleModalSuccess = useCallback(() => {
     fetchGasolineStatus();
@@ -125,18 +127,9 @@ export default function VehicleGasoline() {
   }, [fetchGasolineStatus]);
 
   // Combined loading state check
-  if (vehiclesAreLoading || isProfileLoading || isGasolineStatusLoading) {
+  if (vehiclesAreLoading || isGasolineStatusLoading) {
     return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando...",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <LoadingScreen caption="Cargando datos de gasolina" />
-      </>
+      <FetchingIndicator caption={vehiclesAreLoading ? "Cargando vehículos" : "Cargando estátus de combustible"} />
     );
   }
 

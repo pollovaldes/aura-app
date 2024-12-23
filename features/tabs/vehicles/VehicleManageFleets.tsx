@@ -20,7 +20,8 @@ export default function VehicleManageFleets() {
   const [modelo, setModelo] = useState(false);
   const [noSerie, setNoSerie] = useState(false);
   const [placa, setPlaca] = useState(false);
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
 
@@ -31,44 +32,17 @@ export default function VehicleManageFleets() {
     });
   }, []);
 
-  if (isProfileLoading || vehiclesAreLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando...",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando vehículos"} />
-      </>
-    );
-  }
-
-  if (!profile) {
-    return (
-      <>
-        <Stack.Screen options={{ title: "Error", headerLargeTitle: false }} />
-        <ErrorScreen
-          caption="Ocurrió un error al cargar tu perfil"
-          buttonCaption="Reintentar"
-          retryFunction={fetchProfile}
-        />
-      </>
-    );
+  if (vehiclesAreLoading) {
+    return <FetchingIndicator caption={"Cargando vehículos"} />;
   }
 
   if (!vehicles) {
     return (
-      <>
-        <Stack.Screen options={{ title: "Error", headerLargeTitle: false }} />
-        <ErrorScreen
-          caption="Ocurrió un error al cargar los vehículos"
-          buttonCaption="Reintentar"
-          retryFunction={fetchVehicles}
-        />
-      </>
+      <ErrorScreen
+        caption="Ocurrió un error al cargar los vehículos"
+        buttonCaption="Reintentar"
+        retryFunction={fetchVehicles}
+      />
     );
   }
 
@@ -76,14 +50,11 @@ export default function VehicleManageFleets() {
 
   if (!vehicle) {
     return (
-      <>
-        <Stack.Screen options={{ title: "Recurso inaccesible" }} />
-        <UnauthorizedScreen
-          caption="No tienes acceso a este recurso."
-          buttonCaption="Reintentar"
-          retryFunction={fetchVehicles}
-        />
-      </>
+      <UnauthorizedScreen
+        caption="No tienes acceso a este recurso."
+        buttonCaption="Reintentar"
+        retryFunction={fetchVehicles}
+      />
     );
   }
 
@@ -93,15 +64,7 @@ export default function VehicleManageFleets() {
     vehicle && (
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        refreshControl={
-          <RefreshControl
-            refreshing={vehiclesAreLoading || isProfileLoading}
-            onRefresh={() => {
-              fetchVehicles();
-              fetchProfile();
-            }}
-          />
-        }
+        refreshControl={<RefreshControl refreshing={vehiclesAreLoading} onRefresh={fetchVehicles} />}
       >
         <ChangeDataModal
           isOpen={profile.role === "ADMIN" || profile.role === "OWNER" ? numEco : false}

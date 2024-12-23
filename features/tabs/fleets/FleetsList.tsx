@@ -13,28 +13,20 @@ import { Plus } from "lucide-react-native";
 import React, { useState } from "react";
 import { FlatList, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 type ModalType = "add_fleet" | null;
 
 export default function FleetsList() {
   const { styles } = useStyles(stylesheet);
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
   const { areFleetsLoading, fetchFleets, fleets } = useFleets();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
 
-  if (isProfileLoading || areFleetsLoading) {
-    return <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando flotillas"} />;
-  }
-
-  if (!profile) {
-    return (
-      <ErrorScreen
-        caption="Ocurrió un error al recuperar tu perfil."
-        buttonCaption="Reintentar"
-        retryFunction={fetchProfile}
-      />
-    );
+  if (areFleetsLoading) {
+    return <FetchingIndicator caption={"Cargando flotillas"} />;
   }
 
   if (!fleets) {
@@ -75,11 +67,8 @@ export default function FleetsList() {
         contentInsetAdjustmentBehavior="automatic"
         data={fleets}
         keyExtractor={(item) => item.id}
-        refreshing={areFleetsLoading || isProfileLoading}
-        onRefresh={() => {
-          fetchFleets();
-          fetchProfile();
-        }}
+        refreshing={areFleetsLoading}
+        onRefresh={fetchFleets}
         renderItem={({ item }) => (
           <SimpleList
             relativeToDirectory

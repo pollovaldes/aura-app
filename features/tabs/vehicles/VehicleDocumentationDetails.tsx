@@ -1,5 +1,4 @@
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import FileViewer from "@/components/fileViewer/FileViewer";
 import Modal from "@/components/Modal/Modal";
@@ -17,84 +16,32 @@ import { supabase } from "@/lib/supabase";
 import { Share } from "react-native";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 
 type ModalType = "edit_document" | null;
 
 export default function VehicleDocumentationDetails() {
   const { styles } = useStyles(stylesheet);
   const { documentId } = useLocalSearchParams<{ documentId: string }>();
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
   const { documents, areDocumentsLoading, fetchDocuments } = useDocuments();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [randomKey, setRandomKey] = useState(0); // This is a hack to force the FileViewer to re-render
   const [isSharing, setIsSharing] = useState(false);
   const closeModal = () => setActiveModal(null);
 
-  if (isProfileLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando...",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <LoadingScreen caption="Cargando perfil y permisos" />
-      </>
-    );
-  }
-
   if (areDocumentsLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando...",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <LoadingScreen caption="Cargando documentos" />
-      </>
-    );
-  }
-
-  if (!profile) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar tu perfil"
-          buttonCaption="Reintentar"
-          retryFunction={fetchProfile}
-        />
-      </>
-    );
+    return <FetchingIndicator caption="Cargando documentos" />;
   }
 
   if (documents === null) {
     return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Recurso inaccesible",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <ErrorScreen
-          caption={`Ocurrió un error y no \npudimos cargar los documentos`}
-          buttonCaption="Reintentar"
-          retryFunction={fetchDocuments}
-        />
-      </>
+      <ErrorScreen
+        caption={`Ocurrió un error y no \npudimos cargar los documentos`}
+        buttonCaption="Reintentar"
+        retryFunction={fetchDocuments}
+      />
     );
   }
 
@@ -102,20 +49,11 @@ export default function VehicleDocumentationDetails() {
 
   if (!document) {
     return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Recurso inaccesible",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-        <UnauthorizedScreen
-          caption="No tienes acceso a este recurso."
-          buttonCaption="Reintentar"
-          retryFunction={fetchDocuments}
-        />
-      </>
+      <UnauthorizedScreen
+        caption="No tienes acceso a este recurso."
+        buttonCaption="Reintentar"
+        retryFunction={fetchDocuments}
+      />
     );
   }
 

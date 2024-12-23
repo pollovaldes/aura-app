@@ -1,42 +1,35 @@
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import LoadingScreen from "@/components/dataStates/LoadingScreen";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import { useSessionContext } from "@/context/SessionContext";
 import useProfile from "@/hooks/useProfile";
 import { supabase } from "@/lib/supabase";
 import { Redirect, Tabs, usePathname } from "expo-router";
 import { Bell, Boxes, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
 import React from "react";
-import { View, useWindowDimensions } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { useWindowDimensions } from "react-native";
+import { createStyleSheet } from "react-native-unistyles";
 
 export default function HomeLayout() {
-  const { styles } = useStyles(stylesheet);
   const { width } = useWindowDimensions();
-  const { isLoading: isSessionLoading, error, session } = useSessionContext();
-  const { isProfileLoading, profile } = useProfile();
+  const { profile, isProfileLoading } = useProfile();
+  const { isLoading: isSessionLoading, session } = useSessionContext();
   const path = usePathname();
 
   if (isSessionLoading || isProfileLoading) {
-    return (
-      <View style={styles.fullscreenView}>
-        <LoadingScreen caption="Cargando sesión" />
-      </View>
-    );
+    return <FetchingIndicator caption={isSessionLoading ? "Cargando sesión" : "Cargando perfil"} />;
   }
 
   if (!session) {
     return <Redirect href="/auth" />;
   }
 
-  if (error || !profile) {
+  if (!profile) {
     return (
-      <View style={styles.fullscreenView}>
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar tu sesión o tu perfil"
-          buttonCaption="Intentar cerrar sesión"
-          retryFunction={() => supabase.auth.signOut({ scope: "local" })}
-        />
-      </View>
+      <ErrorScreen
+        caption="No pudimos recuperar tu perfil. Intenta cerrar sesión y volver a iniciarla."
+        buttonCaption="Cerrar sesión"
+        retryFunction={() => supabase.auth.signOut({ scope: "local" })}
+      />
     );
   }
 

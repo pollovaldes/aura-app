@@ -9,10 +9,10 @@ import SegmentedControl from "@react-native-segmented-control/segmented-control"
 import { useHeaderHeight } from "@react-navigation/elements";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
-import { FlatList, Platform, RefreshControl, ScrollView, Text, View } from "react-native";
+import { FlatList, RefreshControl, ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { colorPalette } from "@/style/themes";
-import { ChevronRight, CircleHelp, File, Info, MessageCirclePlus, RefreshCcw, Trash } from "lucide-react-native";
+import { CircleHelp, Info, MessageCirclePlus, RefreshCcw, Trash } from "lucide-react-native";
 import StatusChip from "@/components/General/StatusChip";
 import useMaintenanceDocuments from "@/hooks/useMaintenanceDocuments";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
@@ -21,11 +21,9 @@ import { SimpleList } from "@/components/simpleList/SimpleList";
 
 export default function VehicleMaintenanceDetails() {
   const { styles } = useStyles(stylesheet);
-
   const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
-
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
-
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
   const { maintenanceId } = useLocalSearchParams<{ maintenanceId: string }>();
 
   const { maintenanceRecords, areMaintenanceRecordsLoading, fetchMaintenance } = useMaintenance(
@@ -40,104 +38,47 @@ export default function VehicleMaintenanceDetails() {
 
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
-  if (isProfileLoading || vehiclesAreLoading || areMaintenanceRecordsLoading || areMaintenanceDocumentsLoading) {
+  if (vehiclesAreLoading || areMaintenanceRecordsLoading || areMaintenanceDocumentsLoading) {
     return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <FetchingIndicator
-          caption={
-            isProfileLoading
-              ? "Cargando perfil"
-              : vehiclesAreLoading
-                ? "Cargando vehículos"
-                : areMaintenanceRecordsLoading
-                  ? "Cargando solicitudes de mantenimiento"
-                  : "Cargando documentos"
-          }
-        />
-      </>
-    );
-  }
-
-  if (!profile) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar tu perfil"
-          buttonCaption="Reintentar"
-          retryFunction={fetchProfile}
-        />
-      </>
+      <FetchingIndicator
+        caption={
+          vehiclesAreLoading
+            ? "Cargando vehículos"
+            : areMaintenanceRecordsLoading
+              ? "Cargando solicitudes de mantenimiento"
+              : "Cargando documentos"
+        }
+      />
     );
   }
 
   if (!maintenanceRecords) {
     return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <UnauthorizedScreen
-          caption={`Ocurrió un error y no pudimos \ncargar las solicitudes de mantenimiento`}
-          buttonCaption="Reintentar"
-          retryFunction={fetchMaintenance}
-        />
-      </>
+      <UnauthorizedScreen
+        caption={`Ocurrió un error y no pudimos \ncargar las solicitudes de mantenimiento`}
+        buttonCaption="Reintentar"
+        retryFunction={fetchMaintenance}
+      />
     );
   }
 
   if (!maintenanceDocuments) {
     return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <ErrorScreen
-          caption={`Ocurrió un error y no pudimos \ncargar los documentos`}
-          buttonCaption="Reintentar"
-          retryFunction={fetchMaintenanceDocuments}
-        />
-      </>
+      <ErrorScreen
+        caption={`Ocurrió un error y no pudimos \ncargar los documentos`}
+        buttonCaption="Reintentar"
+        retryFunction={fetchMaintenanceDocuments}
+      />
     );
   }
 
   if (vehicles === null) {
     return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Recurso inaccesible",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <ErrorScreen
-          caption={`Ocurrió un error y no \npudimos cargar los vehículos`}
-          buttonCaption="Reintentar"
-          retryFunction={fetchVehicles}
-        />
-      </>
+      <ErrorScreen
+        caption={`Ocurrió un error y no \npudimos cargar los vehículos`}
+        buttonCaption="Reintentar"
+        retryFunction={fetchVehicles}
+      />
     );
   }
 
@@ -219,12 +160,9 @@ export default function VehicleMaintenanceDetails() {
           contentInsetAdjustmentBehavior="automatic"
           refreshControl={
             <RefreshControl
-              refreshing={
-                vehiclesAreLoading || areMaintenanceRecordsLoading || isProfileLoading || areMaintenanceDocumentsLoading
-              }
+              refreshing={vehiclesAreLoading || areMaintenanceRecordsLoading || areMaintenanceDocumentsLoading}
               onRefresh={() => {
                 fetchVehicles();
-                fetchProfile();
                 fetchMaintenance();
                 fetchMaintenanceDocuments();
               }}
@@ -315,11 +253,8 @@ export default function VehicleMaintenanceDetails() {
 
       {currentTabIndex === 1 && (
         <FlatList
-          refreshing={vehiclesAreLoading || isProfileLoading}
-          onRefresh={() => {
-            fetchVehicles();
-            fetchProfile();
-          }}
+          refreshing={vehiclesAreLoading}
+          onRefresh={fetchVehicles}
           contentInsetAdjustmentBehavior="automatic"
           data={maintenanceDocuments}
           keyExtractor={(item) => item.document_id}
@@ -347,12 +282,9 @@ export default function VehicleMaintenanceDetails() {
           contentInsetAdjustmentBehavior="automatic"
           refreshControl={
             <RefreshControl
-              refreshing={
-                vehiclesAreLoading || areMaintenanceRecordsLoading || isProfileLoading || areMaintenanceDocumentsLoading
-              }
+              refreshing={vehiclesAreLoading || areMaintenanceRecordsLoading || areMaintenanceDocumentsLoading}
               onRefresh={() => {
                 fetchVehicles();
-                fetchProfile();
                 fetchMaintenance();
                 fetchMaintenanceDocuments();
               }}

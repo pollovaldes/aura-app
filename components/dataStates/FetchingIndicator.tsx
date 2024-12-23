@@ -17,7 +17,7 @@ export function FetchingIndicator({ caption }: LoadingScreenType) {
       <Stack.Screen
         options={{
           headerRight: undefined,
-          title: "Cargando...",
+          title: "",
         }}
       />
       <View style={[styles.container, { paddingTop: Platform.OS === "ios" ? headerHeight : 0 }]}>

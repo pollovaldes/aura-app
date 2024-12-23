@@ -1,8 +1,6 @@
-import { RefreshControl, ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import useProfile from "@/hooks/useProfile";
-import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import { Stack, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import Row from "@/components/grouped-list/Row";
@@ -15,47 +13,14 @@ import { ChipSelecto } from "@/components/radioButton/ChipSelecto";
 
 export default function ProfileRoleChange() {
   const { styles } = useStyles(stylesheet);
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
   const navigation = useNavigation();
   const [selectedOption, setSelectedOption] = useState("NONE");
 
   useEffect(() => {
     navigation.setOptions({ presentation: "modal" });
   }, [navigation]);
-
-  if (isProfileLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando sesión"} />
-      </>
-    );
-  }
-
-  if (!profile) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar tu perfil"
-          buttonCaption="Reintentar"
-          retryFunction={fetchProfile}
-        />
-      </>
-    );
-  }
 
   const getRoleLabel = (role: string) => {
     switch (role) {
@@ -96,11 +61,7 @@ export default function ProfileRoleChange() {
           headerRight: undefined,
         }}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        automaticallyAdjustKeyboardInsets={true}
-        refreshControl={<RefreshControl refreshing={isProfileLoading} onRefresh={fetchProfile} />}
-      >
+      <ScrollView contentInsetAdjustmentBehavior="automatic" automaticallyAdjustKeyboardInsets={true}>
         <View style={styles.container}>
           <View style={styles.dateContainer}>
             <Text style={styles.text}>Solicitud en progreso</Text>

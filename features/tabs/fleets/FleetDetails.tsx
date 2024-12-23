@@ -13,66 +13,28 @@ import { Profile, Vehicle } from "@/types/globalTypes";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
-import { FlatList, Text, View } from "react-native";
+import { FlatList, Text } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export default function FleetDetails() {
   const { styles } = useStyles(stylesheet);
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
   const { fleetId } = useLocalSearchParams<{ fleetId: string }>();
   const { areFleetsLoading, fetchFleets, fleets } = useFleets(fleetId);
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
-  if (isProfileLoading || areFleetsLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando...",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-        <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando flotillas"} />
-      </>
-    );
-  }
-
-  if (!profile) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar tu perfil"
-          buttonCaption="Reintentar"
-          retryFunction={fetchProfile}
-        />
-      </>
-    );
+  if (areFleetsLoading) {
+    return <FetchingIndicator caption={"Cargando flotillas"} />;
   }
 
   if (!fleets) {
     return (
-      <>
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar las flotillas"
-          buttonCaption="Reintentar"
-          retryFunction={fetchFleets}
-        />
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-      </>
+      <ErrorScreen
+        caption="Ocurrió un error al recuperar las flotillas"
+        buttonCaption="Reintentar"
+        retryFunction={fetchFleets}
+      />
     );
   }
 
@@ -155,11 +117,8 @@ export default function FleetDetails() {
         contentInsetAdjustmentBehavior="automatic"
         data={currentTabIndex === 0 ? (fleet.users as Profile[]) : (fleet.vehicles as Vehicle[])}
         keyExtractor={(item) => item.id}
-        refreshing={areFleetsLoading || isProfileLoading}
-        onRefresh={() => {
-          fetchFleets();
-          fetchProfile();
-        }}
+        refreshing={areFleetsLoading}
+        onRefresh={fetchFleets}
         ListHeaderComponent={
           <SegmentedControl
             values={["Personas", "Vehículos"]}

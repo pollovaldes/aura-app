@@ -16,93 +16,34 @@ import { supabase } from "@/lib/supabase";
 import { Share } from "react-native";
 import useMaintenanceDocuments from "@/hooks/useMaintenanceDocuments";
 import EditMaintenanceDocument from "@/components/vehicles/modals/EditMaintenanceDocument";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 
 type ModalType = "edit_document" | null;
 
 export default function VehicleDocumentationDetailsDocuments() {
   const { styles } = useStyles(stylesheet);
-
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
-
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
-
   const [randomKey, setRandomKey] = useState(0); // This is a hack to force the FileViewer to re-render
-
   const [isSharing, setIsSharing] = useState(false);
-
   const { documentId } = useLocalSearchParams<{
     documentId: string;
   }>();
-
   const { areMaintenanceDocumentsLoading, fetchMaintenanceDocuments, maintenanceDocuments } = useMaintenanceDocuments();
-
   const closeModal = () => setActiveModal(null);
 
-  if (isProfileLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando...",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <LoadingScreen caption="Cargando perfil y permisos" />
-      </>
-    );
-  }
-
   if (areMaintenanceDocumentsLoading) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Cargando...",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <LoadingScreen caption="Cargando documentos" />
-      </>
-    );
-  }
-
-  if (!profile) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <ErrorScreen
-          caption="Ocurrió un error al recuperar tu perfil"
-          buttonCaption="Reintentar"
-          retryFunction={fetchProfile}
-        />
-      </>
-    );
+    return <FetchingIndicator caption="Cargando documentos de mantenimiento" />;
   }
 
   if (maintenanceDocuments === null) {
     return (
-      <>
-        <Stack.Screen
-          options={{
-            title: "Recurso inaccesible",
-            headerLargeTitle: false,
-            headerRight: undefined,
-          }}
-        />
-        <ErrorScreen
-          caption={`Ocurrió un error y no \npudimos cargar los documentos`}
-          buttonCaption="Reintentar"
-          retryFunction={fetchMaintenanceDocuments}
-        />
-      </>
+      <ErrorScreen
+        caption={`Ocurrió un error y no \npudimos cargar los documentos`}
+        buttonCaption="Reintentar"
+        retryFunction={fetchMaintenanceDocuments}
+      />
     );
   }
 
