@@ -1,9 +1,9 @@
 import { ActionButton } from "@/components/actionButton/ActionButton";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { Link, router, Stack } from "expo-router";
-import { Plus } from "lucide-react-native";
+import { Plus, RotateCw } from "lucide-react-native";
 import React from "react";
-import { Button, View } from "react-native";
+import { Button, Platform, View } from "react-native";
 
 export default function VehichleRoutesList() {
   return (
@@ -13,6 +13,7 @@ export default function VehichleRoutesList() {
           headerRight: () => (
             <ActionButtonGroup>
               <ActionButton Icon={Plus} text="Nueva ruta" onPress={() => router.push("/tab/route_wizard")} />
+              <ActionButton onPress={() => {}} Icon={RotateCw} text="Actualizar" show={Platform.OS === "web"} />
             </ActionButtonGroup>
           ),
         }}

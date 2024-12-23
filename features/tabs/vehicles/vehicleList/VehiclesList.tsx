@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlatList, Text } from "react-native";
+import { FlatList, Platform, Text } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
@@ -12,7 +12,7 @@ import { SimpleList } from "@/components/simpleList/SimpleList";
 import { Stack } from "expo-router";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
-import { Download, Plus } from "lucide-react-native";
+import { Download, Plus, RotateCcw, RotateCw } from "lucide-react-native";
 
 export default function VehiclesList() {
   const { profile } = useProfile();
@@ -50,6 +50,7 @@ export default function VehiclesList() {
                 text="Agregar vehículo"
                 show={isAdminOrOwner}
               />
+              <ActionButton onPress={fetchVehicles} Icon={RotateCw} text="Actualizar" show={Platform.OS === "web"} />
             </ActionButtonGroup>
           ),
         }}

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { View, Image, ScrollView, RefreshControl, Text, Platform, Alert } from "react-native";
+import { View, Image, ScrollView, RefreshControl, Text, Platform, Alert, useWindowDimensions } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
-import { BookOpen, Boxes, Clipboard, Fuel, Images, Trash, Waypoints, Wrench } from "lucide-react-native";
+import { BookOpen, Boxes, Clipboard, Fuel, Images, RotateCw, Trash, Waypoints, Wrench } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import useVehicle from "@/hooks/truckHooks/useVehicle";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
@@ -29,6 +29,7 @@ export default function VehicleDetails() {
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
+  const { width } = useWindowDimensions();
 
   if (vehiclesAreLoading) {
     return <FetchingIndicator caption={"Cargando vehículos"} />;
@@ -101,6 +102,7 @@ export default function VehicleDetails() {
                 onPress={() => setActiveModal("change_cover_image")}
                 show={canEditVehicle}
               />
+              <ActionButton onPress={fetchVehicles} Icon={RotateCw} text="Actualizar" show={Platform.OS === "web"} />
             </ActionButtonGroup>
           ),
         }}
@@ -123,7 +125,7 @@ export default function VehicleDetails() {
         refreshControl={<RefreshControl refreshing={vehiclesAreLoading} onRefresh={fetchVehicles} />}
       >
         <View style={styles.root}>
-          <View style={styles.imageWrapper}>
+          <View style={styles.imageWrapper(width)}>
             {vehicle.thumbnail ? (
               <Image source={{ uri: vehicle.thumbnail }} style={styles.image} />
             ) : (
@@ -208,13 +210,14 @@ const stylesheet = createStyleSheet((theme) => ({
     gap: theme.marginsComponents.section,
     marginTop: theme.marginsComponents.section,
   },
-  imageWrapper: {
+  imageWrapper: (width: number) => ({
     position: "relative",
     aspectRatio: 16 / 9,
     width: "100%",
-    maxWidth: Platform.OS === "web" ? 800 : "100%",
+    maxWidth: Platform.OS === "web" && width >= 750 ? 600 : "100%",
+    marginTop: Platform.OS === "web" && width >= 750 ? 24 : 0,
     alignSelf: "center",
-  },
+  }),
   image: {
     width: "100%",
     height: "100%",

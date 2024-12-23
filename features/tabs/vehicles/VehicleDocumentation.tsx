@@ -11,9 +11,9 @@ import useVehicle from "@/hooks/truckHooks/useVehicle";
 import useDocuments from "@/hooks/useDocuments";
 import useProfile from "@/hooks/useProfile";
 import { Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { Plus } from "lucide-react-native";
+import { Plus, RotateCw } from "lucide-react-native";
 import React, { useCallback, useState } from "react";
-import { FlatList, Text, View } from "react-native";
+import { FlatList, Platform, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 type ModalType = "add_document" | null;
@@ -97,6 +97,7 @@ export default function VehicleDocumentation() {
                 show={canEdit}
                 text="Agregar documento"
               />
+              <ActionButton onPress={fetchVehicles} Icon={RotateCw} text="Actualizar" show={Platform.OS === "web"} />
             </ActionButtonGroup>
           ),
         }}

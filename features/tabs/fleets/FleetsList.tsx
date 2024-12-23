@@ -9,9 +9,9 @@ import { SimpleList } from "@/components/simpleList/SimpleList";
 import { useFleets } from "@/hooks/useFleets";
 import useProfile from "@/hooks/useProfile";
 import { Stack } from "expo-router";
-import { Plus } from "lucide-react-native";
+import { Plus, RotateCw } from "lucide-react-native";
 import React, { useState } from "react";
-import { FlatList, Text, View } from "react-native";
+import { FlatList, Platform, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
@@ -63,6 +63,7 @@ export default function FleetsList() {
                 show={canAddFleet}
                 text="Crear flotilla"
               />
+              <ActionButton onPress={fetchFleets} Icon={RotateCw} text="Actualizar" show={Platform.OS === "web"} />
             </ActionButtonGroup>
           ),
         }}

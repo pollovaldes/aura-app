@@ -12,8 +12,8 @@ import useProfile from "@/hooks/useProfile";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { Plus } from "lucide-react-native";
-import { FlatList, Text, View } from "react-native";
+import { Plus, RotateCw } from "lucide-react-native";
+import { FlatList, Platform, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
@@ -144,6 +144,15 @@ export default function VehicleMaintenance() {
                 text="Nueva solicitud"
                 onPress={() => setActiveModal("create_maintenance_record")}
                 show={canEdit}
+              />
+              <ActionButton
+                onPress={() => {
+                  fetchMaintenance();
+                  fetchVehicles();
+                }}
+                Icon={RotateCw}
+                text="Actualizar"
+                show={Platform.OS === "web"}
               />
             </ActionButtonGroup>
           ),
