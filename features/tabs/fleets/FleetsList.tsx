@@ -57,7 +57,12 @@ export default function FleetsList() {
           title: "Flotillas",
           headerRight: () => (
             <ActionButtonGroup>
-              <ActionButton onPress={() => setActiveModal("add_fleet")} Icon={Plus} show={canAddFleet} />
+              <ActionButton
+                onPress={() => setActiveModal("add_fleet")}
+                Icon={Plus}
+                show={canAddFleet}
+                text="Crear flotilla"
+              />
             </ActionButtonGroup>
           ),
         }}

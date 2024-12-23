@@ -6,7 +6,7 @@ import EditDocument from "@/components/vehicles/modals/EditDocument";
 import useDocuments from "@/hooks/useDocuments";
 import useProfile from "@/hooks/useProfile";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { RotateCw, Share as ShareIcon } from "lucide-react-native";
+import { Pencil, RotateCw, Share as ShareIcon } from "lucide-react-native";
 import React from "react";
 import { useState } from "react";
 import { View, Text, ActivityIndicator, Platform } from "react-native";
@@ -162,10 +162,15 @@ export default function VehicleDocumentationDetails() {
           headerLargeTitle: false,
           headerRight: () => (
             <ActionButtonGroup>
-              <ActionButton show={!isSharing} onPress={shareDocument} Icon={ShareIcon} />
+              <ActionButton show={!isSharing} onPress={shareDocument} Icon={ShareIcon} text="Compartir" />
               {isSharing && <ActivityIndicator />}
-              <ActionButton onPress={() => setRandomKey(Math.random())} Icon={RotateCw} />
-              <ActionButton show={canEdit} onPress={() => setActiveModal("edit_document")} text="Editar" />
+              <ActionButton onPress={() => setRandomKey(Math.random())} Icon={RotateCw} text="Actualizar" />
+              <ActionButton
+                show={canEdit}
+                onPress={() => setActiveModal("edit_document")}
+                text="Editar"
+                Icon={Pencil}
+              />
             </ActionButtonGroup>
           ),
         }}

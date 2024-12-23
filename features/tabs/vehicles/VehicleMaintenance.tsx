@@ -139,7 +139,12 @@ export default function VehicleMaintenance() {
           headerLargeTitle: false,
           headerRight: () => (
             <ActionButtonGroup>
-              <ActionButton Icon={Plus} onPress={() => setActiveModal("create_maintenance_record")} show={canEdit} />
+              <ActionButton
+                Icon={Plus}
+                text="Nueva solicitud"
+                onPress={() => setActiveModal("create_maintenance_record")}
+                show={canEdit}
+              />
             </ActionButtonGroup>
           ),
         }}

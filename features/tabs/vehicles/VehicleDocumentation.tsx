@@ -91,7 +91,12 @@ export default function VehicleDocumentation() {
           headerLargeTitle: false,
           headerRight: () => (
             <ActionButtonGroup>
-              <ActionButton Icon={Plus} onPress={() => setActiveModal("add_document")} show={canEdit} />
+              <ActionButton
+                Icon={Plus}
+                onPress={() => setActiveModal("add_document")}
+                show={canEdit}
+                text="Agregar documento"
+              />
             </ActionButtonGroup>
           ),
         }}

@@ -12,7 +12,7 @@ export default function VehichleRoutesList() {
         options={{
           headerRight: () => (
             <ActionButtonGroup>
-              <ActionButton Icon={Plus} onPress={() => router.push("/tab/route_wizard")} />
+              <ActionButton Icon={Plus} text="Nueva ruta" onPress={() => router.push("/tab/route_wizard")} />
             </ActionButtonGroup>
           ),
         }}
