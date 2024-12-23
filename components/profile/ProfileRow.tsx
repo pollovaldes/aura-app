@@ -1,9 +1,9 @@
 import { Text, View } from "react-native";
 import UserThumbnail from "../people/UserThumbnail";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { User } from "@/types/User";
 import React from "react";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
+import { User } from "@/types/globalTypes";
 
 type ProfileRowProps = {
   profile: User;
@@ -22,9 +22,7 @@ export default function ProfileRow({ profile }: ProfileRowProps) {
         <UserThumbnail userId={profile.id} size={80} />
       </View>
       <View style={styles.descriptionContainer}>
-        <Text style={styles.name}>
-          {`${profile.name}\n${profile.father_last_name} ${profile.mother_last_name}`}
-        </Text>
+        <Text style={styles.name}>{`${profile.name}\n${profile.father_last_name} ${profile.mother_last_name}`}</Text>
       </View>
     </View>
   );

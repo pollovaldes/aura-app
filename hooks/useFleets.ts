@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import { Fleet, Profile, Vehicle } from "@/types/globalTypes";
+import { Fleet, User, Vehicle } from "@/types/globalTypes";
 import { useEffect, useState } from "react";
 
 export function useFleets(fleetId?: string) {
@@ -43,7 +43,7 @@ export function useFleets(fleetId?: string) {
     const normalizedFleets: Fleet[] = data.map((fleet) => {
       const users = (fleet.fleets_users || [])
         .map((relation) => relation.profiles)
-        .filter((profile): profile is Profile => profile !== null);
+        .filter((profile): profile is User => profile !== null);
       const vehicles = (fleet.fleets_vehicles || [])
         .map((relation) => relation.vehicles)
         .filter((vehicle): vehicle is Vehicle => vehicle !== null);

@@ -2,22 +2,19 @@ import { UserRound } from "lucide-react-native";
 import { ActivityIndicator, Image, View } from "react-native";
 import { useStyles, createStyleSheet } from "react-native-unistyles";
 import { useEffect, useState } from "react";
-import { User } from "@/types/User";
 import useUsers from "@/hooks/peopleHooks/useUsers";
 import useUserThumbnail from "@/hooks/peopleHooks/useUserThumbnail";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import React from "react";
+import { User } from "@/types/globalTypes";
 
 type UserThumbnailProps = {
   userId: string;
   size?: number;
 };
 
-export default function UserThumbnail({
-  userId,
-  size = 60,
-}: UserThumbnailProps) {
+export default function UserThumbnail({ userId, size = 60 }: UserThumbnailProps) {
   const { styles } = useStyles(stylesheet);
   const { users, setUsers, usersAreLoading, fetchUsers } = useUsers();
   const { fetchThumbnail } = useUserThumbnail();
@@ -45,9 +42,7 @@ export default function UserThumbnail({
         if (thumbnail) {
           setUsers(
             (prevUsers: User[] | null) =>
-              prevUsers?.map((user) =>
-                user.id === userId ? { ...user, thumbnail } : user,
-              ) || null,
+              prevUsers?.map((user) => (user.id === userId ? { ...user, thumbnail } : user)) || null
           );
         }
       } catch (e) {
@@ -65,37 +60,20 @@ export default function UserThumbnail({
   }
 
   if (!users || error) {
-    return (
-      <ErrorScreen
-        caption="Error al cargar la imagen"
-        buttonCaption="Reintentar"
-        retryFunction={fetchUsers}
-      />
-    );
+    return <ErrorScreen caption="Error al cargar la imagen" buttonCaption="Reintentar" retryFunction={fetchUsers} />;
   }
 
   return (
     <>
       {thumbnailIsLoading ? (
-        <View
-          style={[styles.emptyImageContainer, { width: size, height: size }]}
-        >
+        <View style={[styles.emptyImageContainer, { width: size, height: size }]}>
           <ActivityIndicator />
         </View>
       ) : item && item.thumbnail ? (
-        <Image
-          style={[styles.image, { width: size, height: size }]}
-          source={{ uri: item.thumbnail }}
-        />
+        <Image style={[styles.image, { width: size, height: size }]} source={{ uri: item.thumbnail }} />
       ) : (
-        <View
-          style={[styles.emptyImageContainer, { width: size, height: size }]}
-        >
-          <UserRound
-            size={size * 0.4375}
-            color={styles.noImageIcon.color}
-            strokeWidth={1.25}
-          />
+        <View style={[styles.emptyImageContainer, { width: size, height: size }]}>
+          <UserRound size={size * 0.4375} color={styles.noImageIcon.color} strokeWidth={1.25} />
         </View>
       )}
     </>

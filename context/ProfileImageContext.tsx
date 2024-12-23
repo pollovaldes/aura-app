@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  ReactNode,
-} from "react";
+import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { supabase } from "@/lib/supabase";
 import * as ImagePicker from "expo-image-picker";
 import { decode } from "base64-arraybuffer";
@@ -17,16 +11,12 @@ interface ProfileImageContextProps {
   deleteProfileImage: () => Promise<void>;
 }
 
-const ProfileImageContext = createContext<ProfileImageContextProps | undefined>(
-  undefined,
-);
+const ProfileImageContext = createContext<ProfileImageContextProps | undefined>(undefined);
 
 export const useProfileImage = (): ProfileImageContextProps => {
   const context = useContext(ProfileImageContext);
   if (!context) {
-    throw new Error(
-      "useProfileImage must be used within a ProfileImageProvider",
-    );
+    throw new Error("useProfileImage must be used within a ProfileImageProvider");
   }
   return context;
 };
@@ -43,14 +33,12 @@ export function ProfileImageProvider({ children }: ProfileImageProviderProps) {
   useEffect(() => {
     if (!session) return;
     loadProfileImage();
-  }, [session?.user]);
+  }, []);
 
   const loadProfileImage = async () => {
     setLoading(true);
     try {
-      const { data } = await supabase.storage
-        .from("avatars")
-        .list(session?.user?.id);
+      const { data } = await supabase.storage.from("avatars").list(session?.user?.id);
       if (data && data.length > 0) {
         const file = data[0];
         const { data: imageData, error } = await supabase.storage
@@ -93,16 +81,10 @@ export function ProfileImageProvider({ children }: ProfileImageProviderProps) {
         const filePath = `${session?.user?.id}/${new Date().getTime()}.png`;
 
         // Delete the old image if it exists
-        const { data: existingFiles } = await supabase.storage
-          .from("avatars")
-          .list(session?.user?.id);
+        const { data: existingFiles } = await supabase.storage.from("avatars").list(session?.user?.id);
         if (existingFiles && existingFiles.length > 0) {
-          const deletePaths = existingFiles.map(
-            (file) => `${session?.user?.id}/${file.name}`,
-          );
-          const { error: deleteError } = await supabase.storage
-            .from("avatars")
-            .remove(deletePaths);
+          const deletePaths = existingFiles.map((file) => `${session?.user?.id}/${file.name}`);
+          const { error: deleteError } = await supabase.storage.from("avatars").remove(deletePaths);
           if (deleteError) {
             console.error("Error deleting the old image:", deleteError.message);
             return;
@@ -131,16 +113,10 @@ export function ProfileImageProvider({ children }: ProfileImageProviderProps) {
     if (!session) return;
     setLoading(true);
     try {
-      const { data: existingFiles } = await supabase.storage
-        .from("avatars")
-        .list(session.user.id);
+      const { data: existingFiles } = await supabase.storage.from("avatars").list(session.user.id);
       if (existingFiles && existingFiles.length > 0) {
-        const deletePaths = existingFiles.map(
-          (file) => `${session.user.id}/${file.name}`,
-        );
-        const { error: deleteError } = await supabase.storage
-          .from("avatars")
-          .remove(deletePaths);
+        const deletePaths = existingFiles.map((file) => `${session.user.id}/${file.name}`);
+        const { error: deleteError } = await supabase.storage.from("avatars").remove(deletePaths);
         if (deleteError) {
           console.error("Error deleting the image:", deleteError.message);
         } else {
@@ -155,9 +131,7 @@ export function ProfileImageProvider({ children }: ProfileImageProviderProps) {
   };
 
   return (
-    <ProfileImageContext.Provider
-      value={{ imageUri, loading, onSelectImage, deleteProfileImage }}
-    >
+    <ProfileImageContext.Provider value={{ imageUri, loading, onSelectImage, deleteProfileImage }}>
       {children}
     </ProfileImageContext.Provider>
   );

@@ -1,16 +1,16 @@
-import { Profile } from "@/types/globalTypes";
+import { User } from "@/types/globalTypes";
 import { createContext, ReactNode, useState, Dispatch, SetStateAction } from "react";
 
 interface UsersContextType {
-  users: Profile[] | null;
-  setUsers: Dispatch<SetStateAction<Profile[] | null>>;
+  users: User[] | null;
+  setUsers: Dispatch<SetStateAction<User[] | null>>;
   usersAreLoading: boolean;
   setUsersAreLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 const UsersContext = createContext<UsersContextType>({
   users: null,
-  setUsers: (() => {}) as Dispatch<SetStateAction<Profile[] | null>>,
+  setUsers: (() => {}) as Dispatch<SetStateAction<User[] | null>>,
   usersAreLoading: true,
   setUsersAreLoading: (() => {}) as Dispatch<SetStateAction<boolean>>,
 });
@@ -20,7 +20,7 @@ interface UsersContextProviderProps {
 }
 
 export function UsersContextProvider({ children }: UsersContextProviderProps) {
-  const [users, setUsers] = useState<Profile[] | null>(null);
+  const [users, setUsers] = useState<User[] | null>(null);
   const [usersAreLoading, setUsersAreLoading] = useState<boolean>(true);
 
   return (

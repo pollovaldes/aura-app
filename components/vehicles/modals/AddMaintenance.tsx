@@ -14,13 +14,13 @@ import * as FileSystem from "expo-file-system";
 import * as Crypto from "expo-crypto";
 import { decode } from "base64-arraybuffer";
 import { router } from "expo-router";
-import { Profile, Vehicle } from "@/types/globalTypes";
+import { User, Vehicle } from "@/types/globalTypes";
 
 interface addMaintenanceModalProps {
   closeModal: () => void;
   fetchMaintenance: () => void;
   vehicle: Vehicle;
-  profile: Profile;
+  profile: User;
 }
 
 interface FileItem {

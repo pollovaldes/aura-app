@@ -97,7 +97,15 @@ export default function VehicleDocumentation() {
                 show={canEdit}
                 text="Agregar documento"
               />
-              <ActionButton onPress={fetchVehicles} Icon={RotateCw} text="Actualizar" show={Platform.OS === "web"} />
+              <ActionButton
+                onPress={() => {
+                  fetchDocuments();
+                  fetchVehicles();
+                }}
+                Icon={RotateCw}
+                text="Actualizar"
+                show={Platform.OS === "web"}
+              />
             </ActionButtonGroup>
           ),
         }}

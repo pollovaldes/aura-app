@@ -9,7 +9,7 @@ import { SimpleList } from "@/components/simpleList/SimpleList";
 import VehicleThumbnail from "@/components/vehicles/TruckThumbnail";
 import { useFleets } from "@/hooks/useFleets";
 import useProfile from "@/hooks/useProfile";
-import { Profile, Vehicle } from "@/types/globalTypes";
+import { User, Vehicle } from "@/types/globalTypes";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
@@ -115,7 +115,7 @@ export default function FleetDetails() {
       />
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
-        data={currentTabIndex === 0 ? (fleet.users as Profile[]) : (fleet.vehicles as Vehicle[])}
+        data={currentTabIndex === 0 ? (fleet.users as User[]) : (fleet.vehicles as Vehicle[])}
         keyExtractor={(item) => item.id}
         refreshing={areFleetsLoading}
         onRefresh={fetchFleets}
