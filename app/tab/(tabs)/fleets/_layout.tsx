@@ -14,8 +14,6 @@ export default function Layout() {
         headerBlurEffect: "regular",
         headerTransparent: Platform.OS === "ios" ? true : false,
       }}
-    >
-      <Stack.Screen name="index" options={{ title: "Flotillas" }} />
-    </Stack>
+    />
   );
 }

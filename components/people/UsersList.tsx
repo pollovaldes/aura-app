@@ -4,7 +4,6 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { ChevronRight } from "lucide-react-native";
-import { useSearch } from "@/context/SearchContext";
 import React from "react";
 import useProfile from "@/hooks/useProfile";
 import LoadingScreen from "../dataStates/LoadingScreen";
@@ -15,8 +14,6 @@ import UserThumbnail from "./UserThumbnail";
 export default function UsersList() {
   const { profile, isProfileLoading, fetchProfile } = useProfile();
   const { styles } = useStyles(stylesheet);
-  const { searchState, setSearchQuery } = useSearch();
-  const searchQuery = searchState["users"] || "";
   const { users, usersAreLoading, fetchUsers } = useUsers();
   const [filteredUsers, setFilteredUsers] = useState(users);
 
@@ -28,19 +25,6 @@ export default function UsersList() {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   };
-
-  useEffect(() => {
-    if (searchQuery && users) {
-      const filtered = users.filter((user) =>
-        `${user.name} ${user.father_last_name} ${user.mother_last_name}`
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase())
-      );
-      setFilteredUsers(filtered);
-    } else {
-      setFilteredUsers(users);
-    }
-  }, [searchQuery, users]);
 
   if (usersAreLoading) {
     return <LoadingScreen caption="Cargando usuarios" />;

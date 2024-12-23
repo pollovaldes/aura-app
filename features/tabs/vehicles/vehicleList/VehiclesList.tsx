@@ -27,7 +27,7 @@ export default function VehiclesList() {
   if (!profile) {
     return (
       <ErrorScreen
-        caption="Ocurrió un error al recuperar tu perfil"
+        caption="Ocurrió un error al recuperar tu perfil."
         buttonCaption="Reintentar"
         retryFunction={fetchProfile}
       />
@@ -37,7 +37,7 @@ export default function VehiclesList() {
   if (!vehicles) {
     return (
       <ErrorScreen
-        caption="Ocurrió un error al recuperar los vehículos"
+        caption="Ocurrió un error al recuperar los vehículos."
         buttonCaption="Reintentar"
         retryFunction={fetchVehicles}
       />
@@ -59,9 +59,13 @@ export default function VehiclesList() {
           ),
         }}
       />
+      <AddVehicleComponent visible={isModalVisible} onClose={() => setIsModalVisible(false)} />
       <FlatList
-        refreshing={vehiclesAreLoading}
-        onRefresh={fetchVehicles}
+        refreshing={vehiclesAreLoading || isProfileLoading}
+        onRefresh={() => {
+          fetchVehicles();
+          fetchProfile();
+        }}
         contentInsetAdjustmentBehavior="automatic"
         data={vehicles}
         keyExtractor={(item) => item.id}
@@ -80,9 +84,8 @@ export default function VehiclesList() {
             }
           />
         )}
-        ListEmptyComponent={<EmptyScreen caption="Ningún vehículo por aquí" />}
+        ListEmptyComponent={<EmptyScreen caption="Ningún vehículo por aquí." />}
       />
-      <AddVehicleComponent visible={isModalVisible} onClose={() => setIsModalVisible(false)} />
     </>
   );
 }
