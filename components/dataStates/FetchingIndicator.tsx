@@ -1,4 +1,6 @@
 import { useHeaderHeight } from "@react-navigation/elements";
+import { Stack } from "expo-router";
+import React from "react";
 import { ActivityIndicator, Platform, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
@@ -11,10 +13,18 @@ export function FetchingIndicator({ caption }: LoadingScreenType) {
   const headerHeight = useHeaderHeight();
 
   return (
-    <View style={[styles.container, { paddingTop: Platform.OS === "ios" ? headerHeight : 0 }]}>
-      <ActivityIndicator />
-      <Text style={styles.text}>{caption}</Text>
-    </View>
+    <>
+      <Stack.Screen
+        options={{
+          headerRight: undefined,
+          title: "Cargando... desde FetchingIndicator",
+        }}
+      />
+      <View style={[styles.container, { paddingTop: Platform.OS === "ios" ? headerHeight : 0 }]}>
+        <ActivityIndicator />
+        <Text style={styles.text}>{caption}</Text>
+      </View>
+    </>
   );
 }
 

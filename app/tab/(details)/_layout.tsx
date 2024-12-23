@@ -7,16 +7,7 @@ export default function Layout() {
     <Stack>
       <Stack.Screen name="vehicle_details/[vehicleId]/index" />
       <Stack.Screen name="user_details/[userId]/index" />
-      <Stack.Screen
-        name="route_wizard/index"
-        options={{
-          headerRight: () => (
-            <ActionButtonGroup>
-              <ActionButton text="Cerrar" onPress={() => router.back()} />
-            </ActionButtonGroup>
-          ),
-        }}
-      />
+      <Stack.Screen name="route_wizard/index" />
     </Stack>
   );
 }

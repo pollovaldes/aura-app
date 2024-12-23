@@ -31,8 +31,6 @@ export default function Index(): JSX.Element {
       ? `https://www.openstreetmap.org/export/embed.html?bbox=${longitude - zoomFactor}%2C${latitude - zoomFactor}%2C${longitude + zoomFactor}%2C${latitude + zoomFactor}&layer=carto-dark&marker=${latitude}%2C${longitude}`
       : `https://www.openstreetmap.org/export/embed.html?bbox=-180%2C-90%2C180%2C90&layer=carto-dark`;
 
-  console.log(mapUrl);
-
   const showToast = (title: string, caption: string) => {
     Toast.show({
       type: "alert",

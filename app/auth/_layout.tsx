@@ -2,7 +2,6 @@ import { Redirect, Stack } from "expo-router";
 import "@/style/unistyles";
 import { useSessionContext } from "@/context/SessionContext";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
-import * as SplashScreen from "expo-splash-screen";
 
 export const unstable_settings = {
   initialRouteName: "index",
@@ -16,7 +15,7 @@ export default function Layout() {
   }
 
   if (session) {
-    return <Redirect href="/tab/(tabs)/vehicles" />;
+    return <Redirect href="/tab/vehicles" />;
   }
 
   return (

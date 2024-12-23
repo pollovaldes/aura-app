@@ -1,7 +1,9 @@
 import { ShieldAlert } from "lucide-react-native";
-import { ActivityIndicator, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { FormButton } from "../Form/FormButton";
+import React from "react";
+import { Stack } from "expo-router";
 
 type ErrorScreenType = {
   caption: string;
@@ -13,15 +15,23 @@ export default function ErrorScreen({ caption, retryFunction, buttonCaption }: E
   const { styles } = useStyles(stylesheet);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        <View style={styles.headingContainer}>
-          <ShieldAlert color={styles.icon.color} size={35} />
-          <Text style={styles.text}>{caption}</Text>
+    <>
+      <Stack.Screen
+        options={{
+          headerRight: undefined,
+          title: "Error",
+        }}
+      />
+      <View style={styles.container}>
+        <View style={styles.content}>
+          <View style={styles.headingContainer}>
+            <ShieldAlert color={styles.icon.color} size={35} />
+            <Text style={styles.text}>{caption}</Text>
+          </View>
+          <FormButton title={buttonCaption} onPress={retryFunction} />
         </View>
-        <FormButton title={buttonCaption} onPress={retryFunction} />
       </View>
-    </View>
+    </>
   );
 }
 
