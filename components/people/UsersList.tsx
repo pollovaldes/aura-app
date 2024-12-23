@@ -3,23 +3,20 @@ import useUsers from "@/hooks/peopleHooks/useUsers";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import React from "react";
 import useProfile from "@/hooks/useProfile";
-import LoadingScreen from "../dataStates/LoadingScreen";
 import ErrorScreen from "../dataStates/ErrorScreen";
 import UserThumbnail from "./UserThumbnail";
 import { SimpleList } from "../simpleList/SimpleList";
 import EmptyScreen from "../dataStates/EmptyScreen";
+import { Stack } from "expo-router";
+import { FetchingIndicator } from "../dataStates/FetchingIndicator";
 
 export default function UsersList() {
   const { profile, isProfileLoading, fetchProfile } = useProfile();
   const { styles } = useStyles(stylesheet);
   const { users, usersAreLoading, fetchUsers } = useUsers();
 
-  if (usersAreLoading) {
-    return <LoadingScreen caption="Cargando usuarios" />;
-  }
-
-  if (isProfileLoading) {
-    return <LoadingScreen caption="Cargando perfil y permisos" />;
+  if (isProfileLoading || usersAreLoading) {
+    return <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando usuarios"} />;
   }
 
   if (!profile) {
@@ -43,22 +40,31 @@ export default function UsersList() {
   }
 
   return (
-    <FlatList
-      refreshing={usersAreLoading}
-      onRefresh={fetchUsers}
-      contentInsetAdjustmentBehavior="automatic"
-      data={users}
-      keyExtractor={(item) => item.id.toString()}
-      renderItem={({ item }) => (
-        <SimpleList
-          relativeToDirectory
-          href={`./${item.id}`}
-          leading={<UserThumbnail userId={item.id} size={60} />}
-          content={<Text style={styles.Text}>{`${item.name} ${item.father_last_name} ${item.mother_last_name}`}</Text>}
-        />
-      )}
-      ListEmptyComponent={<EmptyScreen caption="Ningún usuario por aquí." />}
-    />
+    <>
+      <Stack.Screen
+        options={{
+          title: "Personas",
+        }}
+      />
+      <FlatList
+        refreshing={usersAreLoading}
+        onRefresh={fetchUsers}
+        contentInsetAdjustmentBehavior="automatic"
+        data={users}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <SimpleList
+            relativeToDirectory
+            href={`./${item.id}`}
+            leading={<UserThumbnail userId={item.id} size={60} />}
+            content={
+              <Text style={styles.Text}>{`${item.name} ${item.father_last_name} ${item.mother_last_name}`}</Text>
+            }
+          />
+        )}
+        ListEmptyComponent={<EmptyScreen caption="Ningún usuario por aquí." />}
+      />
+    </>
   );
 }
 

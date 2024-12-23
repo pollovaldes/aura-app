@@ -11,7 +11,7 @@ interface VehiclesContextType {
 const VehiclesContext = createContext<VehiclesContextType>({
   vehicles: null,
   setVehicles: (() => {}) as Dispatch<SetStateAction<Vehicle[] | null>>,
-  vehiclesAreLoading: true,
+  vehiclesAreLoading: false,
   setVehiclesAreLoading: (() => {}) as Dispatch<SetStateAction<boolean>>,
 });
 

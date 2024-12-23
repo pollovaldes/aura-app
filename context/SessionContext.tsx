@@ -1,12 +1,5 @@
 import { AuthError, Session, SupabaseClient } from "@supabase/supabase-js";
-import React, {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from "react";
 
 export type SessionContext =
   | {
@@ -94,12 +87,7 @@ export const SessionContextProvider = ({
     const {
       data: { subscription },
     } = supabaseClient.auth.onAuthStateChange((event, session) => {
-      if (
-        session &&
-        (event === "SIGNED_IN" ||
-          event === "TOKEN_REFRESHED" ||
-          event === "USER_UPDATED")
-      ) {
+      if (session && (event === "SIGNED_IN" || event === "TOKEN_REFRESHED" || event === "USER_UPDATED")) {
         setSession(session);
       }
 
@@ -140,17 +128,13 @@ export const SessionContextProvider = ({
     };
   }, [isLoading, session, error]);
 
-  return (
-    <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
-  );
+  return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 };
 
 export const useSessionContext = () => {
   const context = useContext(SessionContext);
   if (context === undefined) {
-    throw new Error(
-      `useSessionContext must be used within a SessionContextProvider.`,
-    );
+    throw new Error(`useSessionContext must be used within a SessionContextProvider.`);
   }
 
   return context;
@@ -158,15 +142,11 @@ export const useSessionContext = () => {
 
 export function useSupabaseClient<
   Database = any,
-  SchemaName extends string & keyof Database = "public" extends keyof Database
-    ? "public"
-    : string & keyof Database,
+  SchemaName extends string & keyof Database = "public" extends keyof Database ? "public" : string & keyof Database,
 >() {
   const context = useContext(SessionContext);
   if (context === undefined) {
-    throw new Error(
-      `useSupabaseClient must be used within a SessionContextProvider.`,
-    );
+    throw new Error(`useSupabaseClient must be used within a SessionContextProvider.`);
   }
 
   return context.supabaseClient as SupabaseClient<Database, SchemaName>;
