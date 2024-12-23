@@ -26,7 +26,7 @@
 //   },
 // } as const;
 
-import { Platform } from "react-native";
+import { Platform, useWindowDimensions } from "react-native";
 
 // export const darkTheme = {
 //   colors: {
@@ -164,6 +164,9 @@ export const colorPalette = {
 };
 
 export const lightTheme = {
+  functions: {
+    width: useWindowDimensions(),
+  },
   ui: {
     dark: false,
     colors: {
@@ -232,6 +235,9 @@ export const lightTheme = {
 } as const;
 
 export const darkTheme = {
+  functions: {
+    width: useWindowDimensions(),
+  },
   ui: {
     dark: true,
     colors: {

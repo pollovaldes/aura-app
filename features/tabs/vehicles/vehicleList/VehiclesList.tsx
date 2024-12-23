@@ -43,8 +43,13 @@ export default function VehiclesList() {
           title: "Vehículos",
           headerRight: () => (
             <ActionButtonGroup>
-              <ActionButton onPress={() => {}} Icon={Download} show={isAdminOrOwner} />
-              <ActionButton onPress={() => setIsModalVisible(true)} Icon={Plus} show={isAdminOrOwner} />
+              <ActionButton onPress={() => {}} Icon={Download} text="Descargar datos" show={isAdminOrOwner} />
+              <ActionButton
+                onPress={() => setIsModalVisible(true)}
+                Icon={Plus}
+                text="Agregar vehículo"
+                show={isAdminOrOwner}
+              />
             </ActionButtonGroup>
           ),
         }}
