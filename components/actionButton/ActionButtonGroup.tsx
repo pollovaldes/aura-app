@@ -4,7 +4,6 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 export function ActionButtonGroup({ children }: { children: React.ReactNode }) {
   const { styles } = useStyles(stylesheet);
-  const { width } = useWindowDimensions();
   return <View style={styles.container}>{children}</View>;
 }
 

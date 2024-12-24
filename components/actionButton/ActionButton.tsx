@@ -24,7 +24,7 @@ export function ActionButton({
 
   // Mobile (iOS, Android) and Web (width <= 750)
   const isMobileOrSmallScreen =
-    Platform.OS === "ios" || Platform.OS === "android" || (Platform.OS === "web" && width <= 650);
+    Platform.OS === "ios" || Platform.OS === "android" || (Platform.OS === "web" && width <= 750);
 
   // Button logic for mobile or small web screens
   if (isMobileOrSmallScreen) {
@@ -50,7 +50,11 @@ export function ActionButton({
       onPressOut={() => setIsPressed(false)}
       style={[styles.container, isHovered && styles.containerHovered, isPressed && styles.containerPressed]}
     >
-      {Icon && <Icon color={styles.icon(width).color} size={styles.icon(width).fontSize} />}
+      {Icon && (
+        <View style={styles.iconContainer}>
+          <Icon color={styles.icon(width).color} size={styles.icon(width).fontSize} />
+        </View>
+      )}
       {text && (
         <Text style={styles.text} selectable={false} allowFontScaling={false}>
           {text}
@@ -84,7 +88,6 @@ const stylesheet = createStyleSheet((theme) => ({
       android: 16,
       web: 15,
     }),
-    marginLeft: 8,
   },
   icon: (width: number) => ({
     fontSize: Platform.select({
@@ -94,4 +97,7 @@ const stylesheet = createStyleSheet((theme) => ({
     }),
     color: theme.headerButtons.color,
   }),
+  iconContainer: {
+    marginRight: 8,
+  },
 }));
