@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { supabase } from "@/lib/supabase";
 import VehiclesContext from "@/context/VehiclesContext";
 

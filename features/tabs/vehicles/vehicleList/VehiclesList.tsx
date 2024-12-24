@@ -20,6 +20,10 @@ export default function VehiclesList() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [vehiclesAreLoading, setVehiclesAreLoading] = useState(true); // Local loading state for initial fetch
 
+  useEffect(() => {
+    fetchAllVehicles();
+  }, []);
+
   const fetchAllVehicles = async () => {
     setVehiclesAreLoading(true);
     setVehicles(null);
@@ -27,11 +31,13 @@ export default function VehiclesList() {
     setVehiclesAreLoading(false);
   };
 
-  useEffect(() => {
-    fetchAllVehicles();
-  }, []);
+  const loadMoreVehicles = () => {
+    if (hasMorePages) {
+      fetchVehicles(currentPage + 1);
+    }
+  };
 
-  if (vehiclesAreLoading) {
+  if (vehiclesAreLoading && !vehicles) {
     return <FetchingIndicator caption="Cargando vehículos" />;
   }
 
@@ -47,12 +53,6 @@ export default function VehiclesList() {
 
   const isAdminOrOwner = profile?.role === "ADMIN" || profile?.role === "OWNER";
 
-  const loadMoreVehicles = () => {
-    if (hasMorePages) {
-      fetchVehicles(currentPage + 1);
-    }
-  };
-
   return (
     <>
       <Stack.Screen
@@ -60,7 +60,7 @@ export default function VehiclesList() {
           title: `Vehículos (${vehicles?.length ?? 0})`,
           headerRight: () => (
             <ActionButtonGroup>
-              <ActionButton onPress={() => {}} Icon={Download} text="Descargar datos" show={isAdminOrOwner} />
+              <ActionButton onPress={() => {}} Icon={Download} text="CSV" show={isAdminOrOwner} />
               <ActionButton
                 onPress={() => setIsModalVisible(true)}
                 Icon={Plus}
@@ -95,7 +95,7 @@ export default function VehiclesList() {
           />
         )}
         onEndReached={loadMoreVehicles}
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={0.75}
         onRefresh={fetchAllVehicles}
         refreshing={false}
         ListEmptyComponent={<EmptyScreen caption="Ningún vehículo por aquí." />}

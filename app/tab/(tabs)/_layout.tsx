@@ -6,14 +6,21 @@ import { supabase } from "@/lib/supabase";
 import { Redirect, Tabs, usePathname } from "expo-router";
 import { Bell, Boxes, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
 import React from "react";
-import { useWindowDimensions } from "react-native";
+import { Platform, useWindowDimensions } from "react-native";
 import { createStyleSheet } from "react-native-unistyles";
+import * as Haptics from "expo-haptics";
 
 export default function HomeLayout() {
   const { width } = useWindowDimensions();
   const { profile, isProfileLoading } = useProfile();
   const { isLoading: isSessionLoading, session } = useSessionContext();
   const path = usePathname();
+
+  const hapticFeedback = () => {
+    if (Platform.OS !== "web") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+  };
 
   if (isSessionLoading || isProfileLoading) {
     return <FetchingIndicator caption={isSessionLoading ? "Cargando sesión" : "Cargando perfil"} />;
@@ -65,6 +72,11 @@ export default function HomeLayout() {
           title: "Vehículos",
           tabBarIcon: ({ color }) => <Truck color={color} />,
         }}
+        listeners={{
+          tabPress: () => {
+            hapticFeedback();
+          },
+        }}
       />
       <Tabs.Screen
         name="users"
@@ -72,6 +84,11 @@ export default function HomeLayout() {
           href: mayShowTab.users,
           title: "Personas",
           tabBarIcon: ({ color }) => <UsersRound color={color} />,
+        }}
+        listeners={{
+          tabPress: () => {
+            hapticFeedback();
+          },
         }}
       />
       <Tabs.Screen
@@ -81,6 +98,11 @@ export default function HomeLayout() {
           title: "Flotillas",
           tabBarIcon: ({ color }) => <Boxes color={color} />,
         }}
+        listeners={{
+          tabPress: () => {
+            hapticFeedback();
+          },
+        }}
       />
       <Tabs.Screen
         name="notifications"
@@ -89,12 +111,22 @@ export default function HomeLayout() {
           title: "Notificaciones",
           tabBarIcon: ({ color }) => <Bell color={color} />,
         }}
+        listeners={{
+          tabPress: () => {
+            hapticFeedback();
+          },
+        }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: "Perfil",
           tabBarIcon: ({ color }) => <CircleUserRound color={color} />,
+        }}
+        listeners={{
+          tabPress: () => {
+            hapticFeedback();
+          },
         }}
       />
     </Tabs>

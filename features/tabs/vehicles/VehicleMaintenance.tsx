@@ -12,7 +12,7 @@ import useProfile from "@/hooks/useProfile";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { Plus, RotateCw } from "lucide-react-native";
+import { Download, FilterIcon, Plus, RotateCw } from "lucide-react-native";
 import { FlatList, Platform, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
@@ -139,6 +139,8 @@ export default function VehicleMaintenance() {
           headerLargeTitle: false,
           headerRight: () => (
             <ActionButtonGroup>
+              <ActionButton Icon={Download} text="CSV" onPress={() => {}} show={canEdit} />
+              <ActionButton Icon={FilterIcon} text="Filtros" onPress={() => {}} show={canEdit} />
               <ActionButton
                 Icon={Plus}
                 text="Nueva solicitud"
