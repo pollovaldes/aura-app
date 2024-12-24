@@ -7,7 +7,7 @@ import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import Modal from "@/components/Modal/Modal";
 import { SimpleList } from "@/components/simpleList/SimpleList";
 import AddDocument from "@/components/vehicles/modals/AddDocument";
-import useVehicle from "@/hooks/truckHooks/useVehicle";
+import { useVehicle } from "@/hooks/truckHooks/useVehicle";
 import useDocuments from "@/hooks/useDocuments";
 import useProfile from "@/hooks/useProfile";
 import { Stack, useFocusEffect, useLocalSearchParams } from "expo-router";

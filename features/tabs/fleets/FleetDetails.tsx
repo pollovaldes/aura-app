@@ -6,7 +6,7 @@ import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import UserThumbnail from "@/components/people/UserThumbnail";
 import { SimpleList } from "@/components/simpleList/SimpleList";
-import VehicleThumbnail from "@/components/vehicles/TruckThumbnail";
+import { VehicleThumbnail } from "@/components/vehicles/VehicleThumbnail";
 import { useFleets } from "@/hooks/useFleets";
 import useProfile from "@/hooks/useProfile";
 import { User, Vehicle } from "@/types/globalTypes";
@@ -147,7 +147,7 @@ export default function FleetDetails() {
             <SimpleList
               relativeToDirectory
               href={`/tab/vehicle_details/${item.id}`}
-              //leading={<VehicleThumbnail vehicleId={item.id} />}
+              leading={<VehicleThumbnail vehicleId={item.id} />}
               content={
                 <>
                   <Text style={styles.vehicleTitle}>{`${item.brand} ${item.sub_brand} (${item.year})`}</Text>

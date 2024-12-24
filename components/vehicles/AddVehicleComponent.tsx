@@ -6,9 +6,9 @@ import { useAddVehicle } from "@/hooks/truckHooks/useAddVehicle";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "../Form/FormButton";
-import useVehicle from "@/hooks/truckHooks/useVehicle";
 import { router } from "expo-router";
 import FormInput from "../Form/FormInput";
+import { useVehicle } from "@/hooks/truckHooks/useVehicle";
 
 interface AddVehicleComponentProps {
   visible: boolean;

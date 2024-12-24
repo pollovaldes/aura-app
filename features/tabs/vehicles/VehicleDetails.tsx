@@ -1,22 +1,43 @@
 import React, { useEffect, useState } from "react";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { View, Image, ScrollView, RefreshControl, Text, Platform, Alert, useWindowDimensions } from "react-native";
+import {
+  View,
+  Image,
+  ScrollView,
+  RefreshControl,
+  Text,
+  Platform,
+  Alert,
+  useWindowDimensions,
+  ActivityIndicator,
+} from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
-import { BookOpen, Boxes, Clipboard, Fuel, Images, RotateCw, Trash, Waypoints, Wrench } from "lucide-react-native";
+import {
+  BookOpen,
+  Boxes,
+  Clipboard,
+  Fuel,
+  Image as ImageIcon,
+  RotateCw,
+  Trash,
+  Waypoints,
+  Wrench,
+  Images,
+} from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
-import useVehicle from "@/hooks/truckHooks/useVehicle";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import useVehicleThumbnail from "@/hooks/truckHooks/useVehicleThumbnail";
 import useProfile from "@/hooks/useProfile";
 import Modal from "@/components/Modal/Modal";
-import ChangeCoverImage from "@/components/vehicles/modals/ChangeCoverImage";
 import { supabase } from "@/lib/supabase";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
+import { useVehicle } from "@/hooks/truckHooks/useVehicle";
+import { useVehicleThumbnail } from "@/hooks/useVehicleThumbnail";
+import { ChangeCoverImage } from "@/components/vehicles/modals/ChangeCoverImage";
 
 type ModalType = "change_cover_image" | null;
 
@@ -25,8 +46,8 @@ export default function VehicleDetails() {
   const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicle();
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
-  const { deleteThumbnail, selectThumbnail } = useVehicleThumbnail();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
+  const { thumbnail, refetchVehicleThumbnail } = useVehicleThumbnail(vehicleId);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
   const { width } = useWindowDimensions();
@@ -115,11 +136,20 @@ export default function VehicleDetails() {
           headerRight: () => (
             <ActionButtonGroup>
               <ActionButton
-                text="Cambiar portada"
+                text="Editar portada"
+                Icon={ImageIcon}
                 onPress={() => setActiveModal("change_cover_image")}
                 show={canEditVehicle}
               />
-              <ActionButton onPress={refetchVehicle} Icon={RotateCw} text="Actualizar" show={Platform.OS === "web"} />
+              <ActionButton
+                onPress={() => {
+                  refetchVehicle();
+                  refetchVehicleThumbnail();
+                }}
+                Icon={RotateCw}
+                text="Actualizar"
+                show={Platform.OS === "web"}
+              />
             </ActionButtonGroup>
           ),
         }}
@@ -129,29 +159,36 @@ export default function VehicleDetails() {
           <Text style={styles.closeButton} onPress={closeModal}>
             Cerrar
           </Text>
-          <ChangeCoverImage
-            closeModal={closeModal}
-            vehicle={vehicle}
-            selectThumbnail={selectThumbnail}
-            deleteThumbnail={deleteThumbnail}
-          />
+          <ChangeCoverImage closeModal={closeModal} vehicle={vehicle} />
         </View>
       </Modal>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        refreshControl={<RefreshControl refreshing={vehicleIsLoading} onRefresh={refetchVehicle} />}
+        refreshControl={
+          <RefreshControl
+            refreshing={vehicleIsLoading}
+            onRefresh={() => {
+              refetchVehicle();
+              refetchVehicleThumbnail();
+            }}
+          />
+        }
       >
         <View style={styles.root}>
           <View style={styles.imageWrapper(width)}>
-            {vehicle.thumbnail ? (
-              <Image source={{ uri: vehicle.thumbnail }} style={styles.image} />
+            {thumbnail?.isLoading ? (
+              <View style={styles.imageLoadingContainer}>
+                <ActivityIndicator size="large" />
+              </View>
+            ) : thumbnail?.imageURI ? (
+              <Image source={{ uri: thumbnail.imageURI }} style={styles.image} />
             ) : (
               <View style={styles.placeholder}>
                 <Text style={styles.title}>{vehicleTitle}</Text>
               </View>
             )}
             <View style={styles.overlay}>
-              {vehicle.thumbnail && <Text style={styles.imageText}>{vehicleTitle}</Text>}
+              {thumbnail && !thumbnail.isLoading && <Text style={styles.imageText}>{vehicleTitle}</Text>}
             </View>
           </View>
           <View style={styles.groupedListContainer}>
@@ -249,6 +286,12 @@ const stylesheet = createStyleSheet((theme) => ({
     borderRadius: Platform.OS === "web" ? 12 : 0,
     paddingHorizontal: 30,
   },
+  imageLoadingContainer: {
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   overlay: {
     position: "absolute",
     top: 0,
@@ -273,6 +316,7 @@ const stylesheet = createStyleSheet((theme) => ({
     textAlign: "center",
   },
   modalContainer: {
+    width: "100%",
     alignSelf: "center",
     maxWidth: 500,
     backgroundColor: theme.ui.colors.card,

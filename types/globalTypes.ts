@@ -3,6 +3,12 @@ import { Database } from "./database.types";
 export type Vehicle = Database["public"]["Tables"]["vehicles"]["Row"];
 export type User = Database["public"]["Tables"]["profiles"]["Row"];
 
+export type VehicleThumbnail = {
+  vehicleId: string;
+  isLoading: boolean;
+  imageURI: string | null;
+};
+
 export type FleetRow = Database["public"]["Tables"]["fleets"]["Row"];
 export type Fleet = FleetRow & {
   users: User[];

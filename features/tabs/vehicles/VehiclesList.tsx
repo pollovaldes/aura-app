@@ -10,8 +10,9 @@ import { Stack } from "expo-router";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
 import { Download, Plus, RotateCw } from "lucide-react-native";
-import useVehicle from "@/hooks/truckHooks/useVehicle";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
+import { useVehicle } from "@/hooks/truckHooks/useVehicle";
+import { VehicleThumbnail } from "@/components/vehicles/VehicleThumbnail";
 
 export default function VehiclesList() {
   const { profile } = useProfile();
@@ -81,7 +82,7 @@ export default function VehiclesList() {
           <SimpleList
             relativeToDirectory
             href={`./${item.id}`}
-            //leading={<VehicleThumbnail vehicleId={item.id} />}
+            leading={<VehicleThumbnail vehicleId={item.id} />}
             content={
               <>
                 <Text

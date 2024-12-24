@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { supabase } from "@/lib/supabase";
 import VehiclesContext from "@/context/VehiclesContext";
 
-export default function useVehicle() {
+export function useVehicle() {
   const { vehicles, setVehicles, currentPage, setCurrentPage, hasMorePages, setHasMorePages } =
     useContext(VehiclesContext);
 

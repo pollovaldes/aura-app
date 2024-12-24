@@ -44,6 +44,12 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Permitir que $(PRODUCT_NAME) use tu ubicación."
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Permitir que $(PRODUCT_NAME) acceda a tus fotos."
+        }
       ]
     ],
     "extra": {

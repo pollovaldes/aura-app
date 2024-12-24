@@ -1,4 +1,4 @@
-import VehiclesList from "@/features/tabs/vehicles/vehicleList/VehiclesList";
+import VehiclesList from "@/features/tabs/vehicles/VehiclesList";
 
 export default function Index() {
   return <VehiclesList />;
