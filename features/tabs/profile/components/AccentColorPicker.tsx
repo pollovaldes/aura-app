@@ -1,6 +1,6 @@
 // AccentColorPicker.tsx
 import React from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet, Platform } from "react-native";
 import { useColorScheme } from "react-native";
 import { useAccentTheme } from "@/context/AccentThemeContext"; // or wherever it's exported
 import { ACCENT_COLORS, AccentColorName } from "@/style/accentColor";
@@ -24,6 +24,12 @@ export const AccentColorPicker: React.FC = () => {
   // Chunk them into rows of 4 colors each
   const rows = chunkArray(colorNames, 4);
 
+  const hapticFeedback = () => {
+    if (Platform.OS !== "web") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+  };
+
   return (
     <View style={{ flexDirection: "column", gap: 24 }}>
       {rows.map((rowColors, rowIndex) => (
@@ -46,7 +52,7 @@ export const AccentColorPicker: React.FC = () => {
               <TouchableOpacity
                 key={colorName}
                 onPress={async () => {
-                  await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  await hapticFeedback();
                   setAccentColor(colorName);
                 }}
                 activeOpacity={0.7}
