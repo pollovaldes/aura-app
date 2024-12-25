@@ -13,6 +13,7 @@ import { Download, Plus, RotateCw } from "lucide-react-native";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { useVehicle } from "@/hooks/truckHooks/useVehicle";
 import { VehicleThumbnail } from "@/components/vehicles/VehicleThumbnail";
+import { useAccentTheme } from "@/context/AccentThemeContext";
 
 export default function VehiclesList() {
   const { profile } = useProfile();

@@ -8,16 +8,21 @@ import { darkTheme, lightTheme } from "@/style/themes";
 import { ACCENT_COLORS, AccentColorName } from "@/style/accentColor";
 
 // ---- Types ----
-
 interface AccentThemeContextProps {
   accentColor: AccentColorName;
   setAccentColor: (color: AccentColorName) => void;
+  /**
+   * The actual hex string for the user’s chosen accent color,
+   * taking into account dark vs. light scheme automatically.
+   */
+  accentColorHex: string;
 }
 
 // This is the shape of the context we will provide.
 const AccentThemeContext = createContext<AccentThemeContextProps>({
   accentColor: "blue", // default
   setAccentColor: () => {},
+  accentColorHex: "#007AFF", // default iOS blue
 });
 
 // You can export this hook to consume the context anywhere in your app.
@@ -45,7 +50,6 @@ export const AccentThemeProvider: React.FC<{ children: React.ReactNode }> = ({ c
         console.warn("Failed to load accent color from storage:", error);
       }
     };
-
     loadAccentColor();
   }, []);
 
@@ -59,21 +63,28 @@ export const AccentThemeProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setAccentColorState(color);
   };
 
+  // Compute the actual accent hex for dark/light
+  const accentColorHex = ACCENT_COLORS[accentColor][colorScheme === "dark" ? "dark" : "light"];
+
   // Merge base theme (light/dark) with accent color
   const baseTheme = colorScheme === "dark" ? darkTheme.ui : lightTheme.ui;
-  const accentHex = ACCENT_COLORS[accentColor][colorScheme === "dark" ? "dark" : "light"];
-
   // currentTheme with the accent color overriding `primary`
   const currentTheme = {
     ...baseTheme,
     colors: {
       ...baseTheme.colors,
-      primary: accentHex,
+      primary: accentColorHex,
     },
   };
 
   return (
-    <AccentThemeContext.Provider value={{ accentColor, setAccentColor }}>
+    <AccentThemeContext.Provider
+      value={{
+        accentColor,
+        setAccentColor,
+        accentColorHex, // <--- expose the computed hex here
+      }}
+    >
       {/**
        * We must not replace or rename the `ThemeProvider` from
        * `@react-navigation/native`. We just feed it our newly
