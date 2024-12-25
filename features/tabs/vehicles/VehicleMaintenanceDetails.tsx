@@ -2,7 +2,6 @@ import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
-import useVehicle from "@/hooks/truckHooks/useVehicle";
 import useMaintenance from "@/hooks/useMaintenance";
 import useProfile from "@/hooks/useProfile";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
@@ -18,6 +17,7 @@ import useMaintenanceDocuments from "@/hooks/useMaintenanceDocuments";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import { SimpleList } from "@/components/simpleList/SimpleList";
+import { useVehicle } from "@/hooks/truckHooks/useVehicle";
 
 export default function VehicleMaintenanceDetails() {
   const { styles } = useStyles(stylesheet);

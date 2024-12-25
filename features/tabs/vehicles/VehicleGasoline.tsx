@@ -3,7 +3,6 @@ import { View, Text, Pressable, FlatList, RefreshControl } from "react-native";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import useProfile from "@/hooks/useProfile";
-import useVehicle from "@/hooks/truckHooks/useVehicle";
 import useGasolineLoads from "@/hooks/useGasolineLoads";
 import useGasolineStatus from "@/hooks/GasolineDataTest/useGasolineStatus";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
@@ -18,6 +17,7 @@ import PendingGasolineLoads from "@/components/GasolineDataComponentsTest/Pendin
 import MonthlyGasolineChart from "@/components/GasolineDataComponentsTest/MonthlyGasolineChart";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
+import { useVehicle } from "@/hooks/truckHooks/useVehicle";
 
 interface GasolineHistoryContentProps {
   profile: {

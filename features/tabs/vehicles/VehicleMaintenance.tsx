@@ -6,7 +6,6 @@ import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import StatusChip from "@/components/General/StatusChip";
 import Modal from "@/components/Modal/Modal";
 import AddMaintenance from "@/components/vehicles/modals/AddMaintenance";
-import useVehicle from "@/hooks/truckHooks/useVehicle";
 import useMaintenance from "@/hooks/useMaintenance";
 import useProfile from "@/hooks/useProfile";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
@@ -18,6 +17,7 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
 import { SimpleList } from "@/components/simpleList/SimpleList";
+import { useVehicle } from "@/hooks/truckHooks/useVehicle";
 
 type ModalType = "create_maintenance_record" | null;
 
@@ -51,7 +51,7 @@ export default function VehicleMaintenance() {
     );
   }
 
-  const vehicle = vehicles.find((v) => v.id === vehicleId);
+  const vehicle = vehicles.find((vehicle) => vehicle.id === vehicleId);
 
   if (!vehicle) {
     return (

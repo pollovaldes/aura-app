@@ -156,8 +156,9 @@ export function ChangeCoverImage({ vehicle, closeModal }: ChangeVehicleImageModa
     message: "¿Estás seguro de que deseas eliminar la foto de portada de este vehículo?",
     confirmText: "Eliminar",
     cancelText: "Cancelar",
-    onConfirm: () => {
-      deleteAllFilesFromBucket();
+    onConfirm: async () => {
+      await deleteAllFilesFromBucket();
+      refetchVehicleThumbnail();
       closeModal();
     },
     onCancel: () => {},

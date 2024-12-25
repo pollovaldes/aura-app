@@ -5,12 +5,12 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import ChangeDataModal from "@/components/Modal/ChangeDataModal";
-import useVehicle from "@/hooks/truckHooks/useVehicle";
 import useProfile from "@/hooks/useProfile";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import React from "react";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
+import { useVehicle } from "@/hooks/truckHooks/useVehicle";
 
 export default function VehicleManageFleets() {
   const { styles } = useStyles(stylesheet);
