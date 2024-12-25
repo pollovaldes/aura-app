@@ -57,17 +57,11 @@ export function useVehicleThumbnail(vehicleId: string) {
   };
 
   const refetchVehicleThumbnail = async () => {
-    console.log("Refetching thumbnail for vehicle", vehicleId);
-    // Set isLoading to true for the specific vehicle
     setVehicleThumbnails((prev) =>
-      prev.map((item) =>
-        item.vehicleId === vehicleId
-          ? { ...item, isLoading: true, imageURI: null } // Reset imageURI to null for a fresh fetch
-          : item
-      )
+      prev.map((item) => (item.vehicleId === vehicleId ? { ...item, isLoading: true, imageURI: null } : item))
     );
 
-    await fetchImage(); // Ensure the fetchImage function is called
+    await fetchImage();
   };
 
   useEffect(() => {

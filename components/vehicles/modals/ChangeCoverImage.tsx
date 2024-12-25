@@ -212,12 +212,14 @@ export function ChangeCoverImage({ vehicle, closeModal }: ChangeVehicleImageModa
           isDisabled={thumbnail?.isLoading || imageIsProcessing || imageIsUploading}
           isLoading={imagePickingIsLoading}
         />
-        <FormButton
-          title="Eliminar portada"
-          buttonType="danger"
-          onPress={handleDeleteThumbnail}
-          isDisabled={thumbnail?.isLoading || imagePickingIsLoading || imageIsProcessing || imageIsUploading}
-        />
+        {thumbnail?.imageURI && !thumbnail?.isLoading && (
+          <FormButton
+            title="Eliminar portada"
+            buttonType="danger"
+            onPress={handleDeleteThumbnail}
+            isDisabled={thumbnail?.isLoading || imagePickingIsLoading || imageIsProcessing || imageIsUploading}
+          />
+        )}
       </View>
     </View>
   );
