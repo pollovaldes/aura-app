@@ -10,6 +10,7 @@ import Toast from "react-native-toast-message";
 import { toastConfig } from "@/components/toast/ToastConfig";
 import { useReactNavigationDevTools } from "@dev-plugins/react-navigation";
 import { darkTheme, lightTheme } from "@/style/themes";
+import { AccentThemeProvider } from "@/context/AccentThemeContext";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -27,12 +28,12 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <ThemeProvider value={currentTheme}>
+    <AccentThemeProvider>
       <SessionContextProvider supabaseClient={supabase}>
         {path === "/" && <Redirect href="/auth" />}
         <Slot />
         <Toast config={toastConfig} />
       </SessionContextProvider>
-    </ThemeProvider>
+    </AccentThemeProvider>
   );
 }

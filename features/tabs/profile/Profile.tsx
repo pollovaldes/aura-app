@@ -10,7 +10,7 @@ import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import { router, Stack } from "expo-router";
 import React from "react";
-import { Bell, Bug, Info, LogOut, Moon, User } from "lucide-react-native";
+import { Bell, Bug, Info, LogOut, Moon, Palette, User } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import ProfileColumn from "@/components/people/ProfileColumn";
 
@@ -101,6 +101,12 @@ export default function Profile() {
               onPress={() => router.push("./theme", { relativeToDirectory: true })}
             />
             <Row
+              title="Color de acento"
+              icon={Palette}
+              backgroundColor={colorPalette.cyan[500]}
+              onPress={() => router.push("./accent_color", { relativeToDirectory: true })}
+            />
+            <Row
               title="Notificaciones"
               icon={Bell}
               backgroundColor={colorPalette.red[500]}
@@ -112,7 +118,7 @@ export default function Profile() {
             <Row
               title="Sobre Aura"
               icon={Info}
-              backgroundColor={colorPalette.cyan[500]}
+              backgroundColor={colorPalette.emerald[500]}
               onPress={() => router.push("./about", { relativeToDirectory: true })}
             />
             <Row
