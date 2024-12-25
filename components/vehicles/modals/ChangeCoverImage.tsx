@@ -73,8 +73,7 @@ export function ChangeCoverImage({ vehicle, closeModal }: ChangeVehicleImageModa
     setImagePickingIsLoading(true);
     let pickerResult = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
-      allowsEditing: true,
-      aspect: [16, 9],
+      allowsEditing: false,
       selectionLimit: 1,
     });
 
