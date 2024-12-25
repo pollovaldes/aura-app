@@ -2,6 +2,7 @@ import { useVehicleThumbnail } from "@/hooks/useVehicleThumbnail";
 import { TruckIcon } from "lucide-react-native";
 import React from "react";
 import { View, Image, ActivityIndicator, StyleSheet } from "react-native";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 interface VehicleThumbnailProps {
   vehicleId: string;
@@ -9,6 +10,7 @@ interface VehicleThumbnailProps {
 
 export function VehicleThumbnail({ vehicleId }: VehicleThumbnailProps) {
   const { thumbnail } = useVehicleThumbnail(vehicleId);
+  const { styles } = useStyles(stylesheet);
 
   return (
     <>
@@ -27,13 +29,13 @@ export function VehicleThumbnail({ vehicleId }: VehicleThumbnailProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const stylesheet = createStyleSheet((theme) => ({
   emptyImageContainer: {
     width: 100,
     height: 100,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f0f0f0",
+    backgroundColor: theme.ui.colors.border,
     borderRadius: 10,
   },
   image: {
@@ -44,4 +46,4 @@ const styles = StyleSheet.create({
   noImageIcon: {
     color: "#ccc",
   },
-});
+}));

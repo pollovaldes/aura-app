@@ -17,24 +17,39 @@ export function useVehicleThumbnail(vehicleId: string) {
   };
 
   const fetchImage = async () => {
-    const { data, error } = await supabase.storage
-      .from("imagenes-camiones/0cb45272-4766-4e95-8932-8ed7b73a8223/perfil/")
-      .download(`1734188705930.webp`);
+    const { data: fileList, error: listError } = await supabase.storage
+      .from("vehicles-thumbnails")
+      .list(`${vehicleId}/`, { limit: 100 });
 
-    if (error) {
+    if (listError || !fileList || fileList.length === 0) {
       setVehicleThumbnails((prev) =>
         prev.map((item) => (item.vehicleId === vehicleId ? { ...item, isLoading: false, imageURI: null } : item))
       );
-      throw error;
+      return;
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    const firstFile = fileList[0];
 
-    const imageURI = await convertBlobToBase64(data);
-
-    if (error) {
-      throw error;
+    if (!firstFile) {
+      setVehicleThumbnails((prev) =>
+        prev.map((item) => (item.vehicleId === vehicleId ? { ...item, isLoading: false, imageURI: null } : item))
+      );
+      return;
     }
+
+    const { data: fileData, error: fetchError } = await supabase.storage
+      .from("vehicles-thumbnails")
+      .download(`${vehicleId}/${firstFile.name}`);
+
+    if (fetchError || !fileData) {
+      setVehicleThumbnails((prev) =>
+        prev.map((item) => (item.vehicleId === vehicleId ? { ...item, isLoading: false, imageURI: null } : item))
+      );
+      console.error("Error fetching file", fetchError);
+      return;
+    }
+
+    const imageURI = await convertBlobToBase64(fileData);
 
     setVehicleThumbnails((prev) =>
       prev.map((item) => (item.vehicleId === vehicleId ? { ...item, isLoading: false, imageURI } : item))

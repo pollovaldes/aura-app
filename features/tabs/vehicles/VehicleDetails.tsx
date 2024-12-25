@@ -291,6 +291,8 @@ const stylesheet = createStyleSheet((theme) => ({
     height: "100%",
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: theme.ui.colors.border,
+    borderRadius: Platform.OS === "web" ? 12 : 0,
   },
   overlay: {
     position: "absolute",
