@@ -31,7 +31,7 @@ interface FileItem {
   created_at: string;
 }
 
-export default function AddMaintenance({ closeModal, vehicle, profile, fetchMaintenance }: addMaintenanceModalProps) {
+export function AddMaintenanceModal({ closeModal, vehicle, profile, fetchMaintenance }: addMaintenanceModalProps) {
   const { styles } = useStyles(stylesheet);
   const vehicleTitle = `${vehicle.brand ?? ""} ${vehicle.sub_brand ?? ""} (${vehicle.year ?? ""})`;
   const fullName = `${profile.name} ${profile.father_last_name} ${profile.mother_last_name}`;
@@ -309,7 +309,7 @@ export default function AddMaintenance({ closeModal, vehicle, profile, fetchMain
                       title="Seleccionar archivo"
                       isDisabled={isUploading}
                       onPress={() => {}}
-                      icon={() => <ArrowUpFromLine color={styles.selectFileButtonIcon.color} />}
+                      Icon={ArrowUpFromLine}
                     />
                   }
                 />
@@ -320,7 +320,7 @@ export default function AddMaintenance({ closeModal, vehicle, profile, fetchMain
                   title="Seleccionar archivo"
                   isDisabled={isUploading}
                   onPress={() => handleSelectFile("web", item.localId)}
-                  icon={() => <ArrowUpFromLine color={styles.selectFileButtonIcon.color} />}
+                  Icon={ArrowUpFromLine}
                 />
               )}
               {item.document && (
@@ -380,19 +380,13 @@ export default function AddMaintenance({ closeModal, vehicle, profile, fetchMain
                 title="Eliminar"
                 onPress={() => removeFileView(item.localId)}
                 buttonType="danger"
-                icon={() => <Trash2 color={styles.iconColor.color} />}
+                Icon={Trash2}
                 isDisabled={isUploading}
               />
             </View>
           </View>
         ))}
-        <FormButton
-          title="Agregar"
-          onPress={addFileView}
-          buttonType="normal"
-          icon={() => <Plus color={styles.iconColor.color} />}
-          isDisabled={isUploading}
-        />
+        <FormButton title="Agregar" onPress={addFileView} buttonType="normal" Icon={Plus} isDisabled={isUploading} />
       </View>
       <View style={styles.group}>
         <FormButton

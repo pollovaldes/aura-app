@@ -1,23 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import StatusChip from "@/components/General/StatusChip";
 import Modal from "@/components/Modal/Modal";
-import AddMaintenance from "@/components/vehicles/modals/AddMaintenance";
 import useMaintenance from "@/hooks/useMaintenance";
 import useProfile from "@/hooks/useProfile";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
-import { useHeaderHeight } from "@react-navigation/elements";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { Download, FilterIcon, Plus, RotateCw } from "lucide-react-native";
-import { FlatList, Platform, Text, View } from "react-native";
+import { FlatList, Platform, Text } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
 import { SimpleList } from "@/components/simpleList/SimpleList";
 import { useVehicle } from "@/hooks/truckHooks/useVehicle";
+import { AddMaintenanceModal } from "./modals/AddMaintenanceModal";
 
 type ModalType = "create_maintenance_record" | null;
 
@@ -25,19 +24,33 @@ export default function VehicleMaintenance() {
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const { styles } = useStyles(stylesheet);
-  const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
+  const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicle();
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const { maintenanceRecords, areMaintenanceRecordsLoading, fetchMaintenance } = useMaintenance(vehicleId);
-
   const closeModal = () => setActiveModal(null);
+  const [vehicleIsLoading, setVehicleIsLoading] = useState(true);
 
-  if (vehiclesAreLoading || areMaintenanceRecordsLoading) {
+  const fetchVehicle = async () => {
+    setVehicleIsLoading(true);
+    await fetchVehicleById(vehicleId);
+    setVehicleIsLoading(false);
+  };
+
+  const refetchVehicle = async () => {
+    setVehicleIsLoading(true);
+    await refetchVehicleById(vehicleId);
+    setVehicleIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchVehicle();
+  }, []);
+
+  if (vehicleIsLoading || areMaintenanceRecordsLoading) {
     return (
-      <FetchingIndicator
-        caption={vehiclesAreLoading ? "Cargando vehículos" : "Cargando solicitudes de mantenimiento"}
-      />
+      <FetchingIndicator caption={vehicleIsLoading ? "Cargando vehículo" : "Cargando solicitudes de mantenimiento"} />
     );
   }
 
@@ -46,20 +59,23 @@ export default function VehicleMaintenance() {
       <ErrorScreen
         caption="Ocurrió un error al cargar los vehículos"
         buttonCaption="Reintentar"
-        retryFunction={fetchVehicles}
+        retryFunction={fetchVehicle}
       />
     );
   }
 
-  const vehicle = vehicles.find((vehicle) => vehicle.id === vehicleId);
+  const vehicle = vehicles.find((Vehicle) => Vehicle.id === vehicleId);
 
   if (!vehicle) {
     return (
-      <UnauthorizedScreen
-        caption="No tienes acceso a este recurso."
-        buttonCaption="Reintentar"
-        retryFunction={fetchVehicles}
-      />
+      <>
+        <Stack.Screen options={{ title: "Recurso inaccesible", headerLargeTitle: false }} />
+        <UnauthorizedScreen
+          caption="No tienes acceso a este recurso."
+          buttonCaption="Reintentar"
+          retryFunction={refetchVehicle}
+        />
+      </>
     );
   }
 
@@ -119,18 +135,13 @@ export default function VehicleMaintenance() {
 
   return (
     <>
-      <Modal isOpen={activeModal === "create_maintenance_record"}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.closeButton} onPress={closeModal}>
-            Cerrar
-          </Text>
-          <AddMaintenance
-            closeModal={closeModal}
-            fetchMaintenance={fetchMaintenance}
-            vehicle={vehicle}
-            profile={profile}
-          />
-        </View>
+      <Modal isOpen={activeModal === "create_maintenance_record"} close={closeModal}>
+        <AddMaintenanceModal
+          closeModal={closeModal}
+          fetchMaintenance={fetchMaintenance}
+          vehicle={vehicle}
+          profile={profile}
+        />
       </Modal>
 
       <Stack.Screen
@@ -150,7 +161,7 @@ export default function VehicleMaintenance() {
               <ActionButton
                 onPress={() => {
                   fetchMaintenance();
-                  fetchVehicles();
+                  fetchVehicle();
                 }}
                 Icon={RotateCw}
                 text="Actualizar"
@@ -198,9 +209,9 @@ export default function VehicleMaintenance() {
           />
         }
         ListEmptyComponent={() => <EmptyScreen caption="No hay solicitudes de mantenimiento con este filtro" />}
-        refreshing={vehiclesAreLoading || areMaintenanceRecordsLoading}
+        refreshing={vehicleIsLoading || areMaintenanceRecordsLoading}
         onRefresh={() => {
-          fetchVehicles();
+          fetchVehicle();
           fetchMaintenance();
         }}
       />

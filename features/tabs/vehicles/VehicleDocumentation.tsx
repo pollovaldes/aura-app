@@ -6,13 +6,13 @@ import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import Modal from "@/components/Modal/Modal";
 import { SimpleList } from "@/components/simpleList/SimpleList";
-import { AddDocumentModal } from "@/components/vehicles/modals/AddDocument";
+import { AddDocumentModal } from "@/features/tabs/vehicles/modals/AddDocumentModal";
 import { useVehicle } from "@/hooks/truckHooks/useVehicle";
 import useDocuments from "@/hooks/useDocuments";
 import useProfile from "@/hooks/useProfile";
-import { Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { FilePlus, Plus, RotateCw } from "lucide-react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import { Stack, useLocalSearchParams } from "expo-router";
+import { FilePlus, RotateCw } from "lucide-react-native";
+import React, { useEffect, useState } from "react";
 import { FlatList, Platform, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
@@ -46,7 +46,7 @@ export default function VehicleDocumentation() {
   }, []);
 
   if (vehicleIsLoading || areDocumentsLoading) {
-    return <FetchingIndicator caption={vehicleIsLoading ? "Cargando vehículos" : "Cargando documentos"} />;
+    return <FetchingIndicator caption={vehicleIsLoading ? "Cargando vehículo" : "Cargando documentos"} />;
   }
 
   if (!vehicles) {
@@ -77,7 +77,7 @@ export default function VehicleDocumentation() {
   if (!documents) {
     return (
       <ErrorScreen
-        caption={`Ocurrió un error y no \npudimos cargar los documentos`}
+        caption={`Ocurrió un error al cargar los documentos`}
         buttonCaption="Reintentar"
         retryFunction={fetchDocuments}
       />

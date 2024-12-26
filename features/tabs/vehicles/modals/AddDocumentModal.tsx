@@ -1,16 +1,15 @@
 // ChangeImageModal.tsx
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Platform } from "react-native";
+import { View, Text, TouchableOpacity, Platform } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "@/components/Form/FormButton";
 import { supabase } from "@/lib/supabase";
 import FormInput from "@/components/Form/FormInput";
-import { ArrowUpFromLine, File, FilePlus, Plus, X } from "lucide-react-native";
-import { DocumentPickerAsset } from "expo-document-picker";
+import { ArrowUpFromLine, File, X } from "lucide-react-native";
 import * as FileSystem from "expo-file-system";
-import { decode } from "base64-arraybuffer";
 import * as DocumentPicker from "expo-document-picker";
+import { decode } from "base64-arraybuffer";
 import { Vehicle } from "@/types/globalTypes";
 import Toast from "react-native-toast-message";
 
