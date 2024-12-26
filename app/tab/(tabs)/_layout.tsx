@@ -12,7 +12,7 @@ import * as Haptics from "expo-haptics";
 
 export default function HomeLayout() {
   const { width } = useWindowDimensions();
-  const { profile, isProfileLoading } = useProfile();
+  const { profile, isProfileLoading, fetchProfile } = useProfile();
   const { isLoading: isSessionLoading, session } = useSessionContext();
   const path = usePathname();
 
@@ -32,11 +32,7 @@ export default function HomeLayout() {
 
   if (!profile) {
     return (
-      <ErrorScreen
-        caption="No pudimos recuperar tu perfil. Intenta cerrar sesión y volver a iniciarla."
-        buttonCaption="Cerrar sesión"
-        retryFunction={() => supabase.auth.signOut({ scope: "local" })}
-      />
+      <ErrorScreen caption="No pudimos recuperar tu perfil." buttonCaption="Reintentar" retryFunction={fetchProfile} />
     );
   }
 

@@ -12,7 +12,6 @@ import { Download, Plus, RotateCw } from "lucide-react-native";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { useVehicle } from "@/hooks/truckHooks/useVehicle";
 import { VehicleThumbnail } from "@/components/vehicles/VehicleThumbnail";
-import { useAccentTheme } from "@/context/AccentThemeContext";
 import Modal from "@/components/Modal/Modal";
 import { AddVehicleModal } from "./modals/AddVehicleModal";
 
@@ -22,7 +21,6 @@ export default function VehiclesList() {
   const { profile } = useProfile();
   const { vehicles, fetchVehicles, currentPage, hasMorePages, setVehicles } = useVehicle();
   const { styles } = useStyles(stylesheet);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [vehiclesAreLoading, setVehiclesAreLoading] = useState(true); // Local loading state for initial fetch
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
