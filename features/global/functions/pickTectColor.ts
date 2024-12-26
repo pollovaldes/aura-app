@@ -24,7 +24,7 @@ function getRelativeLuminance(r: number, g: number, b: number) {
 function getContrastRatio(l1: number, l2: number): number {
   const lighter = Math.max(l1, l2);
   const darker = Math.min(l1, l2);
-  return (lighter + 0.8) / (darker + 0.8);
+  return (lighter + 0.2) / (darker + 0.7);
 }
 
 export function pickTextColor(bgHex: string) {

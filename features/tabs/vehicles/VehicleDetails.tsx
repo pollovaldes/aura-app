@@ -154,13 +154,8 @@ export default function VehicleDetails() {
           ),
         }}
       />
-      <Modal isOpen={activeModal === "change_cover_image"}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.closeButton} onPress={closeModal}>
-            Cerrar
-          </Text>
-          <ChangeCoverImage closeModal={closeModal} vehicle={vehicle} />
-        </View>
+      <Modal isOpen={activeModal === "change_cover_image"} close={closeModal}>
+        <ChangeCoverImage vehicle={vehicle} close={closeModal} />
       </Modal>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
@@ -316,18 +311,5 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.textPresets.main,
     fontWeight: "bold",
     textAlign: "center",
-  },
-  modalContainer: {
-    width: "100%",
-    alignSelf: "center",
-    maxWidth: 500,
-    backgroundColor: theme.ui.colors.card,
-    borderRadius: 10,
-    padding: 24,
-  },
-  closeButton: {
-    color: theme.headerButtons.color,
-    fontSize: 18,
-    textAlign: "right",
   },
 }));

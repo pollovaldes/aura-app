@@ -15,11 +15,11 @@ import { getFileExtension } from "@/features/global/functions/getFileExtensionFr
 import Toast from "react-native-toast-message";
 
 interface ChangeVehicleImageModalProps {
-  closeModal: () => void;
+  close: () => void;
   vehicle: Vehicle;
 }
 
-export function ChangeCoverImage({ vehicle, closeModal }: ChangeVehicleImageModalProps) {
+export function ChangeCoverImage({ vehicle, close }: ChangeVehicleImageModalProps) {
   const { styles } = useStyles(stylesheet);
   const { thumbnail, refetchVehicleThumbnail } = useVehicleThumbnail(vehicle.id);
   const [imagePickingIsLoading, setImagePickingIsLoading] = useState(false);
@@ -112,8 +112,11 @@ export function ChangeCoverImage({ vehicle, closeModal }: ChangeVehicleImageModa
   };
 
   const handleUploadThumbnail = async () => {
+    setImageIsUploading(true);
+
     if (!pickedImage) {
       showToast("Error", "No se ha seleccionado ninguna imagen.");
+      setImageIsUploading(false);
       return;
     }
 
@@ -122,8 +125,6 @@ export function ChangeCoverImage({ vehicle, closeModal }: ChangeVehicleImageModa
     if (!deletionSuccess) {
       return;
     }
-
-    setImageIsUploading(true);
 
     const { error } = await supabase.storage
       .from("vehicles-thumbnails")
@@ -147,7 +148,7 @@ export function ChangeCoverImage({ vehicle, closeModal }: ChangeVehicleImageModa
 
     showToast("Éxito", "Imagen subida correctamente.");
     refetchVehicleThumbnail();
-    closeModal();
+    close();
   };
 
   const confirmDeleteVehicleThumbnail = ConfirmDialog({
@@ -158,7 +159,7 @@ export function ChangeCoverImage({ vehicle, closeModal }: ChangeVehicleImageModa
     onConfirm: async () => {
       await deleteAllFilesFromBucket();
       refetchVehicleThumbnail();
-      closeModal();
+      close();
     },
     onCancel: () => {},
   });
@@ -208,7 +209,7 @@ export function ChangeCoverImage({ vehicle, closeModal }: ChangeVehicleImageModa
         <FormButton
           title={pickedImage ? "Elegir otra imagen" : "Elegir imagen"}
           onPress={handleSelectImage}
-          isDisabled={thumbnail?.isLoading || imageIsProcessing || imageIsUploading}
+          isDisabled={thumbnail?.isLoading || imageIsProcessing || imageIsUploading || imageIsDeleting}
           isLoading={imagePickingIsLoading}
         />
         {thumbnail?.imageURI && !thumbnail?.isLoading && (
@@ -216,7 +217,10 @@ export function ChangeCoverImage({ vehicle, closeModal }: ChangeVehicleImageModa
             title="Eliminar portada"
             buttonType="danger"
             onPress={handleDeleteThumbnail}
-            isDisabled={thumbnail?.isLoading || imagePickingIsLoading || imageIsProcessing || imageIsUploading}
+            isLoading={imageIsDeleting}
+            isDisabled={
+              thumbnail?.isLoading || imagePickingIsLoading || imageIsProcessing || imageIsUploading || imageIsDeleting
+            }
           />
         )}
       </View>

@@ -3,7 +3,6 @@ import { ActivityIndicator, FlatList, Platform, Text, View } from "react-native"
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
-import AddVehicleComponent from "@/components/vehicles/AddVehicleComponent";
 import useProfile from "@/hooks/useProfile";
 import { SimpleList } from "@/components/simpleList/SimpleList";
 import { Stack } from "expo-router";
@@ -14,6 +13,10 @@ import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { useVehicle } from "@/hooks/truckHooks/useVehicle";
 import { VehicleThumbnail } from "@/components/vehicles/VehicleThumbnail";
 import { useAccentTheme } from "@/context/AccentThemeContext";
+import Modal from "@/components/Modal/Modal";
+import { AddVehicleModal } from "./modals/AddVehicleModal";
+
+type ModalType = "add_vehicle_modal" | null;
 
 export default function VehiclesList() {
   const { profile } = useProfile();
@@ -21,6 +24,8 @@ export default function VehiclesList() {
   const { styles } = useStyles(stylesheet);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [vehiclesAreLoading, setVehiclesAreLoading] = useState(true); // Local loading state for initial fetch
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const closeModal = () => setActiveModal(null);
 
   useEffect(() => {
     fetchAllVehicles();
@@ -57,6 +62,9 @@ export default function VehiclesList() {
 
   return (
     <>
+      <Modal close={closeModal} isOpen={activeModal === "add_vehicle_modal"}>
+        <AddVehicleModal close={closeModal} />
+      </Modal>
       <Stack.Screen
         options={{
           title: `Vehículos (${vehicles?.length ?? 0})`,
@@ -64,7 +72,7 @@ export default function VehiclesList() {
             <ActionButtonGroup>
               <ActionButton onPress={() => {}} Icon={Download} text="CSV" show={isAdminOrOwner} />
               <ActionButton
-                onPress={() => setIsModalVisible(true)}
+                onPress={() => setActiveModal("add_vehicle_modal")}
                 Icon={Plus}
                 text="Agregar vehículo"
                 show={isAdminOrOwner}
@@ -74,7 +82,6 @@ export default function VehiclesList() {
           ),
         }}
       />
-      <AddVehicleComponent visible={isModalVisible} onClose={() => setIsModalVisible(false)} />
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
         data={vehicles}
