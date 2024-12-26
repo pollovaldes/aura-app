@@ -1,3 +1,4 @@
+import { useAccentTheme } from "@/context/AccentThemeContext";
 import { LucideProps } from "lucide-react-native";
 import React, { useState } from "react";
 import { Pressable, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
@@ -21,6 +22,7 @@ export function ActionButton({
   const { width } = useWindowDimensions();
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
+  const { accentColorHex } = useAccentTheme();
 
   // Mobile (iOS, Android) and Web (width <= 750)
   const isMobileOrSmallScreen =
@@ -31,7 +33,7 @@ export function ActionButton({
     return (
       <TouchableOpacity onPress={onPress}>
         {Icon ? (
-          <Icon color={styles.icon(width).color} size={styles.icon(width).fontSize} />
+          <Icon color={styles.icon(width, accentColorHex).color} size={styles.icon(width, accentColorHex).fontSize} />
         ) : (
           <Text style={styles.text} selectable={false}>
             {text}
@@ -52,7 +54,7 @@ export function ActionButton({
     >
       {Icon && (
         <View style={styles.iconContainer}>
-          <Icon color={styles.icon(width).color} size={styles.icon(width).fontSize} />
+          <Icon color={styles.icon(width, accentColorHex).color} size={styles.icon(width, accentColorHex).fontSize} />
         </View>
       )}
       {text && (
@@ -89,13 +91,13 @@ const stylesheet = createStyleSheet((theme) => ({
       web: 15,
     }),
   },
-  icon: (width: number) => ({
+  icon: (width: number, accentColor: string) => ({
     fontSize: Platform.select({
       ios: 26,
       android: 25,
       web: width <= 650 ? 25 : 16,
     }),
-    color: theme.headerButtons.color,
+    color: Platform.OS === "ios" ? accentColor : theme.colors.inverted,
   }),
   iconContainer: {
     marginRight: 8,

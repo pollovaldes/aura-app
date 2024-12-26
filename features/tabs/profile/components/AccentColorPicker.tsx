@@ -38,7 +38,7 @@ export const AccentColorPicker: React.FC = () => {
           style={{
             flexDirection: "row",
             justifyContent: "space-around",
-            width: "100%",
+            width: "104%",
           }}
         >
           {rowColors.map((colorName) => {

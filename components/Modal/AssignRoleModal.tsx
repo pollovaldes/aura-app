@@ -4,14 +4,12 @@ import { FormButton } from "@/components/Form/FormButton";
 import { Text, TouchableOpacity, View, Pressable } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { useAssignRole } from "@/hooks/peopleHooks/useAssignRole";
+import { useAccentTheme } from "@/context/AccentThemeContext";
 
-export default function AssignRoleModal({
-  closeModal,
-}: {
-  closeModal: () => void;
-}) {
+export default function AssignRoleModal({ closeModal }: { closeModal: () => void }) {
   const { styles } = useStyles(stylesheet);
   const { loading, assignUserRole } = useAssignRole();
+  const { accentColorHex } = useAccentTheme();
 
   return (
     <View style={styles.section}>
@@ -19,10 +17,7 @@ export default function AssignRoleModal({
       <View style={styles.group}>
         <View style={styles.optionsContainer}>
           <Pressable
-            style={({ pressed }) => [
-              styles.roleOption,
-              pressed && styles.roleOptionPressed,
-            ]}
+            style={({ pressed }) => [styles.roleOption, pressed && styles.roleOptionPressed(accentColorHex)]}
             onPress={() => assignUserRole("ADMIN")}
           >
             <Text style={styles.roleTitle}>Administrador</Text>
@@ -30,35 +25,25 @@ export default function AssignRoleModal({
           </Pressable>
 
           <Pressable
-            style={({ pressed }) => [
-              styles.roleOption,
-              pressed && styles.roleOptionPressed,
-            ]}
+            style={({ pressed }) => [styles.roleOption, pressed && styles.roleOptionPressed(accentColorHex)]}
             onPress={() => assignUserRole("DRIVER")}
           >
             <Text style={styles.roleTitle}>Operador</Text>
-            <Text style={styles.roleDescription}>
-              Acceso a funciones operativas
-            </Text>
+            <Text style={styles.roleDescription}>Acceso a funciones operativas</Text>
           </Pressable>
 
           <Pressable
-            style={({ pressed }) => [
-              styles.roleOption,
-              pressed && styles.roleOptionPressed,
-            ]}
+            style={({ pressed }) => [styles.roleOption, pressed && styles.roleOptionPressed(accentColorHex)]}
             onPress={() => assignUserRole("NO_ROLE")}
           >
             <Text style={styles.roleTitle}>Denegar acceso</Text>
-            <Text style={styles.roleDescription}>
-              Revocar todos los permisos
-            </Text>
+            <Text style={styles.roleDescription}>Revocar todos los permisos</Text>
           </Pressable>
         </View>
 
         <Text style={styles.subtitle}>
-          Al seleccionar una de estas opciones, los permisos de visualización
-          del usuario se actualizarán en tiempo real.
+          Al seleccionar una de estas opciones, los permisos de visualización del usuario se actualizarán en tiempo
+          real.
         </Text>
 
         <FormButton title="Cerrar" onPress={closeModal} />
@@ -88,10 +73,10 @@ const stylesheet = createStyleSheet((theme) => ({
     borderWidth: 1,
     borderColor: theme.ui.colors.border,
   },
-  roleOptionPressed: {
-    backgroundColor: theme.ui.colors.primary,
+  roleOptionPressed: (accentColor: string) => ({
+    backgroundColor: accentColor,
     opacity: 0.8,
-  },
+  }),
   roleTitle: {
     fontSize: 16,
     fontWeight: "600",

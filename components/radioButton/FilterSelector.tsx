@@ -1,3 +1,4 @@
+import { useAccentTheme } from "@/context/AccentThemeContext";
 import React from "react";
 import { TouchableOpacity, ScrollView, Text } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -13,12 +14,9 @@ interface FilterSelectorProps {
   onChange: (option: string) => void;
 }
 
-export function FilterSelector({
-  options,
-  selected,
-  onChange,
-}: FilterSelectorProps) {
+export function FilterSelector({ options, selected, onChange }: FilterSelectorProps) {
   const { styles } = useStyles(stylesheet);
+  const { accentColorHex } = useAccentTheme();
 
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -27,20 +25,11 @@ export function FilterSelector({
           key={option.key}
           style={[
             styles.filterButton,
-            selected === option.key
-              ? styles.selectedButton
-              : styles.unselectedButton,
+            selected === option.key ? styles.selectedButton(accentColorHex) : styles.unselectedButton,
           ]}
           onPress={() => onChange(option.key)}
         >
-          <Text
-            style={[
-              styles.text,
-              selected === option.key
-                ? styles.selectedText
-                : styles.unselectedText,
-            ]}
-          >
+          <Text style={[styles.text, selected === option.key ? styles.selectedText : styles.unselectedText]}>
             {option.label}
           </Text>
         </TouchableOpacity>
@@ -57,10 +46,10 @@ const stylesheet = createStyleSheet((theme) => ({
     borderRadius: 20,
     borderWidth: 1,
   },
-  selectedButton: {
-    backgroundColor: theme.ui.colors.primary,
-    borderColor: theme.ui.colors.primary,
-  },
+  selectedButton: (accentColor: string) => ({
+    backgroundColor: accentColor,
+    borderColor: accentColor,
+  }),
   unselectedButton: {
     backgroundColor: "transparent",
     borderColor: theme.ui.colors.border,
