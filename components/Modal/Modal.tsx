@@ -1,16 +1,28 @@
-import { useAccentTheme } from "@/context/AccentThemeContext";
+import React, { useState, useEffect, ReactNode } from "react";
 import {
-  KeyboardAvoidingView,
-  Platform,
   Modal as RNModal,
   ModalProps as RNModalProps,
+  Platform,
   ScrollView,
+  StyleSheet,
   Text,
   TouchableOpacity,
   View,
+  KeyboardAvoidingView,
+  Dimensions,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Animated, {
+  BounceInDown,
+  BounceInUp,
+  FadeIn,
+  FadeOut,
+  SlideInDown,
+  SlideOutDown,
+  ZoomIn,
+} from "react-native-reanimated";
+import { useAccentTheme } from "@/context/AccentThemeContext";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { ReactNode } from "react";
 
 type ModalProps = RNModalProps & {
   isOpen: boolean;
@@ -21,44 +33,76 @@ type ModalProps = RNModalProps & {
 export default function Modal({ isOpen, close, children, ...rest }: ModalProps) {
   const { styles } = useStyles(stylesheet);
   const { accentColorHex } = useAccentTheme();
+  const insets = useSafeAreaInsets();
+
+  const [screenWidth, setScreenWidth] = useState(Dimensions.get("window").width);
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get("window").height);
+
+  useEffect(() => {
+    const updateWidth = () => setScreenWidth(Dimensions.get("window").width);
+    const widthSubscription = Dimensions.addEventListener("change", updateWidth);
+
+    const updateHeight = () => setScreenHeight(Dimensions.get("window").height);
+    const heightSubscription = Dimensions.addEventListener("change", updateHeight);
+
+    return () => {
+      widthSubscription.remove();
+      heightSubscription.remove();
+    };
+  }, []);
+
+  if (!isOpen) return null;
 
   return (
-    <RNModal visible={isOpen} transparent animationType="slide" {...rest} statusBarTranslucent>
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "height" : "padding"} style={styles.container}>
-        <ScrollView
-          contentContainerStyle={{
-            flexGrow: 1,
-            justifyContent: "center",
-            paddingTop: 80,
-            paddingBottom: 80,
-          }}
-        >
-          <View style={styles.modalContainer}>
-            <TouchableOpacity onPress={close}>
-              <Text style={styles.closeButton(accentColorHex)}>Cerrar</Text>
-            </TouchableOpacity>
-            {children}
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+    <RNModal visible={isOpen} transparent animationType="none" statusBarTranslucent {...rest}>
+      <View style={styles.container(screenWidth, screenHeight)}>
+        <Animated.View style={styles.overlay} entering={FadeIn.duration(300)} />
+        <KeyboardAvoidingView style={styles.keyboardAvoider} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+          <ScrollView
+            contentContainerStyle={styles.scrollContentContainer(insets.top)}
+            keyboardShouldPersistTaps="handled"
+          >
+            <Animated.View style={styles.modalCard(screenWidth)} entering={ZoomIn.duration(300)}>
+              <TouchableOpacity onPress={close}>
+                <Text style={styles.closeButton(accentColorHex)}>Cerrar</Text>
+              </TouchableOpacity>
+              {children}
+            </Animated.View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </View>
     </RNModal>
   );
 }
 
 const stylesheet = createStyleSheet((theme) => ({
-  container: {
-    flex: 1,
-    paddingHorizontal: 6,
-    backgroundColor: "rgba(0.0, 0.0, 0.0, 0.65)",
+  container: (width: number, height: number) => ({
+    height: height,
+    width: width,
+  }),
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.75)",
   },
-  modalContainer: {
-    width: "100%",
+  keyboardAvoider: {
+    flex: 1,
+    justifyContent: "center",
+    paddingHorizontal: 12,
+  },
+  scrollContentContainer: (topInset: number) => ({
+    flexGrow: 1,
+    justifyContent: "center",
+    paddingBottom: Platform.OS === "ios" ? topInset : 60,
+    paddingTop: Platform.OS === "ios" ? topInset : 60,
+  }),
+  modalCard: (width: number) => ({
+    maxWidth: 550,
+    width: width - 24,
     alignSelf: "center",
-    maxWidth: 500,
     backgroundColor: theme.ui.colors.card,
     borderRadius: 10,
-    padding: 24,
-  },
+    padding: 12,
+  }),
   closeButton: (accentColor: string) => ({
     color: accentColor,
     fontSize: 18,

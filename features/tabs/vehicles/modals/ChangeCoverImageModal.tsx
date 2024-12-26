@@ -13,13 +13,14 @@ import { decode } from "base64-arraybuffer";
 import { getMimeTypeFromUri } from "@/features/global/functions/getMimeTypeFromUri";
 import { getFileExtension } from "@/features/global/functions/getFileExtensionFromMimeType";
 import Toast from "react-native-toast-message";
+import { ImagePlus, Trash2 } from "lucide-react-native";
 
 interface ChangeVehicleImageModalProps {
   close: () => void;
   vehicle: Vehicle;
 }
 
-export function ChangeCoverImage({ vehicle, close }: ChangeVehicleImageModalProps) {
+export function ChangeCoverImageModal({ vehicle, close }: ChangeVehicleImageModalProps) {
   const { styles } = useStyles(stylesheet);
   const { thumbnail, refetchVehicleThumbnail } = useVehicleThumbnail(vehicle.id);
   const [imagePickingIsLoading, setImagePickingIsLoading] = useState(false);
@@ -207,6 +208,7 @@ export function ChangeCoverImage({ vehicle, close }: ChangeVehicleImageModalProp
 
       <View style={styles.actionsContainer}>
         <FormButton
+          Icon={ImagePlus}
           title={pickedImage ? "Elegir otra imagen" : "Elegir imagen"}
           onPress={handleSelectImage}
           isDisabled={thumbnail?.isLoading || imageIsProcessing || imageIsUploading || imageIsDeleting}
@@ -215,6 +217,7 @@ export function ChangeCoverImage({ vehicle, close }: ChangeVehicleImageModalProp
         {thumbnail?.imageURI && !thumbnail?.isLoading && (
           <FormButton
             title="Eliminar portada"
+            Icon={Trash2}
             buttonType="danger"
             onPress={handleDeleteThumbnail}
             isLoading={imageIsDeleting}

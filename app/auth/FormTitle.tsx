@@ -9,11 +9,7 @@ type FormTitleProps = {
   onBackPress?: () => void;
 };
 
-const FormTitle = ({
-  title,
-  showBackButton = false,
-  onBackPress,
-}: FormTitleProps) => {
+const FormTitle = ({ title, showBackButton = false, onBackPress }: FormTitleProps) => {
   const { styles } = useStyles(stylesheet);
 
   return (
@@ -37,12 +33,11 @@ const stylesheet = createStyleSheet((theme) => ({
     alignItems: "center",
   },
   titleContainer: {
-    marginHorizontal: 24,
     flexShrink: 1,
     flexGrow: 1,
   },
   title: {
-    fontSize: 30,
+    fontSize: 25,
     textAlign: "center",
     color: theme.textPresets.main,
     fontWeight: "bold",

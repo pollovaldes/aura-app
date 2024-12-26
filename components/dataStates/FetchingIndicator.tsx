@@ -18,6 +18,7 @@ export function FetchingIndicator({ caption }: LoadingScreenType) {
         options={{
           headerRight: undefined,
           title: "",
+          headerLargeTitle: false,
         }}
       />
       <View style={[styles.container, { paddingTop: Platform.OS === "ios" ? headerHeight : 0 }]}>

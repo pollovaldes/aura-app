@@ -6,12 +6,13 @@ import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "@/components/Form/FormButton";
 import { supabase } from "@/lib/supabase";
 import FormInput from "@/components/Form/FormInput";
-import { ArrowUpFromLine, File, Plus, X } from "lucide-react-native";
+import { ArrowUpFromLine, File, FilePlus, Plus, X } from "lucide-react-native";
 import { DocumentPickerAsset } from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import { decode } from "base64-arraybuffer";
 import * as DocumentPicker from "expo-document-picker";
 import { Vehicle } from "@/types/globalTypes";
+import Toast from "react-native-toast-message";
 
 interface AddDocumentModalProps {
   closeModal: () => void;
@@ -19,68 +20,83 @@ interface AddDocumentModalProps {
   vehicle: Vehicle;
 }
 
-export default function AddDocument({ closeModal, refreshDocuments, vehicle }: AddDocumentModalProps) {
+export function AddDocumentModal({ closeModal, refreshDocuments, vehicle }: AddDocumentModalProps) {
   const { styles } = useStyles(stylesheet);
   const [documentTitle, setDocumentTitle] = useState("");
   const [documentDescription, setDocumentDescription] = useState("");
-  const [isUploading, setIsUploading] = useState(false);
-  const [document, setDocument] = useState<DocumentPickerAsset | null>(null);
+  const [documentIsUploading, setDocumentIsUploading] = useState(false);
+  const [documentDatabaseIsUploading, setDocumentDatabaseIsUploading] = useState(false);
+  const [pickedDocument, setPickedDocument] = useState<DocumentPicker.DocumentPickerAsset | null>(null);
+  const [documentPickingIsLoading, setDocumentPickingIsLoading] = useState(false);
 
-  const getDocument = async () => {
-    const result = await DocumentPicker.getDocumentAsync({
-      type: "*/*",
-      copyToCacheDirectory: true,
+  const showToast = (title: string, caption: string) => {
+    Toast.show({
+      type: "alert",
+      text1: title,
+      text2: caption,
     });
-
-    if (result.canceled) {
-      alert("La selección de archivo fue cancelada");
-      setDocument(null);
-    }
-
-    if (result.assets) {
-      setDocument(result.assets[0]);
-    } else {
-      setDocument(null);
-    }
   };
 
-  const uploadDocument = async (documentId: string): Promise<boolean> => {
-    if (!document) {
-      alert("No se puede subir el archivo porque no se ha seleccionado ninguno");
+  const handlePickDocument = async () => {
+    setDocumentPickingIsLoading(true);
+    const pickerResult = await DocumentPicker.getDocumentAsync({
+      multiple: false,
+    });
+
+    if (pickerResult.canceled) {
+      setDocumentPickingIsLoading(false);
+      setPickedDocument(null);
+      return;
+    }
+
+    setPickedDocument(pickerResult.assets[0]);
+    setDocumentPickingIsLoading(false);
+  };
+
+  const uploadDocument = async (documentId: string) => {
+    setDocumentIsUploading(true);
+
+    if (!pickedDocument) {
+      showToast("Error", "No se seleccionó un archivo para subir");
+      setDocumentIsUploading(false);
       return false;
     }
 
     let fileData;
     if (Platform.OS === "web") {
-      fileData = document.file;
+      fileData = pickedDocument.file;
     } else {
-      fileData = await FileSystem.readAsStringAsync(document.uri, {
+      fileData = await FileSystem.readAsStringAsync(pickedDocument.uri, {
         encoding: FileSystem.EncodingType.Base64,
       });
       fileData = decode(fileData);
     }
 
     if (!fileData) {
-      alert("No se pudo procesar el archivo para la carga");
+      showToast("Error", "Ocurrió un error al leer el archivo seleccionado");
+      setDocumentIsUploading(false);
       return false;
     }
 
-    const { data, error } = await supabase.storage.from("documents").upload(`${vehicle.id}/${documentId}`, fileData, {
-      contentType: document.mimeType,
+    const { error } = await supabase.storage.from("documents").upload(`${vehicle.id}/${documentId}`, fileData, {
+      contentType: pickedDocument.mimeType,
     });
 
     if (error) {
-      alert(
-        `Ocurrió un error al subir el archivo \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}`
-      );
+      showToast("Error", "Ocurrió un error al subir el archivo");
+      console.error("Error uploading file", error);
+      setDocumentIsUploading(false);
       return false;
     }
 
+    showToast("Éxito", "El archivo se subió correctamente");
+    setDocumentIsUploading(false);
     return true;
   };
 
-  const handleAddDocument = async () => {
-    setIsUploading(true);
+  const handleAddDocumentToDatabase = async () => {
+    setDocumentDatabaseIsUploading(true);
+
     const { data, error } = await supabase
       .from("vehicle_documentation_sheet")
       .insert([
@@ -90,25 +106,25 @@ export default function AddDocument({ closeModal, refreshDocuments, vehicle }: A
           description: documentDescription,
         },
       ])
-      .select();
+      .select()
+      .single();
 
-    if (error && !data) {
-      alert(
-        `Ocurrió un error al agregar el documento \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}\n\nCódigo de error: ${error.code}\n\nDetalles: ${error.details}\n\nSugerencia: ${error.hint}`
-      );
+    if (error) {
+      showToast("Error", "Ocurrió un error al agregar el documento a la base de datos");
+      console.error("Error adding document to database", error);
+      setDocumentDatabaseIsUploading(false);
       return;
     }
 
-    const uploadSuccess = await uploadDocument(data[0].document_id);
+    const uploadSuccess = await uploadDocument(data.document_id);
 
     if (!uploadSuccess) {
-      const { error } = await supabase
-        .from("vehicle_documentation_sheet")
-        .delete()
-        .eq("document_id", data[0].document_id);
+      const { error } = await supabase.from("vehicle_documentation_sheet").delete().eq("document_id", data.document_id);
+      setDocumentDatabaseIsUploading(false);
+      return;
     }
 
-    setIsUploading(false);
+    setDocumentDatabaseIsUploading(false);
     refreshDocuments();
     closeModal();
   };
@@ -127,7 +143,7 @@ export default function AddDocument({ closeModal, refreshDocuments, vehicle }: A
           placeholderTextColor={styles.textInput.placehoolderTextColor}
           onChangeText={setDocumentTitle}
           description="Nombre amigable del documento (obligatorio)"
-          editable={!isUploading}
+          editable={!documentDatabaseIsUploading && !documentIsUploading && !documentPickingIsLoading}
         />
         <FormInput
           placeholder="Ej. Póliza"
@@ -136,19 +152,20 @@ export default function AddDocument({ closeModal, refreshDocuments, vehicle }: A
           placeholderTextColor={styles.textInput.placehoolderTextColor}
           onChangeText={setDocumentDescription}
           description="Descripción del documento"
-          editable={!isUploading}
+          editable={!documentDatabaseIsUploading && !documentIsUploading && !documentPickingIsLoading}
         />
         <FormButton
           title="Seleccionar archivo"
-          onPress={getDocument}
-          icon={() => <ArrowUpFromLine color={styles.buttonIcon.color} />}
-          isDisabled={isUploading && !!document}
+          onPress={handlePickDocument}
+          isLoading={documentPickingIsLoading}
+          Icon={File}
+          isDisabled={documentIsUploading || documentDatabaseIsUploading || documentPickingIsLoading}
         />
 
-        {document && (
+        {pickedDocument && (
           <View style={styles.filePreviewContainer}>
             <View>
-              <TouchableOpacity onPress={() => setDocument(null)}>
+              <TouchableOpacity onPress={() => setPickedDocument(null)}>
                 <X color={styles.fileIcon.color} />
               </TouchableOpacity>
             </View>
@@ -162,9 +179,9 @@ export default function AddDocument({ closeModal, refreshDocuments, vehicle }: A
                 }}
               >
                 <Text style={styles.fileText} ellipsizeMode="middle" numberOfLines={2}>
-                  {document.name}
+                  {pickedDocument.name}
                 </Text>
-                <Text style={styles.fileSubtitle}>{((document.size ?? 0) / 1000000).toFixed(2)} MB</Text>
+                <Text style={styles.fileSubtitle}>{((pickedDocument.size ?? 0) / 1000000).toFixed(2)} MB</Text>
               </View>
             </View>
           </View>
@@ -172,12 +189,17 @@ export default function AddDocument({ closeModal, refreshDocuments, vehicle }: A
       </View>
       <View style={styles.group}>
         <FormButton
+          Icon={ArrowUpFromLine}
           title="Agregar documento"
-          onPress={handleAddDocument}
-          isLoading={isUploading}
-          isDisabled={!document || documentTitle === ""}
+          onPress={handleAddDocumentToDatabase}
+          isLoading={documentIsUploading || documentDatabaseIsUploading}
+          isDisabled={!pickedDocument || documentTitle === ""}
         />
-        <Text style={styles.subtitle}>{isUploading && "Subiendo archivo, no cierres la app"}</Text>
+        <Text style={styles.subtitle}>
+          {documentIsUploading
+            ? "Subiendo documento al servidor..."
+            : documentDatabaseIsUploading && "Agregando documento a la base de datos..."}
+        </Text>
       </View>
     </View>
   );

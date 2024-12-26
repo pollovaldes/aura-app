@@ -19,9 +19,7 @@ export default function FileViewer({ fileUrl, randomKey }: FileViewerProps) {
   const embeddedUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${fileUrl}`;
 
   if (Platform.OS === "web") {
-    return (
-      <iframe src={fileUrl} height={"100%"} width={"100%"} key={randomKey} />
-    );
+    return <iframe src={fileUrl} height={"100%"} width={"100%"} key={randomKey} />;
   } else {
     return (
       <>
@@ -34,11 +32,7 @@ export default function FileViewer({ fileUrl, randomKey }: FileViewerProps) {
           <WebView
             incognito={true}
             javaScriptEnabled={true}
-            source={
-              Platform.OS === "android"
-                ? { uri: embeddedUrl }
-                : { uri: fileUrl }
-            }
+            source={Platform.OS === "android" ? { uri: embeddedUrl } : { uri: fileUrl }}
             onLoadStart={(syntheticEvent) => {
               setIsWebViewLoading(true);
             }}

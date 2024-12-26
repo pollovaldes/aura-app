@@ -16,10 +16,10 @@ export function useVehicleThumbnail(vehicleId: string) {
     });
   };
 
-  const fetchImage = async () => {
+  const fetchThumbnail = async () => {
     const { data: fileList, error: listError } = await supabase.storage
       .from("vehicles-thumbnails")
-      .list(`${vehicleId}/`, { limit: 100 });
+      .list(`${vehicleId}/`, { limit: 1 });
 
     if (listError || !fileList || fileList.length === 0) {
       setVehicleThumbnails((prev) =>
@@ -61,13 +61,23 @@ export function useVehicleThumbnail(vehicleId: string) {
       prev.map((item) => (item.vehicleId === vehicleId ? { ...item, isLoading: true, imageURI: null } : item))
     );
 
-    await fetchImage();
+    await fetchThumbnail();
+  };
+
+  const refetchAllVehicleThumbnails = async () => {
+    setVehicleThumbnails((prev) =>
+      prev.map((item) => (item.vehicleId === vehicleId ? { ...item, isLoading: true, imageURI: null } : item))
+    );
+
+    for (const thumbnail of vehicleThumbnails) {
+      await fetchThumbnail();
+    }
   };
 
   useEffect(() => {
     if (!thumbnail) {
       setVehicleThumbnails((prev) => [...prev, { vehicleId, isLoading: true, imageURI: null }]);
-      fetchImage();
+      fetchThumbnail();
     }
   }, []);
 

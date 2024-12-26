@@ -1,5 +1,7 @@
 import { useAccentTheme } from "@/context/AccentThemeContext";
 import { pickTextColor } from "@/features/global/functions/pickTectColor";
+import { LucideProps } from "lucide-react-native";
+import React from "react";
 import { Pressable, Text, ActivityIndicator, ViewStyle, View, TouchableOpacity } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
@@ -11,7 +13,7 @@ type FormButtonProps = {
   isDisabled?: boolean;
   disabledText?: string;
   buttonType?: "normal" | "danger";
-  icon?: () => JSX.Element;
+  Icon?: React.ComponentType<Partial<LucideProps>>;
 };
 
 export function FormButton({
@@ -22,7 +24,7 @@ export function FormButton({
   disabledText,
   isDisabled,
   buttonType = "normal",
-  icon,
+  Icon,
 }: FormButtonProps) {
   const { styles } = useStyles(stylesheet);
   const { accentColorHex } = useAccentTheme();
@@ -47,21 +49,21 @@ export function FormButton({
           styles.button(accentColorHex),
           buttonType === "danger" && styles.redButton,
           style,
-          { opacity: isLoading || isDisabled ? 0.3 : 1 },
+          { opacity: isLoading || isDisabled ? 0.4 : 1 },
         ]}
         onPress={onPress}
         disabled={isLoading || isDisabled}
       >
         <Text
-          style={[
-            styles.buttonText(buttonTextColor),
-            icon ? { marginRight: 12 } : {}, // Apply marginLeft if icon is present
-            { opacity: isLoading ? 0 : isLoading && isDisabled ? 0 : 1 },
-          ]}
+          style={[styles.buttonText(buttonTextColor), { opacity: isLoading ? 0 : isLoading && isDisabled ? 0 : 1 }]}
         >
           {isDisabled && disabledText ? disabledText : text}
         </Text>
-        {icon && !isLoading && icon()}
+        {Icon && !isLoading && (
+          <View style={{ marginLeft: 10 }}>
+            <Icon color={styles.buttonText(buttonTextColor).color} />
+          </View>
+        )}
       </TouchableOpacity>
     </View>
   );

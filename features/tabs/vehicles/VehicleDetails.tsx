@@ -37,7 +37,7 @@ import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
 import { useVehicle } from "@/hooks/truckHooks/useVehicle";
 import { useVehicleThumbnail } from "@/hooks/useVehicleThumbnail";
-import { ChangeCoverImage } from "@/components/vehicles/modals/ChangeCoverImage";
+import { ChangeCoverImageModal } from "@/features/tabs/vehicles/modals/ChangeCoverImageModal";
 
 type ModalType = "change_cover_image" | null;
 
@@ -132,7 +132,6 @@ export default function VehicleDetails() {
         options={{
           headerLargeTitle: false,
           title: vehicleTitle,
-          headerTitleStyle: { color: "transparent", fontSize: 0.1 },
           headerRight: () => (
             <ActionButtonGroup>
               <ActionButton
@@ -155,7 +154,7 @@ export default function VehicleDetails() {
         }}
       />
       <Modal isOpen={activeModal === "change_cover_image"} close={closeModal}>
-        <ChangeCoverImage vehicle={vehicle} close={closeModal} />
+        <ChangeCoverImageModal vehicle={vehicle} close={closeModal} />
       </Modal>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"

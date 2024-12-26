@@ -63,9 +63,11 @@ export default function VehiclesList() {
       <Modal close={closeModal} isOpen={activeModal === "add_vehicle_modal"}>
         <AddVehicleModal close={closeModal} />
       </Modal>
+
       <Stack.Screen
         options={{
           title: `Vehículos (${vehicles?.length ?? 0})`,
+          headerLargeTitle: true,
           headerRight: () => (
             <ActionButtonGroup>
               <ActionButton onPress={() => {}} Icon={Download} text="CSV" show={isAdminOrOwner} />

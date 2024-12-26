@@ -6,13 +6,13 @@ import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import Modal from "@/components/Modal/Modal";
 import { SimpleList } from "@/components/simpleList/SimpleList";
-import AddDocument from "@/components/vehicles/modals/AddDocument";
+import { AddDocumentModal } from "@/components/vehicles/modals/AddDocument";
 import { useVehicle } from "@/hooks/truckHooks/useVehicle";
 import useDocuments from "@/hooks/useDocuments";
 import useProfile from "@/hooks/useProfile";
 import { Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { Plus, RotateCw } from "lucide-react-native";
-import React, { useCallback, useState } from "react";
+import { FilePlus, Plus, RotateCw } from "lucide-react-native";
+import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, Platform, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
@@ -22,38 +22,39 @@ export default function VehicleDocumentation() {
   const { styles } = useStyles(stylesheet);
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
-  const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
+  const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicle();
+  const [vehicleIsLoading, setVehicleIsLoading] = useState(true);
   const { documents, areDocumentsLoading, fetchDocuments } = useDocuments();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchDocuments();
-    }, [])
-  );
+  const fetchVehicle = async () => {
+    setVehicleIsLoading(true);
+    await fetchVehicleById(vehicleId);
+    setVehicleIsLoading(false);
+  };
 
-  if (vehiclesAreLoading || areDocumentsLoading) {
-    return <FetchingIndicator caption={vehiclesAreLoading ? "Cargando vehículos" : "Cargando documentos"} />;
+  const refetchVehicle = async () => {
+    setVehicleIsLoading(true);
+    await refetchVehicleById(vehicleId);
+    setVehicleIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchVehicle();
+  }, []);
+
+  if (vehicleIsLoading || areDocumentsLoading) {
+    return <FetchingIndicator caption={vehicleIsLoading ? "Cargando vehículos" : "Cargando documentos"} />;
   }
 
-  if (vehicles === null) {
+  if (!vehicles) {
     return (
       <ErrorScreen
-        caption={`Ocurrió un error y no \npudimos cargar los vehículos`}
+        caption="Ocurrió un error al cargar los vehículos"
         buttonCaption="Reintentar"
-        retryFunction={fetchVehicles}
-      />
-    );
-  }
-
-  if (documents === null) {
-    return (
-      <ErrorScreen
-        caption={`Ocurrió un error y no \npudimos cargar los documentos`}
-        buttonCaption="Reintentar"
-        retryFunction={fetchDocuments}
+        retryFunction={fetchVehicle}
       />
     );
   }
@@ -62,10 +63,23 @@ export default function VehicleDocumentation() {
 
   if (!vehicle) {
     return (
-      <UnauthorizedScreen
-        caption="No tienes acceso a este recurso."
+      <>
+        <Stack.Screen options={{ title: "Recurso inaccesible", headerLargeTitle: false }} />
+        <UnauthorizedScreen
+          caption="No tienes acceso a este recurso."
+          buttonCaption="Reintentar"
+          retryFunction={refetchVehicle}
+        />
+      </>
+    );
+  }
+
+  if (!documents) {
+    return (
+      <ErrorScreen
+        caption={`Ocurrió un error y no \npudimos cargar los documentos`}
         buttonCaption="Reintentar"
-        retryFunction={fetchVehicles}
+        retryFunction={fetchDocuments}
       />
     );
   }
@@ -76,13 +90,8 @@ export default function VehicleDocumentation() {
 
   return (
     <>
-      <Modal isOpen={activeModal === "add_document"}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.closeButton} onPress={closeModal}>
-            Cerrar
-          </Text>
-          <AddDocument closeModal={closeModal} vehicle={vehicle} refreshDocuments={fetchDocuments} />
-        </View>
+      <Modal isOpen={activeModal === "add_document"} close={closeModal}>
+        <AddDocumentModal closeModal={closeModal} vehicle={vehicle} refreshDocuments={fetchDocuments} />
       </Modal>
 
       <Stack.Screen
@@ -92,7 +101,7 @@ export default function VehicleDocumentation() {
           headerRight: () => (
             <ActionButtonGroup>
               <ActionButton
-                Icon={Plus}
+                Icon={FilePlus}
                 onPress={() => setActiveModal("add_document")}
                 show={canEdit}
                 text="Agregar documento"
@@ -100,7 +109,7 @@ export default function VehicleDocumentation() {
               <ActionButton
                 onPress={() => {
                   fetchDocuments();
-                  fetchVehicles();
+                  refetchVehicle();
                 }}
                 Icon={RotateCw}
                 text="Actualizar"
@@ -112,9 +121,9 @@ export default function VehicleDocumentation() {
       />
 
       <FlatList
-        refreshing={vehiclesAreLoading || areDocumentsLoading}
+        refreshing={vehicleIsLoading || areDocumentsLoading}
         onRefresh={() => {
-          fetchVehicles();
+          refetchVehicle();
           fetchDocuments();
         }}
         contentInsetAdjustmentBehavior="automatic"
