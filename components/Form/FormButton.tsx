@@ -1,3 +1,5 @@
+import { useAccentTheme } from "@/context/AccentThemeContext";
+import { pickTextColor } from "@/features/global/functions/pickTectColor";
 import { Pressable, Text, ActivityIndicator, ViewStyle, View, TouchableOpacity } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
@@ -23,6 +25,8 @@ export function FormButton({
   icon,
 }: FormButtonProps) {
   const { styles } = useStyles(stylesheet);
+  const { accentColorHex } = useAccentTheme();
+  const buttonTextColor = pickTextColor(accentColorHex);
 
   return (
     <View>
@@ -34,13 +38,13 @@ export function FormButton({
             position: "absolute",
             zIndex: 1,
             alignSelf: "center",
-            top: styles.button.height / 2 - styles.activityIndicator.height / 2,
+            top: styles.button(accentColorHex).height / 2 - styles.activityIndicator.height / 2,
           }}
         />
       )}
       <TouchableOpacity
         style={[
-          styles.button,
+          styles.button(accentColorHex),
           buttonType === "danger" && styles.redButton,
           style,
           { opacity: isLoading || isDisabled ? 0.3 : 1 },
@@ -50,7 +54,7 @@ export function FormButton({
       >
         <Text
           style={[
-            styles.buttonText,
+            styles.buttonText(buttonTextColor),
             icon ? { marginRight: 12 } : {}, // Apply marginLeft if icon is present
             { opacity: isLoading ? 0 : isLoading && isDisabled ? 0 : 1 },
           ]}
@@ -67,20 +71,20 @@ const stylesheet = createStyleSheet((theme) => ({
   activityIndicator: {
     height: 30,
   },
-  button: {
+  button: (accentColor: string) => ({
     height: 45,
-    backgroundColor: theme.components.formComponent.buttonMainBG,
+    backgroundColor: accentColor,
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
     paddingHorizontal: 10,
-  },
-  buttonText: {
-    color: theme.textPresets.inverted,
+  }),
+  buttonText: (textColor: string) => ({
+    color: textColor,
     userSelect: "none",
     fontSize: 18,
-  },
+  }),
   redButton: {
     backgroundColor: theme.components.formComponent.buttonRedBG,
   },

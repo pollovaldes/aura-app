@@ -136,7 +136,7 @@ export const lightTheme = {
     },
     formComponent: {
       buttonMainBG: colorPalette.emerald[600],
-      buttonRedBG: colorPalette.red[500],
+      buttonRedBG: colorPalette.red[400],
       buttonSecondaryBG: colorPalette.neutral[600],
     },
     navBarListItem: {
@@ -205,7 +205,7 @@ export const darkTheme = {
     },
     formComponent: {
       buttonMainBG: colorPalette.emerald[300],
-      buttonRedBG: colorPalette.red[300],
+      buttonRedBG: colorPalette.red[500],
       buttonSecondaryBG: colorPalette.neutral[300],
     },
     navBarListItem: {
