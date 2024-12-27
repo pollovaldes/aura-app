@@ -5,9 +5,8 @@ import Row from "@/components/grouped-list/Row";
 import useMaintenance from "@/hooks/useMaintenance";
 import useProfile from "@/hooks/useProfile";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
-import { useHeaderHeight } from "@react-navigation/elements";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, RefreshControl, ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { colorPalette } from "@/style/themes";
@@ -21,34 +20,72 @@ import { useVehicle } from "@/hooks/truckHooks/useVehicle";
 
 export default function VehicleMaintenanceDetails() {
   const { styles } = useStyles(stylesheet);
-  const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
   const { getGuaranteedProfile } = useProfile();
+  const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicle();
   const profile = getGuaranteedProfile();
   const { maintenanceId } = useLocalSearchParams<{ maintenanceId: string }>();
-
+  const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const { maintenanceRecords, areMaintenanceRecordsLoading, fetchMaintenance } = useMaintenance(
     undefined,
     maintenanceId
   );
-
   const { areMaintenanceDocumentsLoading, fetchMaintenanceDocuments, maintenanceDocuments } =
     useMaintenanceDocuments(maintenanceId);
-
-  const headerHeight = useHeaderHeight();
-
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
+  const [vehicleIsLoading, setVehicleIsLoading] = useState(true);
 
-  if (vehiclesAreLoading || areMaintenanceRecordsLoading || areMaintenanceDocumentsLoading) {
+  const fetchVehicle = async () => {
+    setVehicleIsLoading(true);
+    await fetchVehicleById(vehicleId);
+    setVehicleIsLoading(false);
+  };
+
+  const refetchVehicle = async () => {
+    setVehicleIsLoading(true);
+    await refetchVehicleById(vehicleId);
+    setVehicleIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchVehicle();
+  }, []);
+
+  if (vehicleIsLoading || areMaintenanceRecordsLoading || areMaintenanceDocumentsLoading) {
     return (
       <FetchingIndicator
         caption={
-          vehiclesAreLoading
-            ? "Cargando vehículos"
+          vehicleIsLoading
+            ? "Cargando vehículo"
             : areMaintenanceRecordsLoading
               ? "Cargando solicitudes de mantenimiento"
               : "Cargando documentos"
         }
       />
+    );
+  }
+
+  if (!vehicles) {
+    return (
+      <ErrorScreen
+        caption="Ocurrió un error al cargar los vehículos"
+        buttonCaption="Reintentar"
+        retryFunction={fetchVehicle}
+      />
+    );
+  }
+
+  const vehicle = vehicles.find((Vehicle) => Vehicle.id === vehicleId);
+
+  if (!vehicle) {
+    return (
+      <>
+        <Stack.Screen options={{ title: "Recurso inaccesible", headerLargeTitle: false }} />
+        <UnauthorizedScreen
+          caption="No tienes acceso a este recurso."
+          buttonCaption="Reintentar"
+          retryFunction={refetchVehicle}
+        />
+      </>
     );
   }
 
@@ -72,21 +109,9 @@ export default function VehicleMaintenanceDetails() {
     );
   }
 
-  if (vehicles === null) {
-    return (
-      <ErrorScreen
-        caption={`Ocurrió un error y no \npudimos cargar los vehículos`}
-        buttonCaption="Reintentar"
-        retryFunction={fetchVehicles}
-      />
-    );
-  }
-
   console.log("maintennaceDocs" + maintenanceDocuments);
 
   const record = maintenanceRecords[0];
-
-  const vehicle = vehicles.find((Vehicle) => Vehicle.id === record.vehicle_id);
 
   if (!vehicle) {
     return (
@@ -102,7 +127,7 @@ export default function VehicleMaintenanceDetails() {
         <UnauthorizedScreen
           caption="No tienes acceso a este recurso."
           buttonCaption="Reintentar"
-          retryFunction={fetchVehicles}
+          retryFunction={refetchVehicle}
         />
       </>
     );
@@ -149,26 +174,27 @@ export default function VehicleMaintenanceDetails() {
           headerLargeTitle: false,
         }}
       />
-      <SegmentedControl
-        values={["General", "Archivos y medios", "Actualizaciones"]}
-        selectedIndex={currentTabIndex}
-        onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
-        style={[styles.segmentedControl, {}]}
-      />
-      {currentTabIndex === 0 && (
+      {currentTabIndex === 0 ? (
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           refreshControl={
             <RefreshControl
-              refreshing={vehiclesAreLoading || areMaintenanceRecordsLoading || areMaintenanceDocumentsLoading}
+              refreshing={vehicleIsLoading || areMaintenanceRecordsLoading || areMaintenanceDocumentsLoading}
               onRefresh={() => {
-                fetchVehicles();
+                refetchVehicle();
                 fetchMaintenance();
                 fetchMaintenanceDocuments();
               }}
             />
           }
+          style={{ flex: 1 }}
         >
+          <SegmentedControl
+            values={["General", "Archivos y medios"]}
+            selectedIndex={currentTabIndex}
+            onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
+            style={styles.segmentedControl}
+          />
           <View style={styles.groupedListsContainer}>
             <GroupedList>
               <Row
@@ -249,15 +275,21 @@ export default function VehicleMaintenanceDetails() {
             </GroupedList>
           </View>
         </ScrollView>
-      )}
-
-      {currentTabIndex === 1 && (
+      ) : (
         <FlatList
-          refreshing={vehiclesAreLoading}
-          onRefresh={fetchVehicles}
+          refreshing={vehicleIsLoading}
+          onRefresh={refetchVehicle}
           contentInsetAdjustmentBehavior="automatic"
           data={maintenanceDocuments}
           keyExtractor={(item) => item.document_id}
+          ListHeaderComponent={
+            <SegmentedControl
+              values={["General", "Archivos y medios"]}
+              selectedIndex={currentTabIndex}
+              onChange={(event) => setCurrentTabIndex(event.nativeEvent.selectedSegmentIndex)}
+              style={styles.segmentedControl}
+            />
+          }
           renderItem={({ item }) => (
             <SimpleList
               relativeToDirectory
@@ -275,33 +307,6 @@ export default function VehicleMaintenanceDetails() {
           )}
           ListEmptyComponent={<EmptyScreen caption="No hay documentos para este vehículo." />}
         />
-      )}
-
-      {currentTabIndex === 2 && (
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          refreshControl={
-            <RefreshControl
-              refreshing={vehiclesAreLoading || areMaintenanceRecordsLoading || areMaintenanceDocumentsLoading}
-              onRefresh={() => {
-                fetchVehicles();
-                fetchMaintenance();
-                fetchMaintenanceDocuments();
-              }}
-            />
-          }
-        >
-          <View style={styles.groupedListsContainer}>
-            <GroupedList>
-              <Row
-                title="Actualizaciones"
-                caption="No se registraron actualizaciones para esta solicitud"
-                icon={Info}
-                backgroundColor={colorPalette.cyan[500]}
-              />
-            </GroupedList>
-          </View>
-        </ScrollView>
       )}
     </>
   );
