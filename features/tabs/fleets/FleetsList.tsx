@@ -43,13 +43,8 @@ export default function FleetsList() {
 
   return (
     <>
-      <Modal isOpen={activeModal === "add_fleet"}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.closeButton} onPress={closeModal}>
-            Cerrar
-          </Text>
-          <AddFleetModal closeModal={closeModal} fetchFleets={fetchFleets} />
-        </View>
+      <Modal isOpen={activeModal === "add_fleet"} close={closeModal}>
+        <AddFleetModal closeModal={closeModal} fetchFleets={fetchFleets} />
       </Modal>
 
       <Stack.Screen

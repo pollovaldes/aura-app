@@ -1,7 +1,7 @@
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "@/components/Form/FormButton";
 import { useState } from "react";
-import { Text, TextInput, View } from "react-native";
+import { Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import FormInput from "../Form/FormInput";
 import { supabase } from "@/lib/supabase";
@@ -32,7 +32,7 @@ export default function AddFleetModal({ closeModal, fetchFleets }: ModalProps) {
 
     if (error) {
       alert(
-        `Ocurrió un error al crear la flotilla: \n\nMensaje de error: ${error.message}\n\nCódigo de error: ${error.code}\n\nDetalles: ${error.details}\n\nSugerencia: ${error.hint}`,
+        `Ocurrió un error al crear la flotilla: \n\nMensaje de error: ${error.message}\n\nCódigo de error: ${error.code}\n\nDetalles: ${error.details}\n\nSugerencia: ${error.hint}`
       );
       return;
     }
@@ -55,8 +55,8 @@ export default function AddFleetModal({ closeModal, fetchFleets }: ModalProps) {
       <View style={styles.group}>
         <FormTitle title="Crear una nueva flotilla" />
         <Text style={styles.subtitle}>
-          Una flotilla es la unidad de organización dentro de Aura, que agrupa
-          vehículos y usuarios para facilitar su gestión y coordinación.
+          Una flotilla es la unidad de organización dentro de Aura, que agrupa vehículos y usuarios para facilitar su
+          gestión y coordinación.
         </Text>
       </View>
       <View style={styles.group}>

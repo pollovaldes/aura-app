@@ -1,5 +1,5 @@
-import VehicleMaintenance from "@/features/tabs/vehicles/VehicleMaintenance";
+import VehicleMaintenanceList from "@/features/tabs/vehicles/maintenance/VehicleMaintenanceList";
 
 export default function Index() {
-  return <VehicleMaintenance />;
+  return <VehicleMaintenanceList />;
 }

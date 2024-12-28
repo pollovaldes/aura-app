@@ -16,11 +16,11 @@ import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
 import { SimpleList } from "@/components/simpleList/SimpleList";
 import { useVehicle } from "@/hooks/truckHooks/useVehicle";
-import { AddMaintenanceModal } from "./modals/AddMaintenanceModal";
+import { AddMaintenanceModal } from "../modals/AddMaintenanceModal";
 
 type ModalType = "create_maintenance_record" | null;
 
-export default function VehicleMaintenance() {
+export default function VehicleMaintenanceList() {
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const { styles } = useStyles(stylesheet);
