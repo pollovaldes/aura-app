@@ -12,15 +12,7 @@ import {
   Dimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Animated, {
-  BounceInDown,
-  BounceInUp,
-  FadeIn,
-  FadeOut,
-  SlideInDown,
-  SlideOutDown,
-  ZoomIn,
-} from "react-native-reanimated";
+import Animated, { FadeIn, LinearTransition, ZoomIn } from "react-native-reanimated";
 import { useAccentTheme } from "@/context/AccentThemeContext";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
@@ -62,7 +54,11 @@ export default function Modal({ isOpen, close, children, ...rest }: ModalProps) 
             contentContainerStyle={styles.scrollContentContainer(insets.top)}
             keyboardShouldPersistTaps="handled"
           >
-            <Animated.View style={styles.modalCard(screenWidth)} entering={ZoomIn.duration(300)}>
+            <Animated.View
+              style={styles.modalCard(screenWidth)}
+              entering={ZoomIn.duration(300)}
+              layout={LinearTransition.springify().duration(1500)}
+            >
               <TouchableOpacity onPress={close}>
                 <Text style={styles.closeButton(accentColorHex)}>Cerrar</Text>
               </TouchableOpacity>
