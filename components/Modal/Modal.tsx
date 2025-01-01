@@ -12,7 +12,7 @@ import {
   Dimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Animated, { FadeIn, LinearTransition, ZoomIn } from "react-native-reanimated";
+import Animated, { Easing, FadeIn, LinearTransition, ZoomIn } from "react-native-reanimated";
 import { useAccentTheme } from "@/context/AccentThemeContext";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
@@ -57,7 +57,7 @@ export default function Modal({ isOpen, close, children, ...rest }: ModalProps) 
             <Animated.View
               style={styles.modalCard(screenWidth)}
               entering={ZoomIn.duration(300)}
-              layout={LinearTransition.springify().duration(1500)}
+              layout={LinearTransition.easing(Easing.out(Easing.ease)).duration(175)}
             >
               <TouchableOpacity onPress={close}>
                 <Text style={styles.closeButton(accentColorHex)}>Cerrar</Text>

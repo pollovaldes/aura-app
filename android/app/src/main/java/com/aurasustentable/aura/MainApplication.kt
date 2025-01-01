@@ -1,4 +1,4 @@
-package com.aurasustentable.auraapp
+package com.aurasustentable.aura
 
 import android.app.Application
 import android.content.res.Configuration

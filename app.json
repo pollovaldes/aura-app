@@ -2,14 +2,14 @@
   "expo": {
     "name": "Aura",
     "slug": "aura-app",
-    "scheme": "auraapp",
+    "scheme": "aura",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.aurasustentable.auraapp",
+      "bundleIdentifier": "com.aurasustentable.aura",
       "userInterfaceStyle": "automatic",
       "entitlements": {
         "aps-environment": "development"
@@ -20,7 +20,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.aurasustentable.auraapp"
+      "package": "com.aurasustentable.aura"
     },
     "web": {
       "favicon": "./assets/favicon.png"

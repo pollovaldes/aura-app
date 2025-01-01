@@ -1,4 +1,4 @@
-package com.aurasustentable.auraapp
+package com.aurasustentable.aura
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build
