@@ -3,7 +3,6 @@ import { supabase } from "@/lib/supabase";
 import { Redirect, Slot } from "expo-router";
 import { useColorScheme } from "react-native";
 import { useNavigationContainerRef, usePathname } from "expo-router/build/hooks";
-import { ThemeProvider } from "@react-navigation/native";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import Toast from "react-native-toast-message";

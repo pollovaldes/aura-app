@@ -7162,10 +7162,10 @@ react-native-toast-message@^2.2.1:
   resolved "https://registry.npmjs.org/react-native-toast-message/-/react-native-toast-message-2.2.1.tgz"
   integrity sha512-iXFMnlxPcgKKs4bZOIl06W16m6KXMh/bAYpWLyVXlISSCdcL2+FX5WPpRP3TGQeM/u9q+j5ex48DDY+72en+Sw==
 
-react-native-unistyles@^2.8.1:
-  version "2.12.0"
-  resolved "https://registry.npmjs.org/react-native-unistyles/-/react-native-unistyles-2.12.0.tgz"
-  integrity sha512-MUvqsnx/bONoNRsIZobPK1WOWeVRYGPn2geBjW5zeZNklsoHIJrb3UqYZZO6HI+zbL0LC5bw30jBmeLwL0R4zA==
+react-native-unistyles@^2.20.0:
+  version "2.20.0"
+  resolved "https://registry.yarnpkg.com/react-native-unistyles/-/react-native-unistyles-2.20.0.tgz#aba9980926d46654466327d55c3d59dcefab3d4d"
+  integrity sha512-zyLzY/CGbvEgCHaMfUa50LEJ1xSPN8XOq+2BJEiTMwHquYFn36H5KmwRCHqVqGAdM4l8Z93shNrtbmmn5wpJAg==
 
 react-native-url-polyfill@^2.0.0:
   version "2.0.0"

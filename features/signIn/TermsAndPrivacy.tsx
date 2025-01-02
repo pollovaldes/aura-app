@@ -9,16 +9,12 @@ export default function TermsAndPrivacy() {
   return (
     <Text style={styles.text}>
       <Text>
-        Al registrarte o iniciar sesión con cualquier método de autenticación
-        provisto, estás creando una cuenta de Aura y aceptas los{" "}
+        Al registrarte o iniciar sesión con cualquier método de autenticación provisto, estás creando una cuenta de Aura
+        y aceptas los{" "}
       </Text>
       <Text
         style={styles.link}
-        onPress={() =>
-          openBrowserAsync(
-            "https://raw.githubusercontent.com/pollovaldes/aura-app/main/terms.txt",
-          )
-        }
+        onPress={() => openBrowserAsync("https://raw.githubusercontent.com/pollovaldes/aura-app/main/terms.txt")}
       >
         Términos
       </Text>
@@ -26,9 +22,7 @@ export default function TermsAndPrivacy() {
       <Text
         style={styles.link}
         onPress={() =>
-          openBrowserAsync(
-            "https://raw.githubusercontent.com/pollovaldes/aura-app/main/privacy-policy.txt",
-          )
+          openBrowserAsync("https://raw.githubusercontent.com/pollovaldes/aura-app/main/privacy-policy.txt")
         }
       >
         {" "}
@@ -45,7 +39,7 @@ const stylesheet = createStyleSheet((theme) => ({
     textAlign: "center",
   },
   link: {
-    color: theme.textPresets.link,
+    color: theme.ui.colors.primary,
     textDecorationLine: "underline",
     userSelect: "none",
   },

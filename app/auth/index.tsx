@@ -1,10 +1,5 @@
-import Form from "./Form";
-import AuthCard from "@/assets/authForm/AuthCard";
+import { SignIn } from "@/features/signIn/SignIn";
 
-export default function Card() {
-  return (
-    <AuthCard>
-      <Form />
-    </AuthCard>
-  );
+export default function Index() {
+  return <SignIn />;
 }

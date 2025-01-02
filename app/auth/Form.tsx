@@ -3,7 +3,7 @@ import SignInSignUpForm from "./SignInSignUpForm";
 import PhoneForm from "./PhoneForm";
 import AuraLogo from "@/components/web-logo-title/AuraLogo";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import TermsAndPrivacy from "./TermsAndPrivacy";
+import TermsAndPrivacy from "../../features/signIn/TermsAndPrivacy";
 import { View } from "react-native";
 
 type PrimaryFormType = "email" | "phone";
@@ -12,8 +12,7 @@ export type PrimaryFormProps = {
 };
 
 export default function Form() {
-  const [activePrimaryForm, setActivePrimaryForm] =
-    useState<PrimaryFormType>("email");
+  const [activePrimaryForm, setActivePrimaryForm] = useState<PrimaryFormType>("email");
 
   const togglePrimaryForm = () => {
     setActivePrimaryForm(activePrimaryForm === "email" ? "phone" : "email");

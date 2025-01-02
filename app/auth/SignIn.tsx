@@ -14,7 +14,7 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function signInWithEmail() {
+  const signInWithEmail = async () => {
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({
       email: email,
@@ -27,7 +27,7 @@ export default function SignIn() {
       router.push("/tab/vehicles");
     }
     setLoading(false);
-  }
+  };
 
   return (
     <>
@@ -50,7 +50,7 @@ export default function SignIn() {
         secureTextEntry={true}
         onChangeText={setPassword}
       />
-      <FormButton title="Continuar" onPress={() => signInWithEmail()} isLoading={loading} />
+      <FormButton title="Continuar" onPress={signInWithEmail} isLoading={loading} />
     </>
   );
 }

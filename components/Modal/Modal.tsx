@@ -57,7 +57,7 @@ export default function Modal({ isOpen, close, children, ...rest }: ModalProps) 
             <Animated.View
               style={styles.modalCard(screenWidth)}
               entering={ZoomIn.duration(300)}
-              layout={LinearTransition.easing(Easing.out(Easing.ease)).duration(175)}
+              //layout={LinearTransition.easing(Easing.out(Easing.ease)).duration(175)}
             >
               <TouchableOpacity onPress={close}>
                 <Text style={styles.closeButton(accentColorHex)}>Cerrar</Text>

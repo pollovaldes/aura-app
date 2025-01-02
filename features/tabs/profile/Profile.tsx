@@ -1,4 +1,4 @@
-import TermsAndPrivacy from "@/app/auth/TermsAndPrivacy";
+import TermsAndPrivacy from "@/features/signIn/TermsAndPrivacy";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import { supabase } from "@/lib/supabase";
