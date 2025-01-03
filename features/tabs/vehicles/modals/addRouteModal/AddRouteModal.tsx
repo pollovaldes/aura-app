@@ -1,11 +1,10 @@
-import FormTitle from "@/app/auth/FormTitle";
-import { FormButton } from "@/components/Form/FormButton";
-import { Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { CreateRouteProvider } from "./CreateRouteContext";
 import { RouteWelcomeStep } from "./RouteWelcomeStep";
 import { useState } from "react";
 import { RouteTitleDescription } from "./RouteTitleDescription";
+import { StartLocation } from "./StartLocationSetp";
+import { VehicleStep } from "./VehicleStep";
 
 interface AddRouteModalProps {
   close: () => void;
@@ -19,6 +18,8 @@ export function AddRouteModal({ close }: AddRouteModalProps) {
     <CreateRouteProvider step={step} setStep={setStep} close={close}>
       {step === 0 && <RouteWelcomeStep />}
       {step === 1 && <RouteTitleDescription />}
+      {step === 2 && <StartLocation />}
+      {step === 3 && <VehicleStep />}
     </CreateRouteProvider>
   );
 }

@@ -42,7 +42,7 @@ export function RouteTitleDescription() {
         />
       </View>
       <View style={styles.group}>
-        <FormButton title="Continuar" onPress={() => {}} isDisabled={!mayContinue} />
+        <FormButton title="Continuar" onPress={() => setStep(2)} isDisabled={!mayContinue} />
       </View>
     </View>
   );
