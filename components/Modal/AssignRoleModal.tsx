@@ -4,12 +4,10 @@ import { FormButton } from "@/components/Form/FormButton";
 import { Text, TouchableOpacity, View, Pressable } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { useAssignRole } from "@/hooks/peopleHooks/useAssignRole";
-import { useAccentTheme } from "@/context/AccentThemeContext";
 
 export default function AssignRoleModal({ closeModal }: { closeModal: () => void }) {
   const { styles } = useStyles(stylesheet);
   const { loading, assignUserRole } = useAssignRole();
-  const { accentColorHex } = useAccentTheme();
 
   return (
     <View style={styles.section}>
@@ -17,7 +15,7 @@ export default function AssignRoleModal({ closeModal }: { closeModal: () => void
       <View style={styles.group}>
         <View style={styles.optionsContainer}>
           <Pressable
-            style={({ pressed }) => [styles.roleOption, pressed && styles.roleOptionPressed(accentColorHex)]}
+            style={({ pressed }) => [styles.roleOption, pressed && styles.roleOptionPressed]}
             onPress={() => assignUserRole("ADMIN")}
           >
             <Text style={styles.roleTitle}>Administrador</Text>
@@ -25,7 +23,7 @@ export default function AssignRoleModal({ closeModal }: { closeModal: () => void
           </Pressable>
 
           <Pressable
-            style={({ pressed }) => [styles.roleOption, pressed && styles.roleOptionPressed(accentColorHex)]}
+            style={({ pressed }) => [styles.roleOption, pressed && styles.roleOptionPressed]}
             onPress={() => assignUserRole("DRIVER")}
           >
             <Text style={styles.roleTitle}>Operador</Text>
@@ -33,7 +31,7 @@ export default function AssignRoleModal({ closeModal }: { closeModal: () => void
           </Pressable>
 
           <Pressable
-            style={({ pressed }) => [styles.roleOption, pressed && styles.roleOptionPressed(accentColorHex)]}
+            style={({ pressed }) => [styles.roleOption, pressed && styles.roleOptionPressed]}
             onPress={() => assignUserRole("NO_ROLE")}
           >
             <Text style={styles.roleTitle}>Denegar acceso</Text>
@@ -73,10 +71,10 @@ const stylesheet = createStyleSheet((theme) => ({
     borderWidth: 1,
     borderColor: theme.ui.colors.border,
   },
-  roleOptionPressed: (accentColor: string) => ({
-    backgroundColor: accentColor,
+  roleOptionPressed: {
+    backgroundColor: theme.ui.colors.primary,
     opacity: 0.8,
-  }),
+  },
   roleTitle: {
     fontSize: 16,
     fontWeight: "600",

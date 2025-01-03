@@ -1,7 +1,7 @@
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
-import { ScrollView, Appearance, useColorScheme, View } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { ScrollView, Appearance, View, Platform } from "react-native";
+import { createStyleSheet, UnistylesRuntime, useStyles } from "react-native-unistyles";
 import { Stack } from "expo-router";
 import React, { useState } from "react";
 import { Moon, Sun, SunMoon } from "lucide-react-native";
@@ -10,33 +10,50 @@ import { RadioButton } from "@/components/radioButton/RadioButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
 
-export default function ProfileTheme() {
+export function ProfileTheme() {
   const { styles } = useStyles(stylesheet);
   const [selectedOption, setSelectedOption] = useState("auto");
-  const currentTheme = useColorScheme();
+
+  const fixLightTheme = () => {
+    UnistylesRuntime.setAdaptiveThemes(false);
+    UnistylesRuntime.setTheme("light");
+    if (Platform.OS !== "web") {
+      Appearance.setColorScheme("light");
+    }
+  };
+  const fixDarkTheme = () => {
+    UnistylesRuntime.setAdaptiveThemes(false);
+    UnistylesRuntime.setTheme("dark");
+    if (Platform.OS !== "web") {
+      Appearance.setColorScheme("dark");
+    }
+  };
+  const fixAutoTheme = () => {
+    UnistylesRuntime.setAdaptiveThemes(true);
+    UnistylesRuntime.setTheme(UnistylesRuntime.colorScheme === "dark" ? "dark" : "light");
+    if (Platform.OS !== "web") {
+      Appearance.setColorScheme(null);
+    }
+  };
 
   const handleRadioChange = async (option: string) => {
-    try {
-      setSelectedOption(option);
+    setSelectedOption(option);
 
-      switch (option) {
-        case "light":
-          Appearance.setColorScheme("light"); // Explicitly set the color scheme to light
-          break;
-        case "dark":
-          Appearance.setColorScheme("dark"); // Explicitly set the color scheme to dark
-          break;
-        case "auto":
-          Appearance.setColorScheme(currentTheme); // Use the system's color scheme
-          break;
-        default:
-          console.warn("Invalid color scheme option");
-      }
-
-      await AsyncStorage.setItem("appTheme", option);
-    } catch (error) {
-      alert("Ocurrió un error al cambiar el tema de la aplicación");
+    switch (option) {
+      case "light":
+        fixLightTheme();
+        break;
+      case "dark":
+        fixDarkTheme();
+        break;
+      case "auto":
+        fixAutoTheme();
+        break;
+      default:
+        console.warn("Invalid color scheme option");
     }
+
+    await AsyncStorage.setItem("appTheme", option);
   };
 
   return (

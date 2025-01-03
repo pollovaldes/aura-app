@@ -13,7 +13,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, { Easing, FadeIn, LinearTransition, ZoomIn } from "react-native-reanimated";
-import { useAccentTheme } from "@/context/AccentThemeContext";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 type ModalProps = RNModalProps & {
@@ -24,7 +23,6 @@ type ModalProps = RNModalProps & {
 
 export default function Modal({ isOpen, close, children, ...rest }: ModalProps) {
   const { styles } = useStyles(stylesheet);
-  const { accentColorHex } = useAccentTheme();
   const insets = useSafeAreaInsets();
 
   const [screenWidth, setScreenWidth] = useState(Dimensions.get("window").width);
@@ -47,20 +45,17 @@ export default function Modal({ isOpen, close, children, ...rest }: ModalProps) 
 
   return (
     <RNModal visible={isOpen} transparent animationType="none" statusBarTranslucent {...rest}>
-      <View style={styles.container(screenWidth, screenHeight)}>
+      <View style={styles.container}>
         <Animated.View style={styles.overlay} entering={FadeIn.duration(300)} />
         <KeyboardAvoidingView style={styles.keyboardAvoider} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-          <ScrollView
-            contentContainerStyle={styles.scrollContentContainer(insets.top)}
-            keyboardShouldPersistTaps="handled"
-          >
+          <ScrollView contentContainerStyle={styles.scrollContentContainer} keyboardShouldPersistTaps="handled">
             <Animated.View
-              style={styles.modalCard(screenWidth)}
+              style={styles.modalCard}
               entering={ZoomIn.duration(300)}
               layout={LinearTransition.easing(Easing.out(Easing.ease))}
             >
               <TouchableOpacity onPress={close}>
-                <Text style={styles.closeButton(accentColorHex)}>Cerrar</Text>
+                <Text style={styles.closeButton}>Cerrar</Text>
               </TouchableOpacity>
               {children}
             </Animated.View>
@@ -71,11 +66,11 @@ export default function Modal({ isOpen, close, children, ...rest }: ModalProps) 
   );
 }
 
-const stylesheet = createStyleSheet((theme) => ({
-  container: (width: number, height: number) => ({
-    height: height,
-    width: width,
-  }),
+const stylesheet = createStyleSheet((theme, runtime) => ({
+  container: {
+    height: runtime.screen.height,
+    width: runtime.screen.width,
+  },
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0, 0, 0, 0.75)",
@@ -85,24 +80,24 @@ const stylesheet = createStyleSheet((theme) => ({
     justifyContent: "center",
     paddingHorizontal: 12,
   },
-  scrollContentContainer: (topInset: number) => ({
+  scrollContentContainer: {
     flexGrow: 1,
     justifyContent: "center",
-    paddingBottom: Platform.OS === "ios" ? topInset : 60,
-    paddingTop: Platform.OS === "ios" ? topInset : 60,
-  }),
-  modalCard: (width: number) => ({
+    paddingBottom: Platform.OS === "ios" ? runtime.insets.top : 60,
+    paddingTop: Platform.OS === "ios" ? runtime.insets.top : 60,
+  },
+  modalCard: {
     maxWidth: 550,
-    width: width - 24,
+    width: runtime.screen.width - 24,
     alignSelf: "center",
     backgroundColor: theme.ui.colors.card,
     borderRadius: 10,
     padding: 12,
-  }),
-  closeButton: (accentColor: string) => ({
-    color: accentColor,
+  },
+  closeButton: {
+    color: theme.ui.colors.primary,
     fontSize: 18,
     textAlign: "right",
     padding: 6,
-  }),
+  },
 }));

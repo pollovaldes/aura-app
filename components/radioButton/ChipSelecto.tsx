@@ -1,4 +1,3 @@
-import { useAccentTheme } from "@/context/AccentThemeContext";
 import React from "react";
 import { TouchableOpacity, View, Text } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -12,24 +11,19 @@ interface RoleChangeSelectorProps {
 
 export function ChipSelecto({ selected, onPress, caption, disabled }: RoleChangeSelectorProps) {
   const { styles } = useStyles(stylesheet);
-  const { accentColorHex } = useAccentTheme();
 
   return (
     <TouchableOpacity
       style={[
         styles.container,
         {
-          backgroundColor: selected
-            ? styles.selected(accentColorHex).backgroundColor
-            : styles.unselected.backgroundColor,
+          backgroundColor: selected ? styles.selected.backgroundColor : styles.unselected.backgroundColor,
         },
       ]}
       disabled={disabled}
       onPress={onPress}
     >
-      <Text
-        style={[styles.text, { color: selected ? styles.selected(accentColorHex).color : styles.unselected.color }]}
-      >
+      <Text style={[styles.text, { color: selected ? styles.selected.color : styles.unselected.color }]}>
         {caption}
       </Text>
     </TouchableOpacity>
@@ -51,10 +45,10 @@ const stylesheet = createStyleSheet((theme) => ({
     fontWeight: "bold",
     textAlign: "center",
   },
-  selected: (accentColor: string) => ({
-    backgroundColor: accentColor,
+  selected: {
+    backgroundColor: theme.ui.colors.primary,
     color: "#fff",
-  }),
+  },
   selectedDisabled: {
     backgroundColor: theme.ui.colors.card,
     color: "#fff",

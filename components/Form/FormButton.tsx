@@ -1,4 +1,3 @@
-import { useAccentTheme } from "@/context/AccentThemeContext";
 import { pickTextColor } from "@/features/global/functions/pickTectColor";
 import { LucideProps } from "lucide-react-native";
 import React from "react";
@@ -26,9 +25,8 @@ export function FormButton({
   buttonType = "normal",
   Icon,
 }: FormButtonProps) {
-  const { styles } = useStyles(stylesheet);
-  const { accentColorHex } = useAccentTheme();
-  const buttonTextColor = pickTextColor(accentColorHex);
+  const { styles, theme } = useStyles(stylesheet);
+  const buttonTextColor = pickTextColor(theme.ui.colors.primary);
 
   return (
     <View>
@@ -40,13 +38,13 @@ export function FormButton({
             position: "absolute",
             zIndex: 1,
             alignSelf: "center",
-            top: styles.button(accentColorHex).height / 2 - styles.activityIndicator.height / 2,
+            top: styles.button.height / 2 - styles.activityIndicator.height / 2,
           }}
         />
       )}
       <TouchableOpacity
         style={[
-          styles.button(accentColorHex),
+          styles.button,
           buttonType === "danger" && styles.redButton,
           style,
           { opacity: isLoading || isDisabled ? 0.4 : 1 },
@@ -73,15 +71,15 @@ const stylesheet = createStyleSheet((theme) => ({
   activityIndicator: {
     height: 30,
   },
-  button: (accentColor: string) => ({
+  button: {
     height: 45,
-    backgroundColor: accentColor,
+    backgroundColor: theme.ui.colors.primary,
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
     paddingHorizontal: 10,
-  }),
+  },
   buttonText: (textColor: string) => ({
     color: textColor,
     userSelect: "none",

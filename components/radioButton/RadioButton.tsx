@@ -1,4 +1,3 @@
-import { useAccentTheme } from "@/context/AccentThemeContext";
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -10,7 +9,6 @@ interface RadioButtonProps {
 
 export function RadioButton({ selected, onPress }: RadioButtonProps) {
   const { styles } = useStyles(stylesheet);
-  const { accentColorHex } = useAccentTheme();
 
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
@@ -19,7 +17,7 @@ export function RadioButton({ selected, onPress }: RadioButtonProps) {
           style={[
             styles.fill,
             {
-              backgroundColor: selected ? styles.selectedCircle(accentColorHex).backgroundColor : "transparent",
+              backgroundColor: selected ? styles.selectedCircle.backgroundColor : "transparent",
             },
           ]}
         />
@@ -47,7 +45,7 @@ const stylesheet = createStyleSheet((theme) => ({
     width: 12,
     borderRadius: 30,
   },
-  selectedCircle: (accentColor: string) => ({
-    backgroundColor: accentColor,
-  }),
+  selectedCircle: {
+    backgroundColor: theme.ui.colors.primary,
+  },
 }));

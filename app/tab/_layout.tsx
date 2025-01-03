@@ -5,6 +5,8 @@ import { VehiclesContextProvider } from "@/context/VehiclesContext";
 import { Stack } from "expo-router";
 import React from "react";
 
+const ACCENT_COLOR_STORAGE_KEY = "USER_SELECTED_ACCENT_COLOR";
+
 export default function Layout() {
   return (
     <ProfileContextProvider>
