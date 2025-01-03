@@ -43,5 +43,6 @@ const stylesheet = createStyleSheet((theme) => ({
     flexGrow: 1,
     maxWidth: 550,
     justifyContent: "center",
+    paddingVertical: 160,
   },
 }));

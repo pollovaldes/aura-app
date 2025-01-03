@@ -75,20 +75,20 @@ const Row = ({
   );
 };
 
-const stylesheet = createStyleSheet((theme) => ({
+const stylesheet = createStyleSheet((theme, runtime) => ({
   container: {
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 10,
     paddingHorizontal: 16,
     backgroundColor: theme.ui.colors.card,
-    borderBottomWidth: 0.5,
+    borderBottomWidth: runtime.hairlineWidth,
     borderColor: theme.ui.colors.border,
   },
   containerWide: {
     flexDirection: "column",
     padding: 20,
-    borderWidth: 1,
+    borderWidth: runtime.hairlineWidth,
     borderColor: theme.ui.colors.border,
     borderRadius: 10,
     alignItems: "flex-start",
