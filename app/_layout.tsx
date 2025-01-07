@@ -9,6 +9,10 @@ import { toastConfig } from "@/components/toast/ToastConfig";
 import { ThemeProvider } from "@react-navigation/native";
 import { useStyles } from "react-native-unistyles";
 import { useAccentColor } from "@/features/global/hooks/useAccentColor";
+import { ProfileContextProvider } from "@/context/ProfileContext";
+import { VehiclesContextProvider } from "@/context/VehiclesContext";
+import { UsersContextProvider } from "@/context/UsersContext";
+import { ProfileImageProvider } from "@/context/ProfileImageContext";
 
 export default function RootLayout() {
   const path = usePathname();
@@ -25,9 +29,17 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={theme.ui}>
       <SessionContextProvider supabaseClient={supabase}>
-        {path === "/" && <Redirect href="/auth" />}
-        <Slot />
-        <Toast config={toastConfig} />
+        <ProfileContextProvider>
+          <VehiclesContextProvider>
+            <UsersContextProvider>
+              <ProfileImageProvider>
+                {path === "/" && <Redirect href="/auth" />}
+                <Slot />
+                <Toast config={toastConfig} />
+              </ProfileImageProvider>
+            </UsersContextProvider>
+          </VehiclesContextProvider>
+        </ProfileContextProvider>
       </SessionContextProvider>
     </ThemeProvider>
   );
