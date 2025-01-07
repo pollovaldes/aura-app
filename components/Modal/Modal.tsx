@@ -48,7 +48,11 @@ export default function Modal({ isOpen, close, children, ...rest }: ModalProps) 
       <View style={styles.container}>
         <Animated.View style={styles.overlay} entering={FadeIn.duration(300)} />
         <KeyboardAvoidingView style={styles.keyboardAvoider} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-          <ScrollView contentContainerStyle={styles.scrollContentContainer} keyboardShouldPersistTaps="handled">
+          <ScrollView
+            contentContainerStyle={styles.scrollContentContainer}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
             <Animated.View
               style={styles.modalCard}
               entering={ZoomIn.duration(300)}

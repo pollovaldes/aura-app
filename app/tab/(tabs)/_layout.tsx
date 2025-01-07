@@ -4,17 +4,48 @@ import { useSessionContext } from "@/context/SessionContext";
 import useProfile from "@/hooks/useProfile";
 import { supabase } from "@/lib/supabase";
 import { Redirect, Tabs, usePathname } from "expo-router";
-import { Bell, Boxes, CircleUserRound, Truck, UsersRound } from "lucide-react-native";
-import React from "react";
+import { Bell, Boxes, CircleUserRound, PanelLeft, PanelRight, Truck, UsersRound } from "lucide-react-native";
+import React, { useEffect, useState } from "react";
 import { Platform, useWindowDimensions } from "react-native";
 import { createStyleSheet } from "react-native-unistyles";
 import * as Haptics from "expo-haptics";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HomeLayout() {
   const { width } = useWindowDimensions();
   const { profile, isProfileLoading, fetchProfile } = useProfile();
   const { isLoading: isSessionLoading, session } = useSessionContext();
   const path = usePathname();
+  const [tabBarPosition, setTabBarPosition] = useState<"left" | "right">("left");
+
+  const TAB_BAR_POSITION_KEY = "TAB_BAR_POSITION";
+
+  useEffect(() => {
+    const loadTabBarPosition = async () => {
+      try {
+        const storedPosition = await AsyncStorage.getItem(TAB_BAR_POSITION_KEY);
+        if (storedPosition === "left" || storedPosition === "right") {
+          setTabBarPosition(storedPosition);
+        }
+      } catch (error) {
+        console.error("Error al cargar la posición de la barra de pestañas: ", error);
+      }
+    };
+
+    loadTabBarPosition();
+  }, []);
+
+  useEffect(() => {
+    const saveTabBarPosition = async () => {
+      try {
+        await AsyncStorage.setItem(TAB_BAR_POSITION_KEY, tabBarPosition);
+      } catch (error) {
+        console.error("Error al guardar la posición de la barra de pestañas:", error);
+      }
+    };
+
+    saveTabBarPosition();
+  }, [tabBarPosition]);
 
   const hapticFeedback = () => {
     if (Platform.OS !== "web") {
@@ -56,7 +87,7 @@ export default function HomeLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarPosition: width >= 750 ? "left" : "bottom",
+        tabBarPosition: width >= 750 ? tabBarPosition : "bottom",
         tabBarVariant: width >= 750 ? "material" : "uikit",
         tabBarLabelPosition: "below-icon", // Always "below-icon"
       }}
@@ -122,6 +153,22 @@ export default function HomeLayout() {
         listeners={{
           tabPress: () => {
             hapticFeedback();
+          },
+        }}
+      />
+      <Tabs.Screen
+        name="dummy/index"
+        options={{
+          title: "Posición",
+          href: width <= 750 ? null : undefined,
+          tabBarIcon: ({ color }) =>
+            tabBarPosition === "left" ? <PanelRight color={color} /> : <PanelLeft color={color} />,
+        }}
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault();
+            hapticFeedback();
+            setTabBarPosition((prevPosition) => (prevPosition === "left" ? "right" : "left"));
           },
         }}
       />
