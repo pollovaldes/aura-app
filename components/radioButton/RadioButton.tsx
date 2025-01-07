@@ -1,3 +1,5 @@
+// RadioButton.tsx
+
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
@@ -34,7 +36,7 @@ const stylesheet = createStyleSheet((theme) => ({
   circle: {
     height: 25,
     width: 25,
-    borderRadius: 30,
+    borderRadius: 12.5,
     borderWidth: 2,
     borderColor: theme.ui.colors.border,
     justifyContent: "center",
@@ -43,7 +45,7 @@ const stylesheet = createStyleSheet((theme) => ({
   fill: {
     height: 12,
     width: 12,
-    borderRadius: 30,
+    borderRadius: 6,
   },
   selectedCircle: {
     backgroundColor: theme.ui.colors.primary,

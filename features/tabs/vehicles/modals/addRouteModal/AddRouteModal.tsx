@@ -5,6 +5,7 @@ import { useState } from "react";
 import { RouteTitleDescription } from "./RouteTitleDescription";
 import { StartLocation } from "./StartLocationSetp";
 import { VehicleStep } from "./VehicleStep";
+import { RouteSummary } from "./RouteSummary";
 
 interface AddRouteModalProps {
   close: () => void;
@@ -19,7 +20,7 @@ export function AddRouteModal({ close }: AddRouteModalProps) {
       {step === 0 && <RouteWelcomeStep />}
       {step === 1 && <RouteTitleDescription />}
       {step === 2 && <StartLocation />}
-      {step === 3 && <VehicleStep />}
+      {step === 3 && <RouteSummary />}
     </CreateRouteProvider>
   );
 }

@@ -13,7 +13,6 @@ import { Plus, RotateCw } from "lucide-react-native";
 import React, { useState } from "react";
 import { FlatList, Platform, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 type ModalType = "add_fleet" | null;
 

@@ -6,13 +6,7 @@ interface FormInputProps extends TextInputProps {
   multiline?: boolean;
 }
 
-export default function FormInput({
-  description,
-  placeholder,
-  onChangeText,
-  multiline,
-  ...props
-}: FormInputProps) {
+export default function FormInput({ description, placeholder, onChangeText, multiline, ...props }: FormInputProps) {
   const { styles } = useStyles(stylesheet);
   return (
     <View>
@@ -48,6 +42,6 @@ const stylesheet = createStyleSheet((theme) => ({
     paddingTop: 6,
   },
   multilineInput: {
-    height: 250,
+    height: 200,
   },
 }));
