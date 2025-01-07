@@ -1,4 +1,3 @@
-import React from "react";
 import { Platform, Alert } from "react-native";
 
 interface ConfirmDialogProps {

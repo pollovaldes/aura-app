@@ -6,7 +6,7 @@ import Modal from "@/components/Modal/Modal";
 import EditDocument from "@/components/vehicles/modals/EditDocument";
 import useProfile from "@/hooks/useProfile";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { RotateCw, Share as ShareIcon } from "lucide-react-native";
+import { Download, Pencil, RotateCw, Share as ShareIcon } from "lucide-react-native";
 import React from "react";
 import { useState } from "react";
 import { View, Text, Pressable, ActivityIndicator, Platform } from "react-native";
@@ -17,6 +17,8 @@ import { Share } from "react-native";
 import useMaintenanceDocuments from "@/hooks/useMaintenanceDocuments";
 import EditMaintenanceDocument from "@/components/vehicles/modals/EditMaintenanceDocument";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
+import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
+import { ActionButton } from "@/components/actionButton/ActionButton";
 
 type ModalType = "edit_document" | null;
 
@@ -86,17 +88,14 @@ export default function VehicleDocumentationDetailsDocuments() {
       "application/vnd.openxmlformats-officedocument.presentationml.presentation": "pptx",
       "application/pdf": "pdf",
       "text/plain": "txt",
-      // Add more mappings as needed
     };
-    return mimeToExtensionMap[mimeType] || "bin"; // Default to 'bin' if unknown MIME type
+    return mimeToExtensionMap[mimeType] || "bin";
   };
 
   const shareDocument = async () => {
     try {
-      // Set isSharing to true to indicate loading
       setIsSharing(true);
 
-      // Fetch the document from Supabase
       const { data: blob, error } = await supabase.storage
         .from("maintenance_files")
         .download(`${document.vehicle_id}/${document.maintenance_id}/${document.document_id}`);
@@ -107,10 +106,8 @@ export default function VehicleDocumentationDetailsDocuments() {
         return;
       }
 
-      // Get the MIME type from the blob
       const mimeType = blob.type;
 
-      // Use FileReader to convert the Blob to a Base64 string
       const fileData = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -125,23 +122,18 @@ export default function VehicleDocumentationDetailsDocuments() {
         reader.readAsDataURL(blob); // Read as a Data URL to get Base64 content
       });
 
-      // Make sure fileData is a string before writing
       if (typeof fileData !== "string") {
         throw new Error("File data is not a valid string.");
       }
 
-      // Create a local file path to save the Blob
       const fileUri = `${FileSystem.documentDirectory}${document.document_id}.${getFileExtensionFromMimeType(mimeType)}`;
 
-      // Write the Base64 string to the file system
       await FileSystem.writeAsStringAsync(fileUri, fileData, {
         encoding: FileSystem.EncodingType.Base64,
       });
 
-      // On Android, prepend the URI with "file://"
       const androidUri = Platform.OS === "android" ? `file://${fileUri}` : fileUri;
 
-      // Share the file using React Native's Share API
       const result = await Share.share({
         title: document.title,
         url: androidUri,
@@ -160,7 +152,6 @@ export default function VehicleDocumentationDetailsDocuments() {
     } catch (err) {
       console.error("An error occurred while sharing the document:", err);
     } finally {
-      // Set isSharing to false to indicate completion
       setIsSharing(false);
     }
   };
@@ -172,38 +163,38 @@ export default function VehicleDocumentationDetailsDocuments() {
           title: document.title,
           headerLargeTitle: false,
           headerRight: () => (
-            <View style={styles.rightContainer}>
-              {canEdit && (
-                <Pressable onPress={() => setActiveModal("edit_document")}>
-                  <Text style={styles.rightPressText}>Editar</Text>
-                </Pressable>
-              )}
-              {isSharing ? (
-                <ActivityIndicator />
-              ) : (
-                <Pressable onPress={() => shareDocument()}>
-                  <ShareIcon color={styles.Icon.color} />
-                </Pressable>
-              )}
-              <Pressable onPress={() => setRandomKey(Math.random())}>
-                <RotateCw color={styles.Icon.color} />
-              </Pressable>
-            </View>
+            <ActionButtonGroup>
+              <ActionButton
+                show={!isSharing && !(Platform.OS === "web")}
+                onPress={shareDocument}
+                Icon={ShareIcon}
+                text="Compartir"
+              />
+              <ActionButton
+                show={!isSharing && Platform.OS === "web"}
+                onPress={shareDocument}
+                Icon={Download}
+                text="Descargar"
+              />
+              {isSharing && <ActivityIndicator />}
+              <ActionButton
+                show={canEdit}
+                onPress={() => setActiveModal("edit_document")}
+                text="Editar"
+                Icon={Pencil}
+              />
+              <ActionButton onPress={() => setRandomKey(Math.random())} Icon={RotateCw} text="Actualizar" />
+            </ActionButtonGroup>
           ),
         }}
       />
 
-      <Modal isOpen={activeModal === "edit_document"}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.closeButton} onPress={closeModal}>
-            Cerrar
-          </Text>
-          <EditMaintenanceDocument
-            closeModal={closeModal}
-            document={document}
-            fetchDocuments={fetchMaintenanceDocuments}
-          />
-        </View>
+      <Modal isOpen={activeModal === "edit_document"} close={closeModal}>
+        <EditMaintenanceDocument
+          closeModal={closeModal}
+          document={document}
+          fetchDocuments={fetchMaintenanceDocuments}
+        />
       </Modal>
       <FileViewer fileUrl={fileUrl} randomKey={randomKey} />
     </>

@@ -4,8 +4,6 @@ import { FlatList, RefreshControl, ScrollView, Text, View } from "react-native";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { CircleHelp, Info, MessageCirclePlus, RefreshCcw, Trash } from "lucide-react-native";
-
-// Internal Components
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
@@ -14,15 +12,10 @@ import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import StatusChip from "@/components/General/StatusChip";
 import { SimpleList } from "@/components/simpleList/SimpleList";
-import { FilterSelector } from "@/components/radioButton/FilterSelector";
-
-// Custom Hooks
 import useMaintenance from "@/hooks/useMaintenance";
 import useMaintenanceDocuments from "@/hooks/useMaintenanceDocuments";
 import useProfile from "@/hooks/useProfile";
 import { useVehicle } from "@/hooks/truckHooks/useVehicle";
-
-// Styles and Themes
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { colorPalette } from "@/style/themes";
 import { formatDate } from "@/features/global/functions/formatDate";

@@ -3,13 +3,13 @@ import React from "react";
 import { View, Text, Alert } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import FormTitle from "@/app/auth/FormTitle";
-import { Document } from "@/hooks/useDocuments";
 import { FormButton } from "@/components/Form/FormButton";
 import FormInput from "@/components/Form/FormInput";
 import { supabase } from "@/lib/supabase";
-import { Replace, Trash, Trash2 } from "lucide-react-native";
+import { Trash2 } from "lucide-react-native";
 import { router } from "expo-router";
 import { MaintenanceDocument } from "@/hooks/useMaintenanceDocuments";
+import { ConfirmDialog } from "@/components/alert/ConfirmDialog";
 
 interface editMaintenanceDocumentModalProps {
   closeModal: () => void;
@@ -24,43 +24,29 @@ export default function EditMaintenanceDocument({
 }: editMaintenanceDocumentModalProps) {
   const { styles } = useStyles(stylesheet);
   const [documentNewName, setDocumentNewName] = React.useState(document.title);
-  const [documentNewDescription, setDocumentNewDescription] = React.useState(
-    document.description,
-  );
+  const [documentNewDescription, setDocumentNewDescription] = React.useState(document.description);
   const [isDocumentUpdating, setIsDocumentUpdating] = React.useState(false);
 
-  const deleteDocument = async () => {
-    Alert.alert(
-      "Confirmación",
-      `¿Estás seguro de que quieres eliminar el archivo "${document.title}"? Esta acción no se puede deshacer.`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Eliminar",
-          style: "destructive",
-          onPress: async () => {
-            setIsDocumentUpdating(true);
-            // Delete the document from the storage
-            await supabase.storage
-              .from("maintenance_files")
-              .remove([
-                `${document.vehicle_id}/${document.maintenance_id}/${document.document_id}`,
-              ]);
+  const deleteDocument = ConfirmDialog({
+    title: "Confirmación",
+    message: `¿Estás seguro de que quieres eliminar el archivo "${document.title}"? Esta acción no se puede deshacer.`,
+    cancelText: "Cancelar",
+    confirmText: "Eliminar",
+    confirmStyle: "destructive",
+    onConfirm: async () => {
+      setIsDocumentUpdating(true);
+      await supabase.storage
+        .from("maintenance_files")
+        .remove([`${document.vehicle_id}/${document.maintenance_id}/${document.document_id}`]);
 
-            // Delete the document reference from the database table
-            await supabase
-              .from("vehicle_maintenance_documentation")
-              .delete()
-              .eq("document_id", document.document_id);
+      await supabase.from("vehicle_maintenance_documentation").delete().eq("document_id", document.document_id);
 
-            fetchDocuments();
-            setIsDocumentUpdating(false);
-            router.back();
-          },
-        },
-      ],
-    );
-  };
+      fetchDocuments();
+      setIsDocumentUpdating(false);
+      router.back();
+    },
+    onCancel: () => {},
+  });
 
   const updateDocumentName = async () => {
     setIsDocumentUpdating(true);
@@ -72,7 +58,7 @@ export default function EditMaintenanceDocument({
 
     if (error) {
       alert(
-        `Ocurrió un error al actualizar el nombre o descripción del archivo \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}`,
+        `Ocurrió un error al actualizar el nombre o descripción del archivo \n–––– Detalles del error ––––\n\nMensaje de error: ${error.message}`
       );
     }
 
@@ -102,20 +88,14 @@ export default function EditMaintenanceDocument({
           value={documentNewDescription}
           editable={!isDocumentUpdating}
         />
-        <FormButton
-          title="Actualizar"
-          onPress={updateDocumentName}
-          isDisabled={isDocumentUpdating}
-        />
+        <FormButton title="Actualizar" onPress={updateDocumentName} isDisabled={isDocumentUpdating} />
       </View>
       <View style={styles.group}>
         <FormButton
           title="Eliminar"
-          onPress={() => {
-            deleteDocument();
-          }}
+          onPress={() => deleteDocument.showDialog()}
           buttonType="danger"
-          icon={() => <Trash2 color={styles.iconColor.color} />}
+          Icon={Trash2}
           isDisabled={isDocumentUpdating}
         />
       </View>
