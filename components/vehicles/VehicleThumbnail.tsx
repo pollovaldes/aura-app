@@ -44,6 +44,6 @@ const stylesheet = createStyleSheet((theme) => ({
     borderRadius: 10,
   },
   noImageIcon: {
-    color: "#ccc",
+    color: theme.textPresets.subtitle,
   },
 }));

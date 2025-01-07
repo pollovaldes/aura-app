@@ -25,6 +25,7 @@ import {
   Waypoints,
   Wrench,
   Images,
+  TruckIcon,
 } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
@@ -178,7 +179,7 @@ export default function VehicleDetails() {
               <Image source={{ uri: thumbnail.imageURI }} style={styles.image} />
             ) : (
               <View style={styles.placeholder}>
-                <Text style={styles.title}>{vehicleTitle}</Text>
+                <TruckIcon size={100} color={styles.noImageIcon.color} strokeWidth={1.45} />
               </View>
             )}
             <View style={styles.overlay}>
@@ -310,5 +311,8 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.textPresets.main,
     fontWeight: "bold",
     textAlign: "center",
+  },
+  noImageIcon: {
+    color: theme.textPresets.subtitle,
   },
 }));
