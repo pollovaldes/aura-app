@@ -1,39 +1,63 @@
-import { View, ScrollView, RefreshControl } from "react-native";
-import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
-import { useEffect, useState } from "react";
+// VehicleTechnicalSheet.tsx
+
+import React, { useEffect, useState } from "react";
+import { View, ScrollView, RefreshControl, Text, Platform } from "react-native";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import GroupedList from "@/components/grouped-list/GroupedList";
-import Row from "@/components/grouped-list/Row";
-import ChangeDataModal from "@/components/Modal/ChangeDataModal";
-import useProfile from "@/hooks/useProfile";
-import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import React from "react";
-import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import { useVehicle } from "@/hooks/truckHooks/useVehicle";
+import useProfile from "@/hooks/useProfile";
+import ErrorScreen from "@/components/dataStates/ErrorScreen";
+import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
+import ChangeDataModal from "@/components/Modal/ChangeDataModal";
+import Modal from "@/components/Modal/Modal";
+import Row from "@/components/grouped-list/Row";
+import GroupedList from "@/components/grouped-list/GroupedList";
+import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
+import { ActionButton } from "@/components/actionButton/ActionButton";
+import { RotateCcw, RotateCw } from "lucide-react-native";
 
-export default function VehicleTechnicalSheet() {
+type ModalType = "numero_economico" | "marca" | "sub_marca" | "modelo" | "no_serie" | "placa" | null;
+
+export function VehicleTechnicalSheet() {
   const { styles } = useStyles(stylesheet);
-  const [numEco, setNumEco] = useState(false);
-  const [marca, setMarca] = useState(false);
-  const [subMarca, setSubMarca] = useState(false);
-  const [modelo, setModelo] = useState(false);
-  const [noSerie, setNoSerie] = useState(false);
-  const [placa, setPlaca] = useState(false);
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
-  const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
+  const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicle();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const [vehicleIsLoading, setVehicleIsLoading] = useState(true);
 
-  const navigation = useNavigation();
+  const fetchVehicle = async () => {
+    setVehicleIsLoading(true);
+    try {
+      await fetchVehicleById(vehicleId);
+    } catch (error) {
+      console.error("Error fetching vehicle:", error);
+      throw error;
+    } finally {
+      setVehicleIsLoading(false);
+    }
+  };
+
+  const refetchVehicle = async () => {
+    setVehicleIsLoading(true);
+    try {
+      await refetchVehicleById(vehicleId);
+    } catch (error) {
+      console.error("Error refetching vehicle:", error);
+      throw error;
+    } finally {
+      setVehicleIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    navigation.setOptions({
-      presentation: undefined,
-    });
+    fetchVehicle();
   }, []);
 
-  if (vehiclesAreLoading) {
-    return <FetchingIndicator caption={"Cargando vehículos"} />;
+  if (vehicleIsLoading) {
+    return <FetchingIndicator caption="Cargando vehículo" />;
   }
 
   if (!vehicles) {
@@ -41,126 +65,146 @@ export default function VehicleTechnicalSheet() {
       <ErrorScreen
         caption="Ocurrió un error al cargar los vehículos"
         buttonCaption="Reintentar"
-        retryFunction={fetchVehicles}
+        retryFunction={fetchVehicle}
       />
     );
   }
 
-  const vehicle = vehicles.find((Vehicle) => Vehicle.id === vehicleId);
+  const vehicle = vehicles[vehicleId];
 
   if (!vehicle) {
     return (
-      <UnauthorizedScreen
-        caption="No tienes acceso a este recurso."
-        buttonCaption="Reintentar"
-        retryFunction={fetchVehicles}
-      />
+      <>
+        <Stack.Screen options={{ title: "Recurso inaccesible", headerLargeTitle: false }} />
+        <UnauthorizedScreen
+          caption="No tienes acceso a este recurso."
+          buttonCaption="Reintentar"
+          retryFunction={fetchVehicle}
+        />
+      </>
     );
   }
 
-  const isChevronVisible = !(profile.role === "ADMIN" || profile.role === "OWNER");
+  const canEdit = profile.role === "ADMIN" || profile.role === "OWNER";
+  const isChevronVisible = !canEdit;
+
+  const openModal = (modalType: ModalType) => {
+    if (canEdit) {
+      setActiveModal(modalType);
+    }
+  };
 
   return (
-    vehicle && (
+    <>
+      <Modal isOpen={activeModal !== null} close={setActiveModal.bind(null, null)}>
+        {activeModal && (
+          <ChangeDataModal
+            currentDataType={
+              activeModal === "numero_economico"
+                ? "Número Económico"
+                : activeModal === "marca"
+                  ? "Marca"
+                  : activeModal === "sub_marca"
+                    ? "Submarca"
+                    : activeModal === "modelo"
+                      ? "Modelo"
+                      : activeModal === "no_serie"
+                        ? "No. de serie"
+                        : "No. de placa"
+            }
+            currentData={
+              activeModal === "numero_economico"
+                ? vehicle.economic_number
+                : activeModal === "marca"
+                  ? vehicle.brand
+                  : activeModal === "sub_marca"
+                    ? vehicle.sub_brand
+                    : activeModal === "modelo"
+                      ? vehicle.year
+                      : activeModal === "no_serie"
+                        ? vehicle.serial_number
+                        : vehicle.plate
+            }
+            closeModal={() => setActiveModal(null)}
+            dataChange={
+              activeModal === "numero_economico"
+                ? "numero_economico"
+                : activeModal === "marca"
+                  ? "marca"
+                  : activeModal === "sub_marca"
+                    ? "sub_marca"
+                    : activeModal === "modelo"
+                      ? "modelo"
+                      : activeModal === "no_serie"
+                        ? "no_serie"
+                        : "placa"
+            }
+            id={vehicle.id}
+          />
+        )}
+      </Modal>
+
+      <Stack.Screen
+        options={{
+          title: "Ficha técnica",
+          headerLargeTitle: true,
+          headerRight: () => (
+            <ActionButtonGroup>
+              <ActionButton show={canEdit} onPress={refetchVehicle} text="Actualizar" Icon={RotateCw} />
+            </ActionButtonGroup>
+          ),
+        }}
+      />
+
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        refreshControl={<RefreshControl refreshing={vehiclesAreLoading} onRefresh={fetchVehicles} />}
+        refreshControl={<RefreshControl refreshing={vehicleIsLoading} onRefresh={refetchVehicle} />}
       >
-        <ChangeDataModal
-          isOpen={profile.role === "ADMIN" || profile.role === "OWNER" ? numEco : false}
-          currentDataType="Numero Económico"
-          currentData={vehicle.economic_number}
-          closeModal={() => setNumEco(false)}
-          dataChange="numero_economico"
-          id={vehicle.id}
-        />
-        <ChangeDataModal
-          isOpen={profile.role === "ADMIN" || profile.role === "OWNER" ? marca : false}
-          currentDataType="Marca"
-          currentData={vehicle.brand}
-          closeModal={() => setMarca(false)}
-          dataChange="marca"
-          id={vehicle.id}
-        />
-        <ChangeDataModal
-          isOpen={profile.role === "ADMIN" || profile.role === "OWNER" ? subMarca : false}
-          currentDataType="Submarca"
-          currentData={vehicle.sub_brand}
-          closeModal={() => setSubMarca(false)}
-          dataChange="sub_marca"
-          id={vehicle.id}
-        />
-        <ChangeDataModal
-          isOpen={profile.role === "ADMIN" || profile.role === "OWNER" ? modelo : false}
-          currentDataType="Modelo"
-          currentData={vehicle.year}
-          closeModal={() => setModelo(false)}
-          dataChange="modelo"
-          id={vehicle.id}
-        />
-        <ChangeDataModal
-          isOpen={profile.role === "ADMIN" || profile.role === "OWNER" ? noSerie : false}
-          currentDataType="No. de serie"
-          currentData={vehicle.serial_number}
-          closeModal={() => setNoSerie(false)}
-          dataChange="no_serie"
-          id={vehicle.id}
-        />
-        <ChangeDataModal
-          isOpen={profile.role === "ADMIN" || profile.role === "OWNER" ? placa : false}
-          currentDataType="No. de placa"
-          currentData={vehicle.plate}
-          closeModal={() => setPlaca(false)}
-          dataChange="placa"
-          id={vehicle.id}
-        />
-
         <View style={styles.container}>
-          <Stack.Screen options={{ title: "Ficha técnica", headerLargeTitle: true }} />
           <GroupedList
             header="Detalles"
             footer="Contacta a tu administrador para más información o a tu supervisor para reportar errores. Solo los administradores pueden editar la información del camión."
           >
             <Row
-              title="Numero Económico"
-              onPress={() => setNumEco(true)}
-              caption={`${vehicle.economic_number}`}
+              title="Número Económico"
+              onPress={() => openModal("numero_economico")}
+              caption={vehicle.economic_number ?? "N/A"}
               hideChevron={isChevronVisible}
             />
             <Row
               title="Marca"
-              onPress={() => setMarca(true)}
-              caption={`${vehicle.brand}`}
+              onPress={() => openModal("marca")}
+              caption={vehicle.brand ?? "N/A"}
               hideChevron={isChevronVisible}
             />
             <Row
               title="Submarca"
-              onPress={() => setSubMarca(true)}
-              caption={`${vehicle.sub_brand}`}
+              onPress={() => openModal("sub_marca")}
+              caption={vehicle.sub_brand ?? "N/A"}
               hideChevron={isChevronVisible}
             />
             <Row
               title="Año"
-              onPress={() => setModelo(true)}
-              caption={`${vehicle.year}`}
+              onPress={() => openModal("modelo")}
+              caption={vehicle.year ?? "N/A"}
               hideChevron={isChevronVisible}
             />
             <Row
-              title="Número de serie"
-              onPress={() => setNoSerie(true)}
-              caption={`${vehicle.serial_number}`}
+              title="Número de Serie"
+              onPress={() => openModal("no_serie")}
+              caption={vehicle.serial_number ?? "N/A"}
               hideChevron={isChevronVisible}
             />
             <Row
-              title="Número de placa"
-              onPress={() => setPlaca(true)}
-              caption={`${vehicle.plate}`}
+              title="Número de Placa"
+              onPress={() => openModal("placa")}
+              caption={vehicle.plate ?? "N/A"}
               hideChevron={isChevronVisible}
             />
           </GroupedList>
         </View>
       </ScrollView>
-    )
+    </>
   );
 }
 
@@ -168,19 +212,15 @@ const stylesheet = createStyleSheet((theme) => ({
   container: {
     gap: theme.marginsComponents.section,
     marginTop: theme.marginsComponents.section,
+    paddingHorizontal: 16,
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  details: {
+  itemTitle: {
     fontSize: 18,
+    fontWeight: "bold",
     color: theme.textPresets.main,
+  },
+  itemSubtitle: {
+    fontSize: 15,
+    color: theme.textPresets.subtitle,
   },
 }));

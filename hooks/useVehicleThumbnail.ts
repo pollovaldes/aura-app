@@ -1,4 +1,4 @@
-import VehiclesContext from "@/context/VehiclesContext";
+import { VehiclesContext } from "@/context/VehiclesContext";
 import { supabase } from "@/lib/supabase";
 import { useContext, useEffect } from "react";
 

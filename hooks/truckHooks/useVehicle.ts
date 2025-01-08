@@ -1,73 +1,74 @@
 import { useContext } from "react";
 import { supabase } from "@/lib/supabase";
-import VehiclesContext from "@/context/VehiclesContext";
+import { Vehicle } from "@/types/globalTypes";
+import { VehiclesContext } from "@/context/VehiclesContext";
 
 export function useVehicle() {
-  const { vehicles, setVehicles, currentPage, setCurrentPage, hasMorePages, setHasMorePages } =
-    useContext(VehiclesContext);
+  const { vehicles, setVehicles } = useContext(VehiclesContext);
 
-  const fetchVehicles = async (page = 1) => {
+  const fetchVehicles = async (page: number, pageSize: number = 9): Promise<Vehicle[]> => {
     const { data, error } = await supabase
       .from("vehicles")
       .select("*")
-      .range((page - 1) * 9, page * 9 - 1);
+      .range((page - 1) * pageSize, page * pageSize - 1);
 
     if (error) {
-      setVehicles(null);
-      setHasMorePages(false);
-      return;
+      console.error(error);
+      throw error;
     }
 
-    setVehicles((prevVehicles) => {
-      const allVehicles = prevVehicles ? [...prevVehicles, ...data] : data;
-      return allVehicles.filter((vehicle, index, self) => self.findIndex((v) => v.id === vehicle.id) === index);
-    });
+    if (data) {
+      setVehicles((prev) => {
+        const updated = { ...prev };
+        data.forEach((vehicle) => {
+          updated[vehicle.id] = vehicle;
+        });
+        return updated;
+      });
+    }
 
-    setCurrentPage(page);
-    setHasMorePages(data.length > 0);
+    return data || [];
   };
 
-  const fetchVehicleById = async (vehicleId: string) => {
-    const existingVehicle = vehicles?.find((vehicle) => vehicle.id === vehicleId);
-
-    if (existingVehicle) {
-      return existingVehicle;
-    }
+  const fetchVehicleById = async (vehicleId: string): Promise<Vehicle | null> => {
+    const existing = vehicles[vehicleId];
+    if (existing) return existing;
 
     const { data, error } = await supabase.from("vehicles").select("*").eq("id", vehicleId).single();
 
-    if (error || !data) {
-      setVehicles(null);
-      setHasMorePages(false);
-      return;
+    if (error) {
+      console.error(error);
+      throw error;
     }
 
-    setVehicles((prevVehicles) => {
-      const allVehicles = prevVehicles ? [...prevVehicles, data] : [data];
-      return allVehicles.filter((vehicle, index, self) => self.findIndex((v) => v.id === vehicle.id) === index);
-    });
+    if (data) {
+      setVehicles((prev) => ({
+        ...prev,
+        [data.id]: data,
+      }));
+      return data;
+    }
 
-    return data;
+    return null;
   };
 
-  const refetchVehicleById = async (vehicleId: string) => {
+  const refetchVehicleById = async (vehicleId: string): Promise<Vehicle | null> => {
     const { data, error } = await supabase.from("vehicles").select("*").eq("id", vehicleId).single();
 
-    if (error || !data) {
-      setVehicles(null);
-      setHasMorePages(false);
-      return;
+    if (error) {
+      console.error(error);
+      throw error;
     }
 
-    setVehicles((prevVehicles) => {
-      const allVehicles = prevVehicles
-        ? prevVehicles.map((vehicle) => (vehicle.id === vehicleId ? { ...vehicle, ...data } : vehicle))
-        : [data];
+    if (data) {
+      setVehicles((prev) => ({
+        ...prev,
+        [data.id]: { ...prev[vehicleId], ...data },
+      }));
+      return data;
+    }
 
-      return allVehicles;
-    });
-
-    return data;
+    return null;
   };
 
   return {
@@ -75,8 +76,5 @@ export function useVehicle() {
     fetchVehicles,
     fetchVehicleById,
     refetchVehicleById,
-    currentPage,
-    hasMorePages,
-    setVehicles,
   };
 }

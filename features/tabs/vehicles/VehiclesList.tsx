@@ -17,41 +17,66 @@ import { AddVehicleModal } from "./modals/AddVehicleModal";
 
 type ModalType = "add_vehicle_modal" | null;
 
-export default function VehiclesList() {
+export function VehiclesList() {
   const { profile } = useProfile();
-  const { vehicles, fetchVehicles, currentPage, hasMorePages, setVehicles } = useVehicle();
+  const { vehicles, fetchVehicles } = useVehicle();
   const { styles } = useStyles(stylesheet);
-  const [vehiclesAreLoading, setVehiclesAreLoading] = useState(true); // Local loading state for initial fetch
+  const [vehiclesAreLoading, setVehiclesAreLoading] = useState(true);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMorePages, setHasMorePages] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   const closeModal = () => setActiveModal(null);
 
   useEffect(() => {
     fetchAllVehicles();
   }, []);
 
-  const fetchAllVehicles = async () => {
-    setVehiclesAreLoading(true);
-    setVehicles(null);
-    await fetchVehicles(1);
-    setVehiclesAreLoading(false);
-  };
+  const fetchAllVehicles = async (page: number = 1) => {
+    if (page === 1) {
+      setVehiclesAreLoading(true);
+    } else {
+      setIsRefreshing(true);
+    }
 
-  const loadMoreVehicles = () => {
-    if (hasMorePages) {
-      fetchVehicles(currentPage + 1);
+    try {
+      const fetched = await fetchVehicles(page);
+      setHasMorePages(fetched.length === 9);
+      setCurrentPage(page);
+    } catch (error) {
+      if (page === 1) {
+        setVehiclesAreLoading(false);
+      }
+    } finally {
+      setVehiclesAreLoading(false);
+      setIsRefreshing(false);
     }
   };
 
-  if (vehiclesAreLoading && !vehicles) {
+  const loadMoreVehicles = () => {
+    if (hasMorePages && !isRefreshing) {
+      fetchAllVehicles(currentPage + 1);
+    }
+  };
+
+  const handleRefresh = () => {
+    setHasMorePages(true);
+    fetchAllVehicles(1);
+  };
+
+  const vehicleArray = Object.values(vehicles);
+
+  if (vehiclesAreLoading && currentPage === 1) {
     return <FetchingIndicator caption="Cargando vehículos" />;
   }
 
-  if (!vehicles) {
+  if (vehicleArray.length === 0) {
     return (
       <ErrorScreen
         caption="Ocurrió un error al cargar los vehículos"
         buttonCaption="Reintentar"
-        retryFunction={fetchAllVehicles}
+        retryFunction={() => fetchAllVehicles(1)}
       />
     );
   }
@@ -66,7 +91,7 @@ export default function VehiclesList() {
 
       <Stack.Screen
         options={{
-          title: `Vehículos (${vehicles?.length ?? 0})`,
+          title: `Vehículos (${vehicleArray.length})`,
           headerLargeTitle: true,
           headerRight: () => (
             <ActionButtonGroup>
@@ -77,14 +102,19 @@ export default function VehiclesList() {
                 text="Agregar vehículo"
                 show={isAdminOrOwner}
               />
-              <ActionButton onPress={fetchAllVehicles} Icon={RotateCw} text="Actualizar" show={Platform.OS === "web"} />
+              <ActionButton
+                onPress={() => fetchAllVehicles(1)}
+                Icon={RotateCw}
+                text="Actualizar"
+                show={Platform.OS === "web"}
+              />
             </ActionButtonGroup>
           ),
         }}
       />
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
-        data={vehicles}
+        data={vehicleArray}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <SimpleList
@@ -105,8 +135,8 @@ export default function VehiclesList() {
         )}
         onEndReached={loadMoreVehicles}
         onEndReachedThreshold={0.75}
-        onRefresh={fetchAllVehicles}
-        refreshing={false}
+        onRefresh={handleRefresh}
+        refreshing={isRefreshing}
         ListEmptyComponent={<EmptyScreen caption="Ningún vehículo por aquí." />}
         ListFooterComponent={
           hasMorePages ? (

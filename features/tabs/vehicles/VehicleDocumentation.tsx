@@ -1,33 +1,35 @@
+import React, { useEffect, useState } from "react";
+import { router, Stack, useLocalSearchParams } from "expo-router";
+import { FlatList, Platform, Text, View, Alert } from "react-native";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { ActionButton } from "@/components/actionButton/ActionButton";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
-import EmptyScreen from "@/components/dataStates/EmptyScreen";
-import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
-import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
-import Modal from "@/components/Modal/Modal";
 import { SimpleList } from "@/components/simpleList/SimpleList";
 import { AddDocumentModal } from "@/features/tabs/vehicles/modals/AddDocumentModal";
 import { useVehicle } from "@/hooks/truckHooks/useVehicle";
-import useDocuments from "@/hooks/useDocuments";
-import useProfile from "@/hooks/useProfile";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { supabase } from "@/lib/supabase";
 import { FilePlus, RotateCw } from "lucide-react-native";
-import React, { useEffect, useState } from "react";
-import { FlatList, Platform, Text, View } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { colorPalette } from "@/style/themes";
+import useProfile from "@/hooks/useProfile";
+import useDocuments from "@/hooks/useDocuments";
+import ErrorScreen from "@/components/dataStates/ErrorScreen";
+import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
+import Modal from "@/components/Modal/Modal";
+import EmptyScreen from "@/components/dataStates/EmptyScreen";
 
 type ModalType = "add_document" | null;
 
-export default function VehicleDocumentation() {
+export function VehicleDocumentation() {
   const { styles } = useStyles(stylesheet);
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
   const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicle();
-  const [vehicleIsLoading, setVehicleIsLoading] = useState(true);
   const { documents, areDocumentsLoading, fetchDocuments } = useDocuments();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
+  const [vehicleIsLoading, setVehicleIsLoading] = useState(true);
 
   const fetchVehicle = async () => {
     setVehicleIsLoading(true);
@@ -43,7 +45,7 @@ export default function VehicleDocumentation() {
 
   useEffect(() => {
     fetchVehicle();
-  }, []);
+  }, [vehicleId]);
 
   if (vehicleIsLoading || areDocumentsLoading) {
     return <FetchingIndicator caption={vehicleIsLoading ? "Cargando vehículo" : "Cargando documentos"} />;
@@ -59,7 +61,7 @@ export default function VehicleDocumentation() {
     );
   }
 
-  const vehicle = vehicles.find((Vehicle) => Vehicle.id === vehicleId);
+  const vehicle = vehicles[vehicleId];
 
   if (!vehicle) {
     return (
@@ -77,7 +79,7 @@ export default function VehicleDocumentation() {
   if (!documents) {
     return (
       <ErrorScreen
-        caption={`Ocurrió un error al cargar los documentos`}
+        caption="Ocurrió un error al cargar los documentos"
         buttonCaption="Reintentar"
         retryFunction={fetchDocuments}
       />
@@ -85,8 +87,32 @@ export default function VehicleDocumentation() {
   }
 
   const associatedDocuments = documents.filter((doc) => doc.vehicle_id === vehicleId);
-
   const canEdit = profile.role === "ADMIN" || profile.role === "OWNER";
+
+  const deleteVehicle = async () => {
+    Alert.alert(
+      "Confirmación",
+      `¿Estás seguro de eliminar el vehículo "${vehicle.brand ?? ""} ${vehicle.sub_brand ?? ""} (${vehicle.year ?? ""})"?\nEsta acción borrará permanentemente sus rutas, historiales, documentos, etc.`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: async () => {
+            const { error } = await supabase.from("vehicles").delete().eq("id", vehicleId);
+
+            if (error) {
+              console.error("Error deleting vehicle:", error);
+              throw error;
+            }
+
+            fetchVehicle();
+            router.back();
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <>
@@ -108,8 +134,8 @@ export default function VehicleDocumentation() {
               />
               <ActionButton
                 onPress={() => {
-                  fetchDocuments();
                   refetchVehicle();
+                  fetchDocuments();
                 }}
                 Icon={RotateCw}
                 text="Actualizar"

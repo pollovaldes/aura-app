@@ -1,4 +1,4 @@
-import VehicleDocumentation from "@/features/tabs/vehicles/VehicleDocumentation";
+import { VehicleDocumentation } from "@/features/tabs/vehicles/VehicleDocumentation";
 
 export default function Index() {
   return <VehicleDocumentation />;

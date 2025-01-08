@@ -1,5 +1,6 @@
-import VehicleDetail from "@/features/tabs/vehicles/VehicleDetails";
+import { VehicleDetails } from "@/features/tabs/vehicles/VehicleDetails";
+
 
 export default function Index() {
-  return <VehicleDetail />;
+  return <VehicleDetails />;
 }

@@ -12,8 +12,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import GroupedList from "@/components/grouped-list/GroupedList";
-import Row from "@/components/grouped-list/Row";
 import {
   BookOpen,
   Boxes,
@@ -28,10 +26,6 @@ import {
   TruckIcon,
 } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
-import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
-import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import useProfile from "@/hooks/useProfile";
-import Modal from "@/components/Modal/Modal";
 import { supabase } from "@/lib/supabase";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
@@ -39,10 +33,16 @@ import { ActionButton } from "@/components/actionButton/ActionButton";
 import { useVehicle } from "@/hooks/truckHooks/useVehicle";
 import { useVehicleThumbnail } from "@/hooks/useVehicleThumbnail";
 import { ChangeCoverImageModal } from "@/features/tabs/vehicles/modals/ChangeCoverImageModal";
+import ErrorScreen from "@/components/dataStates/ErrorScreen";
+import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
+import Modal from "@/components/Modal/Modal";
+import GroupedList from "@/components/grouped-list/GroupedList";
+import Row from "@/components/grouped-list/Row";
+import useProfile from "@/hooks/useProfile";
 
 type ModalType = "change_cover_image" | null;
 
-export default function VehicleDetails() {
+export function VehicleDetails() {
   const { styles } = useStyles(stylesheet);
   const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicle();
   const { getGuaranteedProfile } = useProfile();
@@ -52,7 +52,7 @@ export default function VehicleDetails() {
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
   const { width } = useWindowDimensions();
-  const [vehicleIsLoading, setVehicleIsLoading] = useState(true); // Local loading state for initial fetch
+  const [vehicleIsLoading, setVehicleIsLoading] = useState(true);
 
   const fetchVehicle = async () => {
     setVehicleIsLoading(true);
@@ -63,15 +63,16 @@ export default function VehicleDetails() {
   const refetchVehicle = async () => {
     setVehicleIsLoading(true);
     await refetchVehicleById(vehicleId);
+    await refetchVehicleThumbnail();
     setVehicleIsLoading(false);
   };
 
   useEffect(() => {
     fetchVehicle();
-  }, []);
+  }, [vehicleId]);
 
   if (vehicleIsLoading) {
-    return <FetchingIndicator caption={"Cargando vehículo"} />;
+    return <FetchingIndicator caption="Cargando vehículo" />;
   }
 
   if (!vehicles) {
@@ -84,7 +85,7 @@ export default function VehicleDetails() {
     );
   }
 
-  const vehicle = vehicles.find((Vehicle) => Vehicle.id === vehicleId);
+  const vehicle = vehicles[vehicleId];
 
   if (!vehicle) {
     return (
@@ -102,7 +103,7 @@ export default function VehicleDetails() {
   const vehicleTitle = `${vehicle.brand ?? ""} ${vehicle.sub_brand ?? ""} (${vehicle.year ?? ""})`;
   const canEditVehicle = profile.role === "ADMIN" || profile.role === "OWNER";
 
-  const deleteVehicle = () => {
+  const deleteVehicle = async () => {
     Alert.alert(
       "Confirmación",
       `¿Estás seguro de eliminar el vehículo "${vehicleTitle}"?\nEsta acción borrará permanentemente sus rutas, historiales, documentos, etc.`,
@@ -115,8 +116,8 @@ export default function VehicleDetails() {
             const { error } = await supabase.from("vehicles").delete().eq("id", vehicleId);
 
             if (error) {
-              alert("Ocurrió un error al eliminar el vehículo\n" + error.message);
-              return;
+              console.error("Error deleting vehicle:", error);
+              throw error;
             }
 
             fetchVehicle();
@@ -144,7 +145,6 @@ export default function VehicleDetails() {
               <ActionButton
                 onPress={() => {
                   refetchVehicle();
-                  refetchVehicleThumbnail();
                 }}
                 Icon={RotateCw}
                 text="Actualizar"
@@ -164,7 +164,6 @@ export default function VehicleDetails() {
             refreshing={vehicleIsLoading}
             onRefresh={() => {
               refetchVehicle();
-              refetchVehicleThumbnail();
             }}
           />
         }
@@ -238,7 +237,7 @@ export default function VehicleDetails() {
                 title="Borrar vehículo"
                 icon={Trash}
                 backgroundColor={colorPalette.red[500]}
-                onPress={() => deleteVehicle()}
+                onPress={deleteVehicle}
                 show={canEditVehicle}
               />
             </GroupedList>

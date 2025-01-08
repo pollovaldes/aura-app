@@ -1,34 +1,65 @@
-import FormTitle from "@/app/auth/FormTitle";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Text, View, Alert } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { useCreateRoute } from "./CreateRouteContext";
-import { BackButtonOverlay } from "./BackButtonOverlay";
-import { FormButton } from "@/components/Form/FormButton";
-import { Play } from "lucide-react-native";
 import WebView from "react-native-webview";
-import { useVehicle } from "@/hooks/truckHooks/useVehicle";
-import { useEffect, useState } from "react";
+import FormTitle from "@/app/auth/FormTitle";
 import { SimpleList } from "@/components/simpleList/SimpleList";
 import { VehicleThumbnail } from "@/components/vehicles/VehicleThumbnail";
-import React from "react";
-import { useLocalSearchParams } from "expo-router";
+import { FormButton } from "@/components/Form/FormButton";
+import { Play, Trash } from "lucide-react-native";
+import { useCreateRoute } from "./CreateRouteContext";
+import { BackButtonOverlay } from "./BackButtonOverlay";
 import useProfile from "@/hooks/useProfile";
+import { useVehicle } from "@/hooks/truckHooks/useVehicle";
+import EmptyScreen from "@/components/dataStates/EmptyScreen";
+import ErrorScreen from "@/components/dataStates/ErrorScreen";
+import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
+import { formatDate } from "@/features/global/functions/formatDate";
+import { useLocalSearchParams } from "expo-router";
+import Modal from "@/components/Modal/Modal";
+import { AddMaintenanceModal } from "../AddMaintenanceModal";
+
+type ModalType = "create_maintenance_record" | null;
 
 export function RouteSummary() {
   const { styles } = useStyles(stylesheet);
   const { setStep, setField, routeData } = useCreateRoute();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
-  const { vehicles, fetchVehicleById } = useVehicle();
+  const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicle();
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
 
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const [vehicleIsLoading, setVehicleIsLoading] = useState(true);
+
   const fetchVehicle = async () => {
-    await fetchVehicleById(vehicleId as string);
+    setVehicleIsLoading(true);
+    try {
+      await fetchVehicleById(vehicleId);
+    } catch (error) {
+      console.error("Error fetching vehicle:", error);
+      throw error;
+    } finally {
+      setVehicleIsLoading(false);
+    }
+  };
+
+  const refetchVehicle = async () => {
+    setVehicleIsLoading(true);
+    try {
+      await refetchVehicleById(vehicleId);
+    } catch (error) {
+      console.error("Error refetching vehicle:", error);
+      throw error;
+    } finally {
+      setVehicleIsLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchVehicle();
-  }, []);
+  }, [vehicleId]);
 
   const zoomFactor = routeData.started_location_latitude && routeData.started_location_longitude ? 0.01 / 15 : 180;
   const mapUrl =
@@ -36,7 +67,36 @@ export function RouteSummary() {
       ? `https://www.openstreetmap.org/export/embed.html?bbox=${routeData.started_location_longitude - zoomFactor}%2C${routeData.started_location_latitude - zoomFactor}%2C${routeData.started_location_longitude + zoomFactor}%2C${routeData.started_location_latitude + zoomFactor}&layer=carto-dark&marker=${routeData.started_location_latitude}%2C${routeData.started_location_longitude}`
       : `https://www.openstreetmap.org/export/embed.html?bbox=-180%2C-90%2C180%2C90&layer=carto-dark`;
 
-  const vehicle = vehicles?.find((Vehicle) => Vehicle.id === vehicleId);
+  const vehicle = vehicles?.[vehicleId];
+
+  // Handle Loading State
+  if (vehicleIsLoading) {
+    return <FetchingIndicator caption="Cargando vehículo" />;
+  }
+
+  // Handle Error State for Vehicles
+  if (!vehicles) {
+    return (
+      <ErrorScreen
+        caption="Ocurrió un error al cargar los vehículos"
+        buttonCaption="Reintentar"
+        retryFunction={fetchVehicle}
+      />
+    );
+  }
+
+  // Handle Unauthorized Access
+  if (!vehicle) {
+    return (
+      <>
+        <UnauthorizedScreen
+          caption="No tienes acceso a este recurso."
+          buttonCaption="Reintentar"
+          retryFunction={refetchVehicle}
+        />
+      </>
+    );
+  }
 
   return (
     <View style={styles.section}>
@@ -49,7 +109,7 @@ export function RouteSummary() {
         <Text style={styles.subtitle}>Nombre de la ruta: {routeData.title}</Text>
         <Text style={styles.subtitle}>Descripción de la ruta: {routeData.description}</Text>
         <Text style={styles.subtitle}>
-          Quien hará la ruta: {`${profile.name} ${profile.father_last_name} ${profile.mother_last_name}`}
+          Quién hará la ruta: {`${profile.name} ${profile.father_last_name} ${profile.mother_last_name}`}
         </Text>
         <Text style={styles.subtitle}>Dirección de inicio: {routeData.started_adrees}</Text>
         <View style={styles.webviewContainer}>
@@ -96,8 +156,24 @@ export function RouteSummary() {
         </View>
       </View>
       <View style={styles.group}>
-        <FormButton title="Iniciar ruta" Icon={Play} onPress={() => {}} />
+        <FormButton
+          title="Iniciar ruta"
+          Icon={Play}
+          onPress={() => {
+            /* Implement iniciar ruta functionality */
+          }}
+        />
       </View>
+
+      {/* Modal for Adding Maintenance Record */}
+      <Modal isOpen={activeModal === "create_maintenance_record"} close={() => setActiveModal(null)}>
+        <AddMaintenanceModal
+          closeModal={() => setActiveModal(null)}
+          fetchMaintenance={fetchVehicle} // Assuming fetchVehicle fetches necessary data
+          vehicle={vehicle}
+          profile={profile}
+        />
+      </Modal>
     </View>
   );
 }
@@ -105,19 +181,25 @@ export function RouteSummary() {
 const stylesheet = createStyleSheet((theme) => ({
   section: {
     gap: theme.marginsComponents.section,
+    paddingHorizontal: 16,
+    flex: 1,
   },
   group: {
     gap: theme.marginsComponents.group,
+    marginTop: theme.marginsComponents.group,
   },
   subtitle: {
     color: theme.textPresets.subtitle,
     textAlign: "center",
+    fontSize: 16,
+    marginVertical: 4,
   },
   webviewContainer: {
     height: 320,
     overflow: "hidden",
     borderRadius: 8,
     position: "relative",
+    marginTop: 10,
   },
   webview: {
     height: 300,
@@ -136,5 +218,6 @@ const stylesheet = createStyleSheet((theme) => ({
   itemDetails: {
     fontSize: 15,
     color: theme.textPresets.subtitle,
+    marginTop: 4,
   },
 }));
