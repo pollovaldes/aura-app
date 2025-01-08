@@ -4,7 +4,7 @@ import { View, ScrollView, RefreshControl } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
-import { Info, SquarePen, Trash, Truck } from "lucide-react-native";
+import { Info, SquarePen, Truck } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import ProfileColumn from "@/components/people/ProfileColumn";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
@@ -13,7 +13,7 @@ import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import useProfile from "@/hooks/useProfile";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 
-export function UserDetails() {
+export function UserPersonalData() {
   const { styles } = useStyles(stylesheet);
   const { users, usersAreLoading, fetchUsers } = useUsers();
   const { getGuaranteedProfile } = useProfile();
@@ -51,7 +51,7 @@ export function UserDetails() {
       <Stack.Screen
         options={{
           headerShown: true,
-          title: user.id === profile.id ? "Tú" : "",
+          title: "",
           headerLargeTitle: false,
         }}
       />
@@ -61,26 +61,18 @@ export function UserDetails() {
       >
         <View style={styles.container}>
           <GroupedList>
-            <Row>
-              <ProfileColumn profile={user} showPosition />
-            </Row>
+            <Row hideChevron title="Nombre" caption={user.name} />
+            <Row hideChevron title="Apellido paterno" caption={user.father_last_name} />
+            <Row hideChevron title="Apellido materno" caption={user.mother_last_name} />
+            <Row hideChevron title="Fecha de nacimiento" caption={user.birthday} />
           </GroupedList>
           <GroupedList>
-            <Row
-              title="Información personal"
-              icon={Info}
-              backgroundColor={colorPalette.cyan[500]}
-              onPress={() => router.push("./personal_data", { relativeToDirectory: true })}
-            />
-            <Row title="Editar rol" icon={SquarePen} backgroundColor={colorPalette.green[500]} />
+            <Row hideChevron title="Posición" caption={user.position} />
+            <Row hideChevron title="Rol" caption={user.role} />
           </GroupedList>
-          <GroupedList header="Acciones">
-            <Row
-              title="Eliminar usuario"
-              icon={Trash}
-              backgroundColor={colorPalette.red[500]}
-              show={profile.role === "OWNER" || profile.is_super_admin}
-            />
+          <GroupedList>
+            <Row hideChevron title="Registro completo" caption={user.is_fully_registered === true ? "Sí" : "No"} />
+            <Row hideChevron title="Es superadministrador" caption={user.is_super_admin === true ? "Sí" : "No"} />
           </GroupedList>
         </View>
       </ScrollView>

@@ -1,12 +1,10 @@
 import { FlatList, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import useProfile from "@/hooks/useProfile";
-import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
-import { useHeaderHeight } from "@react-navigation/elements";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import UserThumbnail from "@/components/people/UserThumbnail";
@@ -15,7 +13,6 @@ import React from "react";
 import { useFleets } from "@/hooks/useFleets";
 import { SimpleList } from "@/components/simpleList/SimpleList";
 import { FormButton } from "@/components/Form/FormButton";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 
 export default function FleetDetailsEditPeople() {
@@ -25,8 +22,6 @@ export default function FleetDetailsEditPeople() {
   const { fleetId } = useLocalSearchParams<{ fleetId: string }>();
   const { areFleetsLoading, fetchFleets, fleets } = useFleets(fleetId);
   const { users, usersAreLoading, fetchUsers } = useUsers();
-  const headerHeight = useHeaderHeight();
-  const insets = useSafeAreaInsets();
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
   const capitalizeWords = (text: string | null | undefined): string => {
