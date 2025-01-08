@@ -13,6 +13,7 @@ import { ProfileContextProvider } from "@/context/ProfileContext";
 import { VehiclesContextProvider } from "@/context/VehiclesContext";
 import { UsersContextProvider } from "@/context/UsersContext";
 import { ProfileImageProvider } from "@/context/ProfileImageContext";
+import { RoutesContextProvider } from "@/features/routePage/context/RoutesContext";
 
 export default function RootLayout() {
   const path = usePathname();
@@ -33,9 +34,11 @@ export default function RootLayout() {
           <VehiclesContextProvider>
             <UsersContextProvider>
               <ProfileImageProvider>
-                {path === "/" && <Redirect href="/auth" />}
-                <Slot />
-                <Toast config={toastConfig} />
+                <RoutesContextProvider>
+                  {path === "/" && <Redirect href="/auth" />}
+                  <Slot />
+                  <Toast config={toastConfig} />
+                </RoutesContextProvider>
               </ProfileImageProvider>
             </UsersContextProvider>
           </VehiclesContextProvider>

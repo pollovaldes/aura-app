@@ -23,23 +23,6 @@ type ModalProps = RNModalProps & {
 
 export default function Modal({ isOpen, close, children, ...rest }: ModalProps) {
   const { styles } = useStyles(stylesheet);
-  const insets = useSafeAreaInsets();
-
-  const [screenWidth, setScreenWidth] = useState(Dimensions.get("window").width);
-  const [screenHeight, setScreenHeight] = useState(Dimensions.get("window").height);
-
-  useEffect(() => {
-    const updateWidth = () => setScreenWidth(Dimensions.get("window").width);
-    const widthSubscription = Dimensions.addEventListener("change", updateWidth);
-
-    const updateHeight = () => setScreenHeight(Dimensions.get("window").height);
-    const heightSubscription = Dimensions.addEventListener("change", updateHeight);
-
-    return () => {
-      widthSubscription.remove();
-      heightSubscription.remove();
-    };
-  }, []);
 
   if (!isOpen) return null;
 
@@ -58,9 +41,10 @@ export default function Modal({ isOpen, close, children, ...rest }: ModalProps) 
               entering={ZoomIn.duration(300)}
               layout={LinearTransition.easing(Easing.out(Easing.ease))}
             >
-              <TouchableOpacity onPress={close}>
-                <Text style={styles.closeButton}>Cerrar</Text>
-              </TouchableOpacity>
+              <Text style={styles.closeButton} onPress={close}>
+                Cerrar
+              </Text>
+
               {children}
             </Animated.View>
           </ScrollView>
@@ -82,7 +66,6 @@ const stylesheet = createStyleSheet((theme, runtime) => ({
   keyboardAvoider: {
     flex: 1,
     justifyContent: "center",
-    paddingHorizontal: 12,
   },
   scrollContentContainer: {
     flexGrow: 1,
@@ -92,16 +75,18 @@ const stylesheet = createStyleSheet((theme, runtime) => ({
   },
   modalCard: {
     maxWidth: 550,
-    width: runtime.screen.width - 24,
+    width: runtime.screen.width - 12,
     alignSelf: "center",
     backgroundColor: theme.ui.colors.card,
     borderRadius: 10,
-    padding: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 16,
+    flexDirection: "column",
+    gap: 20,
   },
   closeButton: {
     color: theme.ui.colors.primary,
     fontSize: 18,
     textAlign: "right",
-    padding: 6,
   },
 }));

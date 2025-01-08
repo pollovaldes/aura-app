@@ -10,7 +10,7 @@ export function useVehicle() {
     const { data, error } = await supabase
       .from("vehicles")
       .select("*")
-      .range((page - 1) * 9, page * 9 - 1); // Fetch vehicles 9 at a time
+      .range((page - 1) * 9, page * 9 - 1);
 
     if (error) {
       setVehicles(null);
@@ -24,14 +24,14 @@ export function useVehicle() {
     });
 
     setCurrentPage(page);
-    setHasMorePages(data.length > 0); // If less than 9 vehicles are fetched, assume no more pages
+    setHasMorePages(data.length > 0);
   };
 
   const fetchVehicleById = async (vehicleId: string) => {
     const existingVehicle = vehicles?.find((vehicle) => vehicle.id === vehicleId);
 
     if (existingVehicle) {
-      return existingVehicle; // Return the vehicle from the context
+      return existingVehicle;
     }
 
     const { data, error } = await supabase.from("vehicles").select("*").eq("id", vehicleId).single();

@@ -23,7 +23,7 @@ export function BackButtonOverlay({ back }: BackButtonOverlayProps) {
 const stylesheet = createStyleSheet((theme) => ({
   container: {
     position: "absolute",
-    top: -31,
+    top: -42,
     left: 0,
     padding: 0,
     zIndex: 2,
