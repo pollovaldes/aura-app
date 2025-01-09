@@ -1,7 +1,5 @@
-// VehicleTechnicalSheet.tsx
-
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, RefreshControl, Text, Platform } from "react-native";
+import { View, ScrollView, RefreshControl, Platform } from "react-native";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
@@ -9,48 +7,42 @@ import { useVehicle } from "@/hooks/truckHooks/useVehicle";
 import useProfile from "@/hooks/useProfile";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
-import ChangeDataModal from "@/components/Modal/ChangeDataModal";
 import Modal from "@/components/Modal/Modal";
 import Row from "@/components/grouped-list/Row";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
-import { RotateCcw, RotateCw } from "lucide-react-native";
+import { RotateCw } from "lucide-react-native";
+import { EconomicNumberModal } from "./modals/technicalSheetModal/EconomicNumberModal";
+import { BrandModal } from "./modals/technicalSheetModal/BrandModal";
+import { SubBrandModal } from "./modals/technicalSheetModal/SubBrandModal";
+import { YearModal } from "./modals/technicalSheetModal/YearModal";
+import { SerialNumberModal } from "./modals/technicalSheetModal/SerialNumberModal";
+import { PlateModal } from "./modals/technicalSheetModal/PlateModal";
 
-type ModalType = "numero_economico" | "marca" | "sub_marca" | "modelo" | "no_serie" | "placa" | null;
+type ModalType = "economic_number" | "brand" | "sub_brand" | "model" | "serial_number" | "plate" | "year" | null;
 
 export function VehicleTechnicalSheet() {
   const { styles } = useStyles(stylesheet);
+  const { vehicles, refetchVehicleById, fetchVehicleById } = useVehicle();
+  const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
+  const [vehicleIsLoading, setVehicleIsLoading] = useState(true);
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
-  const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicle();
-  const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
-  const [vehicleIsLoading, setVehicleIsLoading] = useState(true);
+  const closeModal = () => setActiveModal(null);
 
-  const fetchVehicle = async () => {
+  async function fetchVehicle() {
     setVehicleIsLoading(true);
-    try {
-      await fetchVehicleById(vehicleId);
-    } catch (error) {
-      console.error("Error fetching vehicle:", error);
-      throw error;
-    } finally {
-      setVehicleIsLoading(false);
-    }
-  };
+    await fetchVehicleById(vehicleId);
+    setVehicleIsLoading(false);
+  }
 
-  const refetchVehicle = async () => {
+  async function refetchVehicle() {
     setVehicleIsLoading(true);
-    try {
-      await refetchVehicleById(vehicleId);
-    } catch (error) {
-      console.error("Error refetching vehicle:", error);
-      throw error;
-    } finally {
-      setVehicleIsLoading(false);
-    }
-  };
+    await refetchVehicleById(vehicleId);
+    setVehicleIsLoading(false);
+  }
 
   useEffect(() => {
     fetchVehicle();
@@ -58,16 +50,6 @@ export function VehicleTechnicalSheet() {
 
   if (vehicleIsLoading) {
     return <FetchingIndicator caption="Cargando vehículo" />;
-  }
-
-  if (!vehicles) {
-    return (
-      <ErrorScreen
-        caption="Ocurrió un error al cargar los vehículos"
-        buttonCaption="Reintentar"
-        retryFunction={fetchVehicle}
-      />
-    );
   }
 
   const vehicle = vehicles[vehicleId];
@@ -86,62 +68,26 @@ export function VehicleTechnicalSheet() {
   }
 
   const canEdit = profile.role === "ADMIN" || profile.role === "OWNER";
-  const isChevronVisible = !canEdit;
-
-  const openModal = (modalType: ModalType) => {
-    if (canEdit) {
-      setActiveModal(modalType);
-    }
-  };
 
   return (
     <>
-      <Modal isOpen={activeModal !== null} close={setActiveModal.bind(null, null)}>
-        {activeModal && (
-          <ChangeDataModal
-            currentDataType={
-              activeModal === "numero_economico"
-                ? "Número Económico"
-                : activeModal === "marca"
-                  ? "Marca"
-                  : activeModal === "sub_marca"
-                    ? "Submarca"
-                    : activeModal === "modelo"
-                      ? "Modelo"
-                      : activeModal === "no_serie"
-                        ? "No. de serie"
-                        : "No. de placa"
-            }
-            currentData={
-              activeModal === "numero_economico"
-                ? vehicle.economic_number
-                : activeModal === "marca"
-                  ? vehicle.brand
-                  : activeModal === "sub_marca"
-                    ? vehicle.sub_brand
-                    : activeModal === "modelo"
-                      ? vehicle.year
-                      : activeModal === "no_serie"
-                        ? vehicle.serial_number
-                        : vehicle.plate
-            }
-            closeModal={() => setActiveModal(null)}
-            dataChange={
-              activeModal === "numero_economico"
-                ? "numero_economico"
-                : activeModal === "marca"
-                  ? "marca"
-                  : activeModal === "sub_marca"
-                    ? "sub_marca"
-                    : activeModal === "modelo"
-                      ? "modelo"
-                      : activeModal === "no_serie"
-                        ? "no_serie"
-                        : "placa"
-            }
-            id={vehicle.id}
-          />
-        )}
+      <Modal close={closeModal} isOpen={activeModal === "economic_number"}>
+        <EconomicNumberModal vehicle={vehicle} closeModal={closeModal} refetchVehicle={refetchVehicle} />
+      </Modal>
+      <Modal close={closeModal} isOpen={activeModal === "brand"}>
+        <BrandModal vehicle={vehicle} closeModal={closeModal} refetchVehicle={refetchVehicle} />
+      </Modal>
+      <Modal close={closeModal} isOpen={activeModal === "sub_brand"}>
+        <SubBrandModal vehicle={vehicle} closeModal={closeModal} refetchVehicle={refetchVehicle} />
+      </Modal>
+      <Modal close={closeModal} isOpen={activeModal === "year"}>
+        <YearModal vehicle={vehicle} closeModal={closeModal} refetchVehicle={refetchVehicle} />
+      </Modal>
+      <Modal close={closeModal} isOpen={activeModal === "serial_number"}>
+        <SerialNumberModal vehicle={vehicle} closeModal={closeModal} refetchVehicle={refetchVehicle} />
+      </Modal>
+      <Modal close={closeModal} isOpen={activeModal === "plate"}>
+        <PlateModal vehicle={vehicle} closeModal={closeModal} refetchVehicle={refetchVehicle} />
       </Modal>
 
       <Stack.Screen
@@ -150,7 +96,7 @@ export function VehicleTechnicalSheet() {
           headerLargeTitle: true,
           headerRight: () => (
             <ActionButtonGroup>
-              <ActionButton show={canEdit} onPress={refetchVehicle} text="Actualizar" Icon={RotateCw} />
+              <ActionButton onPress={refetchVehicle} text="Actualizar" Icon={RotateCw} show={Platform.OS === "web"} />
             </ActionButtonGroup>
           ),
         }}
@@ -161,45 +107,42 @@ export function VehicleTechnicalSheet() {
         refreshControl={<RefreshControl refreshing={vehicleIsLoading} onRefresh={refetchVehicle} />}
       >
         <View style={styles.container}>
-          <GroupedList
-            header="Detalles"
-            footer="Contacta a tu administrador para más información o a tu supervisor para reportar errores. Solo los administradores pueden editar la información del camión."
-          >
+          <GroupedList header="Ficha técnica del vehículo">
             <Row
               title="Número Económico"
-              onPress={() => openModal("numero_economico")}
+              onPress={() => setActiveModal("economic_number")}
               caption={vehicle.economic_number ?? "N/A"}
-              hideChevron={isChevronVisible}
+              hideChevron={!canEdit}
             />
             <Row
               title="Marca"
-              onPress={() => openModal("marca")}
+              onPress={() => setActiveModal("brand")}
               caption={vehicle.brand ?? "N/A"}
-              hideChevron={isChevronVisible}
+              hideChevron={!canEdit}
             />
             <Row
               title="Submarca"
-              onPress={() => openModal("sub_marca")}
+              onPress={() => setActiveModal("sub_brand")}
               caption={vehicle.sub_brand ?? "N/A"}
-              hideChevron={isChevronVisible}
+              hideChevron={!canEdit}
             />
             <Row
               title="Año"
-              onPress={() => openModal("modelo")}
+              onPress={() => setActiveModal("year")}
               caption={vehicle.year ?? "N/A"}
-              hideChevron={isChevronVisible}
+              hideChevron={!canEdit}
             />
             <Row
-              title="Número de Serie"
-              onPress={() => openModal("no_serie")}
+              title="Número de serie"
+              onPress={() => setActiveModal("serial_number")}
               caption={vehicle.serial_number ?? "N/A"}
-              hideChevron={isChevronVisible}
+              hideChevron={!canEdit}
             />
             <Row
-              title="Número de Placa"
-              onPress={() => openModal("placa")}
+              title="Número de placa"
+              onPress={() => setActiveModal("plate")}
               caption={vehicle.plate ?? "N/A"}
-              hideChevron={isChevronVisible}
+              hideChevron={!canEdit}
             />
           </GroupedList>
         </View>
@@ -210,9 +153,7 @@ export function VehicleTechnicalSheet() {
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
-    gap: theme.marginsComponents.section,
     marginTop: theme.marginsComponents.section,
-    paddingHorizontal: 16,
   },
   itemTitle: {
     fontSize: 18,

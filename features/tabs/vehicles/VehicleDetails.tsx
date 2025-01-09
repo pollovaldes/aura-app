@@ -54,35 +54,24 @@ export function VehicleDetails() {
   const { width } = useWindowDimensions();
   const [vehicleIsLoading, setVehicleIsLoading] = useState(true);
 
-  const fetchVehicle = async () => {
+  async function fetchVehicle() {
     setVehicleIsLoading(true);
     await fetchVehicleById(vehicleId);
     setVehicleIsLoading(false);
-  };
+  }
 
-  const refetchVehicle = async () => {
+  async function refetchVehicle() {
     setVehicleIsLoading(true);
     await refetchVehicleById(vehicleId);
-    await refetchVehicleThumbnail();
     setVehicleIsLoading(false);
-  };
+  }
 
   useEffect(() => {
     fetchVehicle();
-  }, [vehicleId]);
+  }, []);
 
   if (vehicleIsLoading) {
     return <FetchingIndicator caption="Cargando vehículo" />;
-  }
-
-  if (!vehicles) {
-    return (
-      <ErrorScreen
-        caption="Ocurrió un error al cargar los vehículos"
-        buttonCaption="Reintentar"
-        retryFunction={fetchVehicle}
-      />
-    );
   }
 
   const vehicle = vehicles[vehicleId];
@@ -159,14 +148,7 @@ export function VehicleDetails() {
       </Modal>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        refreshControl={
-          <RefreshControl
-            refreshing={vehicleIsLoading}
-            onRefresh={() => {
-              refetchVehicle();
-            }}
-          />
-        }
+        refreshControl={<RefreshControl refreshing={vehicleIsLoading} onRefresh={refetchVehicle} />}
       >
         <View style={styles.root}>
           <View style={styles.imageWrapper(width)}>

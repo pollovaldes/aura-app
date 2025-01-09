@@ -19,64 +19,37 @@ type ModalType = "add_vehicle_modal" | null;
 
 export function VehiclesList() {
   const { profile } = useProfile();
-  const { vehicles, fetchVehicles } = useVehicle();
+  const {
+    vehicles,
+    isLoading,
+    isRefreshing,
+    hasMorePages,
+    LIST_ONLY_loadMoreVehicles,
+    handleRefresh,
+    LIST_ONLY_fetchVehicles,
+  } = useVehicle();
   const { styles } = useStyles(stylesheet);
-  const [vehiclesAreLoading, setVehiclesAreLoading] = useState(true);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [hasMorePages, setHasMorePages] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
   const closeModal = () => setActiveModal(null);
 
   useEffect(() => {
-    fetchAllVehicles();
+    LIST_ONLY_fetchVehicles(1);
   }, []);
-
-  const fetchAllVehicles = async (page: number = 1) => {
-    if (page === 1) {
-      setVehiclesAreLoading(true);
-    } else {
-      setIsRefreshing(true);
-    }
-
-    try {
-      const fetched = await fetchVehicles(page);
-      setHasMorePages(fetched.length === 9);
-      setCurrentPage(page);
-    } catch (error) {
-      if (page === 1) {
-        setVehiclesAreLoading(false);
-      }
-    } finally {
-      setVehiclesAreLoading(false);
-      setIsRefreshing(false);
-    }
-  };
-
-  const loadMoreVehicles = () => {
-    if (hasMorePages && !isRefreshing) {
-      fetchAllVehicles(currentPage + 1);
-    }
-  };
-
-  const handleRefresh = () => {
-    setHasMorePages(true);
-    fetchAllVehicles(1);
-  };
 
   const vehicleArray = Object.values(vehicles);
 
-  if (vehiclesAreLoading && currentPage === 1) {
+  if (isLoading && vehicleArray.length === 0) {
     return <FetchingIndicator caption="Cargando vehículos" />;
   }
 
   if (vehicleArray.length === 0) {
     return (
       <ErrorScreen
-        caption="Ocurrió un error al cargar los vehículos"
+        caption="No se pudieron cargar los vehículos"
         buttonCaption="Reintentar"
-        retryFunction={() => fetchAllVehicles(1)}
+        retryFunction={async () => {
+          await handleRefresh();
+        }}
       />
     );
   }
@@ -103,7 +76,7 @@ export function VehiclesList() {
                 show={isAdminOrOwner}
               />
               <ActionButton
-                onPress={() => fetchAllVehicles(1)}
+                onPress={() => handleRefresh()}
                 Icon={RotateCw}
                 text="Actualizar"
                 show={Platform.OS === "web"}
@@ -112,6 +85,7 @@ export function VehiclesList() {
           ),
         }}
       />
+
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
         data={vehicleArray}
@@ -123,9 +97,9 @@ export function VehiclesList() {
             leading={<VehicleThumbnail vehicleId={item.id} />}
             content={
               <>
-                <Text
-                  style={styles.itemTitle}
-                >{`${item.brand ?? "N/A"} ${item.sub_brand ?? "N/A"} (${item.year ?? "N/A"})`}</Text>
+                <Text style={styles.itemTitle}>
+                  {`${item.brand ?? "N/A"} ${item.sub_brand ?? "N/A"} (${item.year ?? "N/A"})`}
+                </Text>
                 <Text style={styles.itemDetails}>
                   {`Placa: ${item.plate ?? "N/A"}\nNúmero económico: ${item.economic_number ?? "N/A"}\nNúmero de serie: ${item.serial_number ?? "N/A"}`}
                 </Text>
@@ -133,14 +107,14 @@ export function VehiclesList() {
             }
           />
         )}
-        onEndReached={loadMoreVehicles}
+        onEndReached={LIST_ONLY_loadMoreVehicles}
         onEndReachedThreshold={0.75}
         onRefresh={handleRefresh}
         refreshing={isRefreshing}
         ListEmptyComponent={<EmptyScreen caption="Ningún vehículo por aquí." />}
         ListFooterComponent={
           hasMorePages ? (
-            <View style={{ padding: 20 }}>
+            <View style={styles.footer}>
               <ActivityIndicator />
             </View>
           ) : (
@@ -153,6 +127,11 @@ export function VehiclesList() {
 }
 
 const stylesheet = createStyleSheet((theme) => ({
+  header: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    padding: theme.marginsComponents.section,
+  },
   itemTitle: {
     fontWeight: "bold",
     fontSize: 18,
@@ -162,10 +141,14 @@ const stylesheet = createStyleSheet((theme) => ({
     fontSize: 15,
     color: theme.textPresets.subtitle,
   },
+  footer: {
+    padding: 20,
+    alignItems: "center",
+  },
   allVehiclesLoadedText: {
     textAlign: "center",
     color: theme.textPresets.subtitle,
     padding: 20,
-    fontSize: 28,
+    fontSize: 16,
   },
 }));

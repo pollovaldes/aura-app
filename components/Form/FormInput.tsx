@@ -6,17 +6,14 @@ interface FormInputProps extends TextInputProps {
   multiline?: boolean;
 }
 
-export default function FormInput({ description, placeholder, onChangeText, multiline, ...props }: FormInputProps) {
+export default function FormInput({ description, multiline, ...props }: FormInputProps) {
   const { styles } = useStyles(stylesheet);
   return (
     <View>
       <Text style={styles.text}>{description}</Text>
       <TextInput
-        placeholder={placeholder}
-        inputMode="text"
         style={[styles.textInput, multiline && styles.multilineInput]}
         placeholderTextColor={styles.textInput.placeholderTextColor}
-        onChangeText={onChangeText}
         multiline={multiline}
         {...props}
       />

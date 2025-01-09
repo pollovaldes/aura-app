@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import {
   Modal as RNModal,
   ModalProps as RNModalProps,
@@ -6,12 +6,9 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
   KeyboardAvoidingView,
-  Dimensions,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, { Easing, FadeIn, LinearTransition, ZoomIn } from "react-native-reanimated";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
@@ -29,7 +26,7 @@ export default function Modal({ isOpen, close, children, ...rest }: ModalProps) 
   return (
     <RNModal visible={isOpen} transparent animationType="none" statusBarTranslucent {...rest}>
       <View style={styles.container}>
-        <Animated.View style={styles.overlay} entering={FadeIn.duration(300)} />
+        <Animated.View style={styles.overlay} entering={FadeIn.duration(100)} />
         <KeyboardAvoidingView style={styles.keyboardAvoider} behavior={Platform.OS === "ios" ? "padding" : "height"}>
           <ScrollView
             contentContainerStyle={styles.scrollContentContainer}
@@ -38,7 +35,7 @@ export default function Modal({ isOpen, close, children, ...rest }: ModalProps) 
           >
             <Animated.View
               style={styles.modalCard}
-              entering={ZoomIn.duration(300)}
+              entering={ZoomIn.duration(250)}
               layout={LinearTransition.easing(Easing.out(Easing.ease))}
             >
               <Text style={styles.closeButton} onPress={close}>

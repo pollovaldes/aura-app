@@ -1,12 +1,21 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { Vehicle } from "@/types/globalTypes";
 import { VehiclesContext } from "@/context/VehiclesContext";
 
 export function useVehicle() {
   const { vehicles, setVehicles } = useContext(VehiclesContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [hasMorePages, setHasMorePages] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const fetchVehicles = async (page: number, pageSize: number = 9): Promise<Vehicle[]> => {
+  async function LIST_ONLY_fetchVehicles(page: number = 1, pageSize: number = 9) {
+    if (page === 1) {
+      setIsLoading(true);
+    } else {
+      setIsRefreshing(true);
+    }
+
     const { data, error } = await supabase
       .from("vehicles")
       .select("*")
@@ -25,14 +34,25 @@ export function useVehicle() {
         });
         return updated;
       });
+      setHasMorePages(data.length === pageSize);
+      setCurrentPage(page);
     }
 
-    return data || [];
-  };
+    setIsLoading(false);
+    setIsRefreshing(false);
+  }
 
-  const fetchVehicleById = async (vehicleId: string): Promise<Vehicle | null> => {
-    const existing = vehicles[vehicleId];
-    if (existing) return existing;
+  async function refetchAllVehicles(pageSize: number = 9) {
+    setVehicles({});
+    setCurrentPage(1);
+    setHasMorePages(true);
+    await LIST_ONLY_fetchVehicles(1, pageSize);
+  }
+
+  async function fetchVehicleById(vehicleId: string) {
+    if (vehicles[vehicleId]) {
+      return;
+    }
 
     const { data, error } = await supabase.from("vehicles").select("*").eq("id", vehicleId).single();
 
@@ -46,13 +66,10 @@ export function useVehicle() {
         ...prev,
         [data.id]: data,
       }));
-      return data;
     }
+  }
 
-    return null;
-  };
-
-  const refetchVehicleById = async (vehicleId: string): Promise<Vehicle | null> => {
+  async function refetchVehicleById(vehicleId: string) {
     const { data, error } = await supabase.from("vehicles").select("*").eq("id", vehicleId).single();
 
     if (error) {
@@ -63,18 +80,33 @@ export function useVehicle() {
     if (data) {
       setVehicles((prev) => ({
         ...prev,
-        [data.id]: { ...prev[vehicleId], ...data },
+        [data.id]: data,
       }));
-      return data;
     }
+  }
 
-    return null;
-  };
+  async function LIST_ONLY_loadMoreVehicles() {
+    if (hasMorePages && !isRefreshing && !isLoading) {
+      await LIST_ONLY_fetchVehicles(currentPage + 1);
+    }
+  }
+
+  async function handleRefresh() {
+    setHasMorePages(true);
+    await refetchAllVehicles();
+  }
 
   return {
     vehicles,
-    fetchVehicles,
+    isLoading,
+    isRefreshing,
+    hasMorePages,
+    currentPage,
+    LIST_ONLY_fetchVehicles,
+    refetchAllVehicles,
     fetchVehicleById,
     refetchVehicleById,
+    LIST_ONLY_loadMoreVehicles,
+    handleRefresh,
   };
 }
