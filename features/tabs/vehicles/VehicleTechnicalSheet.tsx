@@ -5,7 +5,6 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import { useVehicle } from "@/hooks/truckHooks/useVehicle";
 import useProfile from "@/hooks/useProfile";
-import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import Modal from "@/components/Modal/Modal";
 import Row from "@/components/grouped-list/Row";
