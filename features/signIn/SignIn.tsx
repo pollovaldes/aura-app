@@ -21,7 +21,7 @@ export function SignIn() {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.keyboardAvoidingView}
         >
-          <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
+          <ScrollView contentContainerStyle={styles.scrollViewContentContainer} showsVerticalScrollIndicator={false}>
             <Form setActiveModal={setActiveModal} />
           </ScrollView>
         </KeyboardAvoidingView>

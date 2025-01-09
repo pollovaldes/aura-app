@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, Alert } from "react-native";
+import { Text, View, Alert, StyleSheet } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import WebView from "react-native-webview";
 import FormTitle from "@/app/auth/FormTitle";

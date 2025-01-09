@@ -53,9 +53,7 @@ export default function FileViewer({ fileUrl, randomKey }: FileViewerProps) {
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
-    flex: 10000, // This is a hack to make the LoadingScreen fill the screen
-    justifyContent: "center",
-    alignItems: "center",
+    flex: 1,
   },
   text: {
     color: theme.textPresets.main,
