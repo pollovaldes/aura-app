@@ -10,10 +10,11 @@ import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
 import { Download, Plus, RotateCw } from "lucide-react-native";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
-import { useVehicle } from "@/hooks/truckHooks/useVehicle";
+import { useVehicles } from "@/hooks/truckHooks/useVehicle";
 import { VehicleThumbnail } from "@/components/vehicles/VehicleThumbnail";
 import Modal from "@/components/Modal/Modal";
 import { AddVehicleModal } from "./modals/AddVehicleModal";
+import { useRoutes } from "@/features/routePage/hooks/useRoutes";
 
 type ModalType = "add_vehicle_modal" | null;
 
@@ -27,13 +28,15 @@ export function VehiclesList() {
     LIST_ONLY_loadMoreVehicles,
     handleRefresh,
     LIST_ONLY_fetchVehicles,
-  } = useVehicle();
+  } = useVehicles();
+  const { LIST_ONLY_fetchRoutes } = useRoutes();
   const { styles } = useStyles(stylesheet);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
 
   useEffect(() => {
     LIST_ONLY_fetchVehicles(1);
+    LIST_ONLY_fetchRoutes();
   }, []);
 
   const vehicleArray = Object.values(vehicles);

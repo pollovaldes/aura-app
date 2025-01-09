@@ -13,7 +13,7 @@ import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
-import { useVehicle } from "@/hooks/truckHooks/useVehicle";
+import { useVehicles } from "@/hooks/truckHooks/useVehicle";
 import { colorPalette } from "@/style/themes";
 import { formatDate } from "@/features/global/functions/formatDate";
 import { AddMaintenanceModal } from "../modals/AddMaintenanceModal";
@@ -27,7 +27,7 @@ export function VehicleMaintenanceList() {
   const { styles } = useStyles(stylesheet);
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
-  const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicle();
+  const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicles();
   const { vehicleId, maintenanceId } = useLocalSearchParams<{ maintenanceId: string; vehicleId: string }>();
   const { maintenanceRecords, areMaintenanceRecordsLoading, fetchMaintenance } = useMaintenance(vehicleId);
   const [currentTabIndex, setCurrentTabIndex] = useState(0);

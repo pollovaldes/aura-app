@@ -17,7 +17,7 @@ import PendingGasolineLoads from "@/components/GasolineDataComponentsTest/Pendin
 import MonthlyGasolineChart from "@/components/GasolineDataComponentsTest/MonthlyGasolineChart";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
-import { useVehicle } from "@/hooks/truckHooks/useVehicle";
+import { useVehicles } from "@/hooks/truckHooks/useVehicle";
 
 interface GasolineHistoryContentProps {
   profile: {
@@ -95,7 +95,7 @@ export default function VehicleGasoline() {
   // Custom Hooks
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
-  const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicle();
+  const { vehicles, vehiclesAreLoading, fetchVehicles } = useVehicles();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
 
   useGasolineLoads(); // * Borrar o ver que hacer

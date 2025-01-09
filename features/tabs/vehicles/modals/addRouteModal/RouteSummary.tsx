@@ -10,7 +10,7 @@ import { Play, Trash } from "lucide-react-native";
 import { useCreateRoute } from "./CreateRouteContext";
 import { BackButtonOverlay } from "./BackButtonOverlay";
 import useProfile from "@/hooks/useProfile";
-import { useVehicle } from "@/hooks/truckHooks/useVehicle";
+import { useVehicles } from "@/hooks/truckHooks/useVehicle";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
@@ -26,7 +26,7 @@ export function RouteSummary() {
   const { styles } = useStyles(stylesheet);
   const { setStep, setField, routeData } = useCreateRoute();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
-  const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicle();
+  const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicles();
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
 

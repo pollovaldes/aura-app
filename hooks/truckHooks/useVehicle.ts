@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { VehiclesContext } from "@/context/VehiclesContext";
 
-export function useVehicle() {
+export function useVehicles() {
   const { vehicles, setVehicles } = useContext(VehiclesContext);
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);

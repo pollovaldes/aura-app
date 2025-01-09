@@ -29,11 +29,14 @@ export type RefuelingEvent = Database["public"]["Tables"]["refueling_events"]["R
 
 export type RouteRow = Database["public"]["Tables"]["routes"]["Row"];
 export type Route = RouteRow & {
-  routeEvents: RouteEvent[];
-  breakEvents: BreakEvent[];
-  emergencyEvents: EmergencyEvent[];
-  otherEvents: OtherEvent[];
-  refuelingEvents: RefuelingEvent[];
+  vehicles: Vehicle | null;
+  profiles: User | null;
+  route_events: (RouteEvent & {
+    refueling_events: RefuelingEvent | null;
+    break_events: BreakEvent | null;
+    emergency_events: EmergencyEvent | null;
+    other_events: OtherEvent | null;
+  })[];
 };
 
 export type Image = {

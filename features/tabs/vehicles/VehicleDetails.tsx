@@ -30,7 +30,7 @@ import { supabase } from "@/lib/supabase";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
-import { useVehicle } from "@/hooks/truckHooks/useVehicle";
+import { useVehicles } from "@/hooks/truckHooks/useVehicle";
 import { useVehicleThumbnail } from "@/hooks/useVehicleThumbnail";
 import { ChangeCoverImageModal } from "@/features/tabs/vehicles/modals/ChangeCoverImageModal";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
@@ -44,7 +44,7 @@ type ModalType = "change_cover_image" | null;
 
 export function VehicleDetails() {
   const { styles } = useStyles(stylesheet);
-  const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicle();
+  const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicles();
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();

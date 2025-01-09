@@ -7,7 +7,7 @@ import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import { SimpleList } from "@/components/simpleList/SimpleList";
 import { AddDocumentModal } from "@/features/tabs/vehicles/modals/AddDocumentModal";
-import { useVehicle } from "@/hooks/truckHooks/useVehicle";
+import { useVehicles } from "@/hooks/truckHooks/useVehicle";
 import { supabase } from "@/lib/supabase";
 import { FilePlus, RotateCw, Trash } from "lucide-react-native";
 import useProfile from "@/hooks/useProfile";
@@ -26,7 +26,7 @@ export function VehicleManageFleets() {
   const { styles } = useStyles(stylesheet);
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
-  const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicle();
+  const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicles();
   const { documents, areDocumentsLoading, fetchDocuments } = useDocuments();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const [activeModal, setActiveModal] = useState<ModalType>(null);

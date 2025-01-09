@@ -3,7 +3,7 @@ import { View, ScrollView, RefreshControl, Platform } from "react-native";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
-import { useVehicle } from "@/hooks/truckHooks/useVehicle";
+import { useVehicles } from "@/hooks/truckHooks/useVehicle";
 import useProfile from "@/hooks/useProfile";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import Modal from "@/components/Modal/Modal";
@@ -23,7 +23,7 @@ type ModalType = "economic_number" | "brand" | "sub_brand" | "model" | "serial_n
 
 export function VehicleTechnicalSheet() {
   const { styles } = useStyles(stylesheet);
-  const { vehicles, refetchVehicleById, fetchVehicleById } = useVehicle();
+  const { vehicles, refetchVehicleById, fetchVehicleById } = useVehicles();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const [vehicleIsLoading, setVehicleIsLoading] = useState(true);
   const { getGuaranteedProfile } = useProfile();

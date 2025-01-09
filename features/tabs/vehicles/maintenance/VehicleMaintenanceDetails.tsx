@@ -3,7 +3,7 @@ import { View, ScrollView, RefreshControl, Text, Platform } from "react-native";
 import { Stack, useLocalSearchParams, router } from "expo-router";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
-import { useVehicle } from "@/hooks/truckHooks/useVehicle";
+import { useVehicles } from "@/hooks/truckHooks/useVehicle";
 import { colorPalette } from "@/style/themes";
 import { formatDate } from "@/features/global/functions/formatDate";
 import useProfile from "@/hooks/useProfile";
@@ -22,7 +22,7 @@ export function VehicleMaintenanceDetails() {
   const { styles } = useStyles(stylesheet);
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
-  const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicle();
+  const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicles();
   const { maintenanceId, vehicleId } = useLocalSearchParams<{ maintenanceId: string; vehicleId: string }>();
 
   const [activeModal, setActiveModal] = useState<ModalType>(null);
