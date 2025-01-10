@@ -122,10 +122,12 @@ export default function VehichleRoutesList() {
             leading={
               <View style={{ flexDirection: "column", alignItems: "center", gap: 12 }}>
                 <StatusChip status={String(item.is_active)} statesConfig={statesConfig} />
-                <View style={{ alignItems: "center", gap: 2 }}>
-                  <Text style={styles.counterSubtitleText}>{`Tiempo transcurrido`}</Text>
-                  <Text style={styles.counterText}>{`${item.is_active ? elapsedTime : ""}`}</Text>
-                </View>
+                {item.is_active && (
+                  <View style={{ alignItems: "center", gap: 2 }}>
+                    <Text style={styles.counterSubtitleText}>{`Tiempo transcurrido`}</Text>
+                    <Text style={styles.counterText}>{`${elapsedTime}`}</Text>
+                  </View>
+                )}
               </View>
             }
             content={
@@ -167,8 +169,9 @@ const stylesheet = createStyleSheet((theme) => ({
     padding: theme.marginsComponents.section,
   },
   counterText: {
-    fontSize: 30,
+    fontSize: 27,
     color: theme.textPresets.main,
+    fontFamily: "SpaceMono",
   },
   counterSubtitleText: {
     fontSize: 14,

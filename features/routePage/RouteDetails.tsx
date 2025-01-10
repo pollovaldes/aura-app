@@ -12,7 +12,6 @@ import { useElapsedTime } from "../global/hooks/useElapsedTime";
 
 export function RouteDetails() {
   const { styles, theme } = useStyles(stylesheet);
-  const textColor = pickTextColor(theme.ui.colors.primary);
   const elapsedTime = useElapsedTime("2025-01-10 01:38:29+00");
 
   return (
@@ -54,10 +53,10 @@ const stylesheet = createStyleSheet((theme, runtime) => ({
   },
   timer: {
     color: theme.textPresets.main,
-    fontSize: 50,
-    fontWeight: "800",
+    fontSize: 45,
     textAlign: "center",
     paddingTop: 25,
+    fontFamily: "SpaceMono",
   },
   section: {
     gap: theme.marginsComponents.section,

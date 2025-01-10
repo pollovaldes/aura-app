@@ -237,7 +237,7 @@ PODS:
     - ExpoModulesCore
   - ExpoFileSystem (18.0.3):
     - ExpoModulesCore
-  - ExpoFont (13.0.1):
+  - ExpoFont (13.0.2):
     - ExpoModulesCore
   - ExpoHaptics (14.0.0):
     - ExpoModulesCore
@@ -2351,7 +2351,7 @@ SPEC CHECKSUMS:
   ExpoCrypto: 483fc758365923f89ddaab4327c21cae9534841d
   ExpoDocumentPicker: cb4e43f58f0b5806e15db9baac36c6d99d19ffdf
   ExpoFileSystem: 7265de9e7b7050c494f92332110818381f832606
-  ExpoFont: 12b0217e42ac97029d0f317f0486039a8508cf52
+  ExpoFont: b089994dac1fe603deda1cec151e32c81f46c2f1
   ExpoHaptics: f8eacde90398b8be3648ed823b6e9e6bf87ece3f
   ExpoHead: 0a8bb3bdc603d2249e7a590a969310230ed1b389
   ExpoImageManipulator: 797e6f2eb209cc47bda2fd12904c96787b94dd5d

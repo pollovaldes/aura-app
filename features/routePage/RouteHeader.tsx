@@ -61,6 +61,7 @@ const stylesheet = createStyleSheet((theme, runtime) => ({
   }),
   subtitle: (textColor: string) => ({
     color: textColor,
-    fontSize: 16,
+    fontSize: 17,
+    fontFamily: "SpaceMono",
   }),
 }));
