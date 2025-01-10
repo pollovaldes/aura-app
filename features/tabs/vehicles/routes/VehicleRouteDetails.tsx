@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useRoutes } from "@/features/routePage/hooks/useRoutes";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
@@ -15,8 +15,8 @@ import { formatDate } from "@/features/global/functions/formatDate";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
 import { UnistylesRuntime } from "react-native-unistyles";
-import { UniversalMap as UniversalMapNative } from "./UniversalMap.native";
-import { UniversalMap as UniversalMapWeb } from "./UniversalMap.web";
+import { UniversalMap as UniversalMapNative } from "@/features/global/components/UniversalMap.native";
+import { UniversalMap as UniversalMapWeb } from "@/features/global/components/UniversalMap.web";
 
 const statesConfig = {
   true: {
@@ -127,6 +127,23 @@ export function VehicleRouteDetails() {
                 backgroundColor={colorPalette.orange[500]}
                 trailing={<StatusChip status={String(route.is_active)} statesConfig={statesConfig} />}
               />
+              <Row title="Paradas" icon={MapPin} backgroundColor={colorPalette.red[500]} />
+            </GroupedList>
+          </View>
+          <View style={styles.group}>
+            <GroupedList>
+              <Row
+                title="Quien hizo la ruta"
+                caption={`${route.profiles?.name} ${route.profiles?.father_last_name} ${route.profiles?.mother_last_name}`}
+                onPress={() => {
+                  router.push(`/tab/user_details/${route.profiles?.id}`);
+                }}
+              />
+              <Row
+                title="Vehículo"
+                caption={`${route.vehicles?.brand} ${route.vehicles?.sub_brand} (${route.vehicles?.year})`}
+                onPress={() => router.push(`/tab/vehicle_details/${route.vehicles?.id}`)}
+              />
             </GroupedList>
           </View>
           <View style={styles.group}>
@@ -166,11 +183,6 @@ export function VehicleRouteDetails() {
               </Row>
             </GroupedList>
           </View>
-          <View style={styles.group}>
-            <GroupedList>
-              <Row title="Paradas" icon={MapPin} backgroundColor={colorPalette.red[500]} />
-            </GroupedList>
-          </View>
         </View>
       </ScrollView>
     </>
@@ -181,6 +193,7 @@ const stylesheet = createStyleSheet((theme) => ({
   section: {
     gap: theme.marginsComponents.section,
     marginTop: theme.marginsComponents.section,
+    marginBottom: theme.marginsComponents.section,
   },
   group: {
     gap: theme.marginsComponents.group,

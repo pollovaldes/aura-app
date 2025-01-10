@@ -188,7 +188,7 @@ export function VehicleMaintenanceDetails() {
               onPress={() => router.push(`/tab/vehicle_details/${vehicle.id}`)}
             />
             <Row
-              title="Quién solicitó"
+              title="Quien solicitó"
               caption={`${record.issued_by.name} ${record.issued_by.father_last_name} ${record.issued_by.mother_last_name}`}
               onPress={() => {
                 router.push(`/tab/user_details/${record.issued_by.id}`);

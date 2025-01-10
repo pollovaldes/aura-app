@@ -76,7 +76,7 @@ const stylesheet = createStyleSheet((theme, runtime) => ({
   },
   maximized: {
     height: "100%",
-    minHeight: runtime.screen.height / 1.5,
+    minHeight: runtime.screen.height / 1.45,
   },
   map: {
     flex: 1,

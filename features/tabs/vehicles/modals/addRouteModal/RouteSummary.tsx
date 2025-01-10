@@ -1,26 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, Alert, StyleSheet } from "react-native";
+import { Text, View, Platform } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import WebView from "react-native-webview";
 import FormTitle from "@/app/auth/FormTitle";
 import { SimpleList } from "@/components/simpleList/SimpleList";
 import { VehicleThumbnail } from "@/components/vehicles/VehicleThumbnail";
 import { FormButton } from "@/components/Form/FormButton";
-import { Play, Trash } from "lucide-react-native";
+import { Locate, Maximize2, Minimize2, Play } from "lucide-react-native";
 import { useCreateRoute } from "./CreateRouteContext";
 import { BackButtonOverlay } from "./BackButtonOverlay";
 import useProfile from "@/hooks/useProfile";
 import { useVehicles } from "@/hooks/truckHooks/useVehicle";
-import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
-import { formatDate } from "@/features/global/functions/formatDate";
 import { useLocalSearchParams } from "expo-router";
-import Modal from "@/components/Modal/Modal";
-import { AddMaintenanceModal } from "../AddMaintenanceModal";
-
-type ModalType = "create_maintenance_record" | null;
+import { UniversalMap as UniversalMapNative } from "@/features/global/components/UniversalMap.native";
+import { UniversalMap as UniversalMapWeb } from "@/features/global/components/UniversalMap.web";
+import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
+import { ActionButton } from "@/components/actionButton/ActionButton";
 
 export function RouteSummary() {
   const { styles } = useStyles(stylesheet);
@@ -29,9 +26,17 @@ export function RouteSummary() {
   const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicles();
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
-
-  const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [vehicleIsLoading, setVehicleIsLoading] = useState(true);
+  const [refocusTrigger, setRefocusTrigger] = useState(0);
+  const [isMaximized, setIsMaximized] = useState(false);
+
+  function handleRefocus() {
+    setRefocusTrigger((prev) => prev + 1);
+  }
+
+  function handleMaximize() {
+    setIsMaximized((prev) => !prev);
+  }
 
   const fetchVehicle = async () => {
     setVehicleIsLoading(true);
@@ -61,20 +66,12 @@ export function RouteSummary() {
     fetchVehicle();
   }, [vehicleId]);
 
-  const zoomFactor = routeData.started_location_latitude && routeData.started_location_longitude ? 0.01 / 15 : 180;
-  const mapUrl =
-    routeData.started_location_latitude && routeData.started_location_longitude
-      ? `https://www.openstreetmap.org/export/embed.html?bbox=${routeData.started_location_longitude - zoomFactor}%2C${routeData.started_location_latitude - zoomFactor}%2C${routeData.started_location_longitude + zoomFactor}%2C${routeData.started_location_latitude + zoomFactor}&layer=carto-dark&marker=${routeData.started_location_latitude}%2C${routeData.started_location_longitude}`
-      : `https://www.openstreetmap.org/export/embed.html?bbox=-180%2C-90%2C180%2C90&layer=carto-dark`;
-
   const vehicle = vehicles?.[vehicleId];
 
-  // Handle Loading State
   if (vehicleIsLoading) {
     return <FetchingIndicator caption="Cargando vehículo" />;
   }
 
-  // Handle Error State for Vehicles
   if (!vehicles) {
     return (
       <ErrorScreen
@@ -85,7 +82,6 @@ export function RouteSummary() {
     );
   }
 
-  // Handle Unauthorized Access
   if (!vehicle) {
     return (
       <>
@@ -111,16 +107,33 @@ export function RouteSummary() {
         <Text style={styles.subtitle}>
           Quién hará la ruta: {`${profile.name} ${profile.father_last_name} ${profile.mother_last_name}`}
         </Text>
-        <Text style={styles.subtitle}>Dirección de inicio: {routeData.started_adrees}</Text>
-        <View style={styles.webviewContainer}>
-          <WebView
-            source={{ uri: mapUrl }}
-            style={styles.webview}
-            javaScriptEnabled={true}
-            domStorageEnabled={true}
-            scalesPageToFit={true}
-          />
-          <View style={styles.overlay} />
+        <Text style={styles.subtitle}>Dirección de inicio: {routeData.started_address}</Text>
+        <View style={{ alignSelf: "center" }}>
+          <ActionButtonGroup>
+            <ActionButton text="Centrar" Icon={Locate} onPress={handleRefocus} />
+            <ActionButton
+              text={isMaximized ? "Minimizar" : "Maximizar"}
+              Icon={isMaximized ? Minimize2 : Maximize2}
+              onPress={handleMaximize}
+            />
+          </ActionButtonGroup>
+        </View>
+        <View style={{ flex: 1 }}>
+          {Platform.OS !== "web" ? (
+            <UniversalMapNative
+              latitude={routeData.started_location_latitude as number}
+              longitude={routeData.started_location_longitude as number}
+              refocusTrigger={refocusTrigger}
+              isMaximized={isMaximized}
+            />
+          ) : (
+            <UniversalMapWeb
+              latitude={routeData.started_location_latitude as number}
+              longitude={routeData.started_location_longitude as number}
+              refocusTrigger={refocusTrigger}
+              isMaximized={isMaximized}
+            />
+          )}
         </View>
         <View>
           {vehicle && vehicleId ? (
@@ -156,24 +169,8 @@ export function RouteSummary() {
         </View>
       </View>
       <View style={styles.group}>
-        <FormButton
-          title="Iniciar ruta"
-          Icon={Play}
-          onPress={() => {
-            /* Implement iniciar ruta functionality */
-          }}
-        />
+        <FormButton title="Iniciar ruta" Icon={Play} onPress={() => {}} />
       </View>
-
-      {/* Modal for Adding Maintenance Record */}
-      <Modal isOpen={activeModal === "create_maintenance_record"} close={() => setActiveModal(null)}>
-        <AddMaintenanceModal
-          closeModal={() => setActiveModal(null)}
-          fetchMaintenance={fetchVehicle} // Assuming fetchVehicle fetches necessary data
-          vehicle={vehicle}
-          profile={profile}
-        />
-      </Modal>
     </View>
   );
 }
@@ -193,22 +190,6 @@ const stylesheet = createStyleSheet((theme) => ({
     textAlign: "center",
     fontSize: 16,
     marginVertical: 4,
-  },
-  webviewContainer: {
-    height: 320,
-    overflow: "hidden",
-    borderRadius: 8,
-    position: "relative",
-    marginTop: 10,
-  },
-  webview: {
-    height: 300,
-    borderRadius: 8,
-  },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "transparent",
-    zIndex: 1,
   },
   itemTitle: {
     fontWeight: "bold",

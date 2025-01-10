@@ -3,15 +3,16 @@ import * as Location from "expo-location";
 import Toast from "react-native-toast-message";
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "@/components/Form/FormButton";
-import ScrollableFormContainer from "@/features/details/route_wizard/ScrollableFormContainer";
-import { router, Stack } from "expo-router";
-import { View, StyleSheet, Text } from "react-native";
+import { View, Text, Platform } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import WebView from "react-native-webview";
 import FormInput from "@/components/Form/FormInput";
 import { BackButtonOverlay } from "./BackButtonOverlay";
 import { useCreateRoute } from "./CreateRouteContext";
-import { set } from "date-fns";
+import { UniversalMap as UniversalMapNative } from "@/features/global/components/UniversalMap.native";
+import { UniversalMap as UniversalMapWeb } from "@/features/global/components/UniversalMap.web";
+import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
+import { ActionButton } from "@/components/actionButton/ActionButton";
+import { Locate, Maximize2, Minimize2 } from "lucide-react-native";
 
 interface LocationError {
   type: "permissions" | "other";
@@ -22,18 +23,21 @@ export function StartLocation() {
   const { styles } = useStyles(stylesheet);
   const { setStep, setField, routeData } = useCreateRoute();
 
-  const [latitude, setLatitude] = useState<number | null>(0);
-  const [longitude, setLongitude] = useState<number | null>(0);
-  const [zoom, setZoom] = useState<number>(2);
+  const [latitude, setLatitude] = useState<number | null>(19.419444444444);
+  const [longitude, setLongitude] = useState<number | null>(-99.145555555556);
   const [isLocationLoading, setIsLocationLoading] = useState<boolean>(false);
   const [locationError, setLocationError] = useState<LocationError | null>(null);
   const [address, setAddress] = useState<string | null>(null);
+  const [refocusTrigger, setRefocusTrigger] = useState(0);
+  const [isMaximized, setIsMaximized] = useState(false);
 
-  const zoomFactor = latitude && longitude ? 0.01 / zoom : 180;
-  const mapUrl =
-    latitude && longitude
-      ? `https://www.openstreetmap.org/export/embed.html?bbox=${longitude - zoomFactor}%2C${latitude - zoomFactor}%2C${longitude + zoomFactor}%2C${latitude + zoomFactor}&layer=carto-dark&marker=${latitude}%2C${longitude}`
-      : `https://www.openstreetmap.org/export/embed.html?bbox=-180%2C-90%2C180%2C90&layer=carto-dark`;
+  function handleRefocus() {
+    setRefocusTrigger((prev) => prev + 1);
+  }
+
+  function handleMaximize() {
+    setIsMaximized((prev) => !prev);
+  }
 
   const showToast = (title: string, caption: string) => {
     Toast.show({
@@ -77,7 +81,7 @@ export function StartLocation() {
       setLongitude(location.coords.longitude);
       setField("started_location_longitude", location.coords.longitude);
       setField("started_location_latitude", location.coords.latitude);
-      setZoom(15);
+      handleRefocus();
       await getAddressFromCoordinates(location.coords.latitude, location.coords.longitude);
       setIsLocationLoading(false);
     } catch (error: unknown) {
@@ -115,20 +119,38 @@ export function StartLocation() {
           ) : locationError ? (
             <Text style={styles.subtitle}>{locationError.message}</Text>
           ) : (
-            <Text style={styles.subtitle}>Tu ubicación actual</Text>
+            <>
+              <Text style={styles.subtitle}>Tu ubicación actual</Text>
+              <ActionButtonGroup>
+                <ActionButton text="Centrar" Icon={Locate} onPress={handleRefocus} />
+                <ActionButton
+                  text={isMaximized ? "Minimizar" : "Maximizar"}
+                  Icon={isMaximized ? Minimize2 : Maximize2}
+                  onPress={handleMaximize}
+                />
+              </ActionButtonGroup>
+            </>
           )}
         </View>
 
-        <View style={styles.webviewContainer}>
-          <WebView
-            source={{ uri: mapUrl }}
-            style={styles.webview}
-            javaScriptEnabled={true}
-            domStorageEnabled={true}
-            scalesPageToFit={true}
-          />
-          <View style={styles.overlay} />
+        <View style={{ flex: 1 }}>
+          {Platform.OS !== "web" ? (
+            <UniversalMapNative
+              latitude={latitude as number}
+              longitude={longitude as number}
+              refocusTrigger={refocusTrigger}
+              isMaximized={isMaximized}
+            />
+          ) : (
+            <UniversalMapWeb
+              latitude={latitude as number}
+              longitude={longitude as number}
+              refocusTrigger={refocusTrigger}
+              isMaximized={isMaximized}
+            />
+          )}
         </View>
+
         <FormButton
           title={locationError ? "Intentar obtener ubicación nuevamente" : "Obtener ubicación de nuevo"}
           isLoading={isLocationLoading}
@@ -170,120 +192,4 @@ const stylesheet = createStyleSheet((theme) => ({
     height: 300,
     borderRadius: 8,
   },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "transparent",
-    zIndex: 1,
-  },
 }));
-
-// "use dom";
-
-// import { createStyleSheet, useStyles } from "react-native-unistyles";
-// import { Map } from "@vis.gl/react-maplibre";
-// import { View } from "react-native";
-
-// export default function DOMComponent({ name }: { name: string }) {
-//   const { styles } = useStyles(stylesheet);
-
-//   return (
-//     <View style={styles.page}>
-//       <Map
-//         initialViewState={{
-//           longitude: -100,
-//           latitude: 40,
-//           zoom: 3.5,
-//         }}
-//         style={{ flex: 1, alignSelf: "stretch" }}
-//         mapStyle="https://api.maptiler.com/maps/streets-v2/style.json?key=qv1nUcyR1uHV9MgBhSuG"
-//       />
-//     </View>
-//   );
-// }
-
-// const stylesheet = createStyleSheet((theme) => ({
-//   page: {
-//     flex: 1,
-//     justifyContent: "center",
-//     alignItems: "center",
-//     backgroundColor: "#F5FCFF",
-//   },
-//   map: {
-//     flex: 1,
-//     alignSelf: "stretch",
-//   },
-// }));
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React from "react";
-// import { Platform, Text, View } from "react-native";
-// import { createStyleSheet, useStyles } from "react-native-unistyles";
-// import { Stack } from "expo-router";
-// import DOMComponent from "./MapWebView";
-
-// let MapLibreGL: typeof import("@maplibre/maplibre-react-native") | undefined;
-// if (Platform.OS === "ios" || Platform.OS === "android") {
-//   MapLibreGL = require("@maplibre/maplibre-react-native").default;
-//   MapLibreGL.setAccessToken(null);
-// }
-
-// export default function VehicleRouteDetails(): JSX.Element {
-//   const { styles } = useStyles(stylesheet);
-
-//   return (
-//     <>
-//       <Stack.Screen
-//         options={{
-//           headerLargeTitle: false,
-//         }}
-//       />
-
-//       {Platform.OS === "web" && <DOMComponent name="Europa" />}
-
-//       {Platform.OS !== "web" && (
-//         <View style={styles.page}>
-//           {MapLibreGL ? (
-//             <MapLibreGL.MapView
-//               style={styles.map}
-//               logoEnabled={true}
-//               styleURL="https://api.maptiler.com/maps/streets-v2/style.json?key=qv1nUcyR1uHV9MgBhSuG"
-//               zoomEnabled={true}
-//               rotateEnabled={true}
-//               pitchEnabled={true}
-//             >
-//               {/* Add any child components here only if MapLibreGL is defined */}
-//               <View />
-//             </MapLibreGL.MapView>
-//           ) : (
-//             <Text>Map not available on this platform</Text>
-//           )}
-//         </View>
-//       )}
-//     </>
-//   );
-// }
-
-// const stylesheet = createStyleSheet((theme) => ({
-//   page: {
-//     marginTop: 50,
-//     flex: 1,
-//     justifyContent: "center",
-//     alignItems: "center",
-//     backgroundColor: "#F5FCFF",
-//   },
-//   map: {
-//     flex: 1,
-//     alignSelf: "stretch",
-//   },
-// }));
