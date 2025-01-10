@@ -12,7 +12,7 @@ import { UniversalMap as UniversalMapNative } from "@/features/global/components
 import { UniversalMap as UniversalMapWeb } from "@/features/global/components/UniversalMap.web";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
-import { Locate, Maximize2, Minimize2 } from "lucide-react-native";
+import { Locate, MapPinHouse, Maximize2, Minimize2 } from "lucide-react-native";
 
 interface LocationError {
   type: "permissions" | "other";
@@ -23,11 +23,15 @@ export function StartLocation() {
   const { styles } = useStyles(stylesheet);
   const { setStep, setField, routeData } = useCreateRoute();
 
-  const [latitude, setLatitude] = useState<number | null>(19.419444444444);
-  const [longitude, setLongitude] = useState<number | null>(-99.145555555556);
+  const [latitude, setLatitude] = useState(
+    routeData.started_location_latitude ? routeData.started_location_latitude : 19.419444444444
+  );
+  const [longitude, setLongitude] = useState(
+    routeData.started_location_longitude ? routeData.started_location_longitude : -99.145555555556
+  );
   const [isLocationLoading, setIsLocationLoading] = useState<boolean>(false);
   const [locationError, setLocationError] = useState<LocationError | null>(null);
-  const [address, setAddress] = useState<string | null>(null);
+  const [address, setAddress] = useState(routeData.started_address ? routeData.started_address : "");
   const [refocusTrigger, setRefocusTrigger] = useState(0);
   const [isMaximized, setIsMaximized] = useState(false);
 
@@ -45,6 +49,11 @@ export function StartLocation() {
       text1: title,
       text2: caption,
     });
+  };
+
+  const onAdressChange = (text: string) => {
+    setAddress(text);
+    setField("started_address", text);
   };
 
   const getAddressFromCoordinates = async (lat: number, lon: number): Promise<void> => {
@@ -82,7 +91,6 @@ export function StartLocation() {
       setField("started_location_longitude", location.coords.longitude);
       setField("started_location_latitude", location.coords.latitude);
       handleRefocus();
-      await getAddressFromCoordinates(location.coords.latitude, location.coords.longitude);
       setIsLocationLoading(false);
     } catch (error: unknown) {
       setLocationError({ type: "other", message: "No pudimos obtener tu ubicación." });
@@ -94,7 +102,7 @@ export function StartLocation() {
     getLocation();
   }, []);
 
-  const isContinueDisabled = !address || !latitude || !longitude;
+  const isContinueDisabled = !address || !latitude || !longitude || address.includes("No se pudo obtener la dirección");
 
   return (
     <View style={styles.section}>
@@ -102,15 +110,18 @@ export function StartLocation() {
       <View style={styles.group}>
         <FormTitle title="¿En dónde vas a empezar?" />
       </View>
+
       <View style={styles.group}>
-        <FormInput
-          multiline
-          description="Dirección"
-          value={address || ""}
-          onChangeText={(text) => {
-            setAddress(text);
-          }}
-        />
+        <View style={{ alignSelf: "center" }}>
+          <ActionButtonGroup>
+            <ActionButton
+              text="Obtener dirección"
+              Icon={MapPinHouse}
+              onPress={() => getAddressFromCoordinates(latitude as number, longitude as number)}
+            />
+          </ActionButtonGroup>
+        </View>
+        <FormInput multiline description="Dirección" onChangeText={(text) => onAdressChange(text)} value={address} />
       </View>
       <View style={styles.group}>
         <View style={styles.captionContainer}>

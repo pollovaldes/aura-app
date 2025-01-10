@@ -72,36 +72,6 @@ export default function VehichleRoutesList() {
     return <FetchingIndicator caption="Cargando rutas" />;
   }
 
-  if (routeArray.length === 0) {
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            title: `Rutas (${routeArray.length})`,
-            headerRight: () => (
-              <ActionButtonGroup>
-                <ActionButton Icon={Plus} text="Nueva ruta" onPress={() => setActiveModal("create_route")} />
-                <ActionButton
-                  onPress={() => handleRefresh()}
-                  Icon={RotateCw}
-                  text="Actualizar"
-                  show={Platform.OS === "web"}
-                />
-              </ActionButtonGroup>
-            ),
-          }}
-        />
-        <EmptyScreen
-          caption="No hay rutas para este vehículo"
-          buttonCaption="Reintentar"
-          retryFunction={async () => {
-            await handleRefresh();
-          }}
-        />
-      </>
-    );
-  }
-
   const canEdit = ["ADMIN", "OWNER"].includes(profile.role);
 
   return (
@@ -110,72 +80,103 @@ export default function VehichleRoutesList() {
         <AddRouteModal close={closeModal} />
       </Modal>
 
-      <Stack.Screen
-        options={{
-          title: `Rutas (${routeArray.length})`,
-          headerRight: () => (
-            <ActionButtonGroup>
-              <ActionButton Icon={Download} text="CSV" onPress={() => {}} show={canEdit} />
-              <ActionButton Icon={FilterIcon} text="Filtros" onPress={() => {}} show={canEdit} />
-              <ActionButton Icon={Plus} text="Nueva ruta" onPress={() => setActiveModal("create_route")} />
-              <ActionButton
-                onPress={() => handleRefresh()}
-                Icon={RotateCw}
-                text="Actualizar"
-                show={Platform.OS === "web"}
-              />
-            </ActionButtonGroup>
-          ),
-        }}
-      />
+      {routeArray.length === 0 && (
+        <>
+          <Stack.Screen
+            options={{
+              title: `Rutas (${routeArray.length})`,
+              headerRight: () => (
+                <ActionButtonGroup>
+                  <ActionButton Icon={Plus} text="Nueva ruta" onPress={() => setActiveModal("create_route")} />
+                  <ActionButton
+                    onPress={() => handleRefresh()}
+                    Icon={RotateCw}
+                    text="Actualizar"
+                    show={Platform.OS === "web"}
+                  />
+                </ActionButtonGroup>
+              ),
+            }}
+          />
+          <EmptyScreen
+            caption="No hay rutas para este vehículo"
+            buttonCaption="Reintentar"
+            retryFunction={async () => {
+              await handleRefresh();
+            }}
+          />
+        </>
+      )}
 
-      <FlatList
-        contentInsetAdjustmentBehavior="automatic"
-        data={routeArray}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <SimpleList
-            relativeToDirectory
-            href={`./${item.id}`}
-            leading={
-              <View style={{ flexDirection: "column", alignItems: "center", gap: 12 }}>
-                <StatusChip status={String(item.is_active)} statesConfig={statesConfig} />
-                {item.is_active && (
-                  <View style={{ alignItems: "center", gap: 2 }}>
-                    <Text style={styles.counterSubtitleText}>{`Tiempo transcurrido`}</Text>
-                    <Text style={styles.counterText}>{`${elapsedTime}`}</Text>
+      {routeArray.length > 0 && (
+        <>
+          <Stack.Screen
+            options={{
+              title: `Rutas (${routeArray.length})`,
+              headerRight: () => (
+                <ActionButtonGroup>
+                  <ActionButton Icon={Download} text="CSV" onPress={() => {}} show={canEdit} />
+                  <ActionButton Icon={FilterIcon} text="Filtros" onPress={() => {}} show={canEdit} />
+                  <ActionButton Icon={Plus} text="Nueva ruta" onPress={() => setActiveModal("create_route")} />
+                  <ActionButton
+                    onPress={() => handleRefresh()}
+                    Icon={RotateCw}
+                    text="Actualizar"
+                    show={Platform.OS === "web"}
+                  />
+                </ActionButtonGroup>
+              ),
+            }}
+          />
+          <FlatList
+            contentInsetAdjustmentBehavior="automatic"
+            data={routeArray}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <SimpleList
+                relativeToDirectory
+                href={`./${item.id}`}
+                leading={
+                  <View style={{ flexDirection: "column", alignItems: "center", gap: 12 }}>
+                    <StatusChip status={String(item.is_active)} statesConfig={statesConfig} />
+                    {item.is_active && (
+                      <View style={{ alignItems: "center", gap: 2 }}>
+                        <Text style={styles.counterSubtitleText}>{`Tiempo transcurrido`}</Text>
+                        <Text style={styles.counterText}>{`${elapsedTime}`}</Text>
+                      </View>
+                    )}
                   </View>
-                )}
-              </View>
-            }
-            content={
-              <>
-                <Text style={styles.itemTitle}>{`${item.title}`}</Text>
-                <Text style={styles.itemDetails}>{`Iniciada el ${formatDate(item.started_at, "")}`}</Text>
-                {!item.is_active && !item.ended_at && (
-                  <Text style={styles.itemDetails}>
-                    {`La ruta finalizó pero no se registró la hora de finalización`}
-                  </Text>
-                )}
-              </>
+                }
+                content={
+                  <>
+                    <Text style={styles.itemTitle}>{`${item.title}`}</Text>
+                    <Text style={styles.itemDetails}>{`Iniciada el ${formatDate(item.started_at, "")}`}</Text>
+                    {!item.is_active && !item.ended_at && (
+                      <Text style={styles.itemDetails}>
+                        {`La ruta finalizó pero no se registró la hora de finalización`}
+                      </Text>
+                    )}
+                  </>
+                }
+              />
+            )}
+            onEndReached={LIST_ONLY_loadMoreRoutes}
+            onEndReachedThreshold={0.75}
+            onRefresh={handleRefresh}
+            refreshing={isRefreshing}
+            ListEmptyComponent={<EmptyScreen caption="No hay rutas para este vehículo" />}
+            ListFooterComponent={
+              hasMorePages ? (
+                <View style={styles.footer}>
+                  <ActivityIndicator />
+                </View>
+              ) : (
+                <Text style={styles.allVehiclesLoadedText}>Se han cargado todas las rutas</Text>
+              )
             }
           />
-        )}
-        onEndReached={LIST_ONLY_loadMoreRoutes}
-        onEndReachedThreshold={0.75}
-        onRefresh={handleRefresh}
-        refreshing={isRefreshing}
-        ListEmptyComponent={<EmptyScreen caption="No hay rutas para este vehículo" />}
-        ListFooterComponent={
-          hasMorePages ? (
-            <View style={styles.footer}>
-              <ActivityIndicator />
-            </View>
-          ) : (
-            <Text style={styles.allVehiclesLoadedText}>Se han cargado todas las rutas</Text>
-          )
-        }
-      />
+        </>
+      )}
     </>
   );
 }
