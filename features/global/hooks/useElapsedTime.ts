@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export function useElapsedTime(initialDateTime: string): string {
+export function useElapsedTime(initialDateTime: string | null): string {
   function normalizeDateTime(dateTimeStr: string): string {
     let normalized = dateTimeStr.replace(' ', 'T');
     const signIndex = Math.max(normalized.lastIndexOf('+'), normalized.lastIndexOf('-'));
@@ -25,15 +25,44 @@ export function useElapsedTime(initialDateTime: string): string {
     return date;
   }
 
+  function formatTime(diff: number): string {
+    const totalSeconds = Math.floor(diff / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    const pad = (num: number): string => num.toString().padStart(2, '0');
+    return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+  }
+
   const [elapsedTime, setElapsedTime] = useState<string>(() => {
-    const initialDate = parseDate(initialDateTime);
-    const now = new Date();
-    const diff = now.getTime() - initialDate.getTime();
-    return formatTime(diff);
+    if (!initialDateTime) {
+      return "Sincronizando contador";
+    }
+    try {
+      const initialDate = parseDate(initialDateTime);
+      const now = new Date();
+      const diff = now.getTime() - initialDate.getTime();
+      return formatTime(diff);
+    } catch (error) {
+      console.error(error);
+      return "Sincronizando contador";
+    }
   });
 
   useEffect(() => {
-    const initialDate = parseDate(initialDateTime);
+    if (!initialDateTime) {
+      setElapsedTime("Sincronizando contador");
+      return;
+    }
+
+    let initialDate: Date;
+    try {
+      initialDate = parseDate(initialDateTime);
+    } catch (error) {
+      console.error(error);
+      setElapsedTime("Sincronizando contador");
+      return;
+    }
 
     function updateElapsedTime() {
       const now = new Date();
@@ -45,19 +74,6 @@ export function useElapsedTime(initialDateTime: string): string {
     const intervalId = setInterval(updateElapsedTime, 1000);
     return () => clearInterval(intervalId);
   }, [initialDateTime]);
-
-  function formatTime(diff: number): string {
-    const totalSeconds = Math.floor(diff / 1000);
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-
-    function pad(num: number): string {
-      return num.toString().padStart(2, '0');
-    }
-
-    return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-  }
 
   return elapsedTime;
 }
