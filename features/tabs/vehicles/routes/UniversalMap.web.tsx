@@ -71,7 +71,8 @@ const stylesheet = createStyleSheet((theme, runtime) => ({
     position: "relative",
   },
   minimized: {
-    height: 300,
+    height: "100%",
+    minHeight: runtime.screen.height / 5,
   },
   maximized: {
     height: "100%",

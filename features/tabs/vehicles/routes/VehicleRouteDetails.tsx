@@ -40,18 +40,13 @@ export function VehicleRouteDetails() {
   const elapsedTime = useElapsedTime(route?.started_at);
   const [refocusTrigger, setRefocusTrigger] = useState(0);
   const [isMaximized, setIsMaximized] = useState(false);
-  const [lastMaximizedState, setLastMaximizedState] = useState(false);
 
   function handleRefocus() {
     setRefocusTrigger((prev) => prev + 1);
   }
 
   function handleMaximize() {
-    setIsMaximized((prev) => {
-      const newState = !prev;
-      setLastMaximizedState(newState);
-      return newState;
-    });
+    setIsMaximized((prev) => !prev);
   }
 
   async function fetchRoute() {
@@ -65,22 +60,6 @@ export function VehicleRouteDetails() {
     await refetchRouteById(routeId);
     setRouteIsLoading(false);
   }
-
-  useEffect(() => {
-    if (UnistylesRuntime.screen.width > 580) {
-      setIsMaximized(lastMaximizedState);
-    } else {
-      setIsMaximized(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (UnistylesRuntime.screen.width > 580) {
-      setIsMaximized(lastMaximizedState);
-    } else {
-      setIsMaximized(false);
-    }
-  }, [UnistylesRuntime.screen.width]);
 
   useEffect(() => {
     fetchRoute();
@@ -164,7 +143,6 @@ export function VehicleRouteDetails() {
                       text={isMaximized ? "Minimizar" : "Maximizar"}
                       Icon={isMaximized ? Minimize2 : Maximize2}
                       onPress={handleMaximize}
-                      show={UnistylesRuntime.screen.width > 580}
                     />
                   </ActionButtonGroup>
                 }

@@ -70,7 +70,8 @@ const stylesheet = createStyleSheet((theme, runtime) => ({
     transition: "height 0.3s ease",
   },
   minimized: {
-    height: 300,
+    height: "100%",
+    minHeight: runtime.screen.height / 5,
   },
   maximized: {
     height: "100%",
