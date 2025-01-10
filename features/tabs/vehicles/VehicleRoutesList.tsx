@@ -74,13 +74,31 @@ export default function VehichleRoutesList() {
 
   if (routeArray.length === 0) {
     return (
-      <EmptyScreen
-        caption="No hay rutas para este vehículo"
-        buttonCaption="Reintentar"
-        retryFunction={async () => {
-          await handleRefresh();
-        }}
-      />
+      <>
+        <Stack.Screen
+          options={{
+            title: `Rutas (${routeArray.length})`,
+            headerRight: () => (
+              <ActionButtonGroup>
+                <ActionButton Icon={Plus} text="Nueva ruta" onPress={() => setActiveModal("create_route")} />
+                <ActionButton
+                  onPress={() => handleRefresh()}
+                  Icon={RotateCw}
+                  text="Actualizar"
+                  show={Platform.OS === "web"}
+                />
+              </ActionButtonGroup>
+            ),
+          }}
+        />
+        <EmptyScreen
+          caption="No hay rutas para este vehículo"
+          buttonCaption="Reintentar"
+          retryFunction={async () => {
+            await handleRefresh();
+          }}
+        />
+      </>
     );
   }
 
