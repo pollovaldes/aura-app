@@ -5,7 +5,7 @@ import { Stack, useLocalSearchParams } from "expo-router";
 import { Download, FilterIcon, Plus, RotateCw } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Platform, Text, View } from "react-native";
-import { AddRouteModal } from "./modals/addRouteModal/AddRouteModal";
+import { AddRouteModal } from "../modals/addRouteModal/AddRouteModal";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { useRoutes } from "@/features/routePage/hooks/useRoutes";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";

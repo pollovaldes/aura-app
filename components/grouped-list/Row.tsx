@@ -4,6 +4,7 @@ import RowIcon from "./RowIcon";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LucideProps } from "lucide-react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
+import Animated, { Easing, LinearTransition } from "react-native-reanimated";
 
 interface RowProps {
   title?: string | null;
@@ -46,32 +47,34 @@ const Row = ({
   }
 
   return (
-    <Pressable
-      onPress={onPress}
-      disabled={isLoading || disabled || !onPress}
-      onHoverIn={() => hasTouchableFeedback && setIsHovered(true)}
-      onHoverOut={() => hasTouchableFeedback && setIsHovered(false)}
-      style={({ pressed }) => [
-        styles.container,
-        style,
-        { opacity: disabled ? 0.6 : 1 },
-        hasTouchableFeedback && isHovered && styles.containerHovered,
-        hasTouchableFeedback && pressed && styles.containerPressed,
-      ]}
-    >
-      {icon && <RowIcon icon={icon} backgroundColor={backgroundColor} />}
-      <View style={styles.textContainer}>
-        <Text style={styles.title}>{title}</Text>
-        {caption && <Text style={styles.caption}>{typeof caption === "string" ? caption : caption}</Text>}
-      </View>
-      {isLoading ? (
-        <ActivityIndicator />
-      ) : trailing ? (
-        <View>{trailing}</View>
-      ) : (
-        !hideChevron && <MaterialIcons name="chevron-right" size={24} color="#c4c4c7" />
-      )}
-    </Pressable>
+    <Animated.View layout={LinearTransition.easing(Easing.out(Easing.ease))}>
+      <Pressable
+        onPress={onPress}
+        disabled={isLoading || disabled || !onPress}
+        onHoverIn={() => hasTouchableFeedback && setIsHovered(true)}
+        onHoverOut={() => hasTouchableFeedback && setIsHovered(false)}
+        style={({ pressed }) => [
+          styles.container,
+          style,
+          { opacity: disabled ? 0.6 : 1 },
+          hasTouchableFeedback && isHovered && styles.containerHovered,
+          hasTouchableFeedback && pressed && styles.containerPressed,
+        ]}
+      >
+        {icon && <RowIcon icon={icon} backgroundColor={backgroundColor} />}
+        <View style={styles.textContainer}>
+          <Text style={styles.title}>{title}</Text>
+          {caption && <Text style={styles.caption}>{typeof caption === "string" ? caption : caption}</Text>}
+        </View>
+        {isLoading ? (
+          <ActivityIndicator />
+        ) : trailing ? (
+          <View>{trailing}</View>
+        ) : (
+          !hideChevron && <MaterialIcons name="chevron-right" size={24} color="#c4c4c7" />
+        )}
+      </Pressable>
+    </Animated.View>
   );
 };
 

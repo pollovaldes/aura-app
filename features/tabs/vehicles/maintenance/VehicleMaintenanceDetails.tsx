@@ -145,54 +145,6 @@ export function VehicleMaintenanceDetails() {
         }}
       />
 
-      <Modal isOpen={activeModal !== null} close={() => setActiveModal(null)}>
-        {activeModal && (
-          <ChangeDataModal
-            currentDataType={
-              activeModal === "numero_economico"
-                ? "Número Económico"
-                : activeModal === "marca"
-                  ? "Marca"
-                  : activeModal === "sub_marca"
-                    ? "Submarca"
-                    : activeModal === "modelo"
-                      ? "Modelo"
-                      : activeModal === "no_serie"
-                        ? "No. de serie"
-                        : "No. de placa"
-            }
-            currentData={
-              activeModal === "numero_economico"
-                ? vehicle.economic_number
-                : activeModal === "marca"
-                  ? vehicle.brand
-                  : activeModal === "sub_marca"
-                    ? vehicle.sub_brand
-                    : activeModal === "modelo"
-                      ? vehicle.year
-                      : activeModal === "no_serie"
-                        ? vehicle.serial_number
-                        : vehicle.plate
-            }
-            closeModal={() => setActiveModal(null)}
-            dataChange={
-              activeModal === "numero_economico"
-                ? "numero_economico"
-                : activeModal === "marca"
-                  ? "marca"
-                  : activeModal === "sub_marca"
-                    ? "sub_marca"
-                    : activeModal === "modelo"
-                      ? "modelo"
-                      : activeModal === "no_serie"
-                        ? "no_serie"
-                        : "placa"
-            }
-            id={vehicle.id}
-          />
-        )}
-      </Modal>
-
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         refreshControl={<RefreshControl refreshing={vehicleIsLoading} onRefresh={refetchVehicle} />}

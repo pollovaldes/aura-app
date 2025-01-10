@@ -49,7 +49,7 @@ export function StartLocation() {
       const formattedAddress =
         `${location.street || ""} ${location.streetNumber || ""}, col. ${location.subregion || ""}, ${location.city || location.region || ""}, ${location.region || ""}, México. C. P. ${location.postalCode || ""}`.trim();
       setAddress(formattedAddress);
-      setField("started_adrees", formattedAddress);
+      setField("started_address", formattedAddress);
       showToast(
         "Dirección inferida",
         "Se ha inferido una dirección basada en tu ubicación. Puedes modificarla si es necesario."
@@ -57,7 +57,7 @@ export function StartLocation() {
     } catch (error) {
       console.error("Error fetching address:", error);
       setAddress("No se pudo obtener la dirección.");
-      setField("started_adrees", "No se pudo obtener la dirección.");
+      setField("started_address", "No se pudo obtener la dirección.");
     }
   };
 
@@ -176,3 +176,114 @@ const stylesheet = createStyleSheet((theme) => ({
     zIndex: 1,
   },
 }));
+
+// "use dom";
+
+// import { createStyleSheet, useStyles } from "react-native-unistyles";
+// import { Map } from "@vis.gl/react-maplibre";
+// import { View } from "react-native";
+
+// export default function DOMComponent({ name }: { name: string }) {
+//   const { styles } = useStyles(stylesheet);
+
+//   return (
+//     <View style={styles.page}>
+//       <Map
+//         initialViewState={{
+//           longitude: -100,
+//           latitude: 40,
+//           zoom: 3.5,
+//         }}
+//         style={{ flex: 1, alignSelf: "stretch" }}
+//         mapStyle="https://api.maptiler.com/maps/streets-v2/style.json?key=qv1nUcyR1uHV9MgBhSuG"
+//       />
+//     </View>
+//   );
+// }
+
+// const stylesheet = createStyleSheet((theme) => ({
+//   page: {
+//     flex: 1,
+//     justifyContent: "center",
+//     alignItems: "center",
+//     backgroundColor: "#F5FCFF",
+//   },
+//   map: {
+//     flex: 1,
+//     alignSelf: "stretch",
+//   },
+// }));
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React from "react";
+// import { Platform, Text, View } from "react-native";
+// import { createStyleSheet, useStyles } from "react-native-unistyles";
+// import { Stack } from "expo-router";
+// import DOMComponent from "./MapWebView";
+
+// let MapLibreGL: typeof import("@maplibre/maplibre-react-native") | undefined;
+// if (Platform.OS === "ios" || Platform.OS === "android") {
+//   MapLibreGL = require("@maplibre/maplibre-react-native").default;
+//   MapLibreGL.setAccessToken(null);
+// }
+
+// export default function VehicleRouteDetails(): JSX.Element {
+//   const { styles } = useStyles(stylesheet);
+
+//   return (
+//     <>
+//       <Stack.Screen
+//         options={{
+//           headerLargeTitle: false,
+//         }}
+//       />
+
+//       {Platform.OS === "web" && <DOMComponent name="Europa" />}
+
+//       {Platform.OS !== "web" && (
+//         <View style={styles.page}>
+//           {MapLibreGL ? (
+//             <MapLibreGL.MapView
+//               style={styles.map}
+//               logoEnabled={true}
+//               styleURL="https://api.maptiler.com/maps/streets-v2/style.json?key=qv1nUcyR1uHV9MgBhSuG"
+//               zoomEnabled={true}
+//               rotateEnabled={true}
+//               pitchEnabled={true}
+//             >
+//               {/* Add any child components here only if MapLibreGL is defined */}
+//               <View />
+//             </MapLibreGL.MapView>
+//           ) : (
+//             <Text>Map not available on this platform</Text>
+//           )}
+//         </View>
+//       )}
+//     </>
+//   );
+// }
+
+// const stylesheet = createStyleSheet((theme) => ({
+//   page: {
+//     marginTop: 50,
+//     flex: 1,
+//     justifyContent: "center",
+//     alignItems: "center",
+//     backgroundColor: "#F5FCFF",
+//   },
+//   map: {
+//     flex: 1,
+//     alignSelf: "stretch",
+//   },
+// }));

@@ -33,7 +33,6 @@ import { ActionButton } from "@/components/actionButton/ActionButton";
 import { useVehicles } from "@/hooks/truckHooks/useVehicle";
 import { useVehicleThumbnail } from "@/hooks/useVehicleThumbnail";
 import { ChangeCoverImageModal } from "@/features/tabs/vehicles/modals/ChangeCoverImageModal";
-import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import Modal from "@/components/Modal/Modal";
 import GroupedList from "@/components/grouped-list/GroupedList";
@@ -83,7 +82,7 @@ export function VehicleDetails() {
         <UnauthorizedScreen
           caption="No tienes acceso a este recurso."
           buttonCaption="Reintentar"
-          retryFunction={fetchVehicle}
+          retryFunction={refetchVehicle}
         />
       </>
     );

@@ -51,7 +51,8 @@
           "photosPermission": "Permitir que $(PRODUCT_NAME) acceda a tus fotos."
         }
       ],
-      "expo-font"
+      ["expo-font"],
+      ["@maplibre/maplibre-react-native"]
     ],
     "extra": {
       "router": {
