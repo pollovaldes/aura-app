@@ -12,10 +12,11 @@ import { CircleHelp, Info, Locate, MapPin, Maximize2, Minimize2 } from "lucide-r
 import { colorPalette } from "@/style/themes";
 import StatusChip from "@/components/General/StatusChip";
 import { formatDate } from "@/features/global/functions/formatDate";
-import { MapMobile } from "./MapMobile";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
 import { UnistylesRuntime } from "react-native-unistyles";
+import { UniversalMap as UniversalMapNative } from "./UniversalMap.native";
+import { UniversalMap as UniversalMapWeb } from "./UniversalMap.web";
 
 const statesConfig = {
   true: {
@@ -169,8 +170,15 @@ export function VehicleRouteDetails() {
                 }
               />
               <Row>
-                {Platform.OS !== "web" && (
-                  <MapMobile
+                {Platform.OS !== "web" ? (
+                  <UniversalMapNative
+                    latitude={route.started_location_latitude}
+                    longitude={route.started_location_longitude}
+                    refocusTrigger={refocusTrigger}
+                    isMaximized={isMaximized}
+                  />
+                ) : (
+                  <UniversalMapWeb
                     latitude={route.started_location_latitude}
                     longitude={route.started_location_longitude}
                     refocusTrigger={refocusTrigger}
