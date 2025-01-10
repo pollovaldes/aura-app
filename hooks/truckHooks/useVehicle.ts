@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { VehiclesContext } from "@/context/VehiclesContext";
+import { PostgrestError } from "@supabase/supabase-js";
 
 export function useVehicles() {
   const { vehicles, setVehicles } = useContext(VehiclesContext);
@@ -8,8 +9,11 @@ export function useVehicles() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [hasMorePages, setHasMorePages] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [error, setError] = useState<PostgrestError | null>(null);
 
   async function LIST_ONLY_fetchVehicles(page: number = 1, pageSize: number = 9) {
+    setError(null);
+
     if (page === 1) {
       setIsLoading(true);
     } else {
@@ -22,6 +26,7 @@ export function useVehicles() {
       .range((page - 1) * pageSize, page * pageSize - 1);
 
     if (error) {
+      setError(error);
       console.error(error);
       throw error;
     }
@@ -38,6 +43,7 @@ export function useVehicles() {
       setCurrentPage(page);
     }
 
+    setError(null);
     setIsLoading(false);
     setIsRefreshing(false);
   }
@@ -50,6 +56,8 @@ export function useVehicles() {
   }
 
   async function fetchVehicleById(vehicleId: string) {
+    setError(null);
+
     if (vehicles[vehicleId]) {
       return;
     }
@@ -57,6 +65,7 @@ export function useVehicles() {
     const { data, error } = await supabase.from("vehicles").select("*").eq("id", vehicleId).single();
 
     if (error) {
+      setError(error);
       console.error(error);
       throw error;
     }
@@ -67,12 +76,17 @@ export function useVehicles() {
         [data.id]: data,
       }));
     }
+
+    setError(null);
   }
 
   async function refetchVehicleById(vehicleId: string) {
+    setError(null);
+
     const { data, error } = await supabase.from("vehicles").select("*").eq("id", vehicleId).single();
 
     if (error) {
+      setError(error);
       console.error(error);
       throw error;
     }
@@ -83,6 +97,8 @@ export function useVehicles() {
         [data.id]: data,
       }));
     }
+
+    setError(null);
   }
 
   async function LIST_ONLY_loadMoreVehicles() {
@@ -102,6 +118,7 @@ export function useVehicles() {
     isRefreshing,
     hasMorePages,
     currentPage,
+    error,
     LIST_ONLY_fetchVehicles,
     refetchAllVehicles,
     fetchVehicleById,

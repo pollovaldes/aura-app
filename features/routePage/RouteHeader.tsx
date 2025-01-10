@@ -4,11 +4,12 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, withRepeat, Easing } from "react-native-reanimated";
 import { router } from "expo-router";
 import { pickTextColor } from "../global/functions/pickTectColor";
+import { useElapsedTime } from "../global/hooks/useElapsedTime";
 
 export function RouteHeader() {
   const { styles, theme } = useStyles(stylesheet);
   const textColor = pickTextColor(theme.ui.colors.primary);
-
+  const elapsedTime = useElapsedTime("2025-01-10 01:38:29+00");
   const opacity = useSharedValue(1);
 
   useEffect(() => {
@@ -35,7 +36,7 @@ export function RouteHeader() {
           Ruta en curso
         </Animated.Text>
         <Text style={styles.subtitle(textColor)} selectable={false} allowFontScaling={false}>
-          01:52:36
+          {elapsedTime}
         </Text>
       </View>
     </Pressable>

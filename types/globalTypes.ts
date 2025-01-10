@@ -21,21 +21,24 @@ export type Maintenance = MaintenanceRow & {
   resolved_by: User | null;
 };
 
-export type RouteEvent = Database["public"]["Tables"]["route_events"]["Row"];
+export type RefuelingEvent = Database["public"]["Tables"]["refueling_events"]["Row"];
 export type BreakEvent = Database["public"]["Tables"]["break_events"]["Row"];
 export type EmergencyEvent = Database["public"]["Tables"]["emergency_events"]["Row"];
 export type OtherEvent = Database["public"]["Tables"]["other_events"]["Row"];
-export type RefuelingEvent = Database["public"]["Tables"]["refueling_events"]["Row"];
+export type FailureEvent = Database["public"]["Tables"]["failure_events"]["Row"];
+export type RouteEvent = Database["public"]["Tables"]["route_events"]["Row"];
 
 export type RouteRow = Database["public"]["Tables"]["routes"]["Row"];
+
 export type Route = RouteRow & {
   vehicles: Vehicle | null;
   profiles: User | null;
   route_events: (RouteEvent & {
-    refueling_events: RefuelingEvent | null;
-    break_events: BreakEvent | null;
-    emergency_events: EmergencyEvent | null;
-    other_events: OtherEvent | null;
+    refueling_events: RefuelingEvent[];    
+    break_events: BreakEvent[];            
+    emergency_events: EmergencyEvent[];    
+    other_events: OtherEvent[];            
+    failure_events: FailureEvent[];        
   })[];
 };
 

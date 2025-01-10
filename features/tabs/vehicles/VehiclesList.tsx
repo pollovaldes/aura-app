@@ -14,32 +14,42 @@ import { useVehicles } from "@/hooks/truckHooks/useVehicle";
 import { VehicleThumbnail } from "@/components/vehicles/VehicleThumbnail";
 import Modal from "@/components/Modal/Modal";
 import { AddVehicleModal } from "./modals/AddVehicleModal";
-import { useRoutes } from "@/features/routePage/hooks/useRoutes";
 
 type ModalType = "add_vehicle_modal" | null;
 
 export function VehiclesList() {
-  const { profile } = useProfile();
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
   const {
     vehicles,
     isLoading,
     isRefreshing,
     hasMorePages,
+    error,
     LIST_ONLY_loadMoreVehicles,
     handleRefresh,
     LIST_ONLY_fetchVehicles,
   } = useVehicles();
-  const { LIST_ONLY_fetchRoutes } = useRoutes();
   const { styles } = useStyles(stylesheet);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
+  const vehicleArray = Object.values(vehicles);
 
   useEffect(() => {
-    LIST_ONLY_fetchVehicles(1);
-    LIST_ONLY_fetchRoutes();
+    LIST_ONLY_fetchVehicles();
   }, []);
 
-  const vehicleArray = Object.values(vehicles);
+  if (error) {
+    return (
+      <ErrorScreen
+        caption="No se pudieron cargar los vehículos"
+        buttonCaption="Reintentar"
+        retryFunction={async () => {
+          await handleRefresh();
+        }}
+      />
+    );
+  }
 
   if (isLoading && vehicleArray.length === 0) {
     return <FetchingIndicator caption="Cargando vehículos" />;
@@ -57,7 +67,7 @@ export function VehiclesList() {
     );
   }
 
-  const isAdminOrOwner = profile?.role === "ADMIN" || profile?.role === "OWNER";
+  const isAdminOrOwner = profile.role === "ADMIN" || profile.role === "OWNER";
 
   return (
     <>

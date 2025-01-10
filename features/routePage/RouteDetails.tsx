@@ -8,10 +8,12 @@ import { BedSingle, Fuel, History, Info, TriangleAlert, Wrench } from "lucide-re
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import { colorPalette } from "@/style/themes";
+import { useElapsedTime } from "../global/hooks/useElapsedTime";
 
 export function RouteDetails() {
   const { styles, theme } = useStyles(stylesheet);
   const textColor = pickTextColor(theme.ui.colors.primary);
+  const elapsedTime = useElapsedTime("2025-01-10 01:38:29+00");
 
   return (
     <>
@@ -25,7 +27,7 @@ export function RouteDetails() {
       <View style={styles.container}>
         <ScrollView>
           <View style={styles.section}>
-            <Text style={styles.timer}>01:52:36</Text>
+            <Text style={styles.timer}>{elapsedTime}</Text>
             <GroupedList>
               <Row title="Información de la ruta" icon={Info} backgroundColor={colorPalette.cyan[500]} />
               <Row title="Historial de paradas" icon={History} backgroundColor={colorPalette.green[500]} />
