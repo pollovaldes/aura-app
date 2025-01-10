@@ -14,11 +14,20 @@ import { VehiclesContextProvider } from "@/context/VehiclesContext";
 import { UsersContextProvider } from "@/context/UsersContext";
 import { ProfileImageProvider } from "@/context/ProfileImageContext";
 import { RoutesContextProvider } from "@/features/routePage/context/RoutesContext";
+import { useFonts } from "expo-font";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const path = usePathname();
-  const { theme } = useStyles();
-  useAccentColor();
+  const [loaded] = useFonts({
+    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+  });
+
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
 
   useEffect(() => {
     SplashScreen.setOptions({
@@ -26,6 +35,10 @@ export default function RootLayout() {
       fade: true,
     });
   }, []);
+
+  const path = usePathname();
+  const { theme } = useStyles();
+  useAccentColor();
 
   return (
     <ThemeProvider value={theme.ui}>

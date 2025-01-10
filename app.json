@@ -50,7 +50,8 @@
         {
           "photosPermission": "Permitir que $(PRODUCT_NAME) acceda a tus fotos."
         }
-      ]
+      ],
+      "expo-font"
     ],
     "extra": {
       "router": {
