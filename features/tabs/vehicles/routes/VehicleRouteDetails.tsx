@@ -8,7 +8,7 @@ import { Platform, RefreshControl, ScrollView, Text, View } from "react-native";
 import Row from "@/components/grouped-list/Row";
 import { useElapsedTime } from "@/features/global/hooks/useElapsedTime";
 import GroupedList from "@/components/grouped-list/GroupedList";
-import { CircleHelp, Info, Locate, MapPin, Maximize2, Minimize2 } from "lucide-react-native";
+import { CircleHelp, Info, Locate, MapPin, Maximize2, Minimize2, RotateCw } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import StatusChip from "@/components/General/StatusChip";
 import { formatDate } from "@/features/global/functions/formatDate";
@@ -88,6 +88,18 @@ export function VehicleRouteDetails() {
         options={{
           title: "Detalles de la ruta",
           headerLargeTitle: false,
+          headerRight: () => (
+            <ActionButtonGroup>
+              <ActionButton
+                onPress={() => {
+                  refetchRoute();
+                }}
+                Icon={RotateCw}
+                text="Actualizar"
+                show={Platform.OS === "web"}
+              />
+            </ActionButtonGroup>
+          ),
         }}
       />
 
@@ -127,7 +139,12 @@ export function VehicleRouteDetails() {
                 backgroundColor={colorPalette.orange[500]}
                 trailing={<StatusChip status={String(route.is_active)} statesConfig={statesConfig} />}
               />
-              <Row title="Paradas" icon={MapPin} backgroundColor={colorPalette.red[500]} />
+              <Row
+                title="Paradas"
+                icon={MapPin}
+                backgroundColor={colorPalette.red[500]}
+                onPress={() => router.push(`./stops`, { relativeToDirectory: true })}
+              />
             </GroupedList>
           </View>
           <View style={styles.group}>

@@ -212,14 +212,12 @@ export function VehicleManageFleets() {
                 text="Actualizar"
                 show={Platform.OS === "web"}
               />
-              {canEdit && (
-                <ActionButton
-                  Icon={Trash}
-                  onPress={() => deleteVehicle.showDialog()}
-                  show={canEdit}
-                  text="Eliminar vehículo"
-                />
-              )}
+              <ActionButton
+                Icon={Trash}
+                onPress={() => deleteVehicle.showDialog()}
+                show={canEdit}
+                text="Eliminar vehículo"
+              />
             </ActionButtonGroup>
           ),
         }}
