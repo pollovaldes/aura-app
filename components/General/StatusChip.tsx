@@ -16,17 +16,15 @@ interface StatusChipProps {
 const StatusChip: React.FC<StatusChipProps> = ({ status, statesConfig }) => {
   const config = statesConfig[status] || {
     text: "Desconocido",
-    backgroundColor: "#e0e0e0", // Fondo predeterminado
-    textColor: "#000", // Texto predeterminado
+    backgroundColor: "#e0e0e0",
+    textColor: "#000",
   };
 
   const { styles } = useStyles(stylesheet);
 
   return (
     <View style={[styles.status, { backgroundColor: config.backgroundColor }]}>
-      <Text style={[styles.statusText, { color: config.textColor }]}>
-        {config.text}
-      </Text>
+      <Text style={[styles.statusText, { color: config.textColor }]}>{config.text}</Text>
     </View>
   );
 };

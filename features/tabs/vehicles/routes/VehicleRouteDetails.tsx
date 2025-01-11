@@ -14,9 +14,9 @@ import StatusChip from "@/components/General/StatusChip";
 import { formatDate } from "@/features/global/functions/formatDate";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
-import { UnistylesRuntime } from "react-native-unistyles";
 import { UniversalMap as UniversalMapNative } from "@/features/global/components/UniversalMap.native";
 import { UniversalMap as UniversalMapWeb } from "@/features/global/components/UniversalMap.web";
+import ErrorScreen from "@/components/dataStates/ErrorScreen";
 
 const statesConfig = {
   true: {
@@ -34,7 +34,7 @@ const statesConfig = {
 export function VehicleRouteDetails() {
   const { styles } = useStyles(stylesheet);
   const { vehicleId, routeId } = useLocalSearchParams<{ vehicleId: string; routeId: string }>();
-  const { routes, fetchRouteById, refetchRouteById } = useRoutes(vehicleId);
+  const { routes, fetchRouteById, refetchRouteById, error } = useRoutes(vehicleId);
   const route = routes[routeId];
   const [routeIsLoading, setRouteIsLoading] = useState(false);
   const elapsedTime = useElapsedTime(route?.started_at);
@@ -65,6 +65,18 @@ export function VehicleRouteDetails() {
     fetchRoute();
   }, []);
 
+  if (error) {
+    return (
+      <ErrorScreen
+        caption="No se pudo carga la ruta"
+        buttonCaption="Reintentar"
+        retryFunction={async () => {
+          await refetchRoute();
+        }}
+      />
+    );
+  }
+
   if (routeIsLoading) {
     return <FetchingIndicator caption="Cargando ruta" />;
   }
@@ -79,6 +91,16 @@ export function VehicleRouteDetails() {
           retryFunction={refetchRoute}
         />
       </>
+    );
+  }
+
+  if (route.vehicle_id !== vehicleId) {
+    return (
+      <UnauthorizedScreen
+        caption="No tienes acceso a este recurso"
+        buttonCaption="Reintentar"
+        retryFunction={() => {}} //Leave blank
+      />
     );
   }
 

@@ -4,7 +4,7 @@ import { ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { pickTextColor } from "../global/functions/pickTectColor";
 import { FormButton } from "@/components/Form/FormButton";
-import { BedSingle, Fuel, History, Info, TriangleAlert, Wrench } from "lucide-react-native";
+import { BedSingle, Ellipsis, Fuel, History, Info, TriangleAlert, Wrench } from "lucide-react-native";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import { colorPalette } from "@/style/themes";
@@ -35,6 +35,7 @@ export function RouteDetails() {
               <Row title="Registrar combustible" icon={Fuel} backgroundColor={colorPalette.neutral[500]} />
               <Row title="Registrar descanso" icon={BedSingle} backgroundColor={colorPalette.neutral[500]} />
               <Row title="Registrar falla" icon={Wrench} backgroundColor={colorPalette.neutral[500]} />
+              <Row title="Registrar otro" icon={Ellipsis} backgroundColor={colorPalette.neutral[500]} />
               <Row title="Registrar emergencia" icon={TriangleAlert} backgroundColor={colorPalette.red[500]} />
             </GroupedList>
             <View style={[styles.group, { paddingHorizontal: 12 }]}>
