@@ -43,28 +43,39 @@ export default function VehichleRoutesList() {
     isRefreshing,
     hasMorePages,
     error,
-    LIST_ONLY_loadMoreRoutes,
-    handleRefresh,
+    currentPage,
     LIST_ONLY_fetchRoutes,
-  } = useRoutes(vehicleId);
+    setRoutes,
+    setCurrentPage,
+    setHasMorePages,
+  } = useRoutes();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
   const routeArray = Object.values(routes).filter((route) => route.vehicle_id === vehicleId);
-  const elapsedTime = useElapsedTime("2025-01-10 01:38:29+00");
+  const { getElapsedTimeSince, getStaticValues } = useElapsedTime();
+
+  async function loadMoreRoutes() {
+    if (hasMorePages && !isRefreshing && !isLoading) {
+      await LIST_ONLY_fetchRoutes(currentPage + 1, 5, vehicleId);
+    }
+  }
+
+  async function refetchRoutes() {
+    setRoutes({});
+    setHasMorePages(true);
+    setCurrentPage(1);
+    await LIST_ONLY_fetchRoutes(1, 5, vehicleId);
+  }
 
   useEffect(() => {
-    LIST_ONLY_fetchRoutes();
+    if (routeArray.length === 0) {
+      LIST_ONLY_fetchRoutes(1, 5, vehicleId);
+    }
   }, []);
 
   if (error) {
     return (
-      <ErrorScreen
-        caption="No se pudieron cargar las rutas"
-        buttonCaption="Reintentar"
-        retryFunction={async () => {
-          await handleRefresh();
-        }}
-      />
+      <ErrorScreen caption="No se pudieron cargar las rutas" buttonCaption="Reintentar" retryFunction={refetchRoutes} />
     );
   }
 
@@ -89,7 +100,7 @@ export default function VehichleRoutesList() {
                 <ActionButtonGroup>
                   <ActionButton Icon={Plus} text="Nueva ruta" onPress={() => setActiveModal("create_route")} />
                   <ActionButton
-                    onPress={() => handleRefresh()}
+                    onPress={refetchRoutes}
                     Icon={RotateCw}
                     text="Actualizar"
                     show={Platform.OS === "web"}
@@ -101,9 +112,7 @@ export default function VehichleRoutesList() {
           <EmptyScreen
             caption="No hay rutas para este vehículo"
             buttonCaption="Reintentar"
-            retryFunction={async () => {
-              await handleRefresh();
-            }}
+            retryFunction={refetchRoutes}
           />
         </>
       )}
@@ -119,7 +128,7 @@ export default function VehichleRoutesList() {
                   <ActionButton Icon={FilterIcon} text="Filtros" onPress={() => {}} show={canEdit} />
                   <ActionButton Icon={Plus} text="Nueva ruta" onPress={() => setActiveModal("create_route")} />
                   <ActionButton
-                    onPress={() => handleRefresh()}
+                    onPress={refetchRoutes}
                     Icon={RotateCw}
                     text="Actualizar"
                     show={Platform.OS === "web"}
@@ -142,7 +151,7 @@ export default function VehichleRoutesList() {
                     {item.is_active && (
                       <View style={{ alignItems: "center", gap: 2 }}>
                         <Text style={styles.counterSubtitleText}>{`Tiempo transcurrido`}</Text>
-                        <Text style={styles.counterText}>{`${elapsedTime}`}</Text>
+                        <Text style={styles.counterText}>{`${getElapsedTimeSince(item.started_at)}`}</Text>
                       </View>
                     )}
                   </View>
@@ -160,9 +169,9 @@ export default function VehichleRoutesList() {
                 }
               />
             )}
-            onEndReached={LIST_ONLY_loadMoreRoutes}
-            onEndReachedThreshold={0.75}
-            onRefresh={handleRefresh}
+            onEndReached={loadMoreRoutes}
+            onEndReachedThreshold={0.5}
+            onRefresh={refetchRoutes}
             refreshing={isRefreshing}
             ListEmptyComponent={<EmptyScreen caption="No hay rutas para este vehículo" />}
             ListFooterComponent={

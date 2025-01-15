@@ -9,7 +9,7 @@ import { useElapsedTime } from "../global/hooks/useElapsedTime";
 export function RouteHeader() {
   const { styles, theme } = useStyles(stylesheet);
   const textColor = pickTextColor(theme.ui.colors.primary);
-  const elapsedTime = useElapsedTime("2025-01-10 01:38:29+00");
+  const { getElapsedTimeSince, getStaticValues } = useElapsedTime();
   const opacity = useSharedValue(1);
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export function RouteHeader() {
           Ruta en curso
         </Animated.Text>
         <Text style={styles.subtitle(textColor)} selectable={false} allowFontScaling={false}>
-          {elapsedTime}
+          {getElapsedTimeSince("2021-09-01 12:00:00")}
         </Text>
       </View>
     </Pressable>

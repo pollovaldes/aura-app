@@ -34,12 +34,12 @@ const statesConfig = {
 export function VehicleRouteDetails() {
   const { styles } = useStyles(stylesheet);
   const { vehicleId, routeId } = useLocalSearchParams<{ vehicleId: string; routeId: string }>();
-  const { routes, fetchRouteById, refetchRouteById, error } = useRoutes(vehicleId);
+  const { routes, fetchRouteById, refetchRouteById, error } = useRoutes();
   const route = routes[routeId];
   const [routeIsLoading, setRouteIsLoading] = useState(false);
-  const elapsedTime = useElapsedTime(route?.started_at);
   const [refocusTrigger, setRefocusTrigger] = useState(0);
   const [isMaximized, setIsMaximized] = useState(false);
+  const { getElapsedTimeSince, getStaticValues } = useElapsedTime();
 
   function handleRefocus() {
     setRefocusTrigger((prev) => prev + 1);
@@ -134,7 +134,7 @@ export function VehicleRouteDetails() {
             <GroupedList>
               <Row>
                 <View style={styles.counterContainer}>
-                  <Text style={styles.counterText}>{elapsedTime}</Text>
+                  <Text style={styles.counterText}>{getElapsedTimeSince(route.started_at)}</Text>
                 </View>
               </Row>
             </GroupedList>

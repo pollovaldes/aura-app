@@ -2,9 +2,8 @@ import { useContext, useState } from "react";
 import { RoutesContext } from "../context/RoutesContext";
 import { supabase } from "@/lib/supabase";
 import { PostgrestError } from "@supabase/supabase-js";
-import { set } from "date-fns";
 
-export function useRoutes(vehicleId: string) {
+export function useRoutes() {
   const { routes, setRoutes } = useContext(RoutesContext);
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -12,7 +11,7 @@ export function useRoutes(vehicleId: string) {
   const [currentPage, setCurrentPage] = useState(1);
   const [error, setError] = useState<PostgrestError | null>(null);
 
-  async function LIST_ONLY_fetchRoutes(page: number = 1, pageSize: number = 9) {
+  async function LIST_ONLY_fetchRoutes(page: number = 1, pageSize: number = 9, vehicleId: string) {
     setError(null);
     if (page === 1) {
       setIsLoading(true);
@@ -61,13 +60,6 @@ export function useRoutes(vehicleId: string) {
     setError(null);
     setIsLoading(false);
     setIsRefreshing(false);
-  }
-
-  async function refetchAllRoutes(pageSize: number = 9) {
-    setRoutes({});
-    setCurrentPage(1);
-    setHasMorePages(true);
-    await LIST_ONLY_fetchRoutes(1, pageSize);
   }
 
   async function fetchRouteById(routeId: string) {
@@ -154,17 +146,6 @@ export function useRoutes(vehicleId: string) {
     setError(null);
   }
 
-  async function LIST_ONLY_loadMoreRoutes() {
-    if (hasMorePages && !isRefreshing && !isLoading) {
-      await LIST_ONLY_fetchRoutes(currentPage + 1);
-    }
-  }
-
-  async function handleRefresh() {
-    setHasMorePages(true);
-    await refetchAllRoutes();
-  }
-
   return {
     routes,
     isLoading,
@@ -173,10 +154,10 @@ export function useRoutes(vehicleId: string) {
     currentPage,
     error,
     LIST_ONLY_fetchRoutes,
-    refetchAllRoutes,
     fetchRouteById,
     refetchRouteById,
-    LIST_ONLY_loadMoreRoutes,
-    handleRefresh,
+    setRoutes,
+    setCurrentPage,
+    setHasMorePages,
   };
 }

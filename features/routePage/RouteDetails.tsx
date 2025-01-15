@@ -12,7 +12,7 @@ import { useElapsedTime } from "../global/hooks/useElapsedTime";
 
 export function RouteDetails() {
   const { styles, theme } = useStyles(stylesheet);
-  const elapsedTime = useElapsedTime("2025-01-10 01:38:29+00");
+  const { getElapsedTimeSince, getStaticValues } = useElapsedTime();
 
   return (
     <>
@@ -26,7 +26,7 @@ export function RouteDetails() {
       <View style={styles.container}>
         <ScrollView>
           <View style={styles.section}>
-            <Text style={styles.timer}>{elapsedTime}</Text>
+            <Text style={styles.timer}>{getElapsedTimeSince("2021-09-01 12:00:00")}</Text>
             <GroupedList>
               <Row title="Información de la ruta" icon={Info} backgroundColor={colorPalette.cyan[500]} />
               <Row title="Historial de paradas" icon={History} backgroundColor={colorPalette.green[500]} />

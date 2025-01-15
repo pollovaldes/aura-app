@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
-export function useElapsedTime(initialDateTime: string | null): string {
-  function normalizeDateTime(dateTimeStr: string): string {
+export function useElapsedTime() {
+  function normalizeDateTime(dateTimeStr: string) {
     let normalized = dateTimeStr.replace(' ', 'T');
     const signIndex = Math.max(normalized.lastIndexOf('+'), normalized.lastIndexOf('-'));
     if (signIndex > 0) {
@@ -17,7 +17,7 @@ export function useElapsedTime(initialDateTime: string | null): string {
     return normalized;
   }
 
-  function parseDate(dateTimeStr: string): Date {
+  function parseDate(dateTimeStr: string) {
     const date = new Date(normalizeDateTime(dateTimeStr));
     if (isNaN(date.getTime())) {
       throw new Error(`Invalid datetime: ${dateTimeStr}`);
@@ -25,7 +25,7 @@ export function useElapsedTime(initialDateTime: string | null): string {
     return date;
   }
 
-  function formatTime(diff: number): string {
+  function formatTime(diff: number) {
     const totalSeconds = Math.floor(diff / 1000);
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -34,46 +34,36 @@ export function useElapsedTime(initialDateTime: string | null): string {
     return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
   }
 
-  const [elapsedTime, setElapsedTime] = useState<string>(() => {
-    if (!initialDateTime) {
-      return "Sincronizando contador";
-    }
-    try {
-      const initialDate = parseDate(initialDateTime);
-      const now = new Date();
-      const diff = now.getTime() - initialDate.getTime();
-      return formatTime(diff);
-    } catch (error) {
-      console.error(error);
-      return "Sincronizando contador";
-    }
-  });
+  const getElapsedTimeSince = (dateTimeStr: string) => {
+    const initialDate = parseDate(dateTimeStr);
+    const now = new Date();
+    const diff = now.getTime() - initialDate.getTime();
+    return formatTime(diff);
+  };
+
+  const getStaticValues = (dateTimeStr: string): { hours: number; minutes: number; seconds: number } => {
+    const initialDate = parseDate(dateTimeStr);
+    const now = new Date();
+    const diff = now.getTime() - initialDate.getTime();
+    const totalSeconds = Math.floor(diff / 1000);
+    return {
+      hours: Math.floor(totalSeconds / 3600),
+      minutes: Math.floor((totalSeconds % 3600) / 60),
+      seconds: totalSeconds % 60
+    };
+  };
+
+  const [elapsedTime, setElapsedTime] = useState<string>('');
 
   useEffect(() => {
-    if (!initialDateTime) {
-      setElapsedTime("Sincronizando contador");
-      return;
-    }
-
-    let initialDate: Date;
-    try {
-      initialDate = parseDate(initialDateTime);
-    } catch (error) {
-      console.error(error);
-      setElapsedTime("Sincronizando contador");
-      return;
-    }
-
-    function updateElapsedTime() {
-      const now = new Date();
-      const diff = now.getTime() - initialDate.getTime();
-      setElapsedTime(formatTime(diff));
-    }
-
-    updateElapsedTime();
-    const intervalId = setInterval(updateElapsedTime, 1000);
+    const intervalId = setInterval(() => {
+      setElapsedTime(formatTime(new Date().getTime() - new Date().getTime()));
+    }, 1000);
     return () => clearInterval(intervalId);
-  }, [initialDateTime]);
+  }, []);
 
-  return elapsedTime;
+  return {
+    getElapsedTimeSince,
+    getStaticValues
+  };
 }
