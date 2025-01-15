@@ -31,17 +31,21 @@ export function RouteHeader() {
     };
   });
 
-  if (!activeRouteId && !activeRouteIdIsLoading && !activeRouteIsLoading) {
-    return;
-  }
-
-  const activeRoute = routes[activeRouteId];
+  const activeRoute = routes[activeRouteId!];
 
   return (
     <Pressable onPress={() => router.push("/tab/route_details/123")}>
       <View style={styles.container}>
         {activeRouteIdIsLoading || activeRouteIsLoading ? (
           <ActivityIndicator color={textColor} />
+        ) : !activeRoute ? (
+          <Animated.Text
+            style={[styles.text(textColor), animatedTextStyle]}
+            selectable={false}
+            allowFontScaling={false}
+          >
+            Error: No existe la ruta
+          </Animated.Text>
         ) : (
           <>
             <Animated.Text
