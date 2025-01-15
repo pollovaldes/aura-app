@@ -4,9 +4,10 @@ import { Stack } from "expo-router";
 import React from "react";
 
 export default function Layout() {
-  const { activeRoute, activeRouteIdIsLoading, activeRouteIsLoading } = useActiveRoute();
+  const { activeRouteIdIsLoading, activeRouteIsLoading, activeRouteId, routes } = useActiveRoute();
 
-  const mayShowHeader = !activeRouteIdIsLoading && !activeRouteIsLoading && activeRoute;
+  const mayShowHeader = !activeRouteIdIsLoading && !activeRouteIsLoading && activeRouteId;
+  const activeRoute = routes[activeRouteId!];
 
   return (
     <Stack>

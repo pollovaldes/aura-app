@@ -10,7 +10,7 @@ import { useActiveRoute } from "./hooks/useActiveRoute";
 export function RouteHeader() {
   const { styles, theme } = useStyles(stylesheet);
   const textColor = pickTextColor(theme.ui.colors.primary);
-  const { activeRoute, activeRouteIdIsLoading, activeRouteIsLoading } = useActiveRoute();
+  const { activeRouteIdIsLoading, activeRouteIsLoading, activeRouteId, routes } = useActiveRoute();
   const { getElapsedTimeSince, getStaticValues } = useElapsedTime();
   const opacity = useSharedValue(1);
 
@@ -31,9 +31,11 @@ export function RouteHeader() {
     };
   });
 
-  if (!activeRoute && !activeRouteIdIsLoading && !activeRouteIsLoading) {
+  if (!activeRouteId && !activeRouteIdIsLoading && !activeRouteIsLoading) {
     return;
   }
+
+  const activeRoute = routes[activeRouteId];
 
   return (
     <Pressable onPress={() => router.push("/tab/route_details/123")}>

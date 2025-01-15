@@ -4,7 +4,7 @@ import { supabase } from "@/lib/supabase";
 import { PostgrestError } from "@supabase/supabase-js";
 
 export function useRoutes() {
-  const { routes, setRoutes } = useContext(RoutesContext);
+  const { routes, setRoutes, activeRouteId, setActiveRouteId } = useContext(RoutesContext);
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [hasMorePages, setHasMorePages] = useState(true);
@@ -179,5 +179,7 @@ export function useRoutes() {
     setCurrentPage,
     setHasMorePages,
     getActiveRouteId,
+    activeRouteId,
+    setActiveRouteId,
   };
 }

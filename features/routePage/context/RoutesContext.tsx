@@ -4,28 +4,28 @@ import { createContext, Dispatch, ReactNode, SetStateAction, useState } from "re
 export interface RoutesContextType {
   routes: Record<string, Route>;
   setRoutes: Dispatch<SetStateAction<Record<string, Route>>>;
-  activeRoue: Route | null;
-  setActiveRoute: Dispatch<SetStateAction<Route | null>>;
+  activeRouteId: string | null;
+  setActiveRouteId: Dispatch<SetStateAction<string | null>>;
 }
 
 export const RoutesContext = createContext<RoutesContextType>({
   routes: {},
   setRoutes: () => {},
-  activeRoue: null,
-  setActiveRoute: () => {},
+  activeRouteId: null,
+  setActiveRouteId: () => {},
 });
 
 export function RoutesContextProvider({ children }: { children: ReactNode }) {
   const [routes, setRoutes] = useState<Record<string, Route>>({});
-  const [activeRoue, setActiveRoute] = useState<Route | null>(null);
+  const [activeRouteId, setActiveRouteId] = useState<string | null>(null);
 
   return (
     <RoutesContext.Provider
       value={{
         routes,
         setRoutes,
-        activeRoue,
-        setActiveRoute,
+        activeRouteId,
+        setActiveRouteId,
       }}
     >
       {children}

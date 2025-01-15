@@ -14,14 +14,14 @@ import ErrorScreen from "@/components/dataStates/ErrorScreen";
 
 export function RouteDetails() {
   const { styles, theme } = useStyles(stylesheet);
-  const { activeRoute, activeRouteIdIsLoading, activeRouteIsLoading } = useActiveRoute();
+  const { activeRouteIdIsLoading, activeRouteIsLoading, activeRouteId, routes } = useActiveRoute();
   const { getElapsedTimeSince, getStaticValues } = useElapsedTime();
 
   if (activeRouteIdIsLoading || activeRouteIsLoading) {
     return <FetchingIndicator caption="Cargando información de la ruta" />;
   }
 
-  if (!activeRoute) {
+  if (!activeRouteId) {
     return (
       <ErrorScreen
         caption="No hay una ruta activa, sal de esta pantalla"
@@ -30,6 +30,8 @@ export function RouteDetails() {
       />
     );
   }
+
+  const activeRoute = routes[activeRouteId];
 
   return (
     <>

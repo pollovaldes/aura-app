@@ -1,42 +1,37 @@
 import { useEffect, useState } from "react";
 import { useRoutes } from "./useRoutes";
-import { Route } from "@/types/globalTypes";
 
 export function useActiveRoute() {
-  const { getActiveRouteId, refetchRouteById, routes } = useRoutes();
-  const [activeRouteId, setActiveRouteId] = useState<string | null>(null);
+  const { getActiveRouteId, fetchRouteById, routes, activeRouteId, setActiveRouteId } = useRoutes();
   const [activeRouteIdIsLoading, setActiveRouteIdIsLoading] = useState(false);
   const [activeRouteIsLoading, setActiveRouteIsLoading] = useState(false);
-  const [activeRoute, setActiveRoute] = useState<Route | null>(null);
 
-  useEffect(function fetchActiveRouteDataEffect() {
+  useEffect(() => {
     async function fetchActiveRouteData() {
-      setActiveRouteIdIsLoading(true);
-      const activeRouteIdFromDB = await getActiveRouteId();
-      setActiveRouteId(activeRouteIdFromDB);
-      setActiveRouteIdIsLoading(false);
+      if (!activeRouteId) {
+        setActiveRouteIdIsLoading(true);
+        const activeRouteIdFromDB = await getActiveRouteId();
+        setActiveRouteId(activeRouteIdFromDB);
+        setActiveRouteIdIsLoading(false);
 
-      if (activeRouteIdFromDB) {
-        setActiveRouteIsLoading(true);
-        await refetchRouteById(activeRouteIdFromDB);
-        setActiveRouteIsLoading(false);
+        if (activeRouteIdFromDB) {
+          setActiveRouteIsLoading(true);
+          await fetchRouteById(activeRouteIdFromDB);
+          setActiveRouteIsLoading(false);
+        }
       }
     }
+
     fetchActiveRouteData();
   }, []);
 
-  useEffect(
-    function logRoutesEffect() {
-      if (activeRouteId && routes[activeRouteId]) {
-        setActiveRoute(routes[activeRouteId]);
-      }
-    },
-    [routes]
-  );
+  const activeRoute = activeRouteId ? routes[activeRouteId] : null;
 
   return {
-    activeRoute,
     activeRouteIdIsLoading,
     activeRouteIsLoading,
+    activeRouteId,
+    activeRoute,
+    routes,
   };
 }
