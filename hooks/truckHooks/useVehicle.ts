@@ -11,7 +11,7 @@ export function useVehicles() {
   const [currentPage, setCurrentPage] = useState(1);
   const [error, setError] = useState<PostgrestError | null>(null);
 
-  async function LIST_ONLY_fetchVehicles(page: number = 1, pageSize: number = 9) {
+  async function LIST_ONLY_fetchVehicles(page: number = 1, pageSize: number = 5) {
     setError(null);
 
     if (page === 1) {

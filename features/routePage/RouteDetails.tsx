@@ -1,18 +1,35 @@
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import React from "react";
 import { ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { pickTextColor } from "../global/functions/pickTectColor";
 import { FormButton } from "@/components/Form/FormButton";
 import { BedSingle, Ellipsis, Fuel, History, Info, TriangleAlert, Wrench } from "lucide-react-native";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import { colorPalette } from "@/style/themes";
 import { useElapsedTime } from "../global/hooks/useElapsedTime";
+import { useActiveRoute } from "./hooks/useActiveRoute";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
+import ErrorScreen from "@/components/dataStates/ErrorScreen";
 
 export function RouteDetails() {
   const { styles, theme } = useStyles(stylesheet);
+  const { activeRoute, activeRouteIdIsLoading, activeRouteIsLoading } = useActiveRoute();
   const { getElapsedTimeSince, getStaticValues } = useElapsedTime();
+
+  if (activeRouteIdIsLoading || activeRouteIsLoading) {
+    return <FetchingIndicator caption="Cargando información de la ruta" />;
+  }
+
+  if (!activeRoute) {
+    return (
+      <ErrorScreen
+        caption="No hay una ruta activa, sal de esta pantalla"
+        buttonCaption="Volver a inicio"
+        retryFunction={() => router.replace("/")}
+      />
+    );
+  }
 
   return (
     <>
@@ -26,7 +43,7 @@ export function RouteDetails() {
       <View style={styles.container}>
         <ScrollView>
           <View style={styles.section}>
-            <Text style={styles.timer}>{getElapsedTimeSince("2021-09-01 12:00:00")}</Text>
+            <Text style={styles.timer}>{getElapsedTimeSince(activeRoute.started_at)}</Text>
             <GroupedList>
               <Row title="Información de la ruta" icon={Info} backgroundColor={colorPalette.cyan[500]} />
               <Row title="Historial de paradas" icon={History} backgroundColor={colorPalette.green[500]} />

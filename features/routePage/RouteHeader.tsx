@@ -1,14 +1,16 @@
 import React, { useEffect } from "react";
-import { Pressable, Text, Touchable, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, withRepeat, Easing } from "react-native-reanimated";
 import { router } from "expo-router";
 import { pickTextColor } from "../global/functions/pickTectColor";
 import { useElapsedTime } from "../global/hooks/useElapsedTime";
+import { useActiveRoute } from "./hooks/useActiveRoute";
 
 export function RouteHeader() {
   const { styles, theme } = useStyles(stylesheet);
   const textColor = pickTextColor(theme.ui.colors.primary);
+  const { activeRoute, activeRouteIdIsLoading, activeRouteIsLoading } = useActiveRoute();
   const { getElapsedTimeSince, getStaticValues } = useElapsedTime();
   const opacity = useSharedValue(1);
 
@@ -29,15 +31,29 @@ export function RouteHeader() {
     };
   });
 
+  if (!activeRoute && !activeRouteIdIsLoading && !activeRouteIsLoading) {
+    return;
+  }
+
   return (
     <Pressable onPress={() => router.push("/tab/route_details/123")}>
       <View style={styles.container}>
-        <Animated.Text style={[styles.text(textColor), animatedTextStyle]} selectable={false} allowFontScaling={false}>
-          Ruta en curso
-        </Animated.Text>
-        <Text style={styles.subtitle(textColor)} selectable={false} allowFontScaling={false}>
-          {getElapsedTimeSince("2021-09-01 12:00:00")}
-        </Text>
+        {activeRouteIdIsLoading || activeRouteIsLoading ? (
+          <ActivityIndicator color={textColor} />
+        ) : (
+          <>
+            <Animated.Text
+              style={[styles.text(textColor), animatedTextStyle]}
+              selectable={false}
+              allowFontScaling={false}
+            >
+              Ruta en curso
+            </Animated.Text>
+            <Text style={styles.subtitle(textColor)} selectable={false} allowFontScaling={false}>
+              {activeRoute ? getElapsedTimeSince(activeRoute?.started_at) : "Sin fecha de inicio"}
+            </Text>
+          </>
+        )}
       </View>
     </Pressable>
   );

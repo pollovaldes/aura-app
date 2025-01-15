@@ -136,7 +136,7 @@ export function useRoutes() {
     }
 
     if (data) {
-      setRoutes((prev) => {
+      await setRoutes((prev) => {
         const updated = { ...prev };
         updated[data.id] = data;
         return updated;
@@ -146,7 +146,24 @@ export function useRoutes() {
     setError(null);
   }
 
-  async function fetchActiveRoute() {}
+  async function getActiveRouteId() {
+    setError(null);
+
+    const { data, error } = await supabase.from("routes").select("id").eq("is_active", true).single();
+
+    if (error?.code === "PGRST116") {
+      console.log("No se obtuvo ninguna ruta activa, pero esto no es un error", error);
+      throw error;
+    }
+
+    if (error) {
+      setError(error);
+      console.error(error);
+      throw error;
+    }
+
+    return data.id;
+  }
 
   return {
     routes,
@@ -161,5 +178,6 @@ export function useRoutes() {
     setRoutes,
     setCurrentPage,
     setHasMorePages,
+    getActiveRouteId,
   };
 }
