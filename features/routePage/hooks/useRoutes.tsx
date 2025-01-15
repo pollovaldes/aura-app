@@ -146,6 +146,8 @@ export function useRoutes() {
     setError(null);
   }
 
+  async function fetchActiveRoute() {}
+
   return {
     routes,
     isLoading,

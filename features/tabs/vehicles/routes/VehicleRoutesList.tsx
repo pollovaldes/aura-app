@@ -52,7 +52,7 @@ export default function VehichleRoutesList() {
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
   const routeArray = Object.values(routes).filter((route) => route.vehicle_id === vehicleId);
-  const { getElapsedTimeSince, getStaticValues } = useElapsedTime();
+  const { getElapsedTimeSince } = useElapsedTime();
 
   async function loadMoreRoutes() {
     if (hasMorePages && !isRefreshing && !isLoading) {

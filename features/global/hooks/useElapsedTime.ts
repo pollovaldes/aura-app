@@ -34,17 +34,24 @@ export function useElapsedTime() {
     return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
   }
 
-  const getElapsedTimeSince = (dateTimeStr: string) => {
+  const [currentTime, setCurrentTime] = useState<Date>(new Date());
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(intervalId); 
+  }, []);
+
+  const getElapsedTimeSince = (dateTimeStr: string): string => {
     const initialDate = parseDate(dateTimeStr);
-    const now = new Date();
-    const diff = now.getTime() - initialDate.getTime();
+    const diff = currentTime.getTime() - initialDate.getTime();
     return formatTime(diff);
   };
 
   const getStaticValues = (dateTimeStr: string): { hours: number; minutes: number; seconds: number } => {
     const initialDate = parseDate(dateTimeStr);
-    const now = new Date();
-    const diff = now.getTime() - initialDate.getTime();
+    const diff = currentTime.getTime() - initialDate.getTime();
     const totalSeconds = Math.floor(diff / 1000);
     return {
       hours: Math.floor(totalSeconds / 3600),
@@ -52,15 +59,6 @@ export function useElapsedTime() {
       seconds: totalSeconds % 60
     };
   };
-
-  const [elapsedTime, setElapsedTime] = useState<string>('');
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setElapsedTime(formatTime(new Date().getTime() - new Date().getTime()));
-    }, 1000);
-    return () => clearInterval(intervalId);
-  }, []);
 
   return {
     getElapsedTimeSince,
