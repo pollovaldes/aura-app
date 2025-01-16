@@ -50,7 +50,9 @@ export default function VehicleRoutesList() {
     setHasMorePages,
     setRoutes,
   } = useRoutes();
-  const { activeRoute, activeRouteIsLoading } = useActiveRoute(profile.id);
+  const { activeRoute, activeRouteIsLoading, fetchActiveRouteIdStandalone, setActiveRouteId } = useActiveRoute(
+    profile.id
+  );
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
 
@@ -65,13 +67,19 @@ export default function VehicleRoutesList() {
 
   async function refetchRoutes() {
     setRoutes({});
+
+    if (activeRoute) {
+      setActiveRouteId(activeRoute.id);
+      await fetchActiveRouteIdStandalone(activeRoute.id);
+    }
+
     setHasMorePages(true);
     setCurrentPage(1);
     await LIST_ONLY_fetchRoutes(1, 5, vehicleId);
   }
 
   useEffect(() => {
-    if (routeArray.length === 0) {
+    if (routeArray.length === 0 || activeRoute) {
       LIST_ONLY_fetchRoutes(1, 5, vehicleId);
     }
   }, []);

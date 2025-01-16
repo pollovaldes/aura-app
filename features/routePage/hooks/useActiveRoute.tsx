@@ -8,6 +8,37 @@ export function useActiveRoute(profileId: string | null | undefined) {
     useContext(RoutesContext);
   const [error, setError] = useState<PostgrestError | null>(null);
 
+  async function fetchActiveRouteIdStandalone(routeId: string) {
+    const { data, error: fetchError } = await supabase
+      .from("routes")
+      .select(
+        `
+          *,
+          vehicles(*),
+          profiles(*),
+          route_events(
+            *,
+            refueling_events(*),
+            break_events(*),
+            emergency_events(*),
+            failure_events(*),
+            other_events(*)
+          )
+        `
+      )
+      .eq("id", routeId);
+
+    if (fetchError) {
+      setError(fetchError);
+      console.error(fetchError);
+      return;
+    }
+
+    if (data) {
+      setRoutes((prev) => ({ ...prev, [data[0].id]: data[0] }));
+    }
+  }
+
   async function fetchActiveRoute() {
     setActiveRouteIsLoading(true);
     setError(null);
@@ -57,6 +88,8 @@ export function useActiveRoute(profileId: string | null | undefined) {
       setActiveRouteId(null);
       setActiveRouteIsLoading(false);
     }
+
+    setActiveRouteIsLoading(false);
   }
 
   useEffect(() => {
@@ -79,5 +112,6 @@ export function useActiveRoute(profileId: string | null | undefined) {
     error,
     fetchActiveRoute,
     setActiveRouteId,
+    fetchActiveRouteIdStandalone,
   };
 }
