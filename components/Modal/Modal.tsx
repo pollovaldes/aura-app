@@ -36,7 +36,7 @@ export default function Modal({ isOpen, close, children, ...rest }: ModalProps) 
             <Animated.View
               style={styles.modalCard}
               entering={ZoomIn.duration(250)}
-              layout={LinearTransition.easing(Easing.out(Easing.ease))}
+              layout={LinearTransition.stiffness(100)}
             >
               <Text style={styles.closeButton} onPress={close}>
                 Cerrar

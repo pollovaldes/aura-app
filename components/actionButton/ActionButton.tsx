@@ -1,32 +1,37 @@
 import { LucideProps } from "lucide-react-native";
 import React, { useState } from "react";
-import { Pressable, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { Platform } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { UnistylesRuntime } from "react-native-unistyles";
 
 export function ActionButton({
   show = true,
   onPress,
   text,
   Icon,
+  preventCollapsing = false,
 }: {
   show?: boolean;
   onPress: () => void;
   text: string;
   Icon?: React.ComponentType<Partial<LucideProps>>;
+  preventCollapsing?: boolean;
 }) {
   if (!show) return null;
 
   const { styles } = useStyles(stylesheet);
-  const { width } = useWindowDimensions();
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
 
-  // Mobile (iOS, Android) and Web (width <= 750)
-  const isMobileOrSmallScreen =
-    Platform.OS === "ios" || Platform.OS === "android" || (Platform.OS === "web" && width <= 750);
+  const isWeb = Platform.OS === "web";
+  const screenWidth = UnistylesRuntime.screen.width;
 
-  // Button for mobile or small web screens
+  const isMobile = Platform.OS === "ios" || Platform.OS === "android";
+  const isSmallWebScreen = isWeb && screenWidth <= 750;
+
+  const isMobileOrSmallScreen = isMobile || (isSmallWebScreen && !preventCollapsing);
+
   if (isMobileOrSmallScreen) {
     return (
       <TouchableOpacity onPress={onPress}>
@@ -93,7 +98,7 @@ const stylesheet = createStyleSheet((theme, runtime) => ({
     fontSize: Platform.select({
       ios: 26,
       android: 25,
-      web: runtime.screen.width <= 650 ? 25 : 16,
+      web: runtime.screen.width <= 750 ? 25 : 16,
     }),
     color: Platform.OS === "ios" ? theme.ui.colors.primary : theme.colors.inverted,
   },

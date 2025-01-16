@@ -118,6 +118,7 @@ export function StartLocation() {
               text="Obtener dirección"
               Icon={MapPinHouse}
               onPress={() => getAddressFromCoordinates(latitude as number, longitude as number)}
+              preventCollapsing
             />
           </ActionButtonGroup>
         </View>
@@ -133,11 +134,12 @@ export function StartLocation() {
             <>
               <Text style={styles.subtitle}>Tu ubicación actual</Text>
               <ActionButtonGroup>
-                <ActionButton text="Centrar" Icon={Locate} onPress={handleRefocus} />
+                <ActionButton text="Centrar" Icon={Locate} onPress={handleRefocus} preventCollapsing />
                 <ActionButton
                   text={isMaximized ? "Minimizar" : "Maximizar"}
                   Icon={isMaximized ? Minimize2 : Maximize2}
                   onPress={handleMaximize}
+                  preventCollapsing
                 />
               </ActionButtonGroup>
             </>
