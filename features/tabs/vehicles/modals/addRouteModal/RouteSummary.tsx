@@ -18,14 +18,16 @@ import { UniversalMap as UniversalMapNative } from "@/features/global/components
 import { UniversalMap as UniversalMapWeb } from "@/features/global/components/UniversalMap.web";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
+import { useAddRoute } from "@/features/routePage/hooks/useAddRoute";
 
 export function RouteSummary() {
   const { styles } = useStyles(stylesheet);
-  const { setStep, setField, routeData } = useCreateRoute();
+  const { setStep, routeData, close } = useCreateRoute();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicles();
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
+  const { isLoading, error, addRoute } = useAddRoute(profile);
   const [vehicleIsLoading, setVehicleIsLoading] = useState(true);
   const [refocusTrigger, setRefocusTrigger] = useState(0);
   const [isMaximized, setIsMaximized] = useState(false);
@@ -169,7 +171,7 @@ export function RouteSummary() {
         </View>
       </View>
       <View style={styles.group}>
-        <FormButton title="Iniciar ruta" Icon={Play} onPress={() => {}} />
+        <FormButton title="Iniciar ruta" Icon={Play} onPress={() => addRoute(close, vehicle)} isLoading={isLoading} />
       </View>
     </View>
   );

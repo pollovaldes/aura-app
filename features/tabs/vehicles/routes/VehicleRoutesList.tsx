@@ -48,6 +48,7 @@ export default function VehicleRoutesList() {
     LIST_ONLY_fetchRoutes,
     setCurrentPage,
     setHasMorePages,
+    setRoutes,
   } = useRoutes();
   const { activeRoute, activeRouteIsLoading } = useActiveRoute(profile.id);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
@@ -63,6 +64,7 @@ export default function VehicleRoutesList() {
   }
 
   async function refetchRoutes() {
+    setRoutes({});
     setHasMorePages(true);
     setCurrentPage(1);
     await LIST_ONLY_fetchRoutes(1, 5, vehicleId);
@@ -72,7 +74,6 @@ export default function VehicleRoutesList() {
     if (routeArray.length === 0) {
       LIST_ONLY_fetchRoutes(1, 5, vehicleId);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (error) {
@@ -95,7 +96,6 @@ export default function VehicleRoutesList() {
       return;
     }
 
-    // If *you* are in an active route, you cannot create a new route
     if (activeRoute.is_active && activeRoute.user_id === profile.id) {
       alert(
         "No puedes crear una nueva ruta mientras estás en una ruta en curso. Finaliza la ruta en curso para poder crear una nueva."
@@ -103,7 +103,6 @@ export default function VehicleRoutesList() {
       return;
     }
 
-    // If the vehicle is the same as the active route's vehicle, no new route can be created
     if (activeRoute.is_active && activeRoute.vehicle_id === vehicleId) {
       alert("No puedes crear una nueva ruta con este vehículo ya que tiene una ruta en curso. Debe finalizarse antes.");
       return;

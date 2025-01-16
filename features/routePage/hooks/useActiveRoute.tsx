@@ -60,13 +60,15 @@ export function useActiveRoute(profileId: string | null | undefined) {
   }
 
   useEffect(() => {
-    if (!routes[activeRouteId!] && profileId) {
+    if ((!routes[activeRouteId!] && profileId) || (activeRouteId && !routes[activeRouteId!])) {
       fetchActiveRoute();
     }
   }, [profileId]);
 
   useEffect(() => {
-    setActiveRouteIsLoading(false);
+    if (!routes[activeRouteId!] && profileId) {
+      setActiveRouteIsLoading(false);
+    }
   }, [routes]);
 
   const activeRoute = activeRouteId ? routes[activeRouteId] : null;
@@ -76,5 +78,6 @@ export function useActiveRoute(profileId: string | null | undefined) {
     activeRouteIsLoading,
     error,
     fetchActiveRoute,
+    setActiveRouteId,
   };
 }
