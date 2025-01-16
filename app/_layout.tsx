@@ -15,6 +15,9 @@ import { UsersContextProvider } from "@/context/UsersContext";
 import { ProfileImageProvider } from "@/context/ProfileImageContext";
 import { RoutesContextProvider } from "@/features/routePage/context/RoutesContext";
 import { useFonts } from "expo-font";
+import useProfile from "@/hooks/useProfile";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
+import ErrorScreen from "@/components/dataStates/ErrorScreen";
 
 SplashScreen.preventAutoHideAsync();
 

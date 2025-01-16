@@ -25,7 +25,6 @@ export default function useProfile() {
     }
 
     setProfile(data);
-    setIsProfileLoading(false);
   };
 
   useEffect(() => {
@@ -33,6 +32,12 @@ export default function useProfile() {
       fetchProfile();
     }
   }, [session]);
+
+  useEffect(() => {
+    if (profile) {
+      setIsProfileLoading(false);
+    }
+  }, [profile]);
 
   const getGuaranteedProfile = () => {
     if (!profile) {

@@ -8,7 +8,7 @@ import useProfile from "@/hooks/useProfile";
 
 export default function Layout() {
   const { profile, isProfileLoading, fetchProfile } = useProfile();
-  const { activeRoute, activeRouteIsLoading, error, fetchActiveRoute } = useActiveRoute();
+  const { activeRoute, activeRouteIsLoading, error, fetchActiveRoute } = useActiveRoute(profile?.id);
 
   if (isProfileLoading || activeRouteIsLoading) {
     return <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando rutas activas"} />;
@@ -37,7 +37,7 @@ export default function Layout() {
       <Stack.Screen
         name="(tabs)"
         options={{
-          headerShown: mayShowHeader,
+          headerShown: mayShowHeader as boolean,
           header: () => <RouteHeader />,
         }}
       />

@@ -2,11 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import { RoutesContext } from "../context/RoutesContext";
 import { supabase } from "@/lib/supabase";
 import { PostgrestError } from "@supabase/supabase-js";
+import { useSessionContext } from "@/context/SessionContext";
 
-export function useActiveRoute() {
+export function useActiveRoute(profileId: string | null | undefined) {
   const { routes, setRoutes, activeRouteId, setActiveRouteId, activeRouteIsLoading, setActiveRouteIsLoading } =
     useContext(RoutesContext);
-
+  const { session, isLoading: isSessionLoading } = useSessionContext();
   const [error, setError] = useState<PostgrestError | null>(null);
 
   async function fetchActiveRoute() {
@@ -30,8 +31,7 @@ export function useActiveRoute() {
           )
         `
       )
-      .eq("is_active", true)
-      .maybeSingle();
+      .eq("is_active", true);
 
     if (fetchError) {
       setError(fetchError);
@@ -40,17 +40,31 @@ export function useActiveRoute() {
       return;
     }
 
-    if (data) {
-      setRoutes((prev) => ({ ...prev, [data.id]: data }));
-      setActiveRouteId(data.id);
+    if (data && data.length > 0) {
+      setRoutes((prev) => {
+        const updated = { ...prev };
+        data.forEach((route) => {
+          updated[route.id] = route;
+        });
+        return updated;
+      });
+
+      const myRoute = data.find((r) => r.user_id === session?.user.id);
+      if (myRoute) {
+        setActiveRouteId(myRoute.id);
+      } else {
+        setActiveRouteId(null);
+      }
     } else {
       setActiveRouteId(null);
     }
   }
 
   useEffect(() => {
-    fetchActiveRoute();
-  }, []);
+    if (!routes[activeRouteId] && profileId) {
+      fetchActiveRoute();
+    }
+  }, [session, profileId]);
 
   useEffect(() => {
     setActiveRouteIsLoading(false);
