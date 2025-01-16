@@ -49,7 +49,7 @@ export default function VehicleRoutesList() {
     setCurrentPage,
     setHasMorePages,
   } = useRoutes();
-  const { activeRoute, activeRouteIsLoading } = useActiveRoute();
+  const { activeRoute, activeRouteIsLoading } = useActiveRoute(profile.id);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
 
@@ -91,7 +91,7 @@ export default function VehicleRoutesList() {
 
   function showCreateRouteModal() {
     if (!activeRoute) {
-      alert("No se pudo obtener la información de la ruta en curso, por ello no se puede crear una nueva ruta.");
+      setActiveModal("create_route");
       return;
     }
 
@@ -108,8 +108,6 @@ export default function VehicleRoutesList() {
       alert("No puedes crear una nueva ruta con este vehículo ya que tiene una ruta en curso. Debe finalizarse antes.");
       return;
     }
-
-    setActiveModal("create_route");
   }
 
   const canEdit = ["ADMIN", "OWNER"].includes(profile.role);

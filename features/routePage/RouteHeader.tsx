@@ -7,11 +7,14 @@ import { router } from "expo-router";
 import { pickTextColor } from "../global/functions/pickTectColor";
 import { useElapsedTime } from "../global/hooks/useElapsedTime";
 import { useActiveRoute } from "./hooks/useActiveRoute";
+import useProfile from "@/hooks/useProfile";
 
 export function RouteHeader() {
   const { styles, theme } = useStyles(stylesheet);
   const textColor = pickTextColor(theme.ui.colors.primary);
-  const { activeRoute, activeRouteIsLoading } = useActiveRoute();
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
+  const { activeRoute, activeRouteIsLoading } = useActiveRoute(profile.id);
   const { getElapsedTimeSince } = useElapsedTime();
 
   const opacity = useSharedValue(1);
@@ -40,11 +43,9 @@ export function RouteHeader() {
 
   if (!activeRoute || !activeRoute.is_active) {
     return (
-      <Pressable onPress={() => {}}>
-        <View style={styles.container}>
-          <Animated.Text style={[styles.text(textColor), animatedTextStyle]}>Sin ruta activa</Animated.Text>
-        </View>
-      </Pressable>
+      <View style={styles.container}>
+        <Animated.Text style={[styles.text(textColor), animatedTextStyle]}>Sin ruta activa</Animated.Text>
+      </View>
     );
   }
 

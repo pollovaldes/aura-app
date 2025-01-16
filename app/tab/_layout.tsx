@@ -30,14 +30,14 @@ export default function Layout() {
     );
   }
 
-  const mayShowHeader = activeRoute && activeRoute.is_active && activeRoute.user_id === profile.id;
+  const mayShowHeader = !!(activeRoute && activeRoute.is_active && activeRoute.user_id === profile.id);
 
   return (
     <Stack>
       <Stack.Screen
         name="(tabs)"
         options={{
-          headerShown: mayShowHeader as boolean,
+          headerShown: mayShowHeader,
           header: () => <RouteHeader />,
         }}
       />

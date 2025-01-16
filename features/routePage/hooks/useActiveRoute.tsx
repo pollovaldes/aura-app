@@ -2,12 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import { RoutesContext } from "../context/RoutesContext";
 import { supabase } from "@/lib/supabase";
 import { PostgrestError } from "@supabase/supabase-js";
-import { useSessionContext } from "@/context/SessionContext";
 
 export function useActiveRoute(profileId: string | null | undefined) {
   const { routes, setRoutes, activeRouteId, setActiveRouteId, activeRouteIsLoading, setActiveRouteIsLoading } =
     useContext(RoutesContext);
-  const { session, isLoading: isSessionLoading } = useSessionContext();
   const [error, setError] = useState<PostgrestError | null>(null);
 
   async function fetchActiveRoute() {
@@ -49,7 +47,7 @@ export function useActiveRoute(profileId: string | null | undefined) {
         return updated;
       });
 
-      const myRoute = data.find((r) => r.user_id === session?.user.id);
+      const myRoute = data.find((r) => r.user_id === profileId);
       if (myRoute) {
         setActiveRouteId(myRoute.id);
       } else {
@@ -57,14 +55,15 @@ export function useActiveRoute(profileId: string | null | undefined) {
       }
     } else {
       setActiveRouteId(null);
+      setActiveRouteIsLoading(false);
     }
   }
 
   useEffect(() => {
-    if (!routes[activeRouteId] && profileId) {
+    if (!routes[activeRouteId!] && profileId) {
       fetchActiveRoute();
     }
-  }, [session, profileId]);
+  }, [profileId]);
 
   useEffect(() => {
     setActiveRouteIsLoading(false);

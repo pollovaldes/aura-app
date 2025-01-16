@@ -41,7 +41,8 @@ const stylesheet = createStyleSheet((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 12,
-    margin: 50,
+    backgroundColor: theme.ui.colors.background,
+    gap: 8,
   },
   content: {
     gap: 20,

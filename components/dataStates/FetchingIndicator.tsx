@@ -29,15 +29,13 @@ export function FetchingIndicator({ caption }: LoadingScreenType) {
 }
 
 const stylesheet = createStyleSheet((theme) => ({
-  moti: {
-    color: theme.ui.colors.card,
-  },
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    gap: 12,
-    margin: 50,
+    paddingHorizontal: 12,
+    backgroundColor: theme.ui.colors.background,
+    gap: 8,
   },
   text: {
     fontSize: 16,
