@@ -16,6 +16,7 @@ import { formatDate } from "@/features/global/functions/formatDate";
 import useProfile from "@/hooks/useProfile";
 import StatusChip from "@/components/General/StatusChip";
 import { useElapsedTime } from "@/features/global/hooks/useElapsedTime";
+import { useActiveRoute } from "@/features/routePage/hooks/useActiveRoute";
 
 type ModalType = "create_route" | null;
 
@@ -32,11 +33,11 @@ const statesConfig = {
   },
 };
 
-export default function VehichleRoutesList() {
-  const { styles } = useStyles(stylesheet);
+export default function VehicleRoutesList() {
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
+  const { styles } = useStyles(stylesheet);
   const {
     routes,
     isLoading,
@@ -45,13 +46,14 @@ export default function VehichleRoutesList() {
     error,
     currentPage,
     LIST_ONLY_fetchRoutes,
-    setRoutes,
     setCurrentPage,
     setHasMorePages,
   } = useRoutes();
+  const { activeRoute, activeRouteIsLoading } = useActiveRoute();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
-  const routeArray = Object.values(routes).filter((route) => route.vehicle_id === vehicleId);
+
+  const routeArray = Object.values(routes).filter((r) => r.vehicle_id === vehicleId);
   const { getElapsedTimeSince } = useElapsedTime();
 
   async function loadMoreRoutes() {
@@ -61,7 +63,6 @@ export default function VehichleRoutesList() {
   }
 
   async function refetchRoutes() {
-    setRoutes({});
     setHasMorePages(true);
     setCurrentPage(1);
     await LIST_ONLY_fetchRoutes(1, 5, vehicleId);
@@ -71,6 +72,7 @@ export default function VehichleRoutesList() {
     if (routeArray.length === 0) {
       LIST_ONLY_fetchRoutes(1, 5, vehicleId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (error) {
@@ -81,6 +83,33 @@ export default function VehichleRoutesList() {
 
   if (isLoading && routeArray.length === 0) {
     return <FetchingIndicator caption="Cargando rutas" />;
+  }
+
+  if (activeRouteIsLoading) {
+    return <FetchingIndicator caption="Cargando ruta en curso" />;
+  }
+
+  function showCreateRouteModal() {
+    if (!activeRoute) {
+      alert("No se pudo obtener la información de la ruta en curso, por ello no se puede crear una nueva ruta.");
+      return;
+    }
+
+    // If *you* are in an active route, you cannot create a new route
+    if (activeRoute.is_active && activeRoute.user_id === profile.id) {
+      alert(
+        "No puedes crear una nueva ruta mientras estás en una ruta en curso. Finaliza la ruta en curso para poder crear una nueva."
+      );
+      return;
+    }
+
+    // If the vehicle is the same as the active route's vehicle, no new route can be created
+    if (activeRoute.is_active && activeRoute.vehicle_id === vehicleId) {
+      alert("No puedes crear una nueva ruta con este vehículo ya que tiene una ruta en curso. Debe finalizarse antes.");
+      return;
+    }
+
+    setActiveModal("create_route");
   }
 
   const canEdit = ["ADMIN", "OWNER"].includes(profile.role);
@@ -95,10 +124,10 @@ export default function VehichleRoutesList() {
         <>
           <Stack.Screen
             options={{
-              title: `Rutas (${routeArray.length})`,
+              title: `Rutas (0)`,
               headerRight: () => (
                 <ActionButtonGroup>
-                  <ActionButton Icon={Plus} text="Nueva ruta" onPress={() => setActiveModal("create_route")} />
+                  <ActionButton Icon={Plus} text="Nueva ruta" onPress={showCreateRouteModal} />
                   <ActionButton
                     onPress={refetchRoutes}
                     Icon={RotateCw}
@@ -126,7 +155,7 @@ export default function VehichleRoutesList() {
                 <ActionButtonGroup>
                   <ActionButton Icon={Download} text="CSV" onPress={() => {}} show={canEdit} />
                   <ActionButton Icon={FilterIcon} text="Filtros" onPress={() => {}} show={canEdit} />
-                  <ActionButton Icon={Plus} text="Nueva ruta" onPress={() => setActiveModal("create_route")} />
+                  <ActionButton Icon={Plus} text="Nueva ruta" onPress={showCreateRouteModal} />
                   <ActionButton
                     onPress={refetchRoutes}
                     Icon={RotateCw}
@@ -151,14 +180,14 @@ export default function VehichleRoutesList() {
                     {item.is_active && (
                       <View style={{ alignItems: "center", gap: 2 }}>
                         <Text style={styles.counterSubtitleText}>{`Tiempo transcurrido`}</Text>
-                        <Text style={styles.counterText}>{`${getElapsedTimeSince(item.started_at)}`}</Text>
+                        <Text style={styles.counterText}>{getElapsedTimeSince(item.started_at)}</Text>
                       </View>
                     )}
                   </View>
                 }
                 content={
                   <>
-                    <Text style={styles.itemTitle}>{`${item.title}`}</Text>
+                    <Text style={styles.itemTitle}>{item.title}</Text>
                     <Text style={styles.itemDetails}>{`Iniciada el ${formatDate(item.started_at, "")}`}</Text>
                     {!item.is_active && !item.ended_at && (
                       <Text style={styles.itemDetails}>
@@ -191,11 +220,6 @@ export default function VehichleRoutesList() {
 }
 
 const stylesheet = createStyleSheet((theme) => ({
-  header: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    padding: theme.marginsComponents.section,
-  },
   counterText: {
     fontSize: 27,
     color: theme.textPresets.main,
@@ -207,10 +231,6 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   itemTitle: {
     fontWeight: "bold",
-    fontSize: 18,
-    color: theme.textPresets.main,
-  },
-  itemDescription: {
     fontSize: 18,
     color: theme.textPresets.main,
   },

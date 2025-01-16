@@ -8,20 +8,20 @@ import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import { colorPalette } from "@/style/themes";
 import { useElapsedTime } from "../global/hooks/useElapsedTime";
-import { useActiveRoute } from "./hooks/useActiveRoute";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
+import { useActiveRoute } from "./hooks/useActiveRoute";
 
 export function RouteDetails() {
   const { styles, theme } = useStyles(stylesheet);
-  const { activeRouteIdIsLoading, activeRouteIsLoading, activeRouteId, routes } = useActiveRoute();
+  const { activeRoute, activeRouteIsLoading } = useActiveRoute();
   const { getElapsedTimeSince, getStaticValues } = useElapsedTime();
 
-  if (activeRouteIdIsLoading || activeRouteIsLoading) {
-    return <FetchingIndicator caption="Cargando información de la ruta" />;
+  if (activeRouteIsLoading) {
+    return <FetchingIndicator caption="Obteniendo información de la ruta activa" />;
   }
 
-  if (!activeRouteId) {
+  if (!activeRoute) {
     return (
       <ErrorScreen
         caption="No hay una ruta activa, sal de esta pantalla"
@@ -30,8 +30,6 @@ export function RouteDetails() {
       />
     );
   }
-
-  const activeRoute = routes[activeRouteId];
 
   return (
     <>

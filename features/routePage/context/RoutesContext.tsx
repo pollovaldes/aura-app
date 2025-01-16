@@ -1,11 +1,15 @@
 import { Route } from "@/types/globalTypes";
-import { createContext, Dispatch, ReactNode, SetStateAction, useState } from "react";
+import { createContext, ReactNode, useState } from "react";
+
+type RoutesDictionary = Record<string, Route>;
 
 export interface RoutesContextType {
-  routes: Record<string, Route>;
-  setRoutes: Dispatch<SetStateAction<Record<string, Route>>>;
+  routes: RoutesDictionary;
+  setRoutes: React.Dispatch<React.SetStateAction<RoutesDictionary>>;
   activeRouteId: string | null;
-  setActiveRouteId: Dispatch<SetStateAction<string | null>>;
+  setActiveRouteId: React.Dispatch<React.SetStateAction<string | null>>;
+  activeRouteIsLoading: boolean;
+  setActiveRouteIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const RoutesContext = createContext<RoutesContextType>({
@@ -13,11 +17,14 @@ export const RoutesContext = createContext<RoutesContextType>({
   setRoutes: () => {},
   activeRouteId: null,
   setActiveRouteId: () => {},
+  activeRouteIsLoading: false,
+  setActiveRouteIsLoading: () => {},
 });
 
 export function RoutesContextProvider({ children }: { children: ReactNode }) {
-  const [routes, setRoutes] = useState<Record<string, Route>>({});
+  const [routes, setRoutes] = useState<RoutesDictionary>({});
   const [activeRouteId, setActiveRouteId] = useState<string | null>(null);
+  const [activeRouteIsLoading, setActiveRouteIsLoading] = useState<boolean>(false);
 
   return (
     <RoutesContext.Provider
@@ -26,6 +33,8 @@ export function RoutesContextProvider({ children }: { children: ReactNode }) {
         setRoutes,
         activeRouteId,
         setActiveRouteId,
+        activeRouteIsLoading,
+        setActiveRouteIsLoading,
       }}
     >
       {children}

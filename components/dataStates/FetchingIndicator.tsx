@@ -1,8 +1,8 @@
-import { useHeaderHeight } from "@react-navigation/elements";
 import { Stack } from "expo-router";
 import React from "react";
 import { ActivityIndicator, Platform, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { UnistylesRuntime } from "react-native-unistyles";
 
 type LoadingScreenType = {
   caption: string;
@@ -10,7 +10,6 @@ type LoadingScreenType = {
 
 export function FetchingIndicator({ caption }: LoadingScreenType) {
   const { styles } = useStyles(stylesheet);
-  const headerHeight = useHeaderHeight();
 
   return (
     <>
@@ -21,7 +20,7 @@ export function FetchingIndicator({ caption }: LoadingScreenType) {
           headerLargeTitle: false,
         }}
       />
-      <View style={[styles.container, { paddingTop: Platform.OS === "ios" ? headerHeight : 0 }]}>
+      <View style={[styles.container, { paddingTop: Platform.OS === "ios" ? UnistylesRuntime.insets.top : 0 }]}>
         <ActivityIndicator />
         <Text style={styles.text}>{caption}</Text>
       </View>

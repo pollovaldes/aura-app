@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { Pressable, Text, View, ActivityIndicator } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import Animated, { useSharedValue, useAnimatedStyle, withTiming, withRepeat, Easing } from "react-native-reanimated";
+import { useSharedValue, useAnimatedStyle, withTiming, withRepeat, Easing } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { router } from "expo-router";
 import { pickTextColor } from "../global/functions/pickTectColor";
 import { useElapsedTime } from "../global/hooks/useElapsedTime";
@@ -10,10 +11,10 @@ import { useActiveRoute } from "./hooks/useActiveRoute";
 export function RouteHeader() {
   const { styles, theme } = useStyles(stylesheet);
   const textColor = pickTextColor(theme.ui.colors.primary);
-  const { activeRouteIdIsLoading, activeRouteIsLoading, activeRouteId, routes } = useActiveRoute();
-  const { getElapsedTimeSince, getStaticValues } = useElapsedTime();
-  const opacity = useSharedValue(1);
+  const { activeRoute, activeRouteIsLoading } = useActiveRoute();
+  const { getElapsedTimeSince } = useElapsedTime();
 
+  const opacity = useSharedValue(1);
   useEffect(() => {
     opacity.value = withRepeat(
       withTiming(0.3, {
@@ -26,40 +27,33 @@ export function RouteHeader() {
   }, [opacity]);
 
   const animatedTextStyle = useAnimatedStyle(() => {
-    return {
-      opacity: opacity.value,
-    };
+    return { opacity: opacity.value };
   });
 
-  const activeRoute = routes[activeRouteId!];
-
-  return (
-    <Pressable onPress={() => router.push("/tab/route_details/123")}>
+  if (activeRouteIsLoading) {
+    return (
       <View style={styles.container}>
-        {activeRouteIdIsLoading || activeRouteIsLoading ? (
-          <ActivityIndicator color={textColor} />
-        ) : !activeRoute ? (
-          <Animated.Text
-            style={[styles.text(textColor), animatedTextStyle]}
-            selectable={false}
-            allowFontScaling={false}
-          >
-            Error: No existe la ruta
-          </Animated.Text>
-        ) : (
-          <>
-            <Animated.Text
-              style={[styles.text(textColor), animatedTextStyle]}
-              selectable={false}
-              allowFontScaling={false}
-            >
-              Ruta en curso
-            </Animated.Text>
-            <Text style={styles.subtitle(textColor)} selectable={false} allowFontScaling={false}>
-              {activeRoute ? getElapsedTimeSince(activeRoute?.started_at) : "Sin fecha de inicio"}
-            </Text>
-          </>
-        )}
+        <ActivityIndicator color={textColor} />
+      </View>
+    );
+  }
+
+  if (!activeRoute || !activeRoute.is_active) {
+    return (
+      <Pressable onPress={() => {}}>
+        <View style={styles.container}>
+          <Animated.Text style={[styles.text(textColor), animatedTextStyle]}>Sin ruta activa</Animated.Text>
+        </View>
+      </Pressable>
+    );
+  }
+
+  // If the route is active, display info
+  return (
+    <Pressable onPress={() => router.push(`/tab/route_details/${activeRoute.id}`)}>
+      <View style={styles.container}>
+        <Animated.Text style={[styles.text(textColor), animatedTextStyle]}>Ruta en curso</Animated.Text>
+        <Text style={styles.subtitle(textColor)}>{getElapsedTimeSince(activeRoute.started_at)}</Text>
       </View>
     </Pressable>
   );

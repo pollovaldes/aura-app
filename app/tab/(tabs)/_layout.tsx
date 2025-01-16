@@ -1,8 +1,6 @@
-import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import { useSessionContext } from "@/context/SessionContext";
 import useProfile from "@/hooks/useProfile";
-import { supabase } from "@/lib/supabase";
 import { Redirect, Tabs, usePathname } from "expo-router";
 import { Bell, Boxes, CircleUserRound, PanelLeft, PanelRight, Truck, UsersRound } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
@@ -13,7 +11,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HomeLayout() {
   const { width } = useWindowDimensions();
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
   const { isLoading: isSessionLoading, session } = useSessionContext();
   const path = usePathname();
   const [tabBarPosition, setTabBarPosition] = useState<"left" | "right">("left");
@@ -53,18 +52,12 @@ export default function HomeLayout() {
     }
   };
 
-  if (isSessionLoading || isProfileLoading) {
-    return <FetchingIndicator caption={isSessionLoading ? "Cargando sesión" : "Cargando perfil"} />;
+  if (isSessionLoading) {
+    return <FetchingIndicator caption={"Cargando sesión"} />;
   }
 
   if (!session) {
     return <Redirect href="/auth" />;
-  }
-
-  if (!profile) {
-    return (
-      <ErrorScreen caption="No pudimos recuperar tu perfil." buttonCaption="Reintentar" retryFunction={fetchProfile} />
-    );
   }
 
   const requiresProfileCompletion = !profile.is_fully_registered && !path.includes("/profile");

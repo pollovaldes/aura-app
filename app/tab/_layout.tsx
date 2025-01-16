@@ -1,21 +1,44 @@
-import { useActiveRoute } from "@/features/routePage/hooks/useActiveRoute";
-import { RouteHeader } from "@/features/routePage/RouteHeader";
+import React, { useEffect } from "react";
 import { Stack } from "expo-router";
-import React from "react";
+import { useActiveRoute } from "@/features/routePage/hooks/useActiveRoute";
+import ErrorScreen from "@/components/dataStates/ErrorScreen";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
+import { RouteHeader } from "@/features/routePage/RouteHeader";
+import useProfile from "@/hooks/useProfile";
 
 export default function Layout() {
-  const { activeRouteIdIsLoading, activeRouteIsLoading, activeRouteId, routes } = useActiveRoute();
+  const { profile, isProfileLoading, fetchProfile } = useProfile();
+  const { activeRoute, activeRouteIsLoading, error, fetchActiveRoute } = useActiveRoute();
 
-  const mayShowHeader = !activeRouteIdIsLoading && !activeRouteIsLoading && activeRouteId;
-  const activeRoute = routes[activeRouteId!];
+  if (isProfileLoading || activeRouteIsLoading) {
+    return <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando rutas activas"} />;
+  }
+
+  if (!profile) {
+    return (
+      <ErrorScreen caption="No pudimos recuperar tu perfil." buttonCaption="Reintentar" retryFunction={fetchProfile} />
+    );
+  }
+
+  if (error) {
+    return (
+      <ErrorScreen
+        caption="No se pudieron cargar las rutas activas."
+        buttonCaption="Reintentar"
+        retryFunction={fetchActiveRoute}
+      />
+    );
+  }
+
+  const mayShowHeader = activeRoute && activeRoute.is_active && activeRoute.user_id === profile.id;
 
   return (
     <Stack>
       <Stack.Screen
         name="(tabs)"
         options={{
-          headerShown: true,
-          header: () => mayShowHeader && <RouteHeader />,
+          headerShown: mayShowHeader,
+          header: () => <RouteHeader />,
         }}
       />
       <Stack.Screen
