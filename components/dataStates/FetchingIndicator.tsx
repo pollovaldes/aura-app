@@ -18,6 +18,7 @@ export function FetchingIndicator({ caption }: LoadingScreenType) {
           headerRight: undefined,
           title: "",
           headerLargeTitle: false,
+          headerSearchBarOptions: undefined,
         }}
       />
       <View style={[styles.container, { paddingTop: Platform.OS === "ios" ? UnistylesRuntime.insets.top : 0 }]}>

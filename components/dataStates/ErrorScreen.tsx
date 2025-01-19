@@ -20,6 +20,7 @@ export default function ErrorScreen({ caption, retryFunction, buttonCaption }: E
         options={{
           headerRight: undefined,
           title: "Error",
+          headerSearchBarOptions: undefined,
         }}
       />
       <View style={styles.container}>
