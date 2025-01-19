@@ -104,44 +104,42 @@ export function VehiclesList() {
         }}
       />
 
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
-        <FlatList
-          contentInsetAdjustmentBehavior="automatic"
-          data={vehicleArray}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <SimpleList
-              relativeToDirectory
-              href={`./${item.id}`}
-              leading={<VehicleThumbnail vehicleId={item.id} />}
-              content={
-                <>
-                  <Text style={styles.itemTitle}>
-                    {`${item.brand ?? "N/A"} ${item.sub_brand ?? "N/A"} (${item.year ?? "N/A"})`}
-                  </Text>
-                  <Text style={styles.itemDetails}>
-                    {`Placa: ${item.plate ?? "N/A"}\nNúmero económico: ${item.economic_number ?? "N/A"}\nNúmero de serie: ${item.serial_number ?? "N/A"}`}
-                  </Text>
-                </>
-              }
-            />
-          )}
-          onEndReached={LIST_ONLY_loadMoreVehicles}
-          onEndReachedThreshold={0.5}
-          onRefresh={handleRefresh}
-          refreshing={isRefreshing}
-          ListEmptyComponent={<EmptyScreen caption="Ningún vehículo por aquí." />}
-          ListFooterComponent={
-            hasMorePages ? (
-              <View style={styles.footer}>
-                <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
-              </View>
-            ) : (
-              <Text style={styles.allVehiclesLoadedText}>Se han cargado todos los vehículos</Text>
-            )
-          }
-        />
-      </KeyboardAvoidingView>
+      <FlatList
+        contentInsetAdjustmentBehavior="automatic"
+        data={vehicleArray}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <SimpleList
+            relativeToDirectory
+            href={`./${item.id}`}
+            leading={<VehicleThumbnail vehicleId={item.id} />}
+            content={
+              <>
+                <Text style={styles.itemTitle}>
+                  {`${item.brand ?? "N/A"} ${item.sub_brand ?? "N/A"} (${item.year ?? "N/A"})`}
+                </Text>
+                <Text style={styles.itemDetails}>
+                  {`Placa: ${item.plate ?? "N/A"}\nNúmero económico: ${item.economic_number ?? "N/A"}\nNúmero de serie: ${item.serial_number ?? "N/A"}`}
+                </Text>
+              </>
+            }
+          />
+        )}
+        onEndReached={LIST_ONLY_loadMoreVehicles}
+        onEndReachedThreshold={0.5}
+        onRefresh={handleRefresh}
+        refreshing={isRefreshing}
+        ListEmptyComponent={<EmptyScreen caption="Ningún vehículo por aquí." />}
+        ListFooterComponent={
+          hasMorePages ? (
+            <View style={styles.footer}>
+              <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
+            </View>
+          ) : (
+            <Text style={styles.allVehiclesLoadedText}>Se han cargado todos los vehículos</Text>
+          )
+        }
+      />
     </>
   );
 }
