@@ -37,16 +37,26 @@ export function VehicleRouteDetails() {
   const { routes, fetchRouteById, refetchRouteById, error } = useRoutes();
   const route = routes[routeId];
   const [routeIsLoading, setRouteIsLoading] = useState(false);
-  const [refocusTrigger, setRefocusTrigger] = useState(0);
-  const [isMaximized, setIsMaximized] = useState(false);
+  const [refocusTriggerStart, setRefocusTriggerStart] = useState(0);
+  const [isMaximizedStart, setIsMaximizedStart] = useState(false);
+  const [refocusTriggerEnd, setRefocusTriggerEnd] = useState(0);
+  const [isMaximizedEnd, setIsMaximizedEnd] = useState(false);
   const { getElapsedTimeSince, getElapsedTime } = useElapsedTime();
 
-  function handleRefocus() {
-    setRefocusTrigger((prev) => prev + 1);
+  function handleRefocus(string: "start" | "end") {
+    if (string === "start") {
+      setRefocusTriggerStart((prev) => prev + 1);
+    } else {
+      setRefocusTriggerEnd((prev) => prev + 1);
+    }
   }
 
-  function handleMaximize() {
-    setIsMaximized((prev) => !prev);
+  function handleMaximize(string: "start" | "end") {
+    if (string === "start") {
+      setIsMaximizedStart((prev) => !prev);
+    } else {
+      setIsMaximizedEnd((prev) => !prev);
+    }
   }
 
   async function fetchRoute() {
@@ -223,15 +233,15 @@ export function VehicleRouteDetails() {
               <Row title="Inicio de la ruta" caption={formatDate(route.started_at, "Iniciada el ")} hideChevron />
               <Row title="Dirección de inicio" caption={route.started_address} hideChevron />
               <Row
-                title="Ubicación"
+                title="Ubicación de inicio"
                 hideChevron
                 trailing={
                   <ActionButtonGroup>
-                    <ActionButton text="Centrar" Icon={Locate} onPress={handleRefocus} />
+                    <ActionButton text="Centrar" Icon={Locate} onPress={() => handleRefocus("start")} />
                     <ActionButton
-                      text={isMaximized ? "Minimizar" : "Maximizar"}
-                      Icon={isMaximized ? Minimize2 : Maximize2}
-                      onPress={handleMaximize}
+                      text={isMaximizedStart ? "Minimizar" : "Maximizar"}
+                      Icon={isMaximizedStart ? Minimize2 : Maximize2}
+                      onPress={() => handleMaximize("start")}
                     />
                   </ActionButtonGroup>
                 }
@@ -241,20 +251,77 @@ export function VehicleRouteDetails() {
                   <UniversalMapNative
                     latitude={route.started_location_latitude}
                     longitude={route.started_location_longitude}
-                    refocusTrigger={refocusTrigger}
-                    isMaximized={isMaximized}
+                    refocusTrigger={refocusTriggerStart}
+                    isMaximized={isMaximizedStart}
                   />
                 ) : (
                   <UniversalMapWeb
                     latitude={route.started_location_latitude}
                     longitude={route.started_location_longitude}
-                    refocusTrigger={refocusTrigger}
-                    isMaximized={isMaximized}
+                    refocusTrigger={refocusTriggerStart}
+                    isMaximized={isMaximizedStart}
                   />
                 )}
               </Row>
             </GroupedList>
           </View>
+          {!route.is_active && (
+            <View style={styles.group}>
+              <GroupedList header="Finalización de la ruta">
+                <Row
+                  title="Finalización de la ruta"
+                  caption={
+                    route.ended_at
+                      ? formatDate(route.ended_at, "Finalizada el ")
+                      : "No se ha registrado la hora de finalización"
+                  }
+                  hideChevron
+                />
+                <Row
+                  title="Dirección de finalización"
+                  caption={route.ended_address ? route.ended_address : "No se registró la dirección de finalización"}
+                  hideChevron
+                />
+                {route.ended_location_latitude && route.ended_location_longitude ? (
+                  <>
+                    <Row
+                      title="Ubicación de finalización"
+                      hideChevron
+                      trailing={
+                        <ActionButtonGroup>
+                          <ActionButton text="Centrar" Icon={Locate} onPress={() => handleRefocus("end")} />
+                          <ActionButton
+                            text={isMaximizedEnd ? "Minimizar" : "Maximizar"}
+                            Icon={isMaximizedEnd ? Minimize2 : Maximize2}
+                            onPress={() => handleMaximize("end")}
+                          />
+                        </ActionButtonGroup>
+                      }
+                    />
+                    <Row>
+                      {Platform.OS !== "web" ? (
+                        <UniversalMapNative
+                          latitude={route.ended_location_latitude}
+                          longitude={route.ended_location_longitude}
+                          refocusTrigger={refocusTriggerEnd}
+                          isMaximized={isMaximizedEnd}
+                        />
+                      ) : (
+                        <UniversalMapWeb
+                          latitude={route.ended_location_latitude}
+                          longitude={route.ended_location_longitude}
+                          refocusTrigger={refocusTriggerEnd}
+                          isMaximized={isMaximizedEnd}
+                        />
+                      )}
+                    </Row>
+                  </>
+                ) : (
+                  <Row title="Ubicación" hideChevron caption="No se registró la ubicación de finalización" />
+                )}
+              </GroupedList>
+            </View>
+          )}
         </View>
       </ScrollView>
     </>

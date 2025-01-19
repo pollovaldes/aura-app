@@ -103,12 +103,18 @@ export function useActiveRoute(profileId: string | null | undefined) {
     setActiveRouteIsLoading(false);
   }
 
-  async function endRoute(activeRouteId: string) {
+  async function endRoute(activeRouteId: string, endedAddress: string, endedLatitude: number, endedLongitude: number) {
     setError(null);
 
     const { data, error: fetchError } = await supabase
       .from("routes")
-      .update({ is_active: false })
+      .update({
+        is_active: false,
+        ended_address: endedAddress,
+        ended_location_latitude: endedLatitude,
+        ended_location_longitude: endedLongitude,
+        ended_at: new Date().toISOString(),
+      })
       .eq("id", activeRouteId)
       .select()
       .single();
@@ -129,9 +135,9 @@ export function useActiveRoute(profileId: string | null | undefined) {
     });
 
     fetchActiveRouteIdStandalone(activeRouteId);
+    showToast("Ruta finalizada", "La ruta ha finalizado");
 
     if (router.canGoBack()) {
-      showToast("Ruta finalizada", "La ruta ha finalizado");
       router.back();
     } else {
       router.push("/tab/vehicles");

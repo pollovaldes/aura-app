@@ -18,6 +18,16 @@ import StatusChip from "@/components/General/StatusChip";
 import { useElapsedTime } from "@/features/global/hooks/useElapsedTime";
 import { useActiveRoute } from "@/features/routePage/hooks/useActiveRoute";
 import { RoutesListFilterModal } from "./RoutesListFilterModal";
+import * as Location from "expo-location";
+import Toast from "react-native-toast-message";
+
+const showToast = (title: string, caption: string) => {
+  Toast.show({
+    type: "alert",
+    text1: title,
+    text2: caption,
+  });
+};
 
 type ModalType = "create_route" | "filters" | null;
 
@@ -57,6 +67,7 @@ export default function VehicleRoutesList() {
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [filtersAreActive, setFiltersAreActive] = useState(false);
   const closeModal = () => setActiveModal(null);
+  const [locationIsLoading, setIsLocationLoading] = useState(false);
 
   const routeArray = Object.values(routes).filter((r) => r.vehicle_id === vehicleId);
   const { getElapsedTimeSince } = useElapsedTime();
@@ -91,6 +102,20 @@ export default function VehicleRoutesList() {
     }
   }, []);
 
+  async function locationPermission() {
+    setIsLocationLoading(true);
+
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      showToast("Permiso denegado", "No tenemos permiso para acceder a tu ubicación.");
+      setIsLocationLoading(false);
+      return false;
+    }
+
+    setIsLocationLoading(false);
+    return true;
+  }
+
   if (error) {
     return (
       <ErrorScreen caption="No se pudieron cargar las rutas" buttonCaption="Reintentar" retryFunction={refetchRoutes} />
@@ -107,7 +132,7 @@ export default function VehicleRoutesList() {
     );
   }
 
-  function showCreateRouteModal() {
+  async function showCreateRouteModal() {
     if (activeRoute && routes[activeRoute.id].is_active === false) {
       alert(
         `ADVERTENCIA: una de las rutas anteriores no se completó correctamente (es probable que se haya cerrado o interrumpido de manera inesperada), lo que ha dejado la aplicación en un estado desincronizado. Como resultado, no puedes crear una nueva ruta para evitar conflictos.   Por favor, reinicia la aplicación o actualiza la página para sincronizar el estado correctamente.   Ruta en conflicto: "${activeRoute.title}" — Esta ruta está finalizada, pero la aplicación no ha registrado su finalización correctamente.`
@@ -116,7 +141,9 @@ export default function VehicleRoutesList() {
     }
 
     if (!activeRoute) {
-      setActiveModal("create_route");
+      if (await locationPermission()) {
+        setActiveModal("create_route");
+      }
       return;
     }
 
@@ -152,7 +179,13 @@ export default function VehicleRoutesList() {
               title: `Rutas (0)`,
               headerRight: () => (
                 <ActionButtonGroup>
-                  <ActionButton Icon={Plus} text="Nueva ruta" onPress={showCreateRouteModal} />
+                  <ActionButton
+                    Icon={Plus}
+                    text="Nueva ruta"
+                    onPress={showCreateRouteModal}
+                    show={!locationIsLoading}
+                  />
+                  {locationIsLoading && <ActivityIndicator />}
                   <ActionButton
                     onPress={refetchRoutes}
                     Icon={RotateCw}

@@ -13,6 +13,11 @@ import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { useActiveRoute } from "./hooks/useActiveRoute";
 import useProfile from "@/hooks/useProfile";
 import { ConfirmDialog } from "@/components/alert/ConfirmDialog";
+import Modal from "@/components/Modal/Modal";
+import { EndRouteModal } from "../tabs/vehicles/modals/EndRouteModal";
+import * as Location from "expo-location";
+
+type ModalType = "end_route" | null;
 
 export function RouteDetails() {
   const { styles } = useStyles(stylesheet);
@@ -20,7 +25,23 @@ export function RouteDetails() {
   const profile = getGuaranteedProfile();
   const { getElapsedTimeSince } = useElapsedTime();
   const { activeRoute, activeRouteIsLoading, endRoute } = useActiveRoute(profile.id);
-  const [endingRoute, setEndingRoute] = useState(false);
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const closeModal = () => setActiveModal(null);
+  const [isLocationLoading, setIsLocationLoading] = useState(false);
+
+  async function locationPermission() {
+    setIsLocationLoading(true);
+
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      alert("No tenemos permiso para acceder a tu ubicación.");
+      setIsLocationLoading(false);
+      return false;
+    }
+
+    setIsLocationLoading(false);
+    return true;
+  }
 
   const endRouteDialog = ConfirmDialog({
     title: "Confirmación",
@@ -29,9 +50,10 @@ export function RouteDetails() {
     confirmText: "Finalizar",
     confirmStyle: "destructive",
     onConfirm: async () => {
-      setEndingRoute(true);
-      await endRoute(activeRoute!.id);
-      setEndingRoute(false);
+      if (await locationPermission()) {
+        setActiveModal("end_route");
+      }
+      return;
     },
     onCancel: () => {},
   });
@@ -59,6 +81,10 @@ export function RouteDetails() {
         }}
       />
 
+      <Modal close={closeModal} isOpen={activeModal === "end_route"}>
+        <EndRouteModal close={closeModal} activeRoute={activeRoute} />
+      </Modal>
+
       <View style={styles.container}>
         <ScrollView>
           <View style={styles.section}>
@@ -75,12 +101,7 @@ export function RouteDetails() {
               <Row title="Registrar emergencia" icon={TriangleAlert} backgroundColor={colorPalette.red[500]} />
             </GroupedList>
             <View style={[styles.group, { paddingHorizontal: 12 }]}>
-              <FormButton
-                title="Finalizar ruta"
-                onPress={() => endRouteDialog.showDialog()}
-                buttonType="danger"
-                isLoading={endingRoute}
-              />
+              <FormButton title="Finalizar ruta" onPress={() => endRouteDialog.showDialog()} buttonType="danger" />
             </View>
           </View>
         </ScrollView>
