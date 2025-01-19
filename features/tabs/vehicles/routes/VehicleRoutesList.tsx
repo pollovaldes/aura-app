@@ -50,9 +50,9 @@ export default function VehicleRoutesList() {
     setHasMorePages,
     setRoutes,
   } = useRoutes();
-  const { activeRoute, activeRouteIsLoading, fetchActiveRouteIdStandalone, setActiveRouteId } = useActiveRoute(
-    profile.id
-  );
+  const { activeRoute, activeRouteIsLoading, fetchActiveRouteIdStandalone, setActiveRouteId, activeRouteId } =
+    useActiveRoute(profile.id);
+  const [localStandAloneActiveRouteIsLoading, setLocalStandAloneActiveRouteIsLoading] = useState(false);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
 
@@ -66,20 +66,25 @@ export default function VehicleRoutesList() {
   }
 
   async function refetchRoutes() {
+    setLocalStandAloneActiveRouteIsLoading(true);
     setRoutes({});
 
     if (activeRoute) {
-      setActiveRouteId(activeRoute.id);
       await fetchActiveRouteIdStandalone(activeRoute.id);
+      setActiveRouteId(activeRoute.id);
     }
 
     setHasMorePages(true);
     setCurrentPage(1);
     await LIST_ONLY_fetchRoutes(1, 5, vehicleId);
+
+    setLocalStandAloneActiveRouteIsLoading(false);
   }
 
   useEffect(() => {
-    if (routeArray.length === 0 || activeRoute) {
+    if (routeArray.length === 1 && activeRoute) {
+      LIST_ONLY_fetchRoutes(1, 5, vehicleId);
+    } else if (routeArray.length === 0) {
       LIST_ONLY_fetchRoutes(1, 5, vehicleId);
     }
   }, []);
@@ -94,11 +99,20 @@ export default function VehicleRoutesList() {
     return <FetchingIndicator caption="Cargando rutas" />;
   }
 
-  if (activeRouteIsLoading) {
-    return <FetchingIndicator caption="Cargando ruta en curso" />;
+  if (activeRouteIsLoading || localStandAloneActiveRouteIsLoading) {
+    return (
+      <FetchingIndicator caption={activeRouteIsLoading ? "Cargando ruta en curso" : "Cargando ruta en curso local"} />
+    );
   }
 
   function showCreateRouteModal() {
+    if (activeRoute && routes[activeRoute.id].is_active === false) {
+      alert(
+        `ADVERTENCIA: una de las rutas anteriores no se completó correctamente (es probable que se haya cerrado o interrumpido de manera inesperada), lo que ha dejado la aplicación en un estado desincronizado. Como resultado, no puedes crear una nueva ruta para evitar conflictos.   Por favor, reinicia la aplicación o actualiza la página para sincronizar el estado correctamente.   Ruta en conflicto: "${activeRoute.title}" — Esta ruta está finalizada, pero la aplicación no ha registrado su finalización correctamente.`
+      );
+      return;
+    }
+
     if (!activeRoute) {
       setActiveModal("create_route");
       return;

@@ -2,6 +2,17 @@ import { useContext, useEffect, useState } from "react";
 import { RoutesContext } from "../context/RoutesContext";
 import { supabase } from "@/lib/supabase";
 import { PostgrestError } from "@supabase/supabase-js";
+import Toast from "react-native-toast-message";
+import { router } from "expo-router";
+import { ConfirmDialog } from "@/components/alert/ConfirmDialog";
+
+const showToast = (title: string, caption: string) => {
+  Toast.show({
+    type: "alert",
+    text1: title,
+    text2: caption,
+  });
+};
 
 export function useActiveRoute(profileId: string | null | undefined) {
   const { routes, setRoutes, activeRouteId, setActiveRouteId, activeRouteIsLoading, setActiveRouteIsLoading } =
@@ -34,7 +45,7 @@ export function useActiveRoute(profileId: string | null | undefined) {
       return;
     }
 
-    if (data) {
+    if (data && data.length > 0) {
       setRoutes((prev) => ({ ...prev, [data[0].id]: data[0] }));
     }
   }
@@ -92,6 +103,41 @@ export function useActiveRoute(profileId: string | null | undefined) {
     setActiveRouteIsLoading(false);
   }
 
+  async function endRoute(activeRouteId: string) {
+    setError(null);
+
+    const { data, error: fetchError } = await supabase
+      .from("routes")
+      .update({ is_active: false })
+      .eq("id", activeRouteId)
+      .select()
+      .single();
+
+    if (fetchError) {
+      setError(fetchError);
+      console.error(fetchError);
+      alert("Ocurrió un error y no se pudo finalizar la ruta:\n" + fetchError.message);
+      return;
+    }
+
+    setActiveRouteId(null);
+    setError(null);
+    setRoutes((prev) => {
+      const updated = { ...prev };
+      delete updated[activeRouteId];
+      return updated;
+    });
+
+    fetchActiveRouteIdStandalone(activeRouteId);
+
+    if (router.canGoBack()) {
+      showToast("Ruta finalizada", "La ruta ha finalizado");
+      router.back();
+    } else {
+      router.push("/tab/vehicles");
+    }
+  }
+
   useEffect(() => {
     if ((!routes[activeRouteId!] && profileId) || (activeRouteId && !routes[activeRouteId!])) {
       fetchActiveRoute();
@@ -110,8 +156,10 @@ export function useActiveRoute(profileId: string | null | undefined) {
     activeRoute,
     activeRouteIsLoading,
     error,
+    activeRouteId,
     fetchActiveRoute,
     setActiveRouteId,
     fetchActiveRouteIdStandalone,
+    endRoute,
   };
 }

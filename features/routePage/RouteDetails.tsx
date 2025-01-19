@@ -1,5 +1,5 @@
 import { router, Stack } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { FormButton } from "@/components/Form/FormButton";
@@ -11,11 +11,30 @@ import { useElapsedTime } from "../global/hooks/useElapsedTime";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { useActiveRoute } from "./hooks/useActiveRoute";
+import useProfile from "@/hooks/useProfile";
+import { ConfirmDialog } from "@/components/alert/ConfirmDialog";
 
 export function RouteDetails() {
-  const { styles, theme } = useStyles(stylesheet);
-  const { activeRoute, activeRouteIsLoading } = useActiveRoute();
+  const { styles } = useStyles(stylesheet);
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
   const { getElapsedTimeSince, getStaticValues } = useElapsedTime();
+  const { activeRoute, activeRouteIsLoading, endRoute } = useActiveRoute(profile.id);
+  const [endingRoute, setEndingRoute] = useState(false);
+
+  const endRouteDialog = ConfirmDialog({
+    title: "Confirmación",
+    message: `¿Estás seguro de que quieres finalizar la ruta?`,
+    cancelText: "Cancelar",
+    confirmText: "Finalizar",
+    confirmStyle: "destructive",
+    onConfirm: async () => {
+      setEndingRoute(true);
+      await endRoute(activeRoute!.id);
+      setEndingRoute(false);
+    },
+    onCancel: () => {},
+  });
 
   if (activeRouteIsLoading) {
     return <FetchingIndicator caption="Obteniendo información de la ruta activa" />;
@@ -56,7 +75,12 @@ export function RouteDetails() {
               <Row title="Registrar emergencia" icon={TriangleAlert} backgroundColor={colorPalette.red[500]} />
             </GroupedList>
             <View style={[styles.group, { paddingHorizontal: 12 }]}>
-              <FormButton title="Finalizar ruta" onPress={() => {}} buttonType="danger" />
+              <FormButton
+                title="Finalizar ruta"
+                onPress={() => endRouteDialog.showDialog()}
+                buttonType="danger"
+                isLoading={endingRoute}
+              />
             </View>
           </View>
         </ScrollView>
