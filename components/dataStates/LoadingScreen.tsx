@@ -1,4 +1,4 @@
-import { ActivityIndicator, Text, View } from "react-native";
+import { ActivityIndicator, Platform, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 type LoadingScreenType = {
@@ -6,11 +6,11 @@ type LoadingScreenType = {
 };
 
 export default function LoadingScreen({ caption }: LoadingScreenType) {
-  const { styles } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
 
   return (
     <View style={styles.container}>
-      <ActivityIndicator />
+      <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
       <Text style={styles.text}>{caption}</Text>
     </View>
   );

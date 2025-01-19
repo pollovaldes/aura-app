@@ -20,7 +20,7 @@ import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
 import { Route } from "@/types/globalTypes";
 
-type ModalType = "end_route" | null;
+type ModalType = "end_route" | "fuel" | "break" | "failure" | "other" | "emergency" | null;
 
 export function RouteDetails() {
   const { styles } = useStyles(stylesheet);
@@ -57,6 +57,19 @@ export function RouteDetails() {
       if (await locationPermission()) {
         setActiveModal("end_route");
       }
+      return;
+    },
+    onCancel: () => {},
+  });
+
+  const registerStop = ConfirmDialog({
+    title: "Confirmación",
+    message: `¿Estás seguro de que quieres registrar una parada?`,
+    cancelText: "Cancelar",
+    confirmText: "Iniciar parada",
+    confirmStyle: "default",
+    onConfirm: () => {
+      setActiveModal("end_route");
       return;
     },
     onCancel: () => {},
@@ -103,6 +116,26 @@ export function RouteDetails() {
 
       <Modal close={closeModal} isOpen={activeModal === "end_route"}>
         <EndRouteModal close={closeModal} activeRoute={activeRoute} />
+      </Modal>
+
+      <Modal close={closeModal} isOpen={activeModal === "fuel"}>
+        <></>
+      </Modal>
+
+      <Modal close={closeModal} isOpen={activeModal === "break"}>
+        <></>
+      </Modal>
+
+      <Modal close={closeModal} isOpen={activeModal === "failure"}>
+        <></>
+      </Modal>
+
+      <Modal close={closeModal} isOpen={activeModal === "other"}>
+        <></>
+      </Modal>
+
+      <Modal close={closeModal} isOpen={activeModal === "emergency"}>
+        <></>
       </Modal>
 
       <View style={styles.container}>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, ActivityIndicator, Image } from "react-native";
+import { View, Text, ActivityIndicator, Image, Platform } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "@/components/Form/FormButton";
@@ -21,7 +21,7 @@ interface ChangeVehicleImageModalProps {
 }
 
 export function ChangeCoverImageModal({ vehicle, close }: ChangeVehicleImageModalProps) {
-  const { styles } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
   const { thumbnail, refetchVehicleThumbnail } = useVehicleThumbnail(vehicle.id);
   const [imagePickingIsLoading, setImagePickingIsLoading] = useState(false);
   const [imageIsProcessing, setImageIsProcessing] = useState(false);
@@ -174,7 +174,7 @@ export function ChangeCoverImageModal({ vehicle, close }: ChangeVehicleImageModa
       <View style={styles.imageContainer}>
         {thumbnail?.isLoading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator />
+            <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
             <Text style={styles.loadingText}>Cargando portada</Text>
           </View>
         ) : thumbnail?.imageURI ? (
@@ -190,7 +190,7 @@ export function ChangeCoverImageModal({ vehicle, close }: ChangeVehicleImageModa
           <View style={styles.imageContainer}>
             {imageIsProcessing ? (
               <View style={styles.loadingContainer}>
-                <ActivityIndicator />
+                <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
                 <Text style={styles.loadingText}>Procesando imagen</Text>
               </View>
             ) : (

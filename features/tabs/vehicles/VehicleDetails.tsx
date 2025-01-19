@@ -42,7 +42,7 @@ import useProfile from "@/hooks/useProfile";
 type ModalType = "change_cover_image" | null;
 
 export function VehicleDetails() {
-  const { styles } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
   const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicles();
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
@@ -153,7 +153,7 @@ export function VehicleDetails() {
           <View style={styles.imageWrapper(width)}>
             {thumbnail?.isLoading ? (
               <View style={styles.imageLoadingContainer}>
-                <ActivityIndicator size="large" />
+                <ActivityIndicator size="large" color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
               </View>
             ) : thumbnail?.imageURI ? (
               <Image source={{ uri: thumbnail.imageURI }} style={styles.image} />

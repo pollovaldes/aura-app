@@ -30,7 +30,7 @@ export function VehiclesList() {
     handleRefresh,
     LIST_ONLY_fetchVehicles,
   } = useVehicles();
-  const { styles } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
   const vehicleArray = Object.values(vehicles);
@@ -128,7 +128,7 @@ export function VehiclesList() {
         ListFooterComponent={
           hasMorePages ? (
             <View style={styles.footer}>
-              <ActivityIndicator />
+              <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
             </View>
           ) : (
             <Text style={styles.allVehiclesLoadedText}>Se han cargado todos los vehículos</Text>

@@ -9,7 +9,7 @@ type LoadingScreenType = {
 };
 
 export function FetchingIndicator({ caption }: LoadingScreenType) {
-  const { styles } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
 
   return (
     <>
@@ -21,7 +21,7 @@ export function FetchingIndicator({ caption }: LoadingScreenType) {
         }}
       />
       <View style={[styles.container, { paddingTop: Platform.OS === "ios" ? UnistylesRuntime.insets.top : 0 }]}>
-        <ActivityIndicator />
+        <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
         <Text style={styles.text}>{caption}</Text>
       </View>
     </>

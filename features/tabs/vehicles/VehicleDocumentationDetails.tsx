@@ -10,7 +10,7 @@ import { Download, Pencil, RotateCw, Share as ShareIcon } from "lucide-react-nat
 import React from "react";
 import { useState } from "react";
 import { ActivityIndicator, Platform } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { useStyles } from "react-native-unistyles";
 import * as FileSystem from "expo-file-system";
 import { supabase } from "@/lib/supabase";
 import { Share } from "react-native";
@@ -29,6 +29,7 @@ export default function VehicleDocumentationDetails() {
   const [randomKey, setRandomKey] = useState(0); // This is a hack to force the FileViewer to re-render
   const [isSharing, setIsSharing] = useState(false);
   const closeModal = () => setActiveModal(null);
+  const { theme } = useStyles();
 
   if (areDocumentsLoading) {
     return <FetchingIndicator caption="Cargando documentos" />;
@@ -161,7 +162,7 @@ export default function VehicleDocumentationDetails() {
                 Icon={Download}
                 text="Descargar"
               />
-              {isSharing && <ActivityIndicator />}
+              {isSharing && <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />}
               <ActionButton
                 show={canEdit}
                 onPress={() => setActiveModal("edit_document")}

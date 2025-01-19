@@ -1,7 +1,7 @@
 import { useVehicleThumbnail } from "@/hooks/useVehicleThumbnail";
 import { TruckIcon } from "lucide-react-native";
 import React from "react";
-import { View, Image, ActivityIndicator, StyleSheet } from "react-native";
+import { View, Image, ActivityIndicator, StyleSheet, Platform } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 interface VehicleThumbnailProps {
@@ -10,13 +10,13 @@ interface VehicleThumbnailProps {
 
 export function VehicleThumbnail({ vehicleId }: VehicleThumbnailProps) {
   const { thumbnail } = useVehicleThumbnail(vehicleId);
-  const { styles } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
 
   return (
     <>
       {thumbnail?.isLoading ? (
         <View style={styles.emptyImageContainer}>
-          <ActivityIndicator />
+          <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
         </View>
       ) : thumbnail?.imageURI ? (
         <Image style={styles.image} source={{ uri: thumbnail.imageURI }} />

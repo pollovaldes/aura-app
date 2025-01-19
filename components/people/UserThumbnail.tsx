@@ -1,5 +1,5 @@
 import { UserRound } from "lucide-react-native";
-import { ActivityIndicator, Image, View } from "react-native";
+import { ActivityIndicator, Image, Platform, View } from "react-native";
 import { useStyles, createStyleSheet } from "react-native-unistyles";
 import { useEffect, useState } from "react";
 import useUsers from "@/hooks/peopleHooks/useUsers";
@@ -15,7 +15,7 @@ type UserThumbnailProps = {
 };
 
 export default function UserThumbnail({ userId, size = 60 }: UserThumbnailProps) {
-  const { styles } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
   const { users, setUsers, usersAreLoading, fetchUsers } = useUsers();
   const { fetchThumbnail } = useUserThumbnail();
   const [thumbnailIsLoading, setThumbnailIsLoading] = useState(false);
@@ -67,7 +67,7 @@ export default function UserThumbnail({ userId, size = 60 }: UserThumbnailProps)
     <>
       {thumbnailIsLoading ? (
         <View style={[styles.emptyImageContainer, { width: size, height: size }]}>
-          <ActivityIndicator />
+          <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
         </View>
       ) : item && item.thumbnail ? (
         <Image style={[styles.image, { width: size, height: size }]} source={{ uri: item.thumbnail }} />

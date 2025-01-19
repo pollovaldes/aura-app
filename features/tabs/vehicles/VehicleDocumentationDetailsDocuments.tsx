@@ -23,7 +23,7 @@ import { ActionButton } from "@/components/actionButton/ActionButton";
 type ModalType = "edit_document" | null;
 
 export default function VehicleDocumentationDetailsDocuments() {
-  const { styles } = useStyles(stylesheet);
+  const { theme } = useStyles();
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
@@ -176,7 +176,7 @@ export default function VehicleDocumentationDetailsDocuments() {
                 Icon={Download}
                 text="Descargar"
               />
-              {isSharing && <ActivityIndicator />}
+              {isSharing && <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />}
               <ActionButton
                 show={canEdit}
                 onPress={() => setActiveModal("edit_document")}

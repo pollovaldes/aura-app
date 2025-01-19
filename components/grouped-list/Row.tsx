@@ -1,5 +1,5 @@
 import React, { ReactNode, useState } from "react";
-import { View, Text, Pressable, ActivityIndicator, StyleProp, ViewStyle } from "react-native";
+import { View, Text, Pressable, ActivityIndicator, StyleProp, ViewStyle, Platform } from "react-native";
 import RowIcon from "./RowIcon";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LucideProps } from "lucide-react-native";
@@ -37,7 +37,7 @@ const Row = ({
   hasTouchableFeedback = true,
   show = true,
 }: RowProps) => {
-  const { styles, breakpoint } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
   const [isHovered, setIsHovered] = useState(false);
 
   if (!show) return;
@@ -67,7 +67,7 @@ const Row = ({
           {caption && <Text style={styles.caption}>{typeof caption === "string" ? caption : caption}</Text>}
         </View>
         {isLoading ? (
-          <ActivityIndicator />
+          <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
         ) : trailing ? (
           <View>{trailing}</View>
         ) : (

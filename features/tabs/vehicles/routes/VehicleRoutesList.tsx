@@ -48,7 +48,7 @@ export default function VehicleRoutesList() {
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
-  const { styles } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
   const {
     routes,
     isLoading,
@@ -269,7 +269,7 @@ export default function VehicleRoutesList() {
             ListFooterComponent={
               hasMorePages ? (
                 <View style={styles.footer}>
-                  <ActivityIndicator />
+                  <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
                 </View>
               ) : (
                 <Text style={styles.allVehiclesLoadedText}>Se han cargado todas las rutas</Text>

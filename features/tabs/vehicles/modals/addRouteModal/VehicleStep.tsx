@@ -1,6 +1,6 @@
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "@/components/Form/FormButton";
-import { ActivityIndicator, FlatList, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, FlatList, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { useCreateRoute } from "./CreateRouteContext";
 import { BackButtonOverlay } from "./BackButtonOverlay";
@@ -13,7 +13,7 @@ import { VehicleThumbnail } from "@/components/vehicles/VehicleThumbnail";
 import { RadioButton } from "@/components/radioButton/RadioButton";
 
 export function VehicleStep() {
-  const { styles } = useStyles(stylesheet);
+  const { styles, theme } = useStyles(stylesheet);
   const { setStep, setField, routeData } = useCreateRoute();
   const { areFleetsLoading, fetchFleets, fleets } = useFleets();
   const [vehicles, setVehicles] = useState<Vehicle[] | null>(null);
@@ -49,7 +49,7 @@ export function VehicleStep() {
     return (
       <View style={[styles.group, { paddingVertical: 40 }]}>
         <FormTitle title="Obteniendo vehículos" />
-        <ActivityIndicator />
+        <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
       </View>
     );
   }
