@@ -2,7 +2,7 @@ import { ActionButton } from "@/components/actionButton/ActionButton";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import Modal from "@/components/Modal/Modal";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { Download, FilterIcon, Plus, RotateCw } from "lucide-react-native";
+import { Download, FilterIcon, FilterX, Plus, RotateCw } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Platform, Text, View } from "react-native";
 import { AddRouteModal } from "../modals/addRouteModal/AddRouteModal";
@@ -17,8 +17,9 @@ import useProfile from "@/hooks/useProfile";
 import StatusChip from "@/components/General/StatusChip";
 import { useElapsedTime } from "@/features/global/hooks/useElapsedTime";
 import { useActiveRoute } from "@/features/routePage/hooks/useActiveRoute";
+import { RoutesListFilterModal } from "./RoutesListFilterModal";
 
-type ModalType = "create_route" | null;
+type ModalType = "create_route" | "filters" | null;
 
 const statesConfig = {
   true: {
@@ -54,6 +55,7 @@ export default function VehicleRoutesList() {
     useActiveRoute(profile.id);
   const [localStandAloneActiveRouteIsLoading, setLocalStandAloneActiveRouteIsLoading] = useState(false);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const [filtersAreActive, setFiltersAreActive] = useState(false);
   const closeModal = () => setActiveModal(null);
 
   const routeArray = Object.values(routes).filter((r) => r.vehicle_id === vehicleId);
@@ -139,6 +141,10 @@ export default function VehicleRoutesList() {
         <AddRouteModal close={closeModal} />
       </Modal>
 
+      <Modal close={closeModal} isOpen={activeModal === "filters"}>
+        <RoutesListFilterModal close={closeModal} />
+      </Modal>
+
       {routeArray.length === 0 && (
         <>
           <Stack.Screen
@@ -173,7 +179,12 @@ export default function VehicleRoutesList() {
               headerRight: () => (
                 <ActionButtonGroup>
                   <ActionButton Icon={Download} text="CSV" onPress={() => {}} show={canEdit} />
-                  <ActionButton Icon={FilterIcon} text="Filtros" onPress={() => {}} show={canEdit} />
+                  <ActionButton
+                    Icon={filtersAreActive ? FilterX : FilterIcon}
+                    text="Filtros"
+                    onPress={() => setActiveModal("filters")}
+                    show={canEdit}
+                  />
                   <ActionButton Icon={Plus} text="Nueva ruta" onPress={showCreateRouteModal} />
                   <ActionButton
                     onPress={refetchRoutes}

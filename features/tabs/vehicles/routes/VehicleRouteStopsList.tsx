@@ -60,7 +60,7 @@ export function VehicleRouteStopsList() {
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
   const { vehicleId, routeId } = useLocalSearchParams<{ vehicleId: string; routeId: string }>();
-  const { routes, fetchRouteById, refetchRouteById, error } = useRoutes(vehicleId);
+  const { routes, fetchRouteById, refetchRouteById, error } = useRoutes();
   const [routeIsLoading, setRouteIsLoading] = useState(false);
   const route = routes[routeId];
 
@@ -170,7 +170,7 @@ export function VehicleRouteStopsList() {
             }
           />
         )}
-        ListEmptyComponent={<EmptyScreen caption="No hay rutas para este vehículo" />}
+        ListEmptyComponent={<EmptyScreen caption="No hay paradas para esta ruta" />}
       />
     </>
   );

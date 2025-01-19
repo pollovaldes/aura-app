@@ -15,6 +15,7 @@ import ChangeDataModal from "@/components/Modal/ChangeDataModal";
 import Modal from "@/components/Modal/Modal";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import StatusChip from "@/components/General/StatusChip";
+import useMaintenance from "@/hooks/useMaintenance";
 
 type ModalType = "numero_economico" | "marca" | "sub_marca" | "modelo" | "no_serie" | "placa" | null;
 
@@ -24,60 +25,30 @@ export function VehicleMaintenanceDetails() {
   const profile = getGuaranteedProfile();
   const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicles();
   const { maintenanceId, vehicleId } = useLocalSearchParams<{ maintenanceId: string; vehicleId: string }>();
-
+  const { fetchMaintenance, areMaintenanceRecordsLoading, maintenanceRecords } = useMaintenance(maintenanceId);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [vehicleIsLoading, setVehicleIsLoading] = useState(true);
 
   const fetchVehicle = async () => {
     setVehicleIsLoading(true);
-    try {
-      await fetchVehicleById(vehicleId);
-    } catch (error) {
-      console.error("Error fetching vehicle:", error);
-      throw error;
-    } finally {
-      setVehicleIsLoading(false);
-    }
+    await fetchVehicleById(vehicleId);
+    setVehicleIsLoading(false);
   };
 
   const refetchVehicle = async () => {
     setVehicleIsLoading(true);
-    try {
-      await refetchVehicleById(vehicleId);
-    } catch (error) {
-      console.error("Error refetching vehicle:", error);
-      throw error;
-    } finally {
-      setVehicleIsLoading(false);
-    }
+    await refetchVehicleById(vehicleId);
+    setVehicleIsLoading(false);
   };
 
   useEffect(() => {
     fetchVehicle();
   }, []);
 
-  const statesConfig = {
-    IN_REVISION: {
-      text: "En revisión",
-      backgroundColor: "#e3f2fd",
-      textColor: "#1e88e5",
-    },
-    PENDING_REVISION: {
-      text: "Recibido",
-      backgroundColor: "#fff3e0",
-      textColor: "#ef6c00",
-    },
-    SOLVED: {
-      text: "Resuelto",
-      backgroundColor: "#e8f5e9",
-      textColor: "#2e7d32",
-    },
-  };
-
-  const canEdit = ["ADMIN", "OWNER", "DRIVER"].includes(profile.role);
-
-  if (vehicleIsLoading) {
-    return <FetchingIndicator caption="Cargando vehículo" />;
+  if (vehicleIsLoading || areMaintenanceRecordsLoading) {
+    return (
+      <FetchingIndicator caption={vehicleIsLoading ? "Cargando vehículo" : "Cargando solicitud de mantenimiento"} />
+    );
   }
 
   if (!vehicles) {
@@ -105,17 +76,47 @@ export function VehicleMaintenanceDetails() {
     );
   }
 
-  const record = vehicle.maintenanceRecords?.find((rec) => rec.id === maintenanceId);
+  if (!maintenanceRecords) {
+    return (
+      <ErrorScreen
+        caption="Ocurrió un error al cargar la solicitud de mantenimiento"
+        buttonCaption="Reintentar"
+        retryFunction={fetchMaintenance}
+      />
+    );
+  }
+
+  const record = maintenanceRecords.find((record) => record.id === maintenanceId);
 
   if (!record) {
     return (
       <ErrorScreen
         caption="Ocurrió un error y no pudimos cargar los detalles de mantenimiento"
         buttonCaption="Reintentar"
-        retryFunction={refetchVehicle}
+        retryFunction={fetchMaintenance}
       />
     );
   }
+
+  const statesConfig = {
+    IN_REVISION: {
+      text: "En revisión",
+      backgroundColor: "#e3f2fd",
+      textColor: "#1e88e5",
+    },
+    PENDING_REVISION: {
+      text: "Recibido",
+      backgroundColor: "#fff3e0",
+      textColor: "#ef6c00",
+    },
+    SOLVED: {
+      text: "Resuelto",
+      backgroundColor: "#e8f5e9",
+      textColor: "#2e7d32",
+    },
+  };
+
+  const canEdit = ["ADMIN", "OWNER", "DRIVER"].includes(profile.role);
 
   return (
     <>

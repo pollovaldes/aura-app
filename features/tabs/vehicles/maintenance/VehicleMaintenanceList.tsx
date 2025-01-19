@@ -236,16 +236,6 @@ export function VehicleMaintenanceList() {
                 </Text>
               </View>
             }
-            trailing={
-              canEdit && (
-                <Trash
-                  size={20}
-                  color={colorPalette.red[500]}
-                  onPress={() => handleDeleteMaintenance(item.id)}
-                  style={{ marginLeft: 10 }}
-                />
-              )
-            }
           />
         )}
         ListEmptyComponent={<EmptyScreen caption="No hay solicitudes de mantenimiento con este filtro" />}

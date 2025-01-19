@@ -39,7 +39,7 @@ export function VehicleRouteDetails() {
   const [routeIsLoading, setRouteIsLoading] = useState(false);
   const [refocusTrigger, setRefocusTrigger] = useState(0);
   const [isMaximized, setIsMaximized] = useState(false);
-  const { getElapsedTimeSince, getStaticValues } = useElapsedTime();
+  const { getElapsedTimeSince, getElapsedTime } = useElapsedTime();
 
   function handleRefocus() {
     setRefocusTrigger((prev) => prev + 1);
@@ -99,7 +99,7 @@ export function VehicleRouteDetails() {
       <UnauthorizedScreen
         caption="No tienes acceso a este recurso"
         buttonCaption="Reintentar"
-        retryFunction={() => {}} //Leave blank
+        retryFunction={() => {}}
       />
     );
   }
@@ -130,15 +130,48 @@ export function VehicleRouteDetails() {
         refreshControl={<RefreshControl refreshing={routeIsLoading} onRefresh={refetchRoute} />}
       >
         <View style={styles.section}>
-          <View style={styles.group}>
-            <GroupedList>
-              <Row>
-                <View style={styles.counterContainer}>
-                  <Text style={styles.counterText}>{getElapsedTimeSince(route.started_at)}</Text>
-                </View>
-              </Row>
-            </GroupedList>
-          </View>
+          {route.is_active ? (
+            <View style={styles.group}>
+              <GroupedList>
+                <Row>
+                  <View style={styles.counterContainer}>
+                    <View style={styles.group}>
+                      <Text style={styles.routeHeaderActive}>Ruta en curso</Text>
+                    </View>
+                    <View style={[styles.group, { alignItems: "center" }]}>
+                      <Text style={styles.counterTextActive}>{getElapsedTimeSince(route.started_at)}</Text>
+                      <Text style={styles.routeDescription}>Tiempo transcurrido</Text>
+                    </View>
+                  </View>
+                </Row>
+              </GroupedList>
+            </View>
+          ) : (
+            <View style={styles.group}>
+              <GroupedList>
+                <Row>
+                  <View style={styles.counterContainer}>
+                    <View style={styles.group}>
+                      <Text style={styles.routeHeaderInactive}>Ruta finalizada</Text>
+                    </View>
+                    <View style={[styles.group, { alignItems: "center" }]}>
+                      {route.ended_at ? (
+                        <>
+                          <Text style={styles.counterTextInactive}>
+                            {getElapsedTime(route.started_at, route.ended_at)}
+                          </Text>
+                          <Text style={styles.routeDescription}>Duración total</Text>
+                        </>
+                      ) : (
+                        <Text style={styles.routeDescription}>No se ha registrado la hora de finalización</Text>
+                      )}
+                    </View>
+                  </View>
+                </Row>
+              </GroupedList>
+            </View>
+          )}
+
           <View style={styles.group}>
             <GroupedList>
               <Row
@@ -237,6 +270,16 @@ const stylesheet = createStyleSheet((theme) => ({
   group: {
     gap: theme.marginsComponents.group,
   },
+  routeHeaderActive: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: theme.textPresets.main,
+  },
+  routeHeaderInactive: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: theme.textPresets.subtitle,
+  },
   routeDescription: {
     color: theme.textPresets.main,
     fontSize: 16,
@@ -246,11 +289,17 @@ const stylesheet = createStyleSheet((theme) => ({
     alignItems: "center",
     justifyContent: "center",
     gap: 12,
+    width: "100%",
   },
-  counterText: {
+  counterTextActive: {
     color: theme.textPresets.main,
     fontFamily: "SpaceMono",
-    fontSize: 27,
+    fontSize: 41,
+  },
+  counterTextInactive: {
+    color: theme.textPresets.subtitle,
+    fontFamily: "SpaceMono",
+    fontSize: 41,
   },
   mapContainer: {
     borderRadius: 10,

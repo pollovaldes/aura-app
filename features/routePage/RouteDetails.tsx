@@ -18,7 +18,7 @@ export function RouteDetails() {
   const { styles } = useStyles(stylesheet);
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
-  const { getElapsedTimeSince, getStaticValues } = useElapsedTime();
+  const { getElapsedTimeSince } = useElapsedTime();
   const { activeRoute, activeRouteIsLoading, endRoute } = useActiveRoute(profile.id);
   const [endingRoute, setEndingRoute] = useState(false);
 

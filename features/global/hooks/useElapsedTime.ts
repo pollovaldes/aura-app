@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export function useElapsedTime() {
   function normalizeDateTime(dateTimeStr: string) {
-    let normalized = dateTimeStr.replace(' ', 'T');
-    const signIndex = Math.max(normalized.lastIndexOf('+'), normalized.lastIndexOf('-'));
+    let normalized = dateTimeStr.replace(" ", "T");
+    const signIndex = Math.max(normalized.lastIndexOf("+"), normalized.lastIndexOf("-"));
     if (signIndex > 0) {
       const offset = normalized.substring(signIndex);
-      if (!offset.includes(':')) {
+      if (!offset.includes(":")) {
         if (/^[+\-]\d{2}$/.test(offset)) {
           normalized = `${normalized}:00`;
         } else if (/^[+\-]\d{2}\d{2}$/.test(offset)) {
@@ -30,7 +30,7 @@ export function useElapsedTime() {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
-    const pad = (num: number): string => num.toString().padStart(2, '0');
+    const pad = (num: number): string => num.toString().padStart(2, "0");
     return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
   }
 
@@ -40,8 +40,15 @@ export function useElapsedTime() {
     const intervalId = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
-    return () => clearInterval(intervalId); 
+    return () => clearInterval(intervalId);
   }, []);
+
+  const getElapsedTime = (startDateTimeStr: string, endDateTimeStr: string): string => {
+    const startDate = parseDate(startDateTimeStr);
+    const endDate = parseDate(endDateTimeStr);
+    const diff = endDate.getTime() - startDate.getTime();
+    return formatTime(diff);
+  };
 
   const getElapsedTimeSince = (dateTimeStr: string): string => {
     const initialDate = parseDate(dateTimeStr);
@@ -49,19 +56,8 @@ export function useElapsedTime() {
     return formatTime(diff);
   };
 
-  const getStaticValues = (dateTimeStr: string): { hours: number; minutes: number; seconds: number } => {
-    const initialDate = parseDate(dateTimeStr);
-    const diff = currentTime.getTime() - initialDate.getTime();
-    const totalSeconds = Math.floor(diff / 1000);
-    return {
-      hours: Math.floor(totalSeconds / 3600),
-      minutes: Math.floor((totalSeconds % 3600) / 60),
-      seconds: totalSeconds % 60
-    };
-  };
-
   return {
     getElapsedTimeSince,
-    getStaticValues
+    getElapsedTime,
   };
 }

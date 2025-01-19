@@ -4168,6 +4168,11 @@ date-fns@^4.1.0:
   resolved "https://registry.npmjs.org/date-fns/-/date-fns-4.1.0.tgz"
   integrity sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==
 
+dayjs@^1.11.13:
+  version "1.11.13"
+  resolved "https://registry.npmjs.org/dayjs/-/dayjs-1.11.13.tgz"
+  integrity sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==
+
 debounce@^2.0.0:
   version "2.2.0"
   resolved "https://registry.npmjs.org/debounce/-/debounce-2.2.0.tgz"
@@ -7981,6 +7986,15 @@ react-native-toast-message@^2.2.1:
   resolved "https://registry.npmjs.org/react-native-toast-message/-/react-native-toast-message-2.2.1.tgz"
   integrity sha512-iXFMnlxPcgKKs4bZOIl06W16m6KXMh/bAYpWLyVXlISSCdcL2+FX5WPpRP3TGQeM/u9q+j5ex48DDY+72en+Sw==
 
+react-native-ui-datepicker@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.npmjs.org/react-native-ui-datepicker/-/react-native-ui-datepicker-2.0.4.tgz"
+  integrity sha512-IDHUSx/Mns5hiVAm+mSRgIEIlC79GnA7ldX5J4l1PtxPNMfIaWZzkT+O/g9lcHZnZhWlpN+5VK+PyhPtm+ux0g==
+  dependencies:
+    dayjs "^1.11.13"
+    lodash "^4.17.21"
+    react-native-wheely "^0.6.0"
+
 react-native-unistyles@^2.20.0:
   version "2.20.0"
   resolved "https://registry.npmjs.org/react-native-unistyles/-/react-native-unistyles-2.20.0.tgz"
@@ -8014,6 +8028,11 @@ react-native-webview@*, react-native-webview@13.12.2:
   dependencies:
     escape-string-regexp "^4.0.0"
     invariant "2.2.4"
+
+react-native-wheely@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.npmjs.org/react-native-wheely/-/react-native-wheely-0.6.0.tgz"
+  integrity sha512-WDnynKOdHZ3m0VnXF5pC11dXSJZDC/6/e9LuZ6UKs4IjIRI1NTTd14pRwKYEnTgWmJdlDjqJvNSIVbd7EuMxHQ==
 
 react-native@*, "react-native@^0.0.0-0 || >=0.60 <1.0", react-native@^0.76.5, "react-native@>= 0.50.0", "react-native@>= 0.64.3", react-native@>=0.59.9, react-native@>=0.62, react-native@>=0.73.0:
   version "0.76.5"
