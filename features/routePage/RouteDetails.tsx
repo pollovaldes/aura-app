@@ -1,9 +1,9 @@
 import { router, Stack } from "expo-router";
 import React, { useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { Platform, RefreshControl, ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { FormButton } from "@/components/Form/FormButton";
-import { BedSingle, Ellipsis, Fuel, History, Info, TriangleAlert, Wrench } from "lucide-react-native";
+import { BedSingle, Ellipsis, Fuel, History, Info, RotateCw, TriangleAlert, Wrench } from "lucide-react-native";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import { colorPalette } from "@/style/themes";
@@ -16,6 +16,9 @@ import { ConfirmDialog } from "@/components/alert/ConfirmDialog";
 import Modal from "@/components/Modal/Modal";
 import { EndRouteModal } from "../tabs/vehicles/modals/EndRouteModal";
 import * as Location from "expo-location";
+import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
+import { ActionButton } from "@/components/actionButton/ActionButton";
+import { Route } from "@/types/globalTypes";
 
 type ModalType = "end_route" | null;
 
@@ -24,10 +27,11 @@ export function RouteDetails() {
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
   const { getElapsedTimeSince } = useElapsedTime();
-  const { activeRoute, activeRouteIsLoading, endRoute } = useActiveRoute(profile.id);
+  const { activeRoute, activeRouteIsLoading, fetchActiveRouteIdStandalone } = useActiveRoute(profile.id);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
   const [isLocationLoading, setIsLocationLoading] = useState(false);
+  const [activeRouteIsRefreshing, setActiveRouteIsRefreshing] = useState(false);
 
   async function locationPermission() {
     setIsLocationLoading(true);
@@ -58,7 +62,7 @@ export function RouteDetails() {
     onCancel: () => {},
   });
 
-  if (activeRouteIsLoading) {
+  if (activeRouteIsLoading || activeRouteIsRefreshing) {
     return <FetchingIndicator caption="Obteniendo información de la ruta activa" />;
   }
 
@@ -72,12 +76,28 @@ export function RouteDetails() {
     );
   }
 
+  async function refetchActiveRoute(activeRoute: Route) {
+    setActiveRouteIsRefreshing(true);
+    await fetchActiveRouteIdStandalone(activeRoute.id);
+    setActiveRouteIsRefreshing(false);
+  }
+
   return (
     <>
       <Stack.Screen
         options={{
           headerShown: true,
           title: "Ruta en curso",
+          headerRight: () => (
+            <ActionButtonGroup>
+              <ActionButton
+                onPress={() => refetchActiveRoute(activeRoute)}
+                Icon={RotateCw}
+                text="Actualizar"
+                show={Platform.OS === "web"}
+              />
+            </ActionButtonGroup>
+          ),
         }}
       />
 
@@ -86,12 +106,26 @@ export function RouteDetails() {
       </Modal>
 
       <View style={styles.container}>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={activeRouteIsRefreshing} onRefresh={() => refetchActiveRoute(activeRoute)} />
+          }
+        >
           <View style={styles.section}>
             <Text style={styles.timer}>{getElapsedTimeSince(activeRoute.started_at)}</Text>
             <GroupedList>
-              <Row title="Información de la ruta" icon={Info} backgroundColor={colorPalette.cyan[500]} />
-              <Row title="Historial de paradas" icon={History} backgroundColor={colorPalette.green[500]} />
+              <Row
+                title="Información de la ruta"
+                icon={Info}
+                backgroundColor={colorPalette.cyan[500]}
+                onPress={() => router.push("./details", { relativeToDirectory: true })}
+              />
+              <Row
+                title="Historial de paradas"
+                icon={History}
+                backgroundColor={colorPalette.green[500]}
+                onPress={() => router.push("./stops", { relativeToDirectory: true })}
+              />
             </GroupedList>
             <GroupedList header="Paradas">
               <Row title="Registrar combustible" icon={Fuel} backgroundColor={colorPalette.neutral[500]} />
@@ -101,7 +135,12 @@ export function RouteDetails() {
               <Row title="Registrar emergencia" icon={TriangleAlert} backgroundColor={colorPalette.red[500]} />
             </GroupedList>
             <View style={[styles.group, { paddingHorizontal: 12 }]}>
-              <FormButton title="Finalizar ruta" onPress={() => endRouteDialog.showDialog()} buttonType="danger" />
+              <FormButton
+                title="Finalizar ruta"
+                onPress={() => endRouteDialog.showDialog()}
+                buttonType="danger"
+                isLoading={isLocationLoading}
+              />
             </View>
           </View>
         </ScrollView>

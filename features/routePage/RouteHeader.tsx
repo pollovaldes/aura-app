@@ -51,10 +51,14 @@ export function RouteHeader() {
 
   // If the route is active, display info
   return (
-    <Pressable onPress={() => router.push(`/tab/route_details/${activeRoute.id}`)}>
+    <Pressable onPress={() => router.push(`/tab/route_details`)}>
       <View style={styles.container}>
-        <Animated.Text style={[styles.text(textColor), animatedTextStyle]}>Ruta en curso</Animated.Text>
-        <Text style={styles.subtitle(textColor)}>{getElapsedTimeSince(activeRoute.started_at)}</Text>
+        <Animated.Text style={[styles.text(textColor), animatedTextStyle]} selectable={false} allowFontScaling={false}>
+          Ruta en curso
+        </Animated.Text>
+        <Text style={styles.subtitle(textColor)} selectable={false} allowFontScaling={false}>
+          {getElapsedTimeSince(activeRoute.started_at)}
+        </Text>
       </View>
     </Pressable>
   );
