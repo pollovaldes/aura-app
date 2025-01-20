@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Platform, RefreshControl, ScrollView, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { FormButton } from "@/components/Form/FormButton";
-import { BedSingle, Ellipsis, Fuel, History, Info, RotateCw, TriangleAlert, Wrench } from "lucide-react-native";
+import { BedSingle, Ellipsis, Fuel, History, Info, Pencil, RotateCw, TriangleAlert, Wrench } from "lucide-react-native";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import { colorPalette } from "@/style/themes";
@@ -19,6 +19,8 @@ import * as Location from "expo-location";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
 import { Route } from "@/types/globalTypes";
+import { FuelModal } from "./stopModals/FuelModal";
+import { useCurrentStop } from "./hooks/useCurrentStop";
 
 type ModalType = "end_route" | "fuel" | "break" | "failure" | "other" | "emergency" | null;
 
@@ -32,6 +34,7 @@ export function RouteDetails() {
   const closeModal = () => setActiveModal(null);
   const [isLocationLoading, setIsLocationLoading] = useState(false);
   const [activeRouteIsRefreshing, setActiveRouteIsRefreshing] = useState(false);
+  const { currentStop, currentStopIsLoading, saveCurrentStop } = useCurrentStop();
 
   async function locationPermission() {
     setIsLocationLoading(true);
@@ -95,6 +98,35 @@ export function RouteDetails() {
     setActiveRouteIsRefreshing(false);
   }
 
+  function openLatestStop() {
+    if (!currentStop) {
+      console.log("No hay una parada actual");
+      return;
+    }
+
+    if (!currentStop.event_type) {
+      console.log("No está definido el tipo de parada");
+      return;
+    }
+
+    switch (currentStop.event_type) {
+      case "REFUELING":
+        setActiveModal("fuel");
+        break;
+      case "BREAK":
+        setActiveModal("break");
+        break;
+      case "FAILURE":
+        setActiveModal("failure");
+        break;
+      case "OTHER":
+        setActiveModal("other");
+        break;
+      case "EMERGENCY":
+        setActiveModal("emergency");
+    }
+  }
+
   return (
     <>
       <Stack.Screen
@@ -119,7 +151,7 @@ export function RouteDetails() {
       </Modal>
 
       <Modal close={closeModal} isOpen={activeModal === "fuel"}>
-        <></>
+        <FuelModal close={closeModal} />
       </Modal>
 
       <Modal close={closeModal} isOpen={activeModal === "break"}>
@@ -160,12 +192,49 @@ export function RouteDetails() {
                 onPress={() => router.push("./stops", { relativeToDirectory: true })}
               />
             </GroupedList>
+            {currentStop && (
+              <GroupedList header="Finalizar registro de parada">
+                <Row
+                  title="Continuar editando parada"
+                  icon={Pencil}
+                  backgroundColor={colorPalette.yellow[500]}
+                  onPress={openLatestStop}
+                />
+              </GroupedList>
+            )}
+
             <GroupedList header="Paradas">
-              <Row title="Registrar combustible" icon={Fuel} backgroundColor={colorPalette.neutral[500]} />
-              <Row title="Registrar descanso" icon={BedSingle} backgroundColor={colorPalette.neutral[500]} />
-              <Row title="Registrar falla" icon={Wrench} backgroundColor={colorPalette.neutral[500]} />
-              <Row title="Registrar otro" icon={Ellipsis} backgroundColor={colorPalette.neutral[500]} />
-              <Row title="Registrar emergencia" icon={TriangleAlert} backgroundColor={colorPalette.red[500]} />
+              <Row
+                title="Registrar combustible"
+                icon={Fuel}
+                backgroundColor={colorPalette.neutral[500]}
+                onPress={() => setActiveModal("fuel")}
+                disabled={currentStop !== null}
+              />
+              <Row
+                title="Registrar descanso"
+                icon={BedSingle}
+                backgroundColor={colorPalette.neutral[500]}
+                disabled={currentStop !== null}
+              />
+              <Row
+                title="Registrar falla"
+                icon={Wrench}
+                backgroundColor={colorPalette.neutral[500]}
+                disabled={currentStop !== null}
+              />
+              <Row
+                title="Registrar otro"
+                icon={Ellipsis}
+                backgroundColor={colorPalette.neutral[500]}
+                disabled={currentStop !== null}
+              />
+              <Row
+                title="Registrar emergencia"
+                icon={TriangleAlert}
+                backgroundColor={colorPalette.red[500]}
+                disabled={currentStop !== null}
+              />
             </GroupedList>
             <View style={[styles.group, { paddingHorizontal: 12 }]}>
               <FormButton

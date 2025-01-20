@@ -47,34 +47,32 @@ const Row = ({
   }
 
   return (
-    <Animated.View layout={LinearTransition.easing(Easing.out(Easing.ease))}>
-      <Pressable
-        onPress={onPress}
-        disabled={isLoading || disabled || !onPress}
-        onHoverIn={() => hasTouchableFeedback && setIsHovered(true)}
-        onHoverOut={() => hasTouchableFeedback && setIsHovered(false)}
-        style={({ pressed }) => [
-          styles.container,
-          style,
-          { opacity: disabled ? 0.6 : 1 },
-          hasTouchableFeedback && isHovered && styles.containerHovered,
-          hasTouchableFeedback && pressed && styles.containerPressed,
-        ]}
-      >
-        {icon && <RowIcon icon={icon} backgroundColor={backgroundColor} />}
-        <View style={styles.textContainer}>
-          <Text style={styles.title}>{title}</Text>
-          {caption && <Text style={styles.caption}>{typeof caption === "string" ? caption : caption}</Text>}
-        </View>
-        {isLoading ? (
-          <ActivityIndicator color={Platform.OS !== "ios" ? theme.ui.colors.primary : undefined} />
-        ) : trailing ? (
-          <View>{trailing}</View>
-        ) : (
-          !hideChevron && <MaterialIcons name="chevron-right" size={24} color="#c4c4c7" />
-        )}
-      </Pressable>
-    </Animated.View>
+    <Pressable
+      onPress={onPress}
+      disabled={isLoading || disabled || !onPress}
+      onHoverIn={() => hasTouchableFeedback && setIsHovered(true)}
+      onHoverOut={() => hasTouchableFeedback && setIsHovered(false)}
+      style={({ pressed }) => [
+        styles.container,
+        style,
+        { opacity: disabled ? 0.6 : 1 },
+        hasTouchableFeedback && isHovered && styles.containerHovered,
+        hasTouchableFeedback && pressed && styles.containerPressed,
+      ]}
+    >
+      {icon && <RowIcon icon={icon} backgroundColor={backgroundColor} />}
+      <View style={styles.textContainer}>
+        <Text style={styles.title}>{title}</Text>
+        {caption && <Text style={styles.caption}>{typeof caption === "string" ? caption : caption}</Text>}
+      </View>
+      {isLoading ? (
+        <ActivityIndicator color={Platform.OS !== "ios" ? theme.ui.colors.primary : undefined} />
+      ) : trailing ? (
+        <View>{trailing}</View>
+      ) : (
+        !hideChevron && <MaterialIcons name="chevron-right" size={24} color="#c4c4c7" />
+      )}
+    </Pressable>
   );
 };
 

@@ -17,6 +17,7 @@ import { RoutesContextProvider } from "@/features/routePage/context/RoutesContex
 import { useFonts } from "expo-font";
 import { UnistylesRuntime } from "react-native-unistyles";
 import { setStatusBarStyle } from "expo-status-bar";
+import { StopsContextProvider } from "@/context/StopsContext";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -58,9 +59,11 @@ export default function RootLayout() {
             <UsersContextProvider>
               <ProfileImageProvider>
                 <RoutesContextProvider>
-                  {path === "/" && <Redirect href="/auth" />}
-                  <Slot />
-                  <Toast config={toastConfig} />
+                  <StopsContextProvider>
+                    {path === "/" && <Redirect href="/auth" />}
+                    <Slot />
+                    <Toast config={toastConfig} />
+                  </StopsContextProvider>
                 </RoutesContextProvider>
               </ProfileImageProvider>
             </UsersContextProvider>

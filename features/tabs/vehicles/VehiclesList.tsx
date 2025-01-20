@@ -128,7 +128,7 @@ export function VehiclesList() {
         onEndReached={LIST_ONLY_loadMoreVehicles}
         onEndReachedThreshold={0.5}
         onRefresh={handleRefresh}
-        refreshing={isRefreshing}
+        refreshing={isLoading}
         ListEmptyComponent={<EmptyScreen caption="Ningún vehículo por aquí." />}
         ListFooterComponent={
           hasMorePages ? (
