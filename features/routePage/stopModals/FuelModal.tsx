@@ -7,18 +7,20 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { useCurrentStop } from "../hooks/useCurrentStop";
 import FormInput from "@/components/Form/FormInput";
 import { FormButton } from "@/components/Form/FormButton";
+import { Route } from "@/types/globalTypes";
 
 interface FuelModalProps {
   close: () => void;
+  activeRoute: Route;
 }
 
-export function FuelModal({ close }: FuelModalProps) {
+export function FuelModal({ close, activeRoute }: FuelModalProps) {
   const { styles, theme } = useStyles(stylesheet);
   const [proceed, setProceed] = useState(false);
   const { currentStop, currentStopIsLoading, saveCurrentStop } = useCurrentStop();
-  const [liters, setLiters] = useState("");
-  const [mileage, setMileage] = useState("");
-  const [price, setPrice] = useState("");
+  const [liters, setLiters] = useState(currentStop?.refueling_events?.[0]?.fuel_amount?.toString() || "");
+  const [mileage, setMileage] = useState(currentStop?.refueling_events?.[0]?.mileage?.toString() || "");
+  const [price, setPrice] = useState(currentStop?.refueling_events?.[0]?.cost?.toString() || "");
   const [maySubmit, setMaySubmit] = useState(false);
 
   useEffect(() => {
@@ -47,7 +49,12 @@ export function FuelModal({ close }: FuelModalProps) {
 
   useEffect(() => {
     if (proceed) {
-      saveCurrentStop({ ...currentStop, event_type: "REFUELING" });
+      saveCurrentStop({
+        ...currentStop,
+        event_type: "REFUELING",
+        route_id: activeRoute.id,
+        started_at: new Date().toISOString(),
+      });
     }
   }, [proceed]);
 
@@ -61,6 +68,19 @@ export function FuelModal({ close }: FuelModalProps) {
     } else {
       setMaySubmit(true);
     }
+
+    saveCurrentStop({
+      ...currentStop,
+      refueling_events: [
+        {
+          fuel_amount: parseFloat(liters),
+          cost: parseFloat(price),
+          mileage: parseFloat(mileage),
+          route_event_id: "",
+          id: "",
+        },
+      ],
+    });
   }, [price, liters, mileage]);
 
   if (!proceed) {

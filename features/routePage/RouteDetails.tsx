@@ -151,7 +151,7 @@ export function RouteDetails() {
       </Modal>
 
       <Modal close={closeModal} isOpen={activeModal === "fuel"}>
-        <FuelModal close={closeModal} />
+        <FuelModal close={closeModal} activeRoute={activeRoute} />
       </Modal>
 
       <Modal close={closeModal} isOpen={activeModal === "break"}>
