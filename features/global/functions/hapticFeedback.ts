@@ -5,6 +5,6 @@ export function hapticFeedback() {
   if (Platform.OS === "ios") {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   } else if (Platform.OS === "android") {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
   }
 }

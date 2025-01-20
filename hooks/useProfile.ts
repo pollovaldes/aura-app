@@ -39,6 +39,26 @@ export default function useProfile() {
     }
   }, [profile]);
 
+  useEffect(() => {
+    if (session) {
+      const channel = supabase
+        .channel("profile-updates")
+        .on(
+          "postgres_changes",
+          { event: "UPDATE", schema: "public", table: "profiles", filter: `id=eq.${session.user.id}` },
+          (payload) => {
+            console.log("Profile change received!", payload);
+            fetchProfile();
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+  }, [session]);
+
   const getGuaranteedProfile = () => {
     if (!profile) {
       throw new Error("Profile is unexpectedly null. Ensure _layout guards are working correctly.");

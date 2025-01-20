@@ -134,9 +134,8 @@ export default function VehicleRoutesList() {
 
   async function showCreateRouteModal() {
     if (activeRoute && routes[activeRoute.id].is_active === false) {
-      alert(
-        `ADVERTENCIA: una de las rutas anteriores no se completó correctamente (es probable que se haya cerrado o interrumpido de manera inesperada), lo que ha dejado la aplicación en un estado desincronizado. Como resultado, no puedes crear una nueva ruta para evitar conflictos.   Por favor, reinicia la aplicación o actualiza la página para sincronizar el estado correctamente.   Ruta en conflicto: "${activeRoute.title}" — Esta ruta está finalizada, pero la aplicación no ha registrado su finalización correctamente.`
-      );
+      setActiveRouteId(null);
+      showToast("Aviso", "Se sincronizó la ruta en curso. Crea una nueva ruta.");
       return;
     }
 
@@ -264,7 +263,7 @@ export default function VehicleRoutesList() {
             onEndReached={loadMoreRoutes}
             onEndReachedThreshold={0.5}
             onRefresh={refetchRoutes}
-            refreshing={isRefreshing}
+            refreshing={isLoading}
             ListEmptyComponent={<EmptyScreen caption="No hay rutas para este vehículo" />}
             ListFooterComponent={
               hasMorePages ? (

@@ -59,8 +59,8 @@ export default function RootLayout() {
               <ProfileImageProvider>
                 <RoutesContextProvider>
                   {path === "/" && <Redirect href="/auth" />}
-                  <Toast config={toastConfig} />
                   <Slot />
+                  <Toast config={toastConfig} />
                 </RoutesContextProvider>
               </ProfileImageProvider>
             </UsersContextProvider>

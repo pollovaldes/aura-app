@@ -1,3 +1,4 @@
+import { hapticFeedback } from "@/features/global/functions/hapticFeedback";
 import React, { ReactNode } from "react";
 import {
   Modal as RNModal,
@@ -38,7 +39,13 @@ export default function Modal({ isOpen, close, children, ...rest }: ModalProps) 
               entering={ZoomIn.duration(250)}
               layout={LinearTransition.stiffness(100)}
             >
-              <Text style={styles.closeButton} onPress={close}>
+              <Text
+                style={styles.closeButton}
+                onPress={async () => {
+                  await hapticFeedback();
+                  close();
+                }}
+              >
                 Cerrar
               </Text>
 
