@@ -22,7 +22,7 @@ export function FetchingIndicator({ caption }: LoadingScreenType) {
         }}
       />
       <View style={[styles.container, { paddingTop: Platform.OS === "ios" ? UnistylesRuntime.insets.top : 0 }]}>
-        <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
+        <ActivityIndicator color={Platform.OS !== "ios" ? theme.ui.colors.primary : undefined} />
         <Text style={styles.text}>{caption}</Text>
       </View>
     </>

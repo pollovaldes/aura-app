@@ -15,9 +15,8 @@ import { UsersContextProvider } from "@/context/UsersContext";
 import { ProfileImageProvider } from "@/context/ProfileImageContext";
 import { RoutesContextProvider } from "@/features/routePage/context/RoutesContext";
 import { useFonts } from "expo-font";
-import useProfile from "@/hooks/useProfile";
-import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
-import ErrorScreen from "@/components/dataStates/ErrorScreen";
+import { UnistylesRuntime } from "react-native-unistyles";
+import { setStatusBarStyle } from "expo-status-bar";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -39,6 +38,14 @@ export default function RootLayout() {
     });
   }, []);
 
+  useEffect(() => {
+    if (UnistylesRuntime.colorScheme === "dark") {
+      setStatusBarStyle("auto");
+    } else {
+      setStatusBarStyle("auto");
+    }
+  }, [UnistylesRuntime.colorScheme]);
+
   const path = usePathname();
   const { theme } = useStyles();
   useAccentColor();
@@ -52,8 +59,8 @@ export default function RootLayout() {
               <ProfileImageProvider>
                 <RoutesContextProvider>
                   {path === "/" && <Redirect href="/auth" />}
-                  <Slot />
                   <Toast config={toastConfig} />
+                  <Slot />
                 </RoutesContextProvider>
               </ProfileImageProvider>
             </UsersContextProvider>

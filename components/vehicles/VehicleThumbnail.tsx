@@ -16,7 +16,7 @@ export function VehicleThumbnail({ vehicleId }: VehicleThumbnailProps) {
     <>
       {thumbnail?.isLoading ? (
         <View style={styles.emptyImageContainer}>
-          <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
+          <ActivityIndicator color={Platform.OS !== "ios" ? theme.ui.colors.primary : undefined} />
         </View>
       ) : thumbnail?.imageURI ? (
         <Image style={styles.image} source={{ uri: thumbnail.imageURI }} />

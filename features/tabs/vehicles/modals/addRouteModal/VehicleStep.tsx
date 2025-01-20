@@ -49,7 +49,7 @@ export function VehicleStep() {
     return (
       <View style={[styles.group, { paddingVertical: 40 }]}>
         <FormTitle title="Obteniendo vehículos" />
-        <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
+        <ActivityIndicator color={Platform.OS !== "ios" ? theme.ui.colors.primary : undefined} />
       </View>
     );
   }

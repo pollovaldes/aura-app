@@ -269,7 +269,7 @@ export default function VehicleRoutesList() {
             ListFooterComponent={
               hasMorePages ? (
                 <View style={styles.footer}>
-                  <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
+                  <ActivityIndicator color={Platform.OS !== "ios" ? theme.ui.colors.primary : undefined} />
                 </View>
               ) : (
                 <Text style={styles.allVehiclesLoadedText}>Se han cargado todas las rutas</Text>

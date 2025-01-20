@@ -4,6 +4,7 @@ import { ACCENT_COLORS, AccentColorName } from "@/style/accentColor";
 import * as Haptics from "expo-haptics";
 import { useAccentColor } from "@/features/global/hooks/useAccentColor";
 import { UnistylesRuntime } from "react-native-unistyles";
+import { hapticFeedback } from "@/features/global/functions/hapticFeedback";
 
 function chunkArray(array: AccentColorName[], chunkSize: number): AccentColorName[][] {
   const results: AccentColorName[][] = [];
@@ -18,12 +19,6 @@ export function AccentColorPicker() {
   const { accentColor, handleColorPress } = useAccentColor();
   const colorNames = Object.keys(ACCENT_COLORS) as AccentColorName[];
   const rows = chunkArray(colorNames, 4);
-
-  const hapticFeedback = async () => {
-    if (Platform.OS !== "web") {
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    }
-  };
 
   const handlePress = async (colorName: AccentColorName) => {
     await hapticFeedback();

@@ -1,3 +1,4 @@
+import { hapticFeedback } from "@/features/global/functions/hapticFeedback";
 import { LucideProps } from "lucide-react-native";
 import React, { useState } from "react";
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
@@ -32,9 +33,14 @@ export function ActionButton({
 
   const isMobileOrSmallScreen = isMobile || (isSmallWebScreen && !preventCollapsing);
 
+  async function onButtonPress() {
+    await hapticFeedback();
+    onPress();
+  }
+
   if (isMobileOrSmallScreen) {
     return (
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity onPress={onButtonPress}>
         {Icon ? (
           <Icon color={styles.icon.color} size={styles.icon.fontSize} />
         ) : (
@@ -48,7 +54,7 @@ export function ActionButton({
 
   return (
     <Pressable
-      onPress={onPress}
+      onPress={onButtonPress}
       onHoverIn={() => setIsHovered(true)}
       onHoverOut={() => setIsHovered(false)}
       onPressIn={() => setIsPressed(true)}

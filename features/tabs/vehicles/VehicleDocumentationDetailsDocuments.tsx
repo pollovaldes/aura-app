@@ -176,7 +176,7 @@ export default function VehicleDocumentationDetailsDocuments() {
                 Icon={Download}
                 text="Descargar"
               />
-              {isSharing && <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />}
+              {isSharing && <ActivityIndicator color={Platform.OS !== "ios" ? theme.ui.colors.primary : undefined} />}
               <ActionButton
                 show={canEdit}
                 onPress={() => setActiveModal("edit_document")}

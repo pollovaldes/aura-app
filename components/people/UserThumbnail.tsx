@@ -67,7 +67,7 @@ export default function UserThumbnail({ userId, size = 60 }: UserThumbnailProps)
     <>
       {thumbnailIsLoading ? (
         <View style={[styles.emptyImageContainer, { width: size, height: size }]}>
-          <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
+          <ActivityIndicator color={Platform.OS !== "ios" ? theme.ui.colors.primary : undefined} />
         </View>
       ) : item && item.thumbnail ? (
         <Image style={[styles.image, { width: size, height: size }]} source={{ uri: item.thumbnail }} />

@@ -67,7 +67,7 @@ const Row = ({
           {caption && <Text style={styles.caption}>{typeof caption === "string" ? caption : caption}</Text>}
         </View>
         {isLoading ? (
-          <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
+          <ActivityIndicator color={Platform.OS !== "ios" ? theme.ui.colors.primary : undefined} />
         ) : trailing ? (
           <View>{trailing}</View>
         ) : (

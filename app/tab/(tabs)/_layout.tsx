@@ -8,6 +8,7 @@ import { Platform, useWindowDimensions } from "react-native";
 import { createStyleSheet } from "react-native-unistyles";
 import * as Haptics from "expo-haptics";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { hapticFeedback } from "@/features/global/functions/hapticFeedback";
 
 export default function HomeLayout() {
   const { width } = useWindowDimensions();
@@ -45,12 +46,6 @@ export default function HomeLayout() {
 
     saveTabBarPosition();
   }, [tabBarPosition]);
-
-  const hapticFeedback = () => {
-    if (Platform.OS !== "web") {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    }
-  };
 
   if (isSessionLoading) {
     return <FetchingIndicator caption={"Cargando sesión"} />;

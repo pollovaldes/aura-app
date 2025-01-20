@@ -174,7 +174,7 @@ export function ChangeCoverImageModal({ vehicle, close }: ChangeVehicleImageModa
       <View style={styles.imageContainer}>
         {thumbnail?.isLoading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
+            <ActivityIndicator color={Platform.OS !== "ios" ? theme.ui.colors.primary : undefined} />
             <Text style={styles.loadingText}>Cargando portada</Text>
           </View>
         ) : thumbnail?.imageURI ? (
@@ -190,7 +190,7 @@ export function ChangeCoverImageModal({ vehicle, close }: ChangeVehicleImageModa
           <View style={styles.imageContainer}>
             {imageIsProcessing ? (
               <View style={styles.loadingContainer}>
-                <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
+                <ActivityIndicator color={Platform.OS !== "ios" ? theme.ui.colors.primary : undefined} />
                 <Text style={styles.loadingText}>Procesando imagen</Text>
               </View>
             ) : (

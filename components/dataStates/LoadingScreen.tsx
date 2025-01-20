@@ -10,7 +10,7 @@ export default function LoadingScreen({ caption }: LoadingScreenType) {
 
   return (
     <View style={styles.container}>
-      <ActivityIndicator color={Platform.OS === "web" ? theme.ui.colors.primary : undefined} />
+      <ActivityIndicator color={Platform.OS !== "ios" ? theme.ui.colors.primary : undefined} />
       <Text style={styles.text}>{caption}</Text>
     </View>
   );
