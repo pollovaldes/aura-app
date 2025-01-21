@@ -62,8 +62,14 @@ const Row = ({
     >
       {icon && <RowIcon icon={icon} backgroundColor={backgroundColor} />}
       <View style={styles.textContainer}>
-        <Text style={styles.title}>{title}</Text>
-        {caption && <Text style={styles.caption}>{typeof caption === "string" ? caption : caption}</Text>}
+        <Text style={styles.title} selectable={false}>
+          {title}
+        </Text>
+        {caption && (
+          <Text style={styles.caption} selectable={false}>
+            {typeof caption === "string" ? caption : caption}
+          </Text>
+        )}
       </View>
       {isLoading ? (
         <ActivityIndicator color={Platform.OS !== "ios" ? theme.ui.colors.primary : undefined} />

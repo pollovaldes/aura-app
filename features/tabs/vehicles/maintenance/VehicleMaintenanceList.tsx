@@ -143,32 +143,6 @@ export function VehicleMaintenanceList() {
     }
   };
 
-  const handleDeleteMaintenance = async (maintenanceId: string) => {
-    Alert.alert("Confirmación", `¿Estás seguro de eliminar esta solicitud de mantenimiento?`, [
-      { text: "Cancelar", style: "cancel" },
-      {
-        text: "Eliminar",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            const { error } = await supabase.from("maintenance_records").delete().eq("id", maintenanceId);
-
-            if (error) {
-              console.error("Error deleting maintenance record:", error);
-              throw error;
-            }
-
-            await fetchMaintenance();
-            router.back();
-          } catch (error) {
-            console.error("Error deleting maintenance record:", error);
-            Alert.alert("Error", "No se pudo eliminar la solicitud de mantenimiento.");
-          }
-        },
-      },
-    ]);
-  };
-
   return (
     <>
       <Modal isOpen={activeModal === "create_maintenance_record"} close={() => setActiveModal(null)}>
