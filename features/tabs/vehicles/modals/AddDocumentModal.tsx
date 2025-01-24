@@ -1,17 +1,22 @@
 // ChangeImageModal.tsx
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Platform } from "react-native";
+import { View, Text, TouchableOpacity, Platform, Switch } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "@/components/Form/FormButton";
 import { supabase } from "@/lib/supabase";
 import FormInput from "@/components/Form/FormInput";
-import { ArrowUpFromLine, File, X } from "lucide-react-native";
+import { ArrowUpFromLine, File, User, UserRoundPen, Users, Users2, X } from "lucide-react-native";
 import * as FileSystem from "expo-file-system";
 import * as DocumentPicker from "expo-document-picker";
 import { decode } from "base64-arraybuffer";
 import { Vehicle } from "@/types/globalTypes";
 import Toast from "react-native-toast-message";
+import SegmentedControl from "@react-native-segmented-control/segmented-control";
+import GroupedList from "@/components/grouped-list/GroupedList";
+import Row from "@/components/grouped-list/Row";
+import { colorPalette } from "@/style/themes";
+import { RadioButton } from "@/components/radioButton/RadioButton";
 
 interface AddDocumentModalProps {
   closeModal: () => void;
@@ -27,6 +32,8 @@ export function AddDocumentModal({ closeModal, refreshDocuments, vehicle }: AddD
   const [documentDatabaseIsUploading, setDocumentDatabaseIsUploading] = useState(false);
   const [pickedDocument, setPickedDocument] = useState<DocumentPicker.DocumentPickerAsset | null>(null);
   const [documentPickingIsLoading, setDocumentPickingIsLoading] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedOption, setSelectedOption] = useState("all");
 
   const showToast = (title: string, caption: string) => {
     Toast.show({
@@ -128,6 +135,21 @@ export function AddDocumentModal({ closeModal, refreshDocuments, vehicle }: AddD
     closeModal();
   };
 
+  const handleRadioChange = async (option: string) => {
+    setSelectedOption(option);
+
+    switch (option) {
+      case "all":
+        break;
+      case "admin":
+        break;
+      case "custom":
+        break;
+      default:
+        console.warn("Invalid option");
+    }
+  };
+
   return (
     <View style={styles.section}>
       <View style={styles.group}>
@@ -135,57 +157,125 @@ export function AddDocumentModal({ closeModal, refreshDocuments, vehicle }: AddD
         <Text style={styles.subtitle}>Llena los campos para agregar un nuevo documento a este vehículo.</Text>
       </View>
       <View style={styles.group}>
-        <FormInput
-          placeholder="Ej. Seguro de auto"
-          inputMode="text"
-          style={styles.textInput}
-          placeholderTextColor={styles.textInput.placehoolderTextColor}
-          onChangeText={setDocumentTitle}
-          description="Nombre amigable del documento (obligatorio)"
-          editable={!documentDatabaseIsUploading && !documentIsUploading && !documentPickingIsLoading}
+        <SegmentedControl
+          values={["Archivo", "Permisos y visualización"]}
+          selectedIndex={selectedIndex}
+          onChange={(event) => setSelectedIndex(event.nativeEvent.selectedSegmentIndex)}
         />
-        <FormInput
-          placeholder="Ej. Póliza"
-          inputMode="text"
-          style={styles.textInput}
-          placeholderTextColor={styles.textInput.placehoolderTextColor}
-          onChangeText={setDocumentDescription}
-          description="Descripción del documento"
-          editable={!documentDatabaseIsUploading && !documentIsUploading && !documentPickingIsLoading}
-        />
-        <FormButton
-          title="Seleccionar archivo"
-          onPress={handlePickDocument}
-          isLoading={documentPickingIsLoading}
-          Icon={File}
-          isDisabled={documentIsUploading || documentDatabaseIsUploading || documentPickingIsLoading}
-        />
+      </View>
 
-        {pickedDocument && (
-          <View style={styles.filePreviewContainer}>
-            <View>
-              <TouchableOpacity onPress={() => setPickedDocument(null)}>
-                <X color={styles.fileIcon.color} />
-              </TouchableOpacity>
-            </View>
-            <View style={{ flexDirection: "row", gap: 6 }}>
-              <File color={styles.fileIcon.color} size={50} />
-              <View
-                style={{
-                  flexDirection: "column",
-                  justifyContent: "space-around",
-                  width: "75%",
-                }}
-              >
-                <Text style={styles.fileText} ellipsizeMode="middle" numberOfLines={2}>
-                  {pickedDocument.name}
-                </Text>
-                <Text style={styles.fileSubtitle}>{((pickedDocument.size ?? 0) / 1000000).toFixed(2)} MB</Text>
+      {selectedIndex === 0 ? (
+        <View style={styles.group}>
+          <FormInput
+            placeholder="Ej. Seguro de auto"
+            inputMode="text"
+            style={styles.textInput}
+            placeholderTextColor={styles.textInput.placehoolderTextColor}
+            onChangeText={setDocumentTitle}
+            value={documentTitle}
+            description="Nombre amigable del documento (obligatorio)"
+            editable={!documentDatabaseIsUploading && !documentIsUploading && !documentPickingIsLoading}
+          />
+          <FormInput
+            placeholder="Ej. Póliza"
+            inputMode="text"
+            style={styles.textInput}
+            placeholderTextColor={styles.textInput.placehoolderTextColor}
+            onChangeText={setDocumentDescription}
+            value={documentDescription}
+            description="Descripción del documento"
+            editable={!documentDatabaseIsUploading && !documentIsUploading && !documentPickingIsLoading}
+          />
+          <FormButton
+            title="Seleccionar archivo"
+            onPress={handlePickDocument}
+            isLoading={documentPickingIsLoading}
+            Icon={File}
+            isDisabled={documentIsUploading || documentDatabaseIsUploading || documentPickingIsLoading}
+          />
+
+          {pickedDocument && (
+            <View style={styles.filePreviewContainer}>
+              <View>
+                <TouchableOpacity onPress={() => setPickedDocument(null)}>
+                  <X color={styles.fileIcon.color} />
+                </TouchableOpacity>
+              </View>
+              <View style={{ flexDirection: "row", gap: 6 }}>
+                <File color={styles.fileIcon.color} size={50} />
+                <View
+                  style={{
+                    flexDirection: "column",
+                    justifyContent: "space-around",
+                    width: "75%",
+                  }}
+                >
+                  <Text style={styles.fileText} ellipsizeMode="middle" numberOfLines={2}>
+                    {pickedDocument.name}
+                  </Text>
+                  <Text style={styles.fileSubtitle}>{((pickedDocument.size ?? 0) / 1000000).toFixed(2)} MB</Text>
+                </View>
               </View>
             </View>
-          </View>
-        )}
-      </View>
+          )}
+        </View>
+      ) : (
+        <View style={styles.section}>
+          <GroupedList header="Permisos" isInModal>
+            <Row
+              icon={Users}
+              backgroundColor={colorPalette.cyan[500]}
+              title="Visible para todos"
+              caption="Todos los usuarios pueden ver este documento, pero solo los administradores pueden editarlo"
+              trailing={<RadioButton selected={selectedOption === "all"} onPress={() => handleRadioChange("all")} />}
+              onPress={() => handleRadioChange("all")}
+            />
+            <Row
+              icon={User}
+              backgroundColor={colorPalette.yellow[500]}
+              title="Solo administradores"
+              caption="Solo los administradores pueden ver y editar este documento"
+              trailing={
+                <RadioButton selected={selectedOption === "admin"} onPress={() => handleRadioChange("admin")} />
+              }
+              onPress={() => handleRadioChange("admin")}
+            />
+            <Row
+              icon={UserRoundPen}
+              backgroundColor={colorPalette.green[500]}
+              title="Personalizado"
+              caption="Selecciona los usuarios específicos que pueden ver y editar este documento"
+              trailing={
+                <RadioButton selected={selectedOption === "custom"} onPress={() => handleRadioChange("custom")} />
+              }
+              onPress={() => handleRadioChange("custom")}
+            />
+          </GroupedList>
+          {selectedOption === "custom" && (
+            <GroupedList header="Permisos" isInModal>
+              <Row
+                icon={Users}
+                backgroundColor={colorPalette.cyan[500]}
+                title="Visible para todos"
+                caption="Todos los usuarios pueden ver este documento, pero solo los administradores pueden editarlo"
+              />
+              <Row
+                icon={User}
+                backgroundColor={colorPalette.yellow[500]}
+                title="Solo administradores"
+                caption="Solo los administradores pueden ver y editar este documento"
+              />
+              <Row
+                icon={UserRoundPen}
+                backgroundColor={colorPalette.green[500]}
+                title="Personalizado"
+                caption="Selecciona los usuarios específicos que pueden ver y editar este documento"
+              />
+            </GroupedList>
+          )}
+        </View>
+      )}
+
       <View style={styles.group}>
         <FormButton
           Icon={ArrowUpFromLine}
@@ -207,11 +297,15 @@ export function AddDocumentModal({ closeModal, refreshDocuments, vehicle }: AddD
 const stylesheet = createStyleSheet((theme) => ({
   section: {
     gap: theme.marginsComponents.section,
-    alignItems: "center",
   },
   group: {
     gap: theme.marginsComponents.group,
     width: "100%",
+  },
+  groupedListInModalContainer: {
+    backgroundColor: theme.ui.colors.card,
+    paddingVertical: 16,
+    borderRadius: 6,
   },
   subtitle: {
     color: theme.textPresets.main,

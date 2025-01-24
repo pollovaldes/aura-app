@@ -28,7 +28,11 @@ export default function Modal({ isOpen, close, children, ...rest }: ModalProps) 
     <RNModal visible={isOpen} transparent animationType="none" statusBarTranslucent {...rest}>
       <View style={styles.container}>
         <Animated.View style={styles.overlay} entering={FadeIn.duration(100)} />
-        <KeyboardAvoidingView style={styles.keyboardAvoider} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+        <KeyboardAvoidingView
+          style={styles.keyboardAvoider}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          enabled={Platform.OS !== "web"}
+        >
           <ScrollView
             contentContainerStyle={styles.scrollContentContainer}
             keyboardShouldPersistTaps="handled"

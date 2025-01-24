@@ -321,8 +321,8 @@ export function VehicleMaintenanceDetails() {
 
 const stylesheet = createStyleSheet((theme) => ({
   segmentedControl: {
-    width: "97%",
-    margin: "auto",
+    width: "98.5%",
+    marginHorizontal: "auto",
     marginVertical: 6,
   },
   groupedListsContainer: {

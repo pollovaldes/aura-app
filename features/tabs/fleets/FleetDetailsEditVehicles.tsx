@@ -154,8 +154,8 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.headerButtons.color,
   },
   segmentedControl: {
-    width: "97%",
-    margin: "auto",
+    width: "98.5%",
+    marginHorizontal: "auto",
     marginVertical: 6,
   },
 }));

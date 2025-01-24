@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, Text, View, Platform, Alert } from "react-native";
-import { Stack, useLocalSearchParams, router } from "expo-router";
+import { FlatList, Text, View, Platform } from "react-native";
+import { Stack, useLocalSearchParams } from "expo-router";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
-import { Download, FilterIcon, Plus, RotateCw, Trash } from "lucide-react-native";
+import { Download, FilterIcon, Plus, RotateCw } from "lucide-react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
@@ -14,12 +14,10 @@ import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import { useVehicles } from "@/hooks/truckHooks/useVehicle";
-import { colorPalette } from "@/style/themes";
 import { formatDate } from "@/features/global/functions/formatDate";
 import { AddMaintenanceModal } from "../modals/AddMaintenanceModal";
 import useProfile from "@/hooks/useProfile";
 import useMaintenance from "@/hooks/useMaintenance";
-import { supabase } from "@/lib/supabase";
 
 type ModalType = "create_maintenance_record" | null;
 
@@ -113,7 +111,6 @@ export function VehicleMaintenanceList() {
       </>
     );
   }
-
   if (!maintenanceRecords) {
     return (
       <ErrorScreen
@@ -225,9 +222,9 @@ export function VehicleMaintenanceList() {
 
 const stylesheet = createStyleSheet((theme) => ({
   segmentedControl: {
-    width: "97%",
+    width: "98.5%",
     marginHorizontal: "auto",
-    marginBottom: 6,
+    marginVertical: 6,
   },
   modalContainer: {
     width: "100%",

@@ -20,6 +20,7 @@ interface RowProps {
   hideChevron?: boolean;
   hasTouchableFeedback?: boolean;
   show?: boolean;
+  isInModal?: boolean;
 }
 
 const Row = ({
@@ -36,6 +37,7 @@ const Row = ({
   hideChevron = false,
   hasTouchableFeedback = true,
   show = true,
+  isInModal = false,
 }: RowProps) => {
   const { styles, theme } = useStyles(stylesheet);
   const [isHovered, setIsHovered] = useState(false);
@@ -43,7 +45,7 @@ const Row = ({
   if (!show) return;
 
   if (children) {
-    return <View style={[styles.container, style]}>{children}</View>;
+    return <View style={[styles.container(isInModal), style]}>{children}</View>;
   }
 
   return (
@@ -53,7 +55,7 @@ const Row = ({
       onHoverIn={() => hasTouchableFeedback && setIsHovered(true)}
       onHoverOut={() => hasTouchableFeedback && setIsHovered(false)}
       style={({ pressed }) => [
-        styles.container,
+        styles.container(isInModal),
         style,
         { opacity: disabled ? 0.6 : 1 },
         hasTouchableFeedback && isHovered && styles.containerHovered,
@@ -74,7 +76,7 @@ const Row = ({
       {isLoading ? (
         <ActivityIndicator color={Platform.OS !== "ios" ? theme.ui.colors.primary : undefined} />
       ) : trailing ? (
-        <View>{trailing}</View>
+        <View style={styles.trailingPadding}>{trailing}</View>
       ) : (
         !hideChevron && <MaterialIcons name="chevron-right" size={24} color="#c4c4c7" />
       )}
@@ -83,15 +85,15 @@ const Row = ({
 };
 
 const stylesheet = createStyleSheet((theme, runtime) => ({
-  container: {
+  container: (isInModal: boolean) => ({
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 10,
     paddingHorizontal: 16,
-    backgroundColor: theme.ui.colors.card,
+    backgroundColor: isInModal ? theme.components.groupedListInModal.backgroundColor : theme.ui.colors.card,
     borderBottomWidth: runtime.hairlineWidth,
     borderColor: theme.ui.colors.border,
-  },
+  }),
   containerWide: {
     flexDirection: "column",
     padding: 20,
@@ -117,6 +119,9 @@ const stylesheet = createStyleSheet((theme, runtime) => ({
   caption: {
     fontSize: 14,
     color: theme.textPresets.subtitle,
+  },
+  trailingPadding: {
+    paddingLeft: 12,
   },
 }));
 

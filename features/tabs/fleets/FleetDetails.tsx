@@ -174,8 +174,8 @@ const stylesheet = createStyleSheet((theme) => ({
     marginBottom: 36,
   },
   segmentedControl: {
-    width: "97%",
-    margin: "auto",
+    width: "98.5%",
+    marginHorizontal: "auto",
     marginVertical: 6,
   },
   userText: {

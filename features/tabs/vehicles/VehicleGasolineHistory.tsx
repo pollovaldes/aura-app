@@ -14,7 +14,6 @@ import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "@/components/Form/FormButton";
 import StatusChip from "@/components/General/StatusChip";
 
-// Move to types/gasoline.ts
 type GasolineLoad = {
   id: string;
   vehicle_id: string;
@@ -293,8 +292,8 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.headerButtons.color,
   },
   segmentedControl: {
-    width: "97%",
-    margin: "auto",
-    marginBottom: 6,
+    width: "98.5%",
+    marginHorizontal: "auto",
+    marginVertical: 6,
   },
 }));

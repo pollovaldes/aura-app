@@ -24,6 +24,7 @@ import {
   Wrench,
   Images,
   TruckIcon,
+  Eye,
 } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import { supabase } from "@/lib/supabase";
@@ -203,6 +204,17 @@ export function VehicleDetails() {
                 icon={Waypoints}
                 backgroundColor={colorPalette.sky[500]}
               />
+            </GroupedList>
+          </View>
+          <View style={styles.groupedListContainer}>
+            <GroupedList header="Administración del vehículo">
+              <Row
+                title="Visualización del vehículo"
+                onPress={() => router.push(`./manage_fleets`, { relativeToDirectory: true })}
+                icon={Eye}
+                backgroundColor={colorPalette.yellow[500]}
+                show={canEditVehicle}
+              />
               <Row
                 title="Administrar flotillas"
                 onPress={() => router.push(`./manage_fleets`, { relativeToDirectory: true })}
@@ -212,6 +224,7 @@ export function VehicleDetails() {
               />
             </GroupedList>
           </View>
+
           <View style={styles.groupedListContainer}>
             <GroupedList header="Zona de peligro">
               <Row

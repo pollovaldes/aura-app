@@ -118,7 +118,7 @@ export const colorPalette = {
     "800": "#854d0e",
     "900": "#713f12",
     "950": "#422006",
-  }
+  },
 };
 
 export const lightTheme = {
@@ -169,6 +169,9 @@ export const lightTheme = {
     },
     toast: {
       backgroundColor: colorPalette.neutral[200],
+    },
+    groupedListInModal: {
+      backgroundColor: colorPalette.neutral[100],
     },
   },
   textInput: {
@@ -238,6 +241,9 @@ export const darkTheme = {
     },
     toast: {
       backgroundColor: colorPalette.neutral[800],
+    },
+    groupedListInModal: {
+      backgroundColor: colorPalette.neutral[900],
     },
   },
   textInput: {
