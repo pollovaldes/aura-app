@@ -82,7 +82,7 @@ const stylesheet = createStyleSheet((theme, runtime) => ({
     paddingTop: Platform.OS === "ios" ? runtime.insets.top : 60,
   },
   modalCard: {
-    maxWidth: 550,
+    maxWidth: 620,
     width: runtime.screen.width - 12,
     alignSelf: "center",
     backgroundColor: theme.ui.colors.card,

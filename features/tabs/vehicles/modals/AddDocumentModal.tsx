@@ -1,22 +1,42 @@
 // ChangeImageModal.tsx
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Platform, Switch } from "react-native";
+import { View, Text, TouchableOpacity, Platform, Switch, ScrollView, FlatList, Button } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import FormTitle from "@/app/auth/FormTitle";
 import { FormButton } from "@/components/Form/FormButton";
 import { supabase } from "@/lib/supabase";
 import FormInput from "@/components/Form/FormInput";
-import { ArrowUpFromLine, File, User, UserRoundPen, Users, Users2, X } from "lucide-react-native";
+import {
+  ArrowUpFromLine,
+  File,
+  RotateCw,
+  Scroll,
+  User as UserIcon,
+  UserRoundPen,
+  Users,
+  Users2,
+  X,
+} from "lucide-react-native";
 import * as FileSystem from "expo-file-system";
 import * as DocumentPicker from "expo-document-picker";
 import { decode } from "base64-arraybuffer";
-import { Vehicle } from "@/types/globalTypes";
+import { Fleet, User, Vehicle } from "@/types/globalTypes";
 import Toast from "react-native-toast-message";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import GroupedList from "@/components/grouped-list/GroupedList";
 import Row from "@/components/grouped-list/Row";
 import { colorPalette } from "@/style/themes";
 import { RadioButton } from "@/components/radioButton/RadioButton";
+import { useFleets } from "@/hooks/useFleets";
+import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
+import EmptyScreen from "@/components/dataStates/EmptyScreen";
+import ErrorScreen from "@/components/dataStates/ErrorScreen";
+import { SimpleList } from "@/components/simpleList/SimpleList";
+import UserThumbnail from "@/components/people/UserThumbnail";
+import { getRoleLabel } from "@/features/global/functions/getRoleLabel";
+import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
+import { ActionButton } from "@/components/actionButton/ActionButton";
+import Form from "@/app/auth/Form";
 
 interface AddDocumentModalProps {
   closeModal: () => void;
@@ -34,6 +54,7 @@ export function AddDocumentModal({ closeModal, refreshDocuments, vehicle }: AddD
   const [documentPickingIsLoading, setDocumentPickingIsLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState("all");
+  const { areFleetsLoading, fetchFleets, fleets } = useFleets();
 
   const showToast = (title: string, caption: string) => {
     Toast.show({
@@ -150,6 +171,28 @@ export function AddDocumentModal({ closeModal, refreshDocuments, vehicle }: AddD
     }
   };
 
+  const findUsersByVehicleID = (fleets: Fleet[] | null, vehicleID: string): User[] | null => {
+    if (!fleets) return null;
+
+    // Filter fleets that contain the vehicleID in fleets_vehicles
+    const matchingFleets = fleets.filter((fleet) =>
+      fleet.vehicles.some((fleetVehicle) => fleetVehicle.id === vehicleID)
+    );
+
+    console.log("Matching Fleets:", matchingFleets); // Debugging
+
+    // Extract users from the matching fleets
+    const users = matchingFleets.flatMap((fleet) => fleet.users);
+
+    console.log("Found Users:", users); // Debugging
+
+    return users.length > 0 ? users : null;
+  };
+
+  const users = findUsersByVehicleID(fleets, vehicle.id);
+
+  console.log(vehicle.id);
+
   return (
     <View style={styles.section}>
       <View style={styles.group}>
@@ -226,12 +269,12 @@ export function AddDocumentModal({ closeModal, refreshDocuments, vehicle }: AddD
               icon={Users}
               backgroundColor={colorPalette.cyan[500]}
               title="Visible para todos"
-              caption="Todos los usuarios pueden ver este documento, pero solo los administradores pueden editarlo"
+              caption="Todos los usuarios de la flotilla pueden ver este documento, pero solo los administradores pueden editarlo"
               trailing={<RadioButton selected={selectedOption === "all"} onPress={() => handleRadioChange("all")} />}
               onPress={() => handleRadioChange("all")}
             />
             <Row
-              icon={User}
+              icon={UserIcon}
               backgroundColor={colorPalette.yellow[500]}
               title="Solo administradores"
               caption="Solo los administradores pueden ver y editar este documento"
@@ -244,34 +287,101 @@ export function AddDocumentModal({ closeModal, refreshDocuments, vehicle }: AddD
               icon={UserRoundPen}
               backgroundColor={colorPalette.green[500]}
               title="Personalizado"
-              caption="Selecciona los usuarios específicos que pueden ver y editar este documento"
+              caption="Espceifica los usuarios de la flotilla que pueden ver y editar este documento"
               trailing={
                 <RadioButton selected={selectedOption === "custom"} onPress={() => handleRadioChange("custom")} />
               }
               onPress={() => handleRadioChange("custom")}
             />
           </GroupedList>
+
           {selectedOption === "custom" && (
-            <GroupedList header="Permisos" isInModal>
-              <Row
-                icon={Users}
-                backgroundColor={colorPalette.cyan[500]}
-                title="Visible para todos"
-                caption="Todos los usuarios pueden ver este documento, pero solo los administradores pueden editarlo"
-              />
-              <Row
-                icon={User}
-                backgroundColor={colorPalette.yellow[500]}
-                title="Solo administradores"
-                caption="Solo los administradores pueden ver y editar este documento"
-              />
-              <Row
-                icon={UserRoundPen}
-                backgroundColor={colorPalette.green[500]}
-                title="Personalizado"
-                caption="Selecciona los usuarios específicos que pueden ver y editar este documento"
-              />
-            </GroupedList>
+            <>
+              <GroupedList isInModal header="Usuarios">
+                <Row>
+                  <View style={styles.fleetLoadingContainer}>
+                    {Platform.OS !== "ios" && (
+                      <ActionButtonGroup>
+                        <ActionButton Icon={RotateCw} text="Actualizar" onPress={fetchFleets} />
+                      </ActionButtonGroup>
+                    )}
+                    {areFleetsLoading ? (
+                      <FetchingIndicator caption="Obteniendo flotillas" isInModal />
+                    ) : !fleets ? (
+                      <ErrorScreen
+                        caption="No se encontraron flotillas"
+                        retryFunction={fetchFleets}
+                        buttonCaption="Reintentar"
+                      />
+                    ) : !users ? (
+                      <EmptyScreen
+                        caption="No hay ningún usuario asociado a las flotillas que incluyan este vehículo."
+                        retryFunction={fetchFleets}
+                        buttonCaption="Reintentar"
+                      />
+                    ) : (
+                      <ScrollView
+                        style={{ flex: 1 }}
+                        contentContainerStyle={{ width: "100%" }}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        scrollEnabled={false}
+                      >
+                        <FlatList
+                          contentInsetAdjustmentBehavior="automatic"
+                          data={users}
+                          keyExtractor={(item) => item.id}
+                          refreshing={areFleetsLoading}
+                          onRefresh={fetchFleets}
+                          renderItem={({ item }) => (
+                            <SimpleList
+                              hideChevron
+                              relativeToDirectory
+                              trailing={
+                                <View style={{ flexDirection: "column", gap: 16 }}>
+                                  <View
+                                    style={{
+                                      flexDirection: "row",
+                                      alignContent: "center",
+                                      alignItems: "center",
+                                      gap: 8,
+                                    }}
+                                  >
+                                    <RadioButton selected={true} onPress={() => {}} />
+                                    <Text style={styles.listSubtitle}>Solo ver</Text>
+                                  </View>
+                                  <View
+                                    style={{
+                                      flexDirection: "row",
+                                      alignContent: "center",
+                                      alignItems: "center",
+                                      gap: 8,
+                                    }}
+                                  >
+                                    <RadioButton selected={true} onPress={() => {}} />
+                                    <Text style={styles.listSubtitle}>Ver y editar</Text>
+                                  </View>
+                                </View>
+                              }
+                              leading={<UserThumbnail userId={item.id} size={60} />}
+                              content={
+                                <>
+                                  <Text
+                                    style={styles.listText}
+                                  >{`${item.name} ${item.father_last_name} ${item.mother_last_name}`}</Text>
+                                  <Text style={styles.listSubtitle}>{`Rol: ${getRoleLabel(item.role)}`}</Text>
+                                </>
+                              }
+                            />
+                          )}
+                          ListEmptyComponent={<EmptyScreen caption="Ninguna flotilla por aquí." />}
+                        />
+                      </ScrollView>
+                    )}
+                  </View>
+                </Row>
+              </GroupedList>
+            </>
           )}
         </View>
       )}
@@ -360,5 +470,19 @@ const stylesheet = createStyleSheet((theme) => ({
     padding: 12,
     flexDirection: "row-reverse",
     justifyContent: "space-between",
+  },
+  fleetLoadingContainer: {
+    width: "100%",
+    height: 450,
+    backgroundColor: theme.components.groupedListInModal.backgroundColor,
+    borderRadius: 10,
+  },
+  listText: {
+    fontSize: 18,
+    color: theme.textPresets.main,
+  },
+  listSubtitle: {
+    color: theme.textPresets.subtitle,
+    fontSize: 15,
   },
 }));

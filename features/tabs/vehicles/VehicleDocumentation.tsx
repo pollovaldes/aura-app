@@ -89,31 +89,6 @@ export function VehicleDocumentation() {
   const associatedDocuments = documents.filter((doc) => doc.vehicle_id === vehicleId);
   const canEdit = profile.role === "ADMIN" || profile.role === "OWNER";
 
-  const deleteVehicle = async () => {
-    Alert.alert(
-      "Confirmación",
-      `¿Estás seguro de eliminar el vehículo "${vehicle.brand ?? ""} ${vehicle.sub_brand ?? ""} (${vehicle.year ?? ""})"?\nEsta acción borrará permanentemente sus rutas, historiales, documentos, etc.`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Eliminar",
-          style: "destructive",
-          onPress: async () => {
-            const { error } = await supabase.from("vehicles").delete().eq("id", vehicleId);
-
-            if (error) {
-              console.error("Error deleting vehicle:", error);
-              throw error;
-            }
-
-            fetchVehicle();
-            router.back();
-          },
-        },
-      ]
-    );
-  };
-
   return (
     <>
       <Modal isOpen={activeModal === "add_document"} close={closeModal}>

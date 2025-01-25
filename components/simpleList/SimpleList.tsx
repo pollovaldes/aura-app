@@ -5,7 +5,7 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { ChevronRight } from "lucide-react-native";
 
 interface SimpleListProps extends Partial<LinkProps> {
-  href?: string; // Optional href
+  href?: string;
   leading?: ReactNode;
   content?: ReactNode;
   trailing?: ReactNode;
@@ -32,7 +32,11 @@ export const SimpleList: React.FC<SimpleListProps> = ({
       onPressOut={() => setIsPressed(false)}
     >
       <View
-        style={[styles.container, isHovered && styles.containerHovered, href && isPressed && styles.containerPressed]}
+        style={[
+          styles.container,
+          href && isHovered && styles.containerHovered,
+          href && isPressed && styles.containerPressed,
+        ]}
       >
         {leading && <View style={styles.leading}>{leading}</View>}
         {content && <View style={styles.content}>{content}</View>}

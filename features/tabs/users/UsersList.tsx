@@ -54,9 +54,6 @@ export default function UsersList() {
 const stylesheet = createStyleSheet((theme) => ({
   listText: {
     fontSize: 18,
-    paddingLeft: 10,
     color: theme.textPresets.main,
-    flexShrink: 1,
-    marginRight: 18,
   },
 }));
