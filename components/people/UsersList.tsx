@@ -35,6 +35,7 @@ export default function UsersList() {
       <Stack.Screen
         options={{
           title: "Personas",
+          headerLargeTitle: true,
         }}
       />
       <FlatList

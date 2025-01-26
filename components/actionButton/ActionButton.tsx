@@ -44,7 +44,7 @@ export function ActionButton({
         {Icon ? (
           <Icon color={styles.icon.color} size={styles.icon.fontSize} />
         ) : (
-          <Text style={styles.text} selectable={false}>
+          <Text style={styles.text} selectable={false} allowFontScaling={false}>
             {text}
           </Text>
         )}
@@ -93,10 +93,10 @@ const stylesheet = createStyleSheet((theme, runtime) => ({
     backgroundColor: theme.components.plainList.pressed,
   },
   text: {
-    color: theme.headerButtons.color,
+    color: Platform.OS === "ios" ? theme.ui.colors.primary : theme.colors.inverted,
     fontSize: Platform.select({
-      ios: 16,
-      android: 16,
+      ios: 18,
+      android: 18,
       web: 15,
     }),
   },

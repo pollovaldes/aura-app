@@ -1,5 +1,3 @@
-// RadioButton.tsx
-
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";

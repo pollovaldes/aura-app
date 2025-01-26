@@ -7,6 +7,7 @@ import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import UserThumbnail from "@/components/people/UserThumbnail";
 import { SimpleList } from "@/components/simpleList/SimpleList";
 import { VehicleThumbnail } from "@/components/vehicles/VehicleThumbnail";
+import { getRoleLabel } from "@/features/global/functions/getRoleLabel";
 import { useFleets } from "@/hooks/useFleets";
 import useProfile from "@/hooks/useProfile";
 import { User, Vehicle } from "@/types/globalTypes";
@@ -40,51 +41,16 @@ export default function FleetDetails() {
 
   if (fleets.length === 0) {
     return (
-      <>
-        <UnauthorizedScreen
-          caption="No tienes acceso a este recurso"
-          buttonCaption="Reintentar"
-          retryFunction={fetchFleets}
-        />
-        <Stack.Screen
-          options={{
-            title: "Error",
-            headerRight: undefined,
-            headerLargeTitle: false,
-          }}
-        />
-      </>
+      <UnauthorizedScreen
+        caption="No tienes acceso a este recurso"
+        buttonCaption="Reintentar"
+        retryFunction={fetchFleets}
+      />
     );
   }
 
-  const capitalizeWords = (text: string | null | undefined): string => {
-    if (!text) return "";
-    return text
-      .toLowerCase()
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
-
   const canAddFleet = profile.role === "ADMIN" || profile.role === "OWNER";
   const fleet = fleets[0];
-
-  const getRoleLabel = (role: string) => {
-    switch (role) {
-      case "ADMIN":
-        return "Administrador";
-      case "DRIVER":
-        return "Conductor";
-      case "BANNED":
-        return "Bloqueado";
-      case "NO_ROLE":
-        return "Sin rol";
-      case "OWNER":
-        return "Dueño";
-      default:
-        return "Indefinido";
-    }
-  };
 
   return (
     <>
@@ -113,6 +79,7 @@ export default function FleetDetails() {
           ),
         }}
       />
+
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
         data={currentTabIndex === 0 ? (fleet.users as User[]) : (fleet.vehicles as Vehicle[])}

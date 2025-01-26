@@ -49,6 +49,7 @@ export default function FleetsList() {
       <Stack.Screen
         options={{
           title: "Flotillas",
+          headerLargeTitle: true,
           headerRight: () => (
             <ActionButtonGroup>
               <ActionButton
