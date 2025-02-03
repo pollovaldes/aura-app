@@ -118,6 +118,8 @@ export function VehiclesList() {
                 <Text style={styles.itemTitle}>
                   {`${item.brand ?? "N/A"} ${item.sub_brand ?? "N/A"} (${item.year ?? "N/A"})`}
                 </Text>
+                <Text style={styles.itemTitle}>
+                </Text>
                 <Text style={styles.itemDetails}>
                   {`Placa: ${item.plate ?? "N/A"}\nNúmero económico: ${item.economic_number ?? "N/A"}\nNúmero de serie: ${item.serial_number ?? "N/A"}`}
                 </Text>

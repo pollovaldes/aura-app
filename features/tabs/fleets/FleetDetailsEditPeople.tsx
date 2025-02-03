@@ -135,7 +135,7 @@ export default function FleetDetailsEditPeople() {
   );
 }
 
-const stylesheet = createStyleSheet((theme) => ({
+const stylesheet = createStyleSheet((theme, runtime) => ({
   listContainer: {
     justifyContent: "space-between",
     flexDirection: "row",
@@ -219,7 +219,7 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.headerButtons.color,
   },
   segmentedControl: {
-    width: "98.5%",
+    width: runtime.screen.width >= 750 ? 520 : "98.5%",
     marginHorizontal: "auto",
     marginVertical: 6,
   },

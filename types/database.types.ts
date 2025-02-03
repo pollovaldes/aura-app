@@ -9,85 +9,55 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      break_events: {
+      event: {
         Row: {
           description: string
+          ended_at: string | null
+          ending_latitude: number
+          ending_longitude: number
+          event_type: Database["public"]["Enums"]["event_type"]
+          fuel_cost: number | null
+          fuel_liters: number | null
           id: string
-          route_event_id: string
+          is_ongoing: boolean
+          mileage: number | null
+          started_at: string
+          starting_latitude: number
+          starting_longitude: number
         }
         Insert: {
           description: string
-          id: string
-          route_event_id: string
+          ended_at?: string | null
+          ending_latitude: number
+          ending_longitude: number
+          event_type: Database["public"]["Enums"]["event_type"]
+          fuel_cost?: number | null
+          fuel_liters?: number | null
+          id?: string
+          is_ongoing?: boolean
+          mileage?: number | null
+          started_at?: string
+          starting_latitude: number
+          starting_longitude: number
         }
         Update: {
           description?: string
+          ended_at?: string | null
+          ending_latitude?: number
+          ending_longitude?: number
+          event_type?: Database["public"]["Enums"]["event_type"]
+          fuel_cost?: number | null
+          fuel_liters?: number | null
           id?: string
-          route_event_id?: string
+          is_ongoing?: boolean
+          mileage?: number | null
+          started_at?: string
+          starting_latitude?: number
+          starting_longitude?: number
         }
-        Relationships: [
-          {
-            foreignKeyName: "break_events_route_event_id_fkey"
-            columns: ["route_event_id"]
-            isOneToOne: false
-            referencedRelation: "route_events"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
-      emergency_events: {
-        Row: {
-          description: string
-          id: string
-          route_event_id: string
-        }
-        Insert: {
-          description: string
-          id: string
-          route_event_id: string
-        }
-        Update: {
-          description?: string
-          id?: string
-          route_event_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "emergency_events_route_event_id_fkey"
-            columns: ["route_event_id"]
-            isOneToOne: false
-            referencedRelation: "route_events"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      failure_events: {
-        Row: {
-          description: string
-          id: string
-          route_event_id: string
-        }
-        Insert: {
-          description: string
-          id: string
-          route_event_id: string
-        }
-        Update: {
-          description?: string
-          id?: string
-          route_event_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "failure_events_route_event_id_fkey"
-            columns: ["route_event_id"]
-            isOneToOne: false
-            referencedRelation: "route_events"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      fleets: {
+      fleet: {
         Row: {
           description: string
           id: string
@@ -104,149 +74,6 @@ export type Database = {
           title?: string
         }
         Relationships: []
-      }
-      fleets_users: {
-        Row: {
-          fleet_id: string
-          relation_id: number
-          user_id: string
-        }
-        Insert: {
-          fleet_id: string
-          relation_id?: number
-          user_id: string
-        }
-        Update: {
-          fleet_id?: string
-          relation_id?: number
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "fleets_users_fleet_id_fkey"
-            columns: ["fleet_id"]
-            isOneToOne: false
-            referencedRelation: "fleets"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fleets_users_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      fleets_vehicles: {
-        Row: {
-          fleet_id: string
-          relation_id: string
-          vehicle_id: string
-        }
-        Insert: {
-          fleet_id: string
-          relation_id?: string
-          vehicle_id: string
-        }
-        Update: {
-          fleet_id?: string
-          relation_id?: string
-          vehicle_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "fleets_vehicles_fleet_id_fkey"
-            columns: ["fleet_id"]
-            isOneToOne: false
-            referencedRelation: "fleets"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fleets_vehicles_vehicle_id_fkey"
-            columns: ["vehicle_id"]
-            isOneToOne: false
-            referencedRelation: "vehicles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      gasoline_loads: {
-        Row: {
-          amount: number
-          approved_at: string | null
-          approved_by: string | null
-          id: string
-          is_admin_override: boolean | null
-          liters: number
-          rejected_at: string | null
-          rejected_by: string | null
-          rejection_reason: string | null
-          requested_at: string | null
-          status: string
-          user_id: string
-          vehicle_id: string
-        }
-        Insert: {
-          amount: number
-          approved_at?: string | null
-          approved_by?: string | null
-          id?: string
-          is_admin_override?: boolean | null
-          liters?: number
-          rejected_at?: string | null
-          rejected_by?: string | null
-          rejection_reason?: string | null
-          requested_at?: string | null
-          status?: string
-          user_id: string
-          vehicle_id: string
-        }
-        Update: {
-          amount?: number
-          approved_at?: string | null
-          approved_by?: string | null
-          id?: string
-          is_admin_override?: boolean | null
-          liters?: number
-          rejected_at?: string | null
-          rejected_by?: string | null
-          rejection_reason?: string | null
-          requested_at?: string | null
-          status?: string
-          user_id?: string
-          vehicle_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "gasoline_loads_approved_by_fkey"
-            columns: ["approved_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "gasoline_loads_rejected_by_fkey"
-            columns: ["rejected_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "gasoline_loads_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "gasoline_loads_vehicle_id_fkey"
-            columns: ["vehicle_id"]
-            isOneToOne: false
-            referencedRelation: "vehicles"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       maintenance: {
         Row: {
@@ -287,52 +114,61 @@ export type Database = {
             foreignKeyName: "maintenance_issued_by_fkey"
             columns: ["issued_by"]
             isOneToOne: false
-            referencedRelation: "profiles"
+            referencedRelation: "profile"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "maintenance_resolved_by_fkey"
             columns: ["resolved_by"]
             isOneToOne: false
-            referencedRelation: "profiles"
+            referencedRelation: "profile"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "maintenance_vehicle_id_fkey"
             columns: ["vehicle_id"]
             isOneToOne: false
-            referencedRelation: "vehicles"
+            referencedRelation: "vehicle"
             referencedColumns: ["id"]
           },
         ]
       }
-      other_events: {
+      maintenance_document: {
         Row: {
-          description: string
-          id: string
-          route_event_id: string
+          created_at: string
+          description: string | null
+          document_id: string
+          maintenance_id: string
+          title: string | null
+          vehicle_id: string
         }
         Insert: {
-          description: string
-          id: string
-          route_event_id: string
+          created_at: string
+          description?: string | null
+          document_id?: string
+          maintenance_id: string
+          title?: string | null
+          vehicle_id: string
         }
         Update: {
-          description?: string
-          id?: string
-          route_event_id?: string
+          created_at?: string
+          description?: string | null
+          document_id?: string
+          maintenance_id?: string
+          title?: string | null
+          vehicle_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "other_events_route_event_id_fkey"
-            columns: ["route_event_id"]
+            foreignKeyName: "vehicle_maintenance_documentation_vehicle_id_fkey"
+            columns: ["vehicle_id"]
             isOneToOne: false
-            referencedRelation: "route_events"
+            referencedRelation: "vehicle"
             referencedColumns: ["id"]
           },
         ]
       }
-      profiles: {
+      profile: {
         Row: {
           birthday: string | null
           father_last_name: string | null
@@ -368,163 +204,58 @@ export type Database = {
         }
         Relationships: []
       }
-      refueling_events: {
-        Row: {
-          cost: number
-          fuel_amount: number
-          id: string
-          mileage: number
-          route_event_id: string
-        }
-        Insert: {
-          cost: number
-          fuel_amount: number
-          id?: string
-          mileage: number
-          route_event_id?: string
-        }
-        Update: {
-          cost?: number
-          fuel_amount?: number
-          id?: string
-          mileage?: number
-          route_event_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "refueling_events_route_event_id_fkey"
-            columns: ["route_event_id"]
-            isOneToOne: false
-            referencedRelation: "route_events"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      role_change_request: {
-        Row: {
-          new_role: Database["public"]["Enums"]["roles"]
-          previous_role: Database["public"]["Enums"]["roles"]
-          request_date: string
-          request_status: Database["public"]["Enums"]["role_change_status"]
-          role_change_request_id: string
-          user_id: string
-        }
-        Insert: {
-          new_role: Database["public"]["Enums"]["roles"]
-          previous_role: Database["public"]["Enums"]["roles"]
-          request_date: string
-          request_status: Database["public"]["Enums"]["role_change_status"]
-          role_change_request_id?: string
-          user_id: string
-        }
-        Update: {
-          new_role?: Database["public"]["Enums"]["roles"]
-          previous_role?: Database["public"]["Enums"]["roles"]
-          request_date?: string
-          request_status?: Database["public"]["Enums"]["role_change_status"]
-          role_change_request_id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "role_change_request_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      route_events: {
-        Row: {
-          ended_at: string | null
-          ended_location_latitude: number | null
-          ended_location_longitude: number | null
-          event_type: Database["public"]["Enums"]["route_event"]
-          id: string
-          route_id: string
-          started_at: string
-          started_location_latitude: number
-          started_location_longitude: number
-        }
-        Insert: {
-          ended_at?: string | null
-          ended_location_latitude?: number | null
-          ended_location_longitude?: number | null
-          event_type: Database["public"]["Enums"]["route_event"]
-          id?: string
-          route_id?: string
-          started_at: string
-          started_location_latitude: number
-          started_location_longitude: number
-        }
-        Update: {
-          ended_at?: string | null
-          ended_location_latitude?: number | null
-          ended_location_longitude?: number | null
-          event_type?: Database["public"]["Enums"]["route_event"]
-          id?: string
-          route_id?: string
-          started_at?: string
-          started_location_latitude?: number
-          started_location_longitude?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "route_events_route_id_fkey"
-            columns: ["route_id"]
-            isOneToOne: false
-            referencedRelation: "routes"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      routes: {
+      route: {
         Row: {
           description: string
-          ended_address: string | null
           ended_at: string | null
-          ended_location_latitude: number | null
-          ended_location_longitude: number | null
+          ending_address: string | null
+          ending_latitude: number | null
+          ending_longitude: number | null
+          ending_mileage: number | null
           id: string
           is_active: boolean
-          started_address: string
+          purpose: string
           started_at: string
-          started_location_latitude: number
-          started_location_longitude: number
-          title: string
+          starting_adress: string
+          starting_latitude: number
+          starting_longitude: number
+          starting_mileage: number
           user_id: string
           vehicle_id: string
         }
         Insert: {
           description: string
-          ended_address?: string | null
           ended_at?: string | null
-          ended_location_latitude?: number | null
-          ended_location_longitude?: number | null
+          ending_address?: string | null
+          ending_latitude?: number | null
+          ending_longitude?: number | null
+          ending_mileage?: number | null
           id?: string
           is_active?: boolean
-          started_address: string
+          purpose: string
           started_at: string
-          started_location_latitude: number
-          started_location_longitude: number
-          title: string
+          starting_adress: string
+          starting_latitude: number
+          starting_longitude: number
+          starting_mileage: number
           user_id: string
           vehicle_id: string
         }
         Update: {
           description?: string
-          ended_address?: string | null
           ended_at?: string | null
-          ended_location_latitude?: number | null
-          ended_location_longitude?: number | null
+          ending_address?: string | null
+          ending_latitude?: number | null
+          ending_longitude?: number | null
+          ending_mileage?: number | null
           id?: string
           is_active?: boolean
-          started_address?: string
+          purpose?: string
           started_at?: string
-          started_location_latitude?: number
-          started_location_longitude?: number
-          title?: string
+          starting_adress?: string
+          starting_latitude?: number
+          starting_longitude?: number
+          starting_mileage?: number
           user_id?: string
           vehicle_id?: string
         }
@@ -533,49 +264,115 @@ export type Database = {
             foreignKeyName: "routes_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "profiles"
+            referencedRelation: "profile"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "routes_vehicle_id_fkey"
             columns: ["vehicle_id"]
             isOneToOne: false
-            referencedRelation: "vehicles"
+            referencedRelation: "vehicle"
             referencedColumns: ["id"]
           },
         ]
       }
-      user_fleet_add_request: {
+      route_event: {
         Row: {
-          created_at: string
-          fleet_to_be_added: string
-          reason: string
-          request_id: string
-          status: Database["public"]["Enums"]["user_fleet_add_request_status"]
-          who_requests: string
-          who_will_be_added: string
+          event_id: string
+          id: string
+          route_id: string
         }
         Insert: {
-          created_at: string
-          fleet_to_be_added: string
-          reason: string
-          request_id?: string
-          status?: Database["public"]["Enums"]["user_fleet_add_request_status"]
-          who_requests: string
-          who_will_be_added: string
+          event_id: string
+          id?: string
+          route_id: string
         }
         Update: {
-          created_at?: string
-          fleet_to_be_added?: string
-          reason?: string
-          request_id?: string
-          status?: Database["public"]["Enums"]["user_fleet_add_request_status"]
-          who_requests?: string
-          who_will_be_added?: string
+          event_id?: string
+          id?: string
+          route_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "route_event_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "route"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "route_event_id_fkey1"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "event"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_fleet: {
+        Row: {
+          fleet_id: string
+          relation_id: number
+          user_id: string
+        }
+        Insert: {
+          fleet_id: string
+          relation_id?: number
+          user_id: string
+        }
+        Update: {
+          fleet_id?: string
+          relation_id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fleets_users_fleet_id_fkey"
+            columns: ["fleet_id"]
+            isOneToOne: false
+            referencedRelation: "fleet"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fleets_users_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profile"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vehicle: {
+        Row: {
+          brand: string | null
+          economic_number: string | null
+          id: string
+          plate: string | null
+          serial_number: string | null
+          sub_brand: string | null
+          year: number | null
+        }
+        Insert: {
+          brand?: string | null
+          economic_number?: string | null
+          id?: string
+          plate?: string | null
+          serial_number?: string | null
+          sub_brand?: string | null
+          year?: number | null
+        }
+        Update: {
+          brand?: string | null
+          economic_number?: string | null
+          id?: string
+          plate?: string | null
+          serial_number?: string | null
+          sub_brand?: string | null
+          year?: number | null
         }
         Relationships: []
       }
-      vehicle_documentation_sheet: {
+      vehicle_document: {
         Row: {
           description: string | null
           document_id: string
@@ -599,257 +396,83 @@ export type Database = {
             foreignKeyName: "vehicle_documentation_sheet_vehicle_id_fkey"
             columns: ["vehicle_id"]
             isOneToOne: false
-            referencedRelation: "vehicles"
+            referencedRelation: "vehicle"
             referencedColumns: ["id"]
           },
         ]
       }
-      vehicle_gasoline_status_two: {
+      vehicle_fleet: {
         Row: {
-          gasoline_threshold: number | null
-          last_reset_date: string | null
-          remaining_gasoline: number | null
-          spent_gasoline: number | null
-          spent_liters: number | null
-          updated_at: string | null
+          fleet_id: string
+          relation_id: string
           vehicle_id: string
         }
         Insert: {
-          gasoline_threshold?: number | null
-          last_reset_date?: string | null
-          remaining_gasoline?: number | null
-          spent_gasoline?: number | null
-          spent_liters?: number | null
-          updated_at?: string | null
+          fleet_id: string
+          relation_id?: string
           vehicle_id: string
         }
         Update: {
-          gasoline_threshold?: number | null
-          last_reset_date?: string | null
-          remaining_gasoline?: number | null
-          spent_gasoline?: number | null
-          spent_liters?: number | null
-          updated_at?: string | null
+          fleet_id?: string
+          relation_id?: string
           vehicle_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "vehicle_gasoline_status_two_vehicle_id_fkey"
-            columns: ["vehicle_id"]
-            isOneToOne: true
-            referencedRelation: "vehicles"
+            foreignKeyName: "fleets_vehicles_fleet_id_fkey"
+            columns: ["fleet_id"]
+            isOneToOne: false
+            referencedRelation: "fleet"
             referencedColumns: ["id"]
           },
-        ]
-      }
-      vehicle_maintenance_documentation: {
-        Row: {
-          created_at: string
-          description: string | null
-          document_id: string
-          maintenance_id: string
-          title: string | null
-          vehicle_id: string
-        }
-        Insert: {
-          created_at: string
-          description?: string | null
-          document_id?: string
-          maintenance_id: string
-          title?: string | null
-          vehicle_id: string
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          document_id?: string
-          maintenance_id?: string
-          title?: string | null
-          vehicle_id?: string
-        }
-        Relationships: [
           {
-            foreignKeyName: "vehicle_maintenance_documentation_vehicle_id_fkey"
+            foreignKeyName: "fleets_vehicles_vehicle_id_fkey"
             columns: ["vehicle_id"]
             isOneToOne: false
-            referencedRelation: "vehicles"
+            referencedRelation: "vehicle"
             referencedColumns: ["id"]
           },
         ]
       }
-      vehicle_thresholds: {
+      vehicle_user_visibility: {
         Row: {
-          gasoline_threshold: number
-          liters_threshold: number
+          id: string
+          user_id: string
           vehicle_id: string
+          visible: boolean
         }
         Insert: {
-          gasoline_threshold?: number
-          liters_threshold?: number
+          id?: string
+          user_id: string
           vehicle_id: string
+          visible: boolean
         }
         Update: {
-          gasoline_threshold?: number
-          liters_threshold?: number
+          id?: string
+          user_id?: string
           vehicle_id?: string
+          visible?: boolean
         }
         Relationships: [
           {
-            foreignKeyName: "vehicle_thresholds_vehicle_id_fkey"
-            columns: ["vehicle_id"]
-            isOneToOne: true
-            referencedRelation: "vehicles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      vehicle_user: {
-        Row: {
-          relation_id: string
-          user_id: string | null
-          vehicle_id: string | null
-        }
-        Insert: {
-          relation_id?: string
-          user_id?: string | null
-          vehicle_id?: string | null
-        }
-        Update: {
-          relation_id?: string
-          user_id?: string | null
-          vehicle_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "vehicle_user_user_id_fkey"
+            foreignKeyName: "vehicle_user_visibility_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "profiles"
+            referencedRelation: "profile"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "vehicle_user_vehicle_id_fkey"
+            foreignKeyName: "vehicle_user_visibility_vehicle_id_fkey"
             columns: ["vehicle_id"]
             isOneToOne: false
-            referencedRelation: "vehicles"
+            referencedRelation: "vehicle"
             referencedColumns: ["id"]
           },
         ]
-      }
-      vehicles: {
-        Row: {
-          brand: string | null
-          economic_number: string | null
-          gasoline_threshold: number
-          id: string
-          plate: string | null
-          serial_number: string | null
-          sub_brand: string | null
-          year: number | null
-        }
-        Insert: {
-          brand?: string | null
-          economic_number?: string | null
-          gasoline_threshold?: number
-          id?: string
-          plate?: string | null
-          serial_number?: string | null
-          sub_brand?: string | null
-          year?: number | null
-        }
-        Update: {
-          brand?: string | null
-          economic_number?: string | null
-          gasoline_threshold?: number
-          id?: string
-          plate?: string | null
-          serial_number?: string | null
-          sub_brand?: string | null
-          year?: number | null
-        }
-        Relationships: []
       }
     }
     Views: {
-      gasoline_spent_per_day: {
-        Row: {
-          day_date: string | null
-          total_spent: number | null
-          vehicle_id: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "gasoline_loads_vehicle_id_fkey"
-            columns: ["vehicle_id"]
-            isOneToOne: false
-            referencedRelation: "vehicles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      gasoline_spent_per_month: {
-        Row: {
-          month_start_date: string | null
-          total_spent: number | null
-          vehicle_id: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "gasoline_loads_vehicle_id_fkey"
-            columns: ["vehicle_id"]
-            isOneToOne: false
-            referencedRelation: "vehicles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      gasoline_spent_per_week: {
-        Row: {
-          total_spent: number | null
-          vehicle_id: string | null
-          week_start_date: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "gasoline_loads_vehicle_id_fkey"
-            columns: ["vehicle_id"]
-            isOneToOne: false
-            referencedRelation: "vehicles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      gasoline_spent_per_year: {
-        Row: {
-          total_spent: number | null
-          vehicle_id: string | null
-          year_start_date: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "gasoline_loads_vehicle_id_fkey"
-            columns: ["vehicle_id"]
-            isOneToOne: false
-            referencedRelation: "vehicles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      vehicle_spent_gasoline: {
-        Row: {
-          spent_gasoline: number | null
-          vehicle_id: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "gasoline_loads_vehicle_id_fkey"
-            columns: ["vehicle_id"]
-            isOneToOne: false
-            referencedRelation: "vehicles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       update_vehicle_gasoline_status: {
@@ -858,21 +481,21 @@ export type Database = {
       }
     }
     Enums: {
+      event_type: "EMERGENCY" | "FAILURE" | "BREAK" | "REFUELING" | "OTHER"
       maintenance_status: "PENDING_REVISION" | "IN_REVISION" | "SOLVED"
-      notification_category:
-        | "MAINTENANCE"
-        | "GASOLINE"
-        | "ROLE"
-        | "FLEETS"
-        | "ROUTES"
-        | "OTHER"
       role_change_status:
         | "PENDING_REVISION"
         | "IN_REVISION"
         | "DENIED"
         | "ACCEPTED"
-      roles: "OWNER" | "ADMIN" | "DRIVER" | "NO_ROLE" | "BANNED"
-      route_event: "EMERGENCY" | "FAILURE" | "BREAK" | "REFUELING" | "OTHER"
+      roles:
+        | "OWNER"
+        | "DIRECTOR"
+        | "FLEET_MANAGER"
+        | "ADMIN"
+        | "OPERATOR"
+        | "NO_ROLE"
+        | "BANNED"
       user_fleet_add_request_status:
         | "PENDING_REVISION"
         | "IN_REVISION"

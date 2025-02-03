@@ -4,7 +4,7 @@ import { supabase } from "@/lib/supabase";
 import { useContext, useEffect } from "react";
 
 export default function useProfile() {
-  const { session, isLoading: isSessionLoading } = useSessionContext();
+  const { session } = useSessionContext();
   const { profile, setProfile, isProfileLoading, setIsProfileLoading } = useContext(ProfileContext);
 
   const fetchProfile = async () => {
@@ -16,7 +16,7 @@ export default function useProfile() {
       return;
     }
 
-    const { data, error } = await supabase.from("profiles").select("*").eq("id", session.user.id).single();
+    const { data, error } = await supabase.from("profile").select("*").eq("id", session.user.id).single();
 
     if (error) {
       setProfile(null);

@@ -29,7 +29,7 @@ const stylesheet = createStyleSheet((theme) => ({
     fontSize: 18,
     color: theme.textPresets.main,
     placeholderTextColor: theme.textPresets.subtitle,
-    backgroundColor: theme.textInput.backgroundColor,
+    backgroundColor: theme.ui.colors.border,
   },
   text: {
     color: theme.textPresets.subtitle,

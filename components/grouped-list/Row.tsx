@@ -103,10 +103,10 @@ const stylesheet = createStyleSheet((theme, runtime) => ({
     alignItems: "flex-start",
   },
   containerHovered: {
-    backgroundColor: theme.components.plainList.hover,
+    backgroundColor: theme.ui.colors.border,
   },
   containerPressed: {
-    backgroundColor: theme.components.plainList.pressed,
+    backgroundColor: theme.ui.colors.background,
   },
   textContainer: {
     flex: 1,

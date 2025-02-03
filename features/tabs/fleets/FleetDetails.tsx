@@ -136,12 +136,12 @@ export default function FleetDetails() {
   );
 }
 
-const stylesheet = createStyleSheet((theme) => ({
+const stylesheet = createStyleSheet((theme, runtime) => ({
   list: {
     marginBottom: 36,
   },
   segmentedControl: {
-    width: "98.5%",
+    width: runtime.screen.width >= 750 ? 520 : "98.5%",
     marginHorizontal: "auto",
     marginVertical: 6,
   },

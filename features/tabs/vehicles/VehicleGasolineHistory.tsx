@@ -232,7 +232,7 @@ export default function VehicleGasolineHistory() {
   );
 }
 
-const stylesheet = createStyleSheet((theme) => ({
+const stylesheet = createStyleSheet((theme, runtime) => ({
   safeContainer: {
     flex: 1,
     backgroundColor: theme.ui.colors.background,
@@ -292,7 +292,7 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.headerButtons.color,
   },
   segmentedControl: {
-    width: "98.5%",
+    width: runtime.screen.width >= 750 ? 520 : "98.5%",
     marginHorizontal: "auto",
     marginVertical: 6,
   },

@@ -98,7 +98,7 @@ export default function FleetDetailsEditVehicles() {
   );
 }
 
-const stylesheet = createStyleSheet((theme) => ({
+const stylesheet = createStyleSheet((theme, runtime) => ({
   container: {
     gap: theme.marginsComponents.section,
     marginTop: theme.marginsComponents.section, //Excepción
@@ -154,7 +154,7 @@ const stylesheet = createStyleSheet((theme) => ({
     color: theme.headerButtons.color,
   },
   segmentedControl: {
-    width: "98.5%",
+    width: runtime.screen.width >= 750 ? 520 : "98.5%",
     marginHorizontal: "auto",
     marginVertical: 6,
   },

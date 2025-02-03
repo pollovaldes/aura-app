@@ -67,10 +67,10 @@ const stylesheet = createStyleSheet((theme) => ({
     borderBottomColor: theme.ui.colors.border,
   },
   containerHovered: {
-    backgroundColor: theme.components.plainList.hover,
+    backgroundColor: theme.ui.colors.card,
   },
   containerPressed: {
-    backgroundColor: theme.components.plainList.pressed,
+    backgroundColor: theme.ui.colors.border,
   },
   leading: {
     marginRight: 12,

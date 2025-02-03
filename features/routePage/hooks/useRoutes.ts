@@ -21,7 +21,7 @@ export function useRoutes() {
     }
 
     const { data, error: fetchError } = await supabase
-      .from("routes")
+      .from("route")
       .select(
         `
           *,

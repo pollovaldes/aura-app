@@ -8,8 +8,9 @@ import useProfile from "@/hooks/useProfile";
 import { useStyles } from "react-native-unistyles";
 import { UnistylesRuntime } from "react-native-unistyles";
 import { pickTextColor } from "@/features/global/functions/pickTectColor";
-import { Platform } from "react-native";
+import { Platform, Text, View } from "react-native";
 import { setStatusBarStyle } from "expo-status-bar";
+import { OfflineOverlay } from "@/features/global/components/OfflineOverlay";
 
 export default function Layout() {
   const { profile, isProfileLoading, fetchProfile } = useProfile();
@@ -35,7 +36,7 @@ export default function Layout() {
     }
   }, [mayShowHeader, isInModalPath, headerTextColor, UnistylesRuntime.colorScheme]);
 
-  if (isProfileLoading || activeRouteIsLoading) {
+  if (isProfileLoading || (activeRouteIsLoading && !profile)) {
     return <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando rutas activas"} />;
   }
 
@@ -56,39 +57,43 @@ export default function Layout() {
   }
 
   return (
-    <Stack
-      screenOptions={
-        Platform.OS === "android"
-          ? {
-              statusBarBackgroundColor:
-                mayShowHeader && !isInModalPath ? theme.ui.colors.primary : theme.ui.colors.card,
-              statusBarStyle:
-                mayShowHeader && !isInModalPath
-                  ? headerTextColor === "#000000"
-                    ? "dark"
-                    : "light"
-                  : UnistylesRuntime.colorScheme === "dark"
-                    ? "light"
-                    : "dark",
-            }
-          : undefined
-      }
-    >
-      <Stack.Screen
-        name="(tabs)"
-        options={{
-          headerShown: mayShowHeader,
-          header: () => <RouteHeader />,
-        }}
-      />
+    <>
+      <Stack
+        screenOptions={
+          Platform.OS === "android"
+            ? {
+                statusBarBackgroundColor:
+                  mayShowHeader && !isInModalPath ? theme.ui.colors.primary : theme.ui.colors.card,
+                statusBarStyle:
+                  mayShowHeader && !isInModalPath
+                    ? headerTextColor === "#000000"
+                      ? "dark"
+                      : "light"
+                    : UnistylesRuntime.colorScheme === "dark"
+                      ? "light"
+                      : "dark",
+              }
+            : undefined
+        }
+      >
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            headerShown: mayShowHeader,
+            header: () => <RouteHeader />,
+          }}
+        />
 
-      <Stack.Screen
-        name="(modal)"
-        options={{
-          headerShown: false,
-          presentation: "modal",
-        }}
-      />
-    </Stack>
+        <Stack.Screen
+          name="(modal)"
+          options={{
+            headerShown: false,
+            presentation: "modal",
+          }}
+        />
+      </Stack>
+
+      <OfflineOverlay />
+    </>
   );
 }
