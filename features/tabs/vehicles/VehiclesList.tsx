@@ -23,7 +23,6 @@ export function VehiclesList() {
   const {
     vehicles,
     isLoading,
-    isRefreshing,
     hasMorePages,
     error,
     LIST_ONLY_loadMoreVehicles,
@@ -34,7 +33,6 @@ export function VehiclesList() {
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
   const vehicleArray = Object.values(vehicles);
-  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     LIST_ONLY_fetchVehicles();
@@ -54,18 +52,6 @@ export function VehiclesList() {
 
   if (isLoading && vehicleArray.length === 0) {
     return <FetchingIndicator caption="Cargando vehículos" />;
-  }
-
-  if (vehicleArray.length === 0) {
-    return (
-      <ErrorScreen
-        caption="Ocurrió un error y no pudimos cargar los vehículos"
-        buttonCaption="Reintentar"
-        retryFunction={async () => {
-          await handleRefresh();
-        }}
-      />
-    );
   }
 
   const isAdminOrOwner = profile.role === "ADMIN" || profile.role === "OWNER";
@@ -97,10 +83,6 @@ export function VehiclesList() {
               />
             </ActionButtonGroup>
           ),
-          headerSearchBarOptions: {
-            placeholder: "Buscar vehículos",
-            onChangeText: (event) => setSearchQuery(event.nativeEvent.text),
-          },
         }}
       />
 
@@ -136,9 +118,9 @@ export function VehiclesList() {
             <View style={styles.footer}>
               <ActivityIndicator color={Platform.OS !== "ios" ? theme.ui.colors.primary : undefined} />
             </View>
-          ) : (
+          ) : vehicleArray.length !== 0 ? (
             <Text style={styles.allVehiclesLoadedText}>Se han cargado todos los vehículos</Text>
-          )
+          ) : null
         }
       />
     </>

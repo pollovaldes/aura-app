@@ -21,7 +21,7 @@ export function useVehicles() {
     }
 
     const { data, error } = await supabase
-      .from("vehicles")
+      .from("vehicle")
       .select("*")
       .range((page - 1) * pageSize, page * pageSize - 1);
 
@@ -62,7 +62,7 @@ export function useVehicles() {
       return;
     }
 
-    const { data, error } = await supabase.from("vehicles").select("*").eq("id", vehicleId).single();
+    const { data, error } = await supabase.from("vehicle").select("*").eq("id", vehicleId).single();
 
     if (error) {
       setError(error);
@@ -83,7 +83,7 @@ export function useVehicles() {
   async function refetchVehicleById(vehicleId: string) {
     setError(null);
 
-    const { data, error } = await supabase.from("vehicles").select("*").eq("id", vehicleId).single();
+    const { data, error } = await supabase.from("vehicle").select("*").eq("id", vehicleId).single();
 
     if (error) {
       setError(error);
