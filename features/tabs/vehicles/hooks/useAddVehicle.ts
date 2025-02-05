@@ -42,7 +42,7 @@ export function useAddVehicle() {
     setLoading(true);
 
     const { data, error } = await supabase
-      .from("vehicles")
+      .from("vehicle")
       .insert([
         {
           brand: brand,

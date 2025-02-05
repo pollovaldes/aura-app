@@ -41,7 +41,7 @@ export function YearModal({ closeModal, vehicle, refetchVehicle }: YearModalProp
     setIsLoading(true);
     const parsedYear = parseInt(year, 10);
 
-    const { error } = await supabase.from("vehicles").update({ year: parsedYear }).eq("id", vehicle.id);
+    const { error } = await supabase.from("vehicle").update({ year: parsedYear }).eq("id", vehicle.id);
     setIsLoading(false);
 
     if (error) {

@@ -39,7 +39,7 @@ export function PlateModal({ closeModal, vehicle, refetchVehicle }: PlateModalPr
 
   async function savePlate() {
     setIsLoading(true);
-    const { error } = await supabase.from("vehicles").update({ plate: plate }).eq("id", vehicle.id);
+    const { error } = await supabase.from("vehicle").update({ plate: plate }).eq("id", vehicle.id);
     setIsLoading(false);
 
     if (error) {

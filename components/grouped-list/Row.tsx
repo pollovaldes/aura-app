@@ -2,7 +2,7 @@ import React, { ReactNode, useState } from "react";
 import { View, Text, Pressable, ActivityIndicator, StyleProp, ViewStyle, Platform } from "react-native";
 import RowIcon from "./RowIcon";
 import { MaterialIcons } from "@expo/vector-icons";
-import { LucideProps } from "lucide-react-native";
+import { ChevronRight, LucideProps } from "lucide-react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import Animated, { Easing, LinearTransition } from "react-native-reanimated";
 
@@ -78,7 +78,7 @@ const Row = ({
       ) : trailing ? (
         <View style={styles.trailingPadding}>{trailing}</View>
       ) : (
-        !hideChevron && <MaterialIcons name="chevron-right" size={24} color="#c4c4c7" />
+        !hideChevron && <ChevronRight size={24} color={theme.textPresets.subtitle} style={{ marginLeft: 6 }} />
       )}
     </Pressable>
   );

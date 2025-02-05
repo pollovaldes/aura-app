@@ -38,7 +38,7 @@ export function EconomicNumberModal({ closeModal, vehicle, refetchVehicle }: Eco
 
   async function saveEconomicNumber() {
     setIsLoading(true);
-    const { error } = await supabase.from("vehicles").update({ economic_number: economicNumber }).eq("id", vehicle.id);
+    const { error } = await supabase.from("vehicle").update({ economic_number: economicNumber }).eq("id", vehicle.id);
     setIsLoading(false);
 
     if (error) {

@@ -39,7 +39,7 @@ export function SerialNumberModal({ closeModal, vehicle, refetchVehicle }: Seria
 
   async function saveSerialNumber() {
     setIsLoading(true);
-    const { error } = await supabase.from("vehicles").update({ serial_number: serialNumber }).eq("id", vehicle.id);
+    const { error } = await supabase.from("vehicle").update({ serial_number: serialNumber }).eq("id", vehicle.id);
     setIsLoading(false);
 
     if (error) {

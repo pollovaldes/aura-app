@@ -122,7 +122,7 @@ export function VehicleManageFleets() {
     confirmText: "Eliminar",
     confirmStyle: "destructive",
     onConfirm: async () => {
-      const { error } = await supabase.from("vehicles").delete().eq("id", vehicleId);
+      const { error } = await supabase.from("vehicle").delete().eq("id", vehicleId);
 
       if (error) {
         console.error("Error deleting vehicle:", error);

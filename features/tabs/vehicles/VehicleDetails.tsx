@@ -102,7 +102,7 @@ export function VehicleDetails() {
           text: "Eliminar",
           style: "destructive",
           onPress: async () => {
-            const { error } = await supabase.from("vehicles").delete().eq("id", vehicleId);
+            const { error } = await supabase.from("vehicle").delete().eq("id", vehicleId);
 
             if (error) {
               console.error("Error deleting vehicle:", error);
@@ -168,7 +168,7 @@ export function VehicleDetails() {
             </View>
           </View>
           <View style={styles.groupedListContainer}>
-            <GroupedList header="Consulta general">
+            <GroupedList header="Información del vehículo">
               <Row title="Galería" icon={Images} backgroundColor={colorPalette.cyan[500]} />
               <Row
                 title="Ficha técnica"
@@ -184,8 +184,9 @@ export function VehicleDetails() {
               />
             </GroupedList>
           </View>
+
           <View style={styles.groupedListContainer}>
-            <GroupedList header="Acciones">
+            <GroupedList header="Operación del vehículo">
               <Row
                 title="Mantenimiento"
                 onPress={() => router.push(`./maintenance`, { relativeToDirectory: true })}
@@ -199,17 +200,19 @@ export function VehicleDetails() {
                 backgroundColor={colorPalette.red[500]}
               />
               <Row
-                title="Rutas"
+                title="Historial de rutas"
                 onPress={() => router.push(`./routes`, { relativeToDirectory: true })}
                 icon={Waypoints}
                 backgroundColor={colorPalette.sky[500]}
               />
             </GroupedList>
           </View>
+
           <View style={styles.groupedListContainer}>
-            <GroupedList header="Administración del vehículo">
+            <GroupedList header="Gestión y administración">
               <Row
                 title="Visualización del vehículo"
+                caption="Elige qué operadores pueden ver o no este vehículo aunque pertenezcan a la flotilla."
                 onPress={() => router.push(`./manage_fleets`, { relativeToDirectory: true })}
                 icon={Eye}
                 backgroundColor={colorPalette.yellow[500]}
@@ -217,6 +220,7 @@ export function VehicleDetails() {
               />
               <Row
                 title="Administrar flotillas"
+                caption="Modifica la flotilla a la que pertenece este vehículo."
                 onPress={() => router.push(`./manage_fleets`, { relativeToDirectory: true })}
                 icon={Boxes}
                 backgroundColor={colorPalette.lime[500]}
@@ -226,7 +230,7 @@ export function VehicleDetails() {
           </View>
 
           <View style={styles.groupedListContainer}>
-            <GroupedList header="Zona de peligro">
+            <GroupedList header="Acciones críticas">
               <Row
                 title="Borrar vehículo"
                 icon={Trash}

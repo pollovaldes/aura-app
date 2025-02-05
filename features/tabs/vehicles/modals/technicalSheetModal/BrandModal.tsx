@@ -38,7 +38,7 @@ export function BrandModal({ closeModal, vehicle, refetchVehicle }: BrandModalPr
 
   async function saveBrand() {
     setIsLoading(true);
-    const { error } = await supabase.from("vehicles").update({ brand: brand }).eq("id", vehicle.id);
+    const { error } = await supabase.from("vehicle").update({ brand: brand }).eq("id", vehicle.id);
     setIsLoading(false);
 
     if (error) {
