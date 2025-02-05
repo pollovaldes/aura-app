@@ -29,12 +29,6 @@ export default function ProfileAccount() {
               onPress={() => router.push("./about", { relativeToDirectory: true })}
             />
             <Row
-              title="Contraseña"
-              icon={LockKeyhole}
-              backgroundColor={colorPalette.orange[500]}
-              onPress={() => router.push("./password", { relativeToDirectory: true })}
-            />
-            <Row
               title="Identidades"
               icon={Users}
               backgroundColor={colorPalette.emerald[500]}

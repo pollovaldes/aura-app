@@ -13,6 +13,7 @@ import React from "react";
 import { Bell, Bug, Info, LogOut, Moon, Palette, User } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 import ProfileColumn from "@/components/people/ProfileColumn";
+import { QRCodeColumn } from "@/components/people/QRCodeColumn";
 
 export default function Profile() {
   const { styles } = useStyles(stylesheet);
@@ -50,42 +51,10 @@ export default function Profile() {
         refreshControl={<RefreshControl refreshing={isProfileLoading} onRefresh={fetchProfile} />}
       >
         <View style={styles.container}>
-          {profile.is_fully_registered && (
-            <GroupedList>
-              <Row>
-                <ProfileColumn profile={profile} showPosition />
-              </Row>
-            </GroupedList>
-          )}
-          <GroupedList
-            footer="Tu perfil debe estar completo para acceder a todas las funcionalidades de la aplicación"
-            header="Acceso a la App"
-          >
-            <Row
-              title="Datos personales"
-              caption={profile.is_fully_registered ? "Completo" : "Sin completar ⚠️"}
-              onPress={() => router.push("./personal_data", { relativeToDirectory: true })}
-            />
-            <Row
-              title="Rol"
-              caption={(() => {
-                switch (profile.role) {
-                  case "ADMIN":
-                    return "Administrador";
-                  case "DRIVER":
-                    return "Conductor";
-                  case "BANNED":
-                    return "Bloqueado";
-                  case "NO_ROLE":
-                    return "Sin rol";
-                  case "OWNER":
-                    return "Dueño";
-                  default:
-                    return "Indefinido";
-                }
-              })()}
-              onPress={() => router.push("./role", { relativeToDirectory: true })}
-            />
+          <GroupedList>
+            <Row>
+              {profile.role === "NO_ROLE" ? <QRCodeColumn profile={profile} /> : <ProfileColumn profile={profile} />}
+            </Row>
           </GroupedList>
           <GroupedList>
             <Row
@@ -94,6 +63,12 @@ export default function Profile() {
               backgroundColor={colorPalette.green[500]}
               onPress={() => router.push("./account", { relativeToDirectory: true })}
             />
+            <Row
+              title="Datos personales"
+              onPress={() => router.push("./personal_data", { relativeToDirectory: true })}
+            />
+          </GroupedList>
+          <GroupedList header="Configuración">
             <Row
               title="Tema de la aplicación"
               icon={Moon}

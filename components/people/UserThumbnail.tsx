@@ -82,10 +82,10 @@ export default function UserThumbnail({ userId, size = 60 }: UserThumbnailProps)
 
 const stylesheet = createStyleSheet((theme) => ({
   image: {
-    borderRadius: 60,
+    borderRadius: 100,
   },
   emptyImageContainer: {
-    borderRadius: 60,
+    borderRadius: 100,
     backgroundColor: theme.ui.colors.border,
     justifyContent: "center",
     alignItems: "center",

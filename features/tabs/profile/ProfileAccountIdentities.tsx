@@ -9,7 +9,7 @@ import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import { router, Stack } from "expo-router";
 import React from "react";
-import { Info } from "lucide-react-native";
+import { Check, Info, X } from "lucide-react-native";
 import { colorPalette } from "@/style/themes";
 
 export default function ProfileAccountIdentities() {
@@ -124,18 +124,34 @@ export default function ProfileAccountIdentities() {
               title="Correo electrónico"
               caption={identities.find((i) => i.provider === "email") ? "Vinculada" : "No vinculada"}
               onPress={() => router.push("./email", { relativeToDirectory: true })}
+              icon={identities.find((i) => i.provider === "email") ? Check : X}
+              backgroundColor={
+                identities.find((i) => i.provider === "email") ? colorPalette.green[500] : colorPalette.red[500]
+              }
             />
             <Row
               title="Google"
               caption={identities.find((i) => i.provider === "google") ? "Vinculada" : "No vinculada"}
+              icon={identities.find((i) => i.provider === "google") ? Check : X}
+              backgroundColor={
+                identities.find((i) => i.provider === "google") ? colorPalette.green[500] : colorPalette.red[500]
+              }
             />
             <Row
               title="Apple"
               caption={identities.find((i) => i.provider === "apple") ? "Vinculada" : "No vinculada"}
+              icon={identities.find((i) => i.provider === "apple") ? Check : X}
+              backgroundColor={
+                identities.find((i) => i.provider === "apple") ? colorPalette.green[500] : colorPalette.red[500]
+              }
             />
             <Row
               title="Número de celular"
               caption={identities.find((i) => i.provider === "phone") ? "Vinculada" : "No vinculada"}
+              icon={identities.find((i) => i.provider === "phone") ? Check : X}
+              backgroundColor={
+                identities.find((i) => i.provider === "phone") ? colorPalette.green[500] : colorPalette.red[500]
+              }
             />
           </GroupedList>
           <View />

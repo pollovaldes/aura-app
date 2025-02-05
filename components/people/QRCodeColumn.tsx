@@ -1,31 +1,34 @@
 import { Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import UserThumbnail from "./UserThumbnail";
 import React from "react";
 import { User } from "@/types/globalTypes";
-import { getRoleLabel } from "@/features/global/functions/getRoleLabel";
+import QRCode from "react-qr-code";
 
-type ProfileRowProps = {
+type QRCodeColumnProps = {
   profile: User;
 };
 
-export default function ProfileColumn({ profile }: ProfileRowProps) {
+export function QRCodeColumn({ profile }: QRCodeColumnProps) {
   const { styles } = useStyles(stylesheet);
 
   return (
     <View style={styles.container}>
-      <View style={{ height: 150 }}>
-        <UserThumbnail userId={profile.id} size={150} />
+      <View style={styles.qrCodeContainer}>
+        <QRCode
+          value={profile.id}
+          size={230}
+          bgColor={styles.qrCode.backgroundColor}
+          fgColor={styles.qrCode.foregroundColor}
+        />
+        <View>
+          <Text style={styles.description}>Presenta este código QR a tu coordinador de flotilla.</Text>
+        </View>
       </View>
       <View style={styles.descriptioonContainer}>
-        <>
+        <View>
           <Text style={styles.name}>{profile.name}</Text>
           <Text style={styles.name}>{`${profile.father_last_name} ${profile.mother_last_name}`}</Text>
-          <View style={styles.descriptionContainer}>
-            <Text style={styles.description}>{`Rol: ${getRoleLabel(profile.role)}`}</Text>
-            <Text style={styles.description}>{`Posición: ${profile.position}`}</Text>
-          </View>
-        </>
+        </View>
       </View>
     </View>
   );
@@ -35,11 +38,23 @@ const stylesheet = createStyleSheet((theme) => ({
   container: {
     flexDirection: "column",
     alignItems: "center",
-    gap: 18,
+    gap: 20,
     width: "100%",
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    alignSelf: "center",
   },
   descriptioonContainer: {
     flexDirection: "column",
+    gap: 8,
+  },
+  qrCodeContainer: {
+    alignItems: "center",
+    gap: 12,
+  },
+  qrCode: {
+    backgroundColor: theme.ui.colors.card,
+    foregroundColor: theme.textPresets.main,
   },
   name: {
     fontSize: 30,
@@ -48,7 +63,7 @@ const stylesheet = createStyleSheet((theme) => ({
     textAlign: "center",
   },
   description: {
-    fontSize: 16,
+    fontSize: 18,
     color: theme.textPresets.subtitle,
     textAlign: "center",
   },

@@ -65,6 +65,7 @@
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.2",
+    "react-qr-code": "^2.0.15",
     "supabase": "^2.1.1",
     "uuid": "^11.0.3",
     "zeego": "^2.0.4"

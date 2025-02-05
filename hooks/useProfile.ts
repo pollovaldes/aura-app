@@ -31,7 +31,7 @@ export default function useProfile() {
     if (!profile) {
       fetchProfile();
     }
-  }, []);
+  }, [session]);
 
   useEffect(() => {
     if (profile) {
