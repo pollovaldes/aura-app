@@ -8,7 +8,7 @@ export default function useUsers() {
   const fetchUsers = async () => {
     setUsersAreLoading(true);
 
-    const { data, error } = await supabase.from("profiles").select("*");
+    const { data, error } = await supabase.from("profile").select("*");
 
     if (error) {
       setUsers(null);
