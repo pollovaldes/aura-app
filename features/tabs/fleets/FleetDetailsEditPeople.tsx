@@ -46,7 +46,7 @@ export default function FleetDetailsEditPeople() {
   if (!fleets) {
     return (
       <ErrorScreen
-        caption="Ocurrió un error al recuperar las flotillas"
+        caption="Ocurrió un error y no pudimos cargar la flotilla"
         buttonCaption="Reintentar"
         retryFunction={fetchFleets}
       />

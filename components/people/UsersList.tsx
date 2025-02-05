@@ -23,7 +23,7 @@ export default function UsersList() {
   if (!users) {
     return (
       <ErrorScreen
-        caption={`Ocurrió un error y no \npudimos cargar los usuarios`}
+        caption={`Ocurrió un error y no pudimos cargar los usuarios`}
         buttonCaption="Reintentar"
         retryFunction={fetchUsers}
       />

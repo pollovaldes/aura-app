@@ -1,4 +1,4 @@
-import { ShieldAlert } from "lucide-react-native";
+import { ShieldAlert, ShieldX } from "lucide-react-native";
 import { Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { FormButton } from "../Form/FormButton";
@@ -26,7 +26,7 @@ export default function ErrorScreen({ caption, retryFunction, buttonCaption }: E
       <View style={styles.container}>
         <View style={styles.content}>
           <View style={styles.headingContainer}>
-            <ShieldAlert color={styles.icon.color} size={35} />
+            <ShieldX color={styles.icon.color} size={50} />
             <Text style={styles.text}>{caption}</Text>
           </View>
           <FormButton title={buttonCaption} onPress={retryFunction} />
@@ -36,24 +36,25 @@ export default function ErrorScreen({ caption, retryFunction, buttonCaption }: E
   );
 }
 
-const stylesheet = createStyleSheet((theme) => ({
+const stylesheet = createStyleSheet((theme, runtime) => ({
   container: {
-    flex: 1,
+    height: "100%",
     justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 12,
+    alignSelf: "center",
+    width: "100%",
+    maxWidth: 400,
     backgroundColor: theme.ui.colors.background,
-    gap: 8,
+    paddingHorizontal: 16,
   },
   content: {
-    gap: 20,
+    gap: 25,
   },
   headingContainer: {
     alignItems: "center",
     gap: 6,
   },
   text: {
-    fontSize: 18,
+    fontSize: 20,
     color: theme.textPresets.main,
     textAlign: "center",
   },
