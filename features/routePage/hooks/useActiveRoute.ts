@@ -107,7 +107,7 @@ export function useActiveRoute(profileId: string | null | undefined) {
     setError(null);
 
     const { data, error: fetchError } = await supabase
-      .from("routes")
+      .from("route")
       .update({
         is_active: false,
         ended_address: endedAddress,

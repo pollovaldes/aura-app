@@ -7,7 +7,7 @@ export default function useProfile() {
   const { session } = useSessionContext();
   const { profile, setProfile, isProfileLoading, setIsProfileLoading } = useContext(ProfileContext);
 
-  const fetchProfile = async () => {
+  async function fetchProfile() {
     setIsProfileLoading(true);
 
     if (!session) {
@@ -25,13 +25,13 @@ export default function useProfile() {
     }
 
     setProfile(data);
-  };
+  }
 
   useEffect(() => {
     if (!profile) {
       fetchProfile();
     }
-  }, [session]);
+  }, []);
 
   useEffect(() => {
     if (profile) {
@@ -45,7 +45,7 @@ export default function useProfile() {
         .channel("profile-updates")
         .on(
           "postgres_changes",
-          { event: "UPDATE", schema: "public", table: "profiles", filter: `id=eq.${session.user.id}` },
+          { event: "*", schema: "public", table: "profile", filter: `id=eq.${session.user.id}` },
           (payload) => {
             console.log("Profile change received!", payload);
             fetchProfile();

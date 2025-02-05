@@ -36,7 +36,7 @@ export default function Layout() {
     }
   }, [mayShowHeader, isInModalPath, headerTextColor, UnistylesRuntime.colorScheme]);
 
-  if (isProfileLoading || (activeRouteIsLoading && !profile)) {
+  if (isProfileLoading) {
     return <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando rutas activas"} />;
   }
 
@@ -46,15 +46,15 @@ export default function Layout() {
     );
   }
 
-  if (error) {
-    return (
-      <ErrorScreen
-        caption="No se pudieron cargar las rutas activas."
-        buttonCaption="Reintentar"
-        retryFunction={fetchActiveRoute}
-      />
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <ErrorScreen
+  //       caption="No se pudieron cargar las rutas activas."
+  //       buttonCaption="Reintentar"
+  //       retryFunction={fetchActiveRoute}
+  //     />
+  //   );
+  // }
 
   return (
     <>
@@ -92,8 +92,6 @@ export default function Layout() {
           }}
         />
       </Stack>
-
-      <OfflineOverlay />
     </>
   );
 }

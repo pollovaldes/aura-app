@@ -27,17 +27,17 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  useEffect(() => {
     SplashScreen.setOptions({
       duration: 1000,
       fade: true,
     });
   }, []);
+
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
 
   useEffect(() => {
     if (UnistylesRuntime.colorScheme === "dark") {

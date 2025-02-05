@@ -170,6 +170,7 @@ export type Database = {
       }
       profile: {
         Row: {
+          active_route_id: string | null
           birthday: string | null
           father_last_name: string | null
           id: string
@@ -181,6 +182,7 @@ export type Database = {
           role: Database["public"]["Enums"]["roles"]
         }
         Insert: {
+          active_route_id?: string | null
           birthday?: string | null
           father_last_name?: string | null
           id: string
@@ -192,6 +194,7 @@ export type Database = {
           role?: Database["public"]["Enums"]["roles"]
         }
         Update: {
+          active_route_id?: string | null
           birthday?: string | null
           father_last_name?: string | null
           id?: string
@@ -202,7 +205,22 @@ export type Database = {
           position?: string | null
           role?: Database["public"]["Enums"]["roles"]
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profile_active_route_id_fkey"
+            columns: ["active_route_id"]
+            isOneToOne: false
+            referencedRelation: "route"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profile_active_route_id_fkey"
+            columns: ["active_route_id"]
+            isOneToOne: false
+            referencedRelation: "route_with_events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       route: {
         Row: {
@@ -216,7 +234,7 @@ export type Database = {
           is_active: boolean
           purpose: string
           started_at: string
-          starting_adress: string
+          starting_address: string
           starting_latitude: number
           starting_longitude: number
           starting_mileage: number
@@ -234,7 +252,7 @@ export type Database = {
           is_active?: boolean
           purpose: string
           started_at: string
-          starting_adress: string
+          starting_address: string
           starting_latitude: number
           starting_longitude: number
           starting_mileage: number
@@ -252,7 +270,7 @@ export type Database = {
           is_active?: boolean
           purpose?: string
           started_at?: string
-          starting_adress?: string
+          starting_address?: string
           starting_latitude?: number
           starting_longitude?: number
           starting_mileage?: number
@@ -298,6 +316,13 @@ export type Database = {
             columns: ["id"]
             isOneToOne: true
             referencedRelation: "route"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "route_event_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "route_with_events"
             referencedColumns: ["id"]
           },
           {
@@ -472,7 +497,43 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      route_with_events: {
+        Row: {
+          description: string | null
+          ended_at: string | null
+          ending_address: string | null
+          ending_latitude: number | null
+          ending_longitude: number | null
+          ending_mileage: number | null
+          events: Json | null
+          id: string | null
+          is_active: boolean | null
+          purpose: string | null
+          started_at: string | null
+          starting_address: string | null
+          starting_latitude: number | null
+          starting_longitude: number | null
+          starting_mileage: number | null
+          user_id: string | null
+          vehicle_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "routes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profile"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "routes_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicle"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       update_vehicle_gasoline_status: {
