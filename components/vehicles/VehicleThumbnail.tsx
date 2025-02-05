@@ -22,7 +22,7 @@ export function VehicleThumbnail({ vehicleId }: VehicleThumbnailProps) {
         <Image style={styles.image} source={{ uri: thumbnail.imageURI }} />
       ) : (
         <View style={styles.emptyImageContainer}>
-          <TruckIcon size={35} color={styles.noImageIcon.color} strokeWidth={1.25} />
+          <TruckIcon size={40} color={styles.noImageIcon.color} strokeWidth={1.25} />
         </View>
       )}
     </>
@@ -31,17 +31,17 @@ export function VehicleThumbnail({ vehicleId }: VehicleThumbnailProps) {
 
 const stylesheet = createStyleSheet((theme) => ({
   emptyImageContainer: {
-    width: 100,
-    height: 100,
+    width: 120,
+    height: 120,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: theme.ui.colors.border,
-    borderRadius: 10,
+    borderRadius: 16,
   },
   image: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
+    width: 120,
+    height: 120,
+    borderRadius: 16,
   },
   noImageIcon: {
     color: theme.textPresets.subtitle,

@@ -41,7 +41,7 @@ export const SimpleList: React.FC<SimpleListProps> = ({
         {leading && <View style={styles.leading}>{leading}</View>}
         {content && <View style={styles.content}>{content}</View>}
         {trailing && <View style={styles.trailing}>{trailing}</View>}
-        {!hideChevron && <ChevronRight color={styles.chevron.color} />}
+        {!hideChevron && <ChevronRight color={styles.chevron.color} style={{ marginLeft: 6 }} />}
       </View>
     </Pressable>
   );

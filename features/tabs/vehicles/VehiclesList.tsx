@@ -96,15 +96,14 @@ export function VehiclesList() {
             href={`./${item.id}`}
             leading={<VehicleThumbnail vehicleId={item.id} />}
             content={
-              <>
+              <View style={styles.itemSeparator}>
                 <Text style={styles.itemTitle}>
                   {`${item.brand ?? "N/A"} ${item.sub_brand ?? "N/A"} (${item.year ?? "N/A"})`}
                 </Text>
-                <Text style={styles.itemTitle}></Text>
                 <Text style={styles.itemDetails}>
                   {`Placa: ${item.plate ?? "N/A"}\nNúmero económico: ${item.economic_number ?? "N/A"}\nNúmero de serie: ${item.serial_number ?? "N/A"}`}
                 </Text>
-              </>
+              </View>
             }
           />
         )}
@@ -133,13 +132,16 @@ const stylesheet = createStyleSheet((theme) => ({
     justifyContent: "flex-end",
     padding: theme.marginsComponents.section,
   },
+  itemSeparator: {
+    gap: 6,
+  },
   itemTitle: {
     fontWeight: "bold",
-    fontSize: 18,
+    fontSize: 20,
     color: theme.textPresets.main,
   },
   itemDetails: {
-    fontSize: 15,
+    fontSize: 16,
     color: theme.textPresets.subtitle,
   },
   footer: {
