@@ -5,10 +5,10 @@ import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import EmptyScreen from "@/components/dataStates/EmptyScreen";
 import useProfile from "@/hooks/useProfile";
 import { SimpleList } from "@/components/simpleList/SimpleList";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
-import { Download, Plus, RotateCw } from "lucide-react-native";
+import { Download, Plus, QrCode, RotateCw } from "lucide-react-native";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { useVehicles } from "@/hooks/truckHooks/useVehicle";
 import { VehicleThumbnail } from "@/components/vehicles/VehicleThumbnail";
@@ -68,6 +68,12 @@ export function VehiclesList() {
           headerLargeTitle: true,
           headerRight: () => (
             <ActionButtonGroup>
+              <ActionButton
+                onPress={() => router.push("/tab")}
+                Icon={QrCode}
+                text="Agregar vehículo"
+                show={isAdminOrOwner}
+              />
               <ActionButton onPress={() => {}} Icon={Download} text="CSV" show={isAdminOrOwner} />
               <ActionButton
                 onPress={() => setActiveModal("add_vehicle_modal")}

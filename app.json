@@ -51,6 +51,14 @@
           "photosPermission": "Permitir que $(PRODUCT_NAME) acceda a tus fotos."
         }
       ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Permitir que $(PRODUCT_NAME) acceda a tu cámara",
+          "microphonePermission": "Permitir que $(PRODUCT_NAME) acceda a tu micrófono",
+          "recordAudioAndroid": true
+        }
+      ],
       ["expo-font"],
       ["@maplibre/maplibre-react-native"]
     ],

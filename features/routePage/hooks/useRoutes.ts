@@ -21,22 +21,8 @@ export function useRoutes() {
     }
 
     const { data, error: fetchError } = await supabase
-      .from("route")
-      .select(
-        `
-          *,
-          vehicles(*),
-          profiles(*),
-          route_events(
-            *,
-            refueling_events(*),
-            break_events(*),
-            emergency_events(*),
-            failure_events(*),
-            other_events(*)
-          )
-        `
-      )
+      .from("route_with_events")
+      .select("*")
       .eq("vehicle_id", vehicleId)
       .range((page - 1) * pageSize, page * pageSize - 1);
 
@@ -51,8 +37,8 @@ export function useRoutes() {
     if (data) {
       setRoutes((prev) => {
         const updated = { ...prev };
-        data.forEach((r) => {
-          updated[r.id] = r;
+        data.forEach((route) => {
+          updated[route.id] = route;
         });
         return updated;
       });
@@ -68,25 +54,7 @@ export function useRoutes() {
     setError(null);
     if (routes[routeId]) return; // already in dictionary
 
-    const { data, error: fetchError } = await supabase
-      .from("routes")
-      .select(
-        `
-          *,
-          vehicles(*),
-          profiles(*),
-          route_events(
-            *,
-            refueling_events(*),
-            break_events(*),
-            emergency_events(*),
-            failure_events(*),
-            other_events(*)
-          )
-        `
-      )
-      .eq("id", routeId)
-      .single();
+    const { data, error: fetchError } = await supabase.from("route_with_events").select("*").eq("id", routeId).single();
 
     if (fetchError) {
       setError(fetchError);
@@ -102,25 +70,7 @@ export function useRoutes() {
   async function refetchRouteById(routeId: string) {
     setError(null);
 
-    const { data, error: fetchError } = await supabase
-      .from("routes")
-      .select(
-        `
-          *,
-          vehicles(*),
-          profiles(*),
-          route_events(
-            *,
-            refueling_events(*),
-            break_events(*),
-            emergency_events(*),
-            failure_events(*),
-            other_events(*)
-          )
-        `
-      )
-      .eq("id", routeId)
-      .single();
+    const { data, error: fetchError } = await supabase.from("route_with_events").select("*").eq("id", routeId).single();
 
     if (fetchError) {
       setError(fetchError);

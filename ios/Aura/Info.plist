@@ -52,7 +52,7 @@
       <true/>
     </dict>
     <key>NSCameraUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to access your camera</string>
+    <string>Permitir que $(PRODUCT_NAME) acceda a tu cámara</string>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
     <string>Permitir que $(PRODUCT_NAME) use tu ubicación.</string>
     <key>NSLocationAlwaysUsageDescription</key>
@@ -60,7 +60,7 @@
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your location</string>
     <key>NSMicrophoneUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to access your microphone</string>
+    <string>Permitir que $(PRODUCT_NAME) acceda a tu micrófono</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Permitir que $(PRODUCT_NAME) acceda a tus fotos.</string>
     <key>NSUserActivityTypes</key>

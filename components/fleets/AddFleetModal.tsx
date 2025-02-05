@@ -21,7 +21,7 @@ export default function AddFleetModal({ closeModal, fetchFleets }: ModalProps) {
 
   const createFleet = async (title: string, description: string) => {
     const { data, error } = await supabase
-      .from("fleets")
+      .from("fleet")
       .insert([
         {
           title,
