@@ -13,8 +13,8 @@ export type VehicleDocument = Database["public"]["Tables"]["vehicle_document"]["
 
 export type FleetRow = Database["public"]["Tables"]["fleet"]["Row"];
 export type Fleet = FleetRow & {
-  users: User[];
-  vehicles: Vehicle[];
+  userIds: string[];
+  vehicleIds: string[];
 };
 
 export type MaintenanceRow = Database["public"]["Tables"]["maintenance"]["Row"];

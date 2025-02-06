@@ -23,7 +23,7 @@ type ModalType = "economic_number" | "brand" | "sub_brand" | "model" | "serial_n
 
 export function VehicleTechnicalSheet() {
   const { styles } = useStyles(stylesheet);
-  const { vehicles, refetchVehicleById, fetchVehicleById } = useVehicles();
+  const { vehicles, refreshVehicleById, fetchVehicleById } = useVehicles();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
   const [vehicleIsLoading, setVehicleIsLoading] = useState(true);
   const { getGuaranteedProfile } = useProfile();
@@ -37,9 +37,9 @@ export function VehicleTechnicalSheet() {
     setVehicleIsLoading(false);
   }
 
-  async function refetchVehicle() {
+  async function refreshVehicle() {
     setVehicleIsLoading(true);
-    await refetchVehicleById(vehicleId);
+    await refreshVehicleById(vehicleId);
     setVehicleIsLoading(false);
   }
 
@@ -71,22 +71,22 @@ export function VehicleTechnicalSheet() {
   return (
     <>
       <Modal close={closeModal} isOpen={activeModal === "economic_number"}>
-        <EconomicNumberModal vehicle={vehicle} closeModal={closeModal} refetchVehicle={refetchVehicle} />
+        <EconomicNumberModal vehicle={vehicle} closeModal={closeModal} refetchVehicle={refreshVehicle} />
       </Modal>
       <Modal close={closeModal} isOpen={activeModal === "brand"}>
-        <BrandModal vehicle={vehicle} closeModal={closeModal} refetchVehicle={refetchVehicle} />
+        <BrandModal vehicle={vehicle} closeModal={closeModal} refetchVehicle={refreshVehicle} />
       </Modal>
       <Modal close={closeModal} isOpen={activeModal === "sub_brand"}>
-        <SubBrandModal vehicle={vehicle} closeModal={closeModal} refetchVehicle={refetchVehicle} />
+        <SubBrandModal vehicle={vehicle} closeModal={closeModal} refetchVehicle={refreshVehicle} />
       </Modal>
       <Modal close={closeModal} isOpen={activeModal === "year"}>
-        <YearModal vehicle={vehicle} closeModal={closeModal} refetchVehicle={refetchVehicle} />
+        <YearModal vehicle={vehicle} closeModal={closeModal} refetchVehicle={refreshVehicle} />
       </Modal>
       <Modal close={closeModal} isOpen={activeModal === "serial_number"}>
-        <SerialNumberModal vehicle={vehicle} closeModal={closeModal} refetchVehicle={refetchVehicle} />
+        <SerialNumberModal vehicle={vehicle} closeModal={closeModal} refetchVehicle={refreshVehicle} />
       </Modal>
       <Modal close={closeModal} isOpen={activeModal === "plate"}>
-        <PlateModal vehicle={vehicle} closeModal={closeModal} refetchVehicle={refetchVehicle} />
+        <PlateModal vehicle={vehicle} closeModal={closeModal} refetchVehicle={refreshVehicle} />
       </Modal>
 
       <Stack.Screen
@@ -95,7 +95,7 @@ export function VehicleTechnicalSheet() {
           headerLargeTitle: true,
           headerRight: () => (
             <ActionButtonGroup>
-              <ActionButton onPress={refetchVehicle} text="Actualizar" Icon={RotateCw} show={Platform.OS === "web"} />
+              <ActionButton onPress={refreshVehicle} text="Actualizar" Icon={RotateCw} show={Platform.OS === "web"} />
             </ActionButtonGroup>
           ),
         }}
@@ -103,7 +103,7 @@ export function VehicleTechnicalSheet() {
 
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        refreshControl={<RefreshControl refreshing={vehicleIsLoading} onRefresh={refetchVehicle} />}
+        refreshControl={<RefreshControl refreshing={vehicleIsLoading} onRefresh={refreshVehicle} />}
       >
         <View style={styles.container}>
           <GroupedList header="Ficha técnica del vehículo">

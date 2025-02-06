@@ -1,5 +1,4 @@
 import { Text, FlatList } from "react-native";
-import useUsers from "@/hooks/peopleHooks/useUsers";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import React from "react";
 import useProfile from "@/hooks/useProfile";
@@ -9,6 +8,7 @@ import { SimpleList } from "../simpleList/SimpleList";
 import EmptyScreen from "../dataStates/EmptyScreen";
 import { Stack } from "expo-router";
 import { FetchingIndicator } from "../dataStates/FetchingIndicator";
+import { useUsers } from "@/hooks/peopleHooks/useUsers";
 
 export default function UsersList() {
   const { getGuaranteedProfile } = useProfile();
@@ -50,7 +50,7 @@ export default function UsersList() {
             href={`./${item.id}`}
             leading={<UserThumbnail userId={item.id} size={60} />}
             content={
-              <Text style={styles.Text}>{`${item.name} ${item.father_last_name} ${item.mother_last_name}`}</Text>
+              <Text style={styles.itemTitle}>{`${item.name} ${item.father_last_name} ${item.mother_last_name}`}</Text>
             }
           />
         )}
@@ -61,11 +61,11 @@ export default function UsersList() {
 }
 
 const stylesheet = createStyleSheet((theme) => ({
-  Text: {
+  itemTitle: {
     fontSize: 18,
     color: theme.textPresets.main,
   },
-  Subtitle: {
+  itemSubtitle: {
     fontSize: 15,
     color: theme.textPresets.subtitle,
   },

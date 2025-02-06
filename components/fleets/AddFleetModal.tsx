@@ -7,6 +7,15 @@ import FormInput from "../Form/FormInput";
 import { supabase } from "@/lib/supabase";
 import { router } from "expo-router";
 import { useFleets } from "@/hooks/useFleets";
+import Toast from "react-native-toast-message";
+
+const showToast = (title: string, caption: string) => {
+  Toast.show({
+    type: "alert",
+    text1: title,
+    text2: caption,
+  });
+};
 
 type ModalProps = {
   close: () => void;
@@ -41,6 +50,7 @@ export default function AddFleetModal({ close }: ModalProps) {
 
     close();
     fetchFleetById(data.id);
+    showToast("Flotilla creada", "La flotilla ha sido creada exitosamente");
     router.push(`./${data.id}`, { relativeToDirectory: true });
   };
 

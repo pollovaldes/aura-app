@@ -16,49 +16,32 @@ export function useFleets() {
   const [currentPage, setCurrentPage] = useState(1);
   const [error, setError] = useState<PostgrestError | null>(null);
 
-  async function buildFleetFromRow(fleetRow: FleetRow): Promise<Partial<Fleet>> {
+  async function buildFleetFromRow(fleetRow: FleetRow): Promise<Fleet> {
     const fleetId = fleetRow.id;
 
     const { data: userFleetData, error: userFleetError } = await supabase
       .from("user_fleet")
       .select("user_id")
       .eq("fleet_id", fleetId);
-
-    if (userFleetError) {
-      setError(userFleetError);
-      console.error(userFleetError);
-      throw userFleetError;
-    }
-
+    if (userFleetError) throw userFleetError;
     const userIds = userFleetData.map((item: { user_id: string }) => item.user_id);
 
     const { data: vehicleFleetData, error: vehicleFleetError } = await supabase
       .from("vehicle_fleet")
       .select("vehicle_id")
       .eq("fleet_id", fleetId);
-
-    if (vehicleFleetError) {
-      setError(vehicleFleetError);
-      console.error(vehicleFleetError);
-      throw vehicleFleetError;
-    }
-
+    if (vehicleFleetError) throw vehicleFleetError;
     const vehicleIds = vehicleFleetData.map((item: { vehicle_id: string }) => item.vehicle_id);
 
-    await Promise.all(userIds.map((userId) => (users[userId] ? Promise.resolve() : fetchUserById(userId))));
-    await Promise.all(
-      vehicleIds.map((vehicleId) => (vehicles[vehicleId] ? Promise.resolve() : fetchVehicleById(vehicleId)))
-    );
+    await Promise.all(userIds.map((id) => (users[id] ? Promise.resolve() : fetchUserById(id))));
+    await Promise.all(vehicleIds.map((id) => (vehicles[id] ? Promise.resolve() : fetchVehicleById(id))));
 
-    const fleetUsers = userIds.map((uid) => users[uid]).filter(Boolean);
-    const fleetVehicles = vehicleIds.map((vid) => vehicles[vid]).filter(Boolean);
-
-    const fleet: Partial<Fleet> = {
+    const fleet: Fleet = {
       id: fleetRow.id,
       title: fleetRow.title,
       description: fleetRow.description,
-      users: fleetUsers,
-      vehicles: fleetVehicles,
+      userIds,
+      vehicleIds,
     };
 
     setFleets((prev) => ({ ...prev, [fleet.id!]: fleet }));
@@ -68,7 +51,7 @@ export function useFleets() {
   async function fetchFleetById(fleetId: string) {
     setError(null);
 
-    if (fleets[fleetId] && fleets[fleetId].users && fleets[fleetId].vehicles) {
+    if (fleets[fleetId] && fleets[fleetId].userIds && fleets[fleetId].vehicleIds) {
       return;
     }
 

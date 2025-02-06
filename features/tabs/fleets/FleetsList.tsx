@@ -19,16 +19,8 @@ type ModalType = "add_fleet_modal" | null;
 export default function FleetsList() {
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
-  const {
-    fleets,
-    isLoadingList,
-    fetchFleetsPage,
-    error,
-    refreshAllFleets,
-    loadMoreFleets,
-    hasMoreFleets,
-    fetchFleetById,
-  } = useFleets();
+  const { fleets, isLoadingList, fetchFleetsPage, error, refreshAllFleets, loadMoreFleets, hasMoreFleets } =
+    useFleets();
   const { styles, theme } = useStyles(stylesheet);
   const fleetArray = Object.values(fleets);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
@@ -107,7 +99,7 @@ export default function FleetsList() {
               <ActivityIndicator color={Platform.OS !== "ios" ? theme.ui.colors.primary : undefined} />
             </View>
           ) : fleetArray.length !== 0 ? (
-            <Text style={styles.allFleetsLoadedText}>Se han cargado todos los vehículos</Text>
+            <Text style={styles.allFleetsLoadedText}>Se han cargado todas las flotillas</Text>
           ) : null
         }
       />
