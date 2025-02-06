@@ -64,6 +64,7 @@ export function VehicleDetails() {
     setVehicleIsLoading(true);
     await refreshVehicleById(vehicleId);
     setVehicleIsLoading(false);
+    refetchVehicleThumbnail();
   }
 
   useEffect(() => {

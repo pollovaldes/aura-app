@@ -14,6 +14,7 @@ import { useVehicles } from "@/hooks/truckHooks/useVehicle";
 import { VehicleThumbnail } from "@/components/vehicles/VehicleThumbnail";
 import Modal from "@/components/Modal/Modal";
 import { AddVehicleModal } from "./modals/AddVehicleModal";
+import { useVehicleThumbnail } from "@/hooks/useVehicleThumbnail";
 
 type ModalType = "add_vehicle_modal" | null;
 
@@ -22,6 +23,7 @@ export function VehiclesList() {
   const profile = getGuaranteedProfile();
   const { vehicles, isLoadingList, fetchVehiclesPage, error, refreshAllVehicles, loadMoreVehicles, hasMoreVehicles } =
     useVehicles();
+  const { refetchThumbnailsForVehicles } = useVehicleThumbnail("");
   const { styles, theme } = useStyles(stylesheet);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
@@ -30,6 +32,11 @@ export function VehiclesList() {
   useEffect(() => {
     fetchVehiclesPage();
   }, []);
+
+  async function refreshVehicles() {
+    await refreshAllVehicles();
+    await refetchThumbnailsForVehicles(vehicleArray.map((vehicle) => vehicle.id));
+  }
 
   if (isLoadingList && vehicleArray.length === 0) {
     return <FetchingIndicator caption="Cargando vehículos" />;
@@ -41,7 +48,7 @@ export function VehiclesList() {
         caption="Ocurrió un error y no pudimos cargar los vehículos"
         buttonCaption="Reintentar"
         retryFunction={async () => {
-          await refreshAllVehicles();
+          await refreshVehicles();
         }}
       />
     );
@@ -75,7 +82,7 @@ export function VehiclesList() {
                 show={isAdminOrOwner}
               />
               <ActionButton
-                onPress={() => refreshAllVehicles()}
+                onPress={() => refreshVehicles()}
                 Icon={RotateCw}
                 text="Actualizar"
                 show={Platform.OS === "web"}
@@ -108,7 +115,7 @@ export function VehiclesList() {
         )}
         onEndReached={() => loadMoreVehicles()}
         onEndReachedThreshold={0.5}
-        onRefresh={refreshAllVehicles}
+        onRefresh={refreshVehicles}
         refreshing={isLoadingList}
         ListEmptyComponent={<EmptyScreen caption="Ningún vehículo por aquí." />}
         ListFooterComponent={
