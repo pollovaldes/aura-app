@@ -1,67 +1,170 @@
+import { FleetsContext } from "@/context/FleetsContext";
 import { supabase } from "@/lib/supabase";
-import { Fleet, User, Vehicle } from "@/types/globalTypes";
-import { useEffect, useState } from "react";
+import { Fleet, FleetRow } from "@/types/globalTypes";
+import { useContext, useState } from "react";
+import { useVehicles } from "./truckHooks/useVehicle";
+import { PostgrestError } from "@supabase/supabase-js";
+import { useUsers } from "./peopleHooks/useUsers";
 
-export function useFleets(fleetId?: string) {
-  const [fleets, setFleets] = useState<Fleet[] | null>(null);
-  const [areFleetsLoading, setAreFleetsLoading] = useState<boolean>(false);
+export function useFleets() {
+  const { fleets, setFleets } = useContext(FleetsContext);
+  const { vehicles, fetchVehicleById } = useVehicles();
+  const { users, fetchUserById } = useUsers();
+  const [isLoadingList, setIsLoadingList] = useState(false);
+  const [isRefreshingList, setIsRefreshingList] = useState(false);
+  const [hasMoreFleets, setHasMoreFleets] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [error, setError] = useState<PostgrestError | null>(null);
 
-  const fetchFleets = async () => {
-    setAreFleetsLoading(true);
+  async function buildFleetFromRow(fleetRow: FleetRow): Promise<Partial<Fleet>> {
+    const fleetId = fleetRow.id;
 
-    let query = supabase.from("fleets").select(`
-      *,
-      fleets_users (
-        *,
-        profiles (*)
-      ),
-      fleets_vehicles (
-        *,
-        vehicles (*)
-      )
-    `);
+    const { data: userFleetData, error: userFleetError } = await supabase
+      .from("user_fleet")
+      .select("user_id")
+      .eq("fleet_id", fleetId);
 
-    if (fleetId) {
-      query = query.eq("id", fleetId);
+    if (userFleetError) {
+      setError(userFleetError);
+      console.error(userFleetError);
+      throw userFleetError;
     }
 
-    const { data, error } = await query;
+    const userIds = userFleetData.map((item: { user_id: string }) => item.user_id);
 
-    if (error) {
-      console.error(
-        `Error fetching fleet records: \n\n` +
-          `Message: ${error.message}\n\n` +
-          `Code: ${error.code}\n\n` +
-          `Details: ${error.details}\n\n` +
-          `Hint: ${error.hint}`
-      );
-      setAreFleetsLoading(false);
-      setFleets(null);
+    const { data: vehicleFleetData, error: vehicleFleetError } = await supabase
+      .from("vehicle_fleet")
+      .select("vehicle_id")
+      .eq("fleet_id", fleetId);
+
+    if (vehicleFleetError) {
+      setError(vehicleFleetError);
+      console.error(vehicleFleetError);
+      throw vehicleFleetError;
+    }
+
+    const vehicleIds = vehicleFleetData.map((item: { vehicle_id: string }) => item.vehicle_id);
+
+    await Promise.all(userIds.map((userId) => (users[userId] ? Promise.resolve() : fetchUserById(userId))));
+    await Promise.all(
+      vehicleIds.map((vehicleId) => (vehicles[vehicleId] ? Promise.resolve() : fetchVehicleById(vehicleId)))
+    );
+
+    const fleetUsers = userIds.map((uid) => users[uid]).filter(Boolean);
+    const fleetVehicles = vehicleIds.map((vid) => vehicles[vid]).filter(Boolean);
+
+    const fleet: Partial<Fleet> = {
+      id: fleetRow.id,
+      title: fleetRow.title,
+      description: fleetRow.description,
+      users: fleetUsers,
+      vehicles: fleetVehicles,
+    };
+
+    setFleets((prev) => ({ ...prev, [fleet.id!]: fleet }));
+    return fleet;
+  }
+
+  async function fetchFleetById(fleetId: string) {
+    setError(null);
+
+    if (fleets[fleetId] && fleets[fleetId].users && fleets[fleetId].vehicles) {
       return;
     }
 
-    const normalizedFleets: Fleet[] = data.map((fleet) => {
-      const users = (fleet.fleets_users || [])
-        .map((relation) => relation.profiles)
-        .filter((profile): profile is User => profile !== null);
-      const vehicles = (fleet.fleets_vehicles || [])
-        .map((relation) => relation.vehicles)
-        .filter((vehicle): vehicle is Vehicle => vehicle !== null);
+    const { data, error: fleetError } = await supabase.from("fleet").select("*").eq("id", fleetId).single();
 
-      return {
-        ...fleet,
-        users,
-        vehicles,
-      };
-    });
+    if (fleetError) {
+      setError(fleetError);
+      console.error(fleetError);
+      throw fleetError;
+    }
 
-    setFleets(normalizedFleets);
-    setAreFleetsLoading(false);
+    if (data) {
+      await buildFleetFromRow(data);
+    }
+
+    setError(null);
+  }
+
+  async function refreshFleetById(fleetId: string) {
+    setError(null);
+
+    const { data, error: fleetError } = await supabase.from("fleet").select("*").eq("id", fleetId).single();
+
+    if (fleetError) {
+      setError(fleetError);
+      console.error(fleetError);
+      throw fleetError;
+    }
+
+    if (data) {
+      await buildFleetFromRow(data);
+    }
+
+    setError(null);
+  }
+
+  async function fetchFleetsPage(page: number = 1, pageSize: number = 5) {
+    setError(null);
+
+    if (page === 1) {
+      setIsLoadingList(true);
+    } else {
+      setIsRefreshingList(true);
+    }
+
+    const { data, error: fleetsError } = await supabase
+      .from("fleet")
+      .select("*")
+      .range((page - 1) * pageSize, page * pageSize - 1);
+
+    if (fleetsError) {
+      setError(fleetsError);
+      console.error(fleetsError);
+      throw fleetsError;
+    }
+
+    if (data) {
+      await Promise.all(data.map((fleetRow: FleetRow) => buildFleetFromRow(fleetRow)));
+      setHasMoreFleets(data.length === pageSize);
+      setCurrentPage(page);
+    }
+
+    setIsLoadingList(false);
+    setIsRefreshingList(false);
+  }
+
+  async function refreshFleetsList(pageSize: number = 9) {
+    setFleets({});
+    setCurrentPage(1);
+    setHasMoreFleets(true);
+    await fetchFleetsPage(1, pageSize);
+  }
+
+  async function loadMoreFleets(pageSize: number = 5) {
+    if (hasMoreFleets && !isLoadingList && !isRefreshingList) {
+      await fetchFleetsPage(currentPage + 1, pageSize);
+    }
+  }
+
+  async function refreshAllFleets() {
+    setHasMoreFleets(true);
+    await refreshFleetsList();
+  }
+
+  return {
+    fleets,
+    isLoadingList,
+    isRefreshingList,
+    hasMoreFleets,
+    currentPage,
+    error,
+    fetchFleetsPage,
+    refreshFleetsList,
+    fetchFleetById,
+    refreshFleetById,
+    loadMoreFleets,
+    refreshAllFleets,
   };
-
-  useEffect(() => {
-    fetchFleets();
-  }, []);
-
-  return { fleets, areFleetsLoading, fetchFleets };
 }

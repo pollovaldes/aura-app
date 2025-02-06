@@ -23,7 +23,11 @@ export type Maintenance = MaintenanceRow & {
   resolved_by: User | null;
 };
 
-export type Route = Database["public"]["Views"]["route_with_events"]["Row"];
+export type RouteRow = Database["public"]["Views"]["route_with_events"]["Row"];
+export type Route = RouteRow & {
+  vehicle: Vehicle;
+  driver: User;
+};
 
 export type Image = {
   id: string;

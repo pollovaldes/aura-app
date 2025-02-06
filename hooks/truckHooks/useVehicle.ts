@@ -5,19 +5,18 @@ import { PostgrestError } from "@supabase/supabase-js";
 
 export function useVehicles() {
   const { vehicles, setVehicles } = useContext(VehiclesContext);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [hasMorePages, setHasMorePages] = useState(true);
+  const [isLoadingList, setIsLoadingList] = useState(false);
+  const [isRefreshingList, setIsRefreshingList] = useState(false);
+  const [hasMoreVehicles, setHasMoreVehicles] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [error, setError] = useState<PostgrestError | null>(null);
 
-  async function LIST_ONLY_fetchVehicles(page: number = 1, pageSize: number = 5) {
+  async function fetchVehiclesPage(page: number = 1, pageSize: number = 5) {
     setError(null);
-
     if (page === 1) {
-      setIsLoading(true);
+      setIsLoadingList(true);
     } else {
-      setIsRefreshing(true);
+      setIsRefreshingList(true);
     }
 
     const { data, error } = await supabase
@@ -32,35 +31,31 @@ export function useVehicles() {
     }
 
     if (data) {
-      setVehicles((prev) => {
-        const updated = { ...prev };
+      setVehicles((prevVehicles) => {
+        const updatedVehicles = { ...prevVehicles };
         data.forEach((vehicle) => {
-          updated[vehicle.id] = vehicle;
+          updatedVehicles[vehicle.id] = vehicle;
         });
-        return updated;
+        return updatedVehicles;
       });
-      setHasMorePages(data.length === pageSize);
+      setHasMoreVehicles(data.length === pageSize);
       setCurrentPage(page);
     }
 
-    setError(null);
-    setIsLoading(false);
-    setIsRefreshing(false);
+    setIsLoadingList(false);
+    setIsRefreshingList(false);
   }
 
-  async function refetchAllVehicles(pageSize: number = 9) {
+  async function refreshVehiclesList(pageSize: number = 9) {
     setVehicles({});
     setCurrentPage(1);
-    setHasMorePages(true);
-    await LIST_ONLY_fetchVehicles(1, pageSize);
+    setHasMoreVehicles(true);
+    await fetchVehiclesPage(1, pageSize);
   }
 
   async function fetchVehicleById(vehicleId: string) {
     setError(null);
-
-    if (vehicles[vehicleId]) {
-      return;
-    }
+    if (vehicles[vehicleId]) return;
 
     const { data, error } = await supabase.from("vehicle").select("*").eq("id", vehicleId).single();
 
@@ -76,13 +71,10 @@ export function useVehicles() {
         [data.id]: data,
       }));
     }
-
-    setError(null);
   }
 
-  async function refetchVehicleById(vehicleId: string) {
+  async function refreshVehicleById(vehicleId: string) {
     setError(null);
-
     const { data, error } = await supabase.from("vehicle").select("*").eq("id", vehicleId).single();
 
     if (error) {
@@ -97,33 +89,31 @@ export function useVehicles() {
         [data.id]: data,
       }));
     }
-
-    setError(null);
   }
 
-  async function LIST_ONLY_loadMoreVehicles() {
-    if (hasMorePages && !isRefreshing && !isLoading) {
-      await LIST_ONLY_fetchVehicles(currentPage + 1);
+  async function loadMoreVehicles(pageSize: number = 5) {
+    if (hasMoreVehicles && !isLoadingList && !isRefreshingList) {
+      await fetchVehiclesPage(currentPage + 1, pageSize);
     }
   }
 
-  async function handleRefresh() {
-    setHasMorePages(true);
-    await refetchAllVehicles();
+  async function refreshAllVehicles() {
+    setHasMoreVehicles(true);
+    await refreshVehiclesList();
   }
 
   return {
     vehicles,
-    isLoading,
-    isRefreshing,
-    hasMorePages,
+    isLoadingList,
+    isRefreshingList,
+    hasMoreVehicles,
     currentPage,
     error,
-    LIST_ONLY_fetchVehicles,
-    refetchAllVehicles,
+    fetchVehiclesPage,
+    refreshVehiclesList,
     fetchVehicleById,
-    refetchVehicleById,
-    LIST_ONLY_loadMoreVehicles,
-    handleRefresh,
+    refreshVehicleById,
+    loadMoreVehicles,
+    refreshAllVehicles,
   };
 }

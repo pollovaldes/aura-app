@@ -1,40 +1,18 @@
 import { User } from "@/types/globalTypes";
-import { createContext, ReactNode, useState, Dispatch, SetStateAction } from "react";
+import { createContext, Dispatch, ReactNode, SetStateAction, useState } from "react";
 
-interface UsersContextType {
-  users: User[] | null;
-  setUsers: Dispatch<SetStateAction<User[] | null>>;
-  usersAreLoading: boolean;
-  setUsersAreLoading: Dispatch<SetStateAction<boolean>>;
+export interface UsersContextType {
+  users: Record<string, User>;
+  setUsers: Dispatch<SetStateAction<Record<string, User>>>;
 }
 
-const UsersContext = createContext<UsersContextType>({
-  users: null,
-  setUsers: (() => {}) as Dispatch<SetStateAction<User[] | null>>,
-  usersAreLoading: true,
-  setUsersAreLoading: (() => {}) as Dispatch<SetStateAction<boolean>>,
+export const UsersContext = createContext<UsersContextType>({
+  users: {},
+  setUsers: () => {},
 });
 
-interface UsersContextProviderProps {
-  children: ReactNode;
+export function UsersContextProvider({ children }: { children: ReactNode }) {
+  const [users, setUsers] = useState<Record<string, User>>({});
+
+  return <UsersContext.Provider value={{ users, setUsers }}>{children}</UsersContext.Provider>;
 }
-
-export function UsersContextProvider({ children }: UsersContextProviderProps) {
-  const [users, setUsers] = useState<User[] | null>(null);
-  const [usersAreLoading, setUsersAreLoading] = useState<boolean>(true);
-
-  return (
-    <UsersContext.Provider
-      value={{
-        users,
-        setUsers,
-        usersAreLoading,
-        setUsersAreLoading,
-      }}
-    >
-      {children}
-    </UsersContext.Provider>
-  );
-}
-
-export default UsersContext;

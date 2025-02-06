@@ -20,22 +20,15 @@ type ModalType = "add_vehicle_modal" | null;
 export function VehiclesList() {
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
-  const {
-    vehicles,
-    isLoading,
-    hasMorePages,
-    error,
-    LIST_ONLY_loadMoreVehicles,
-    handleRefresh,
-    LIST_ONLY_fetchVehicles,
-  } = useVehicles();
+  const { vehicles, isLoadingList, fetchVehiclesPage, error, refreshAllVehicles, loadMoreVehicles, hasMoreVehicles } =
+    useVehicles();
   const { styles, theme } = useStyles(stylesheet);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const closeModal = () => setActiveModal(null);
   const vehicleArray = Object.values(vehicles);
 
   useEffect(() => {
-    LIST_ONLY_fetchVehicles();
+    fetchVehiclesPage();
   }, []);
 
   if (error) {
@@ -44,13 +37,13 @@ export function VehiclesList() {
         caption="Ocurrió un error y no pudimos cargar los vehículos"
         buttonCaption="Reintentar"
         retryFunction={async () => {
-          await handleRefresh();
+          await refreshAllVehicles();
         }}
       />
     );
   }
 
-  if (isLoading && vehicleArray.length === 0) {
+  if (isLoadingList && vehicleArray.length === 0) {
     return <FetchingIndicator caption="Cargando vehículos" />;
   }
 
@@ -82,7 +75,7 @@ export function VehiclesList() {
                 show={isAdminOrOwner}
               />
               <ActionButton
-                onPress={() => handleRefresh()}
+                onPress={() => refreshAllVehicles()}
                 Icon={RotateCw}
                 text="Actualizar"
                 show={Platform.OS === "web"}
@@ -113,13 +106,13 @@ export function VehiclesList() {
             }
           />
         )}
-        onEndReached={LIST_ONLY_loadMoreVehicles}
+        onEndReached={() => loadMoreVehicles()}
         onEndReachedThreshold={0.5}
-        onRefresh={handleRefresh}
-        refreshing={isLoading}
+        onRefresh={refreshAllVehicles}
+        refreshing={isLoadingList}
         ListEmptyComponent={<EmptyScreen caption="Ningún vehículo por aquí." />}
         ListFooterComponent={
-          hasMorePages ? (
+          hasMoreVehicles ? (
             <View style={styles.footer}>
               <ActivityIndicator color={Platform.OS !== "ios" ? theme.ui.colors.primary : undefined} />
             </View>

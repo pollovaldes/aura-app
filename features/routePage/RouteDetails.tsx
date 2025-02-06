@@ -20,7 +20,6 @@ import { ActionButtonGroup } from "@/components/actionButton/ActionButtonGroup";
 import { ActionButton } from "@/components/actionButton/ActionButton";
 import { Route } from "@/types/globalTypes";
 import { FuelModal } from "./stopModals/FuelModal";
-import { useCurrentStop } from "./hooks/useCurrentStop";
 
 type ModalType = "end_route" | "fuel" | "break" | "failure" | "other" | "emergency" | null;
 
@@ -34,7 +33,6 @@ export function RouteDetails() {
   const closeModal = () => setActiveModal(null);
   const [isLocationLoading, setIsLocationLoading] = useState(false);
   const [activeRouteIsRefreshing, setActiveRouteIsRefreshing] = useState(false);
-  const { currentStop, currentStopIsLoading, saveCurrentStop } = useCurrentStop();
 
   async function locationPermission() {
     setIsLocationLoading(true);

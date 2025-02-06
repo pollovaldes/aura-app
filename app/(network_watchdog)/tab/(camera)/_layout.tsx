@@ -5,8 +5,9 @@ export default function Layout() {
   return (
     <Stack
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
         headerBlurEffect: "regular",
+        title: "Escanear QR",
         headerTransparent: Platform.OS === "ios" ? true : false,
       }}
     />

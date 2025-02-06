@@ -27,21 +27,23 @@ export default function EmptyScreen({ caption, buttonCaption, retryFunction }: E
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
-    flex: 1,
+    height: "100%",
     justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 12,
-    margin: 60,
+    alignSelf: "center",
+    width: "100%",
+    maxWidth: 400,
+    backgroundColor: theme.ui.colors.background,
+    paddingHorizontal: 16,
   },
   content: {
-    gap: 20,
+    gap: 25,
   },
   headingContainer: {
     alignItems: "center",
     gap: 6,
   },
   text: {
-    fontSize: 18,
+    fontSize: 20,
     color: theme.textPresets.main,
     textAlign: "center",
   },

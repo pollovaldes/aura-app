@@ -4,7 +4,6 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { ActivityIndicator, Platform, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { useCurrentStop } from "../hooks/useCurrentStop";
 import FormInput from "@/components/Form/FormInput";
 import { FormButton } from "@/components/Form/FormButton";
 import { Route } from "@/types/globalTypes";

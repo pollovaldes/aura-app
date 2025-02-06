@@ -44,7 +44,7 @@ type ModalType = "change_cover_image" | null;
 
 export function VehicleDetails() {
   const { styles, theme } = useStyles(stylesheet);
-  const { vehicles, fetchVehicleById, refetchVehicleById } = useVehicles();
+  const { vehicles, fetchVehicleById, refreshVehicleById } = useVehicles();
   const { getGuaranteedProfile } = useProfile();
   const profile = getGuaranteedProfile();
   const { vehicleId } = useLocalSearchParams<{ vehicleId: string }>();
@@ -62,7 +62,7 @@ export function VehicleDetails() {
 
   async function refetchVehicle() {
     setVehicleIsLoading(true);
-    await refetchVehicleById(vehicleId);
+    await refreshVehicleById(vehicleId);
     setVehicleIsLoading(false);
   }
 
