@@ -152,7 +152,7 @@ export default function FleetDetails() {
             renderItem={({ item }) => (
               <SimpleList
                 relativeToDirectory
-                href={`/tab/vehicle_details/${item.id}`}
+                href={`/tab/user_details/${item.id}`}
                 content={
                   <>
                     <Text
