@@ -2,12 +2,12 @@ import { UserRound } from "lucide-react-native";
 import { ActivityIndicator, Image, Platform, View } from "react-native";
 import { useStyles, createStyleSheet } from "react-native-unistyles";
 import { useEffect, useState } from "react";
-import useUsers from "@/hooks/peopleHooks/useUsers";
 import useUserThumbnail from "@/hooks/peopleHooks/useUserThumbnail";
 import LoadingScreen from "@/components/dataStates/LoadingScreen";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import React from "react";
 import { User } from "@/types/globalTypes";
+import { useUsers } from "@/hooks/peopleHooks/useUsers";
 
 type UserThumbnailProps = {
   userId: string;

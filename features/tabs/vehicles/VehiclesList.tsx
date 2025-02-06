@@ -31,6 +31,10 @@ export function VehiclesList() {
     fetchVehiclesPage();
   }, []);
 
+  if (isLoadingList && vehicleArray.length === 0) {
+    return <FetchingIndicator caption="Cargando vehículos" />;
+  }
+
   if (error) {
     return (
       <ErrorScreen
@@ -41,10 +45,6 @@ export function VehiclesList() {
         }}
       />
     );
-  }
-
-  if (isLoadingList && vehicleArray.length === 0) {
-    return <FetchingIndicator caption="Cargando vehículos" />;
   }
 
   const isAdminOrOwner = profile.role === "ADMIN" || profile.role === "OWNER";

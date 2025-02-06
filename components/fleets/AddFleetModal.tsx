@@ -6,18 +6,19 @@ import { createStyleSheet, useStyles } from "react-native-unistyles";
 import FormInput from "../Form/FormInput";
 import { supabase } from "@/lib/supabase";
 import { router } from "expo-router";
+import { useFleets } from "@/hooks/useFleets";
 
 type ModalProps = {
-  closeModal: () => void;
-  fetchFleets: () => void;
+  close: () => void;
 };
 
-export default function AddFleetModal({ closeModal, fetchFleets }: ModalProps) {
+export default function AddFleetModal({ close }: ModalProps) {
   const { styles } = useStyles(stylesheet);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { fetchFleetById } = useFleets();
 
   const createFleet = async (title: string, description: string) => {
     const { data, error } = await supabase
@@ -28,7 +29,8 @@ export default function AddFleetModal({ closeModal, fetchFleets }: ModalProps) {
           description,
         },
       ])
-      .select();
+      .select()
+      .single();
 
     if (error) {
       alert(
@@ -37,15 +39,15 @@ export default function AddFleetModal({ closeModal, fetchFleets }: ModalProps) {
       return;
     }
 
-    fetchFleets();
-    closeModal();
-    router.navigate(`/fleets/${data[0].id}`);
+    close();
+    fetchFleetById(data.id);
+    router.push(`./${data.id}`, { relativeToDirectory: true });
   };
 
   const handleCreateFleet = async () => {
     setIsSubmitting(true);
 
-    createFleet(title, description);
+    await createFleet(title, description);
 
     setIsSubmitting(false);
   };

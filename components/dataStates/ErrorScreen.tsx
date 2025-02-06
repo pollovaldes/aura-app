@@ -39,6 +39,7 @@ export default function ErrorScreen({ caption, retryFunction, buttonCaption }: E
 const stylesheet = createStyleSheet((theme, runtime) => ({
   container: {
     height: "100%",
+    padding: 16,
     justifyContent: "center",
     alignSelf: "center",
     width: "100%",

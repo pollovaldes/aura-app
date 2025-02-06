@@ -28,6 +28,7 @@ export default function EmptyScreen({ caption, buttonCaption, retryFunction }: E
 const stylesheet = createStyleSheet((theme) => ({
   container: {
     height: "100%",
+    padding: 16,
     justifyContent: "center",
     alignSelf: "center",
     width: "100%",

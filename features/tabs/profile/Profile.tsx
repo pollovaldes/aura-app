@@ -14,6 +14,7 @@ import { Bell, Bug, Info, LogOut, Moon, Palette, User } from "lucide-react-nativ
 import { colorPalette } from "@/style/themes";
 import ProfileColumn from "@/components/people/ProfileColumn";
 import { QRCodeColumn } from "@/components/people/QRCodeColumn";
+import Modal from "@/components/Modal/Modal";
 
 export default function Profile() {
   const { styles } = useStyles(stylesheet);
@@ -53,7 +54,7 @@ export default function Profile() {
         <View style={styles.container}>
           <GroupedList>
             <Row>
-              {profile.role === "NO_ROLE" ? <QRCodeColumn profile={profile} /> : <ProfileColumn profile={profile} />}
+              {profile.role === "NO_ROLE" ? <QRCodeColumn profile={profile} /> : <QRCodeColumn profile={profile} />}
             </Row>
           </GroupedList>
           <GroupedList>
