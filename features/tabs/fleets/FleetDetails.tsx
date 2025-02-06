@@ -5,6 +5,7 @@ import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import UnauthorizedScreen from "@/components/dataStates/UnauthorizedScreen";
 import { SimpleList } from "@/components/simpleList/SimpleList";
 import { VehicleThumbnail } from "@/components/vehicles/VehicleThumbnail";
+import { getRoleLabel } from "@/features/global/functions/getRoleLabel";
 import { useUsers } from "@/hooks/peopleHooks/useUsers";
 import { useVehicles } from "@/hooks/truckHooks/useVehicle";
 import { useFleets } from "@/hooks/useFleets";
@@ -148,22 +149,21 @@ export default function FleetDetails() {
             refreshing={fleetIsLoading}
             onRefresh={refetchFleet}
             style={styles.list}
-            renderItem={({ item }) =>
-              currentTabIndex === 0 ? (
-                <></>
-              ) : (
-                <SimpleList
-                  relativeToDirectory
-                  href={`/tab/vehicle_details/${item.id}`}
-                  leading={<VehicleThumbnail vehicleId={item.id} />}
-                  content={
+            renderItem={({ item }) => (
+              <SimpleList
+                relativeToDirectory
+                href={`/tab/vehicle_details/${item.id}`}
+                content={
+                  <>
                     <Text
                       style={styles.itemTitle}
                     >{`${item.name} ${item.father_last_name} ${item.mother_last_name}`}</Text>
-                  }
-                />
-              )
-            }
+                    <Text style={styles.itemSubtitle}>{`Rol: ${getRoleLabel(item.role)}`}</Text>
+                    <Text style={styles.itemSubtitle}>{`Posición: ${item.position}`}</Text>
+                  </>
+                }
+              />
+            )}
             ListEmptyComponent={
               <EmptyScreen
                 caption={
@@ -179,27 +179,23 @@ export default function FleetDetails() {
             refreshing={fleetIsLoading}
             onRefresh={refetchFleet}
             style={styles.list}
-            renderItem={({ item }) =>
-              currentTabIndex === 0 ? (
-                <></>
-              ) : (
-                <SimpleList
-                  relativeToDirectory
-                  href={`/tab/vehicle_details/${item.id}`}
-                  leading={<VehicleThumbnail vehicleId={item.id} />}
-                  content={
-                    <View style={styles.itemSeparator}>
-                      <Text style={styles.itemTitle}>
-                        {`${item.brand ?? "N/A"} ${item.sub_brand ?? "N/A"} (${item.year ?? "N/A"})`}
-                      </Text>
-                      <Text style={styles.itemSubtitle}>
-                        {`Placa: ${item.plate ?? "N/A"}\nNúmero económico: ${item.economic_number ?? "N/A"}\nNúmero de serie: ${item.serial_number ?? "N/A"}`}
-                      </Text>
-                    </View>
-                  }
-                />
-              )
-            }
+            renderItem={({ item }) => (
+              <SimpleList
+                relativeToDirectory
+                href={`/tab/vehicle_details/${item.id}`}
+                leading={<VehicleThumbnail vehicleId={item.id} />}
+                content={
+                  <View style={styles.itemSeparator}>
+                    <Text style={styles.itemTitle}>
+                      {`${item.brand ?? "N/A"} ${item.sub_brand ?? "N/A"} (${item.year ?? "N/A"})`}
+                    </Text>
+                    <Text style={styles.itemSubtitle}>
+                      {`Placa: ${item.plate ?? "N/A"}\nNúmero económico: ${item.economic_number ?? "N/A"}\nNúmero de serie: ${item.serial_number ?? "N/A"}`}
+                    </Text>
+                  </View>
+                }
+              />
+            )}
             ListEmptyComponent={
               <EmptyScreen
                 caption={
