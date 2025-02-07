@@ -4,17 +4,17 @@ import { useActiveRoute } from "@/features/routePage/hooks/useActiveRoute";
 import ErrorScreen from "@/components/dataStates/ErrorScreen";
 import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import { RouteHeader } from "@/features/routePage/RouteHeader";
-import useProfile from "@/hooks/useProfile";
 import { useStyles } from "react-native-unistyles";
 import { UnistylesRuntime } from "react-native-unistyles";
 import { pickTextColor } from "@/features/global/functions/pickTectColor";
-import { Platform, Text, View } from "react-native";
+import { Platform } from "react-native";
 import { setStatusBarStyle } from "expo-status-bar";
-import { OfflineOverlay } from "@/features/global/components/OfflineOverlay";
+import useProfile from "@/hooks/useProfile";
 
 export default function Layout() {
-  const { profile, isProfileLoading, fetchProfile } = useProfile();
-  const { activeRoute, activeRouteIsLoading, error, fetchActiveRoute } = useActiveRoute(profile?.id);
+  const { getGuaranteedProfile } = useProfile();
+  const profile = getGuaranteedProfile();
+  const { activeRoute, activeRouteIsLoading, error, fetchActiveRoute } = useActiveRoute(profile.id);
   const { theme } = useStyles();
   const headerTextColor = pickTextColor(theme.ui.colors.primary);
   const path = usePathname();
@@ -35,26 +35,6 @@ export default function Layout() {
       );
     }
   }, [mayShowHeader, isInModalPath, headerTextColor, UnistylesRuntime.colorScheme]);
-
-  if (isProfileLoading) {
-    return <FetchingIndicator caption={isProfileLoading ? "Cargando perfil" : "Cargando rutas activas"} />;
-  }
-
-  if (!profile) {
-    return (
-      <ErrorScreen caption="No pudimos recuperar tu perfil." buttonCaption="Reintentar" retryFunction={fetchProfile} />
-    );
-  }
-
-  // if (error) {
-  //   return (
-  //     <ErrorScreen
-  //       caption="No se pudieron cargar las rutas activas."
-  //       buttonCaption="Reintentar"
-  //       retryFunction={fetchActiveRoute}
-  //     />
-  //   );
-  // }
 
   return (
     <>

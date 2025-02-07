@@ -84,7 +84,7 @@ export default function FleetDetails() {
     <>
       <Stack.Screen
         options={{
-          headerLargeTitle: true,
+          headerLargeTitle: false,
           title: fleet.title,
           headerRight: () => (
             <ActionButtonGroup>

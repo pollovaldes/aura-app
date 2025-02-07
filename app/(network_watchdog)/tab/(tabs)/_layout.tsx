@@ -2,7 +2,16 @@ import { FetchingIndicator } from "@/components/dataStates/FetchingIndicator";
 import { useSessionContext } from "@/context/SessionContext";
 import useProfile from "@/hooks/useProfile";
 import { Redirect, Tabs, usePathname } from "expo-router";
-import { Bell, Boxes, CircleUserRound, PanelLeft, PanelRight, Truck, UsersRound } from "lucide-react-native";
+import {
+  Bell,
+  Boxes,
+  CircleUserRound,
+  LayoutGrid,
+  PanelLeft,
+  PanelRight,
+  Truck,
+  UsersRound,
+} from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { Platform, useWindowDimensions } from "react-native";
 import { createStyleSheet } from "react-native-unistyles";
@@ -112,6 +121,19 @@ export default function HomeLayout() {
           href: mayShowTab.fleets,
           title: "Flotillas",
           tabBarIcon: ({ color }) => <Boxes color={color} />,
+        }}
+        listeners={{
+          tabPress: () => {
+            hapticFeedback();
+          },
+        }}
+      />
+      <Tabs.Screen
+        name="regions"
+        options={{
+          href: mayShowTab.fleets,
+          title: "Regiones",
+          tabBarIcon: ({ color }) => <LayoutGrid color={color} />,
         }}
         listeners={{
           tabPress: () => {

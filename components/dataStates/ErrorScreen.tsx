@@ -1,5 +1,5 @@
 import { ShieldAlert, ShieldX } from "lucide-react-native";
-import { Text, View } from "react-native";
+import { Platform, Text, View } from "react-native";
 import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { FormButton } from "../Form/FormButton";
 import React from "react";
@@ -9,9 +9,10 @@ type ErrorScreenType = {
   caption: string;
   buttonCaption: string;
   retryFunction: () => void;
+  isInModal?: boolean;
 };
 
-export default function ErrorScreen({ caption, retryFunction, buttonCaption }: ErrorScreenType) {
+export default function ErrorScreen({ caption, retryFunction, buttonCaption, isInModal = false }: ErrorScreenType) {
   const { styles } = useStyles(stylesheet);
 
   return (
@@ -23,7 +24,7 @@ export default function ErrorScreen({ caption, retryFunction, buttonCaption }: E
           headerSearchBarOptions: undefined,
         }}
       />
-      <View style={styles.container}>
+      <View style={styles.container(isInModal)}>
         <View style={styles.content}>
           <View style={styles.headingContainer}>
             <ShieldX color={styles.icon.color} size={50} />
@@ -37,16 +38,15 @@ export default function ErrorScreen({ caption, retryFunction, buttonCaption }: E
 }
 
 const stylesheet = createStyleSheet((theme, runtime) => ({
-  container: {
-    height: "100%",
-    padding: 16,
+  container: (isInModal: boolean) => ({
+    flex: 1,
     justifyContent: "center",
-    alignSelf: "center",
-    width: "100%",
-    maxWidth: 400,
-    backgroundColor: theme.ui.colors.background,
-    paddingHorizontal: 16,
-  },
+    alignItems: "center",
+    paddingHorizontal: 12,
+    backgroundColor: isInModal ? undefined : theme.ui.colors.background,
+    gap: 8,
+    paddingTop: isInModal ? 0 : Platform.OS === "ios" ? runtime.insets.top : 0,
+  }),
   content: {
     gap: 25,
   },
